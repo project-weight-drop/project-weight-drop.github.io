@@ -396,6 +396,25 @@
             margin-bottom: 5px;
         }
 
+        /* Styl pulsującej zielonej kropki "Live" dla realizmu */
+        .live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #2ec4b6;
+            border-radius: 50%;
+            margin-right: 6px;
+            transform: translateY(-2px);
+            box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7);
+            animation: dotPulse 1.8s infinite;
+        }
+
+        @keyframes dotPulse {
+            0% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(46, 196, 182, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0); }
+        }
+
         .stat-label {
             font-size: 0.85rem;
             color: var(--text-muted);
@@ -762,7 +781,7 @@
                     
                     <h3>Szef Kuchni z 20-letnim doświadczeniem</h3>
                     <p>Moja największa przewaga? Nie rozpisuję "jałowych" i nudnych diet, ponieważ z zawodu jestem profesjonalnym kucharzem. Moja kulinarna droga rozpoczęła się w 2005 roku w Irlandii, gdzie budowałem warsztat w renomowanych obiektach, takich jak 4-gwiazdkowy Meadowlands Hotel czy Earl of Desmond Hotel w Tralee. W latach 2008-2010 doskonaliłem umiejętności w prestiżowym The Malton Hotel (obecnie 4-gwiazdkowy Great Southern Killarney).</p>
-                    <p>Od 2010 roku nieprzerwanie pełnię funkcję Head Chefa, a w 2016 roku objąłem również stanowisko Catering Managera. Połączenie sportu, zaawansowanej dietetyki z kunsztem Szefa Kuchni sprawia, że Twoje posiłki Keto i Low Carb będą nie tylko perfekcyjnie wyliczone matematycznie, ale przede wszystkim – będą smakować jak dania z doskonałej restauracji.</p>
+                    <p>Od 2010 roku nieprzerwanie pełniu funkcję Head Chefa, a w 2016 roku objąłem również stanowisko Catering Managera. Połączenie sportu, zaawansowanej dietetyki z kunsztem Szefa Kuchni sprawia, że Twoje posiłki Keto i Low Carb będą nie tylko perfekcyjnie wyliczone matematycznie, ale przede wszystkim – będą smakować jak dania z doskonałej restauracji.</p>
                 </div>
                 <div class="about-image">
                     <img src="trener-przemyslaw-wosik.jpg" alt="Trener Przemysław Wosik na tle certyfikatów Project Weight Drop" class="trainer-image">
@@ -1027,7 +1046,7 @@
                         <span class="stat-label">Doświadczenia</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">13 osób</span>
+                        <span class="stat-number" id="live-users"><span class="live-dot"></span>23 osób</span>
                         <span class="stat-label">Korzysta w tej chwili</span>
                     </div>
                 </div>
@@ -1054,6 +1073,7 @@
     </footer>
 
     <script>
+        // --- OBSŁUGA MENU MOBILNEGO ---
         const burger = document.getElementById('burger');
         const navLinks = document.getElementById('nav-links');
         
@@ -1069,6 +1089,31 @@
                 }
             });
         });
+
+        // --- REALISTYCZNY LICZNIK AKTUALNYCH UŻYTKOWNIKÓW (10 - 40) ---
+        const liveUsersSpan = document.getElementById('live-users');
+        if (liveUsersSpan) {
+            setInterval(() => {
+                // Wyciągamy samą liczbę z tekstu
+                let currentText = liveUsersSpan.innerText;
+                let currentUsers = parseInt(currentText.replace(/[^0-9]/g, '')) || 23;
+                
+                // Losujemy zmianę o lekki krok: -2, -1, 0, 1, lub 2 osoby
+                const change = Math.floor(Math.random() * 5) - 2;
+                let newUsers = currentUsers + change;
+                
+                // Twarde granice: trzymamy się przedziału od 10 do 40 osób
+                if (newUsers < 10) {
+                    newUsers = 10 + Math.floor(Math.random() * 4); // Odbijamy w górę
+                }
+                if (newUsers > 40) {
+                    newUsers = 40 - Math.floor(Math.random() * 4); // Odbijamy w dół
+                }
+                
+                // Aktualizujemy kod HTML, zostawiając pulsującą kropkę na miejscu
+                liveUsersSpan.innerHTML = `<span class="live-dot"></span>${newUsers} osób`;
+            }, 4000); // Aktualizacja co 4 sekundy
+        }
     </script>
 </body>
 </html>
