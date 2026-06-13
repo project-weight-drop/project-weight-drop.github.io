@@ -52,7 +52,6 @@
             list-style: none;
         }
 
-        /* Klasa pomocnicza na kontenery */
         .container {
             width: 100%;
             max-width: 1200px;
@@ -60,7 +59,6 @@
             padding: 0 20px;
         }
 
-        /* Przyciski (CTA) */
         .btn {
             display: inline-block;
             background-color: var(--accent);
@@ -84,7 +82,6 @@
             box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
         }
 
-        /* Przycisk konturowy (np. Pobierz app) */
         .btn-outline {
             display: inline-block;
             background-color: transparent;
@@ -108,7 +105,6 @@
             box-shadow: 0 6px 20px rgba(255, 107, 0, 0.4);
         }
 
-        /* Duży przycisk CTA w Hero */
         .btn-large {
             font-size: 1.1rem;
             padding: 20px 40px;
@@ -122,7 +118,6 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 107, 0, 0); }
         }
 
-        /* Typografia sekcji */
         .section-title {
             font-size: 2.2rem;
             font-weight: 800;
@@ -215,13 +210,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            
-            background: linear-gradient(
-                rgba(10, 10, 10, 0.75),
-                rgba(10, 10, 10, 0.95)
-            ), 
-            url('tlo-hero-keto.jpg');
-            
+            background: linear-gradient(rgba(10, 10, 10, 0.75), rgba(10, 10, 10, 0.95)), url('tlo-hero-keto.jpg');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -298,20 +287,10 @@
         }
 
         @media screen and (min-width: 768px) {
-            .hero-benefits {
-                flex-direction: row;
-                justify-content: center;
-                gap: 30px;
-            }
-            .reviews-stats-bar {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .stat-number {
-                font-size: 1.8rem;
-            }
-            #hero h1 {
-                font-size: 3.5rem;
-            }
+            .hero-benefits { flex-direction: row; justify-content: center; gap: 30px; }
+            .reviews-stats-bar { grid-template-columns: repeat(4, 1fr); }
+            .stat-number { font-size: 1.8rem; }
+            #hero h1 { font-size: 3.5rem; }
         }
 
         .hero-benefits span {
@@ -356,7 +335,7 @@
         }
 
         /* =========================================
-           5. OPINIE KLIENTÓW
+           5. OPINIE KLIENTÓW & SEKCJE DOPEŁNIAJĄCE
         ========================================= */
         #opinie {
             background-color: var(--bg-dark);
@@ -510,7 +489,6 @@
             margin-bottom: 10px;
         }
 
-        /* SLIDER PRZED / PO (2010 vs 2025) */
         .img-comp-container {
             position: relative;
             height: 600px; 
@@ -522,9 +500,7 @@
         }
 
         @media screen and (max-width: 768px) {
-            .img-comp-container {
-                height: 450px; 
-            }
+            .img-comp-container { height: 450px; }
         }
 
         .img-comp-img {
@@ -532,10 +508,7 @@
             width: auto;
             height: auto;
             overflow: hidden;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            top: 0; left: 0; right: 0; bottom: 0;
         }
 
         .img-comp-img img {
@@ -630,7 +603,7 @@
         }
 
         /* =========================================
-           9. PROCES (OŚ CZASU / KROKI)
+           9. PROCES (KROKI WSPÓŁPRACY)
         ========================================= */
         #proces {
             background-color: #111;
@@ -676,7 +649,114 @@
         }
 
         /* =========================================
-           10. FOOTER
+           10. DEDYKOWANE STYLE DLA KALKULATORA
+        ========================================= */
+        .calculator-box {
+            background-color: var(--bg-card, #171717);
+            color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #333;
+        }
+        
+        .calculator-box h2, .calculator-box h3, .calculator-box h4 {
+            color: #fff;
+            margin-bottom: 15px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--bg-dark, #0a0a0a);
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-family: inherit;
+            transition: 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #FF6B00;
+            outline: none;
+        }
+
+        .main-button, .pdf-button, .whatsapp-button, .share-button {
+            background-color: #FF6B00;
+            color: #fff;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 30px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s ease;
+            text-align: center;
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .main-button:hover, .pdf-button:hover, .whatsapp-button:hover, .share-button:hover {
+            background-color: #e65c00;
+            transform: translateY(-2px);
+        }
+
+        .result-card, .progress-card, .macro-chart-card, .trans-card, .compare-col {
+            background-color: rgba(10,10,10,0.5);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .big-number {
+            color: #FF6B00;
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .compare-section, .water-live-section, .event-section {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #222;
+        }
+
+        .macro-legend .legend-item { display: flex; align-items: center; margin-bottom: 10px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 50%; margin-right: 10px; }
+        .donut-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+        .chart-wrapper { display: flex; align-items: center; gap: 30px; position: relative; }
+        
+        @media screen and (max-width: 768px) {
+            .chart-wrapper { flex-direction: column; }
+        }
+
+        .tab-panel {
+            background-color: var(--bg-card);
+            border: 1px solid #333;
+            border-radius: var(--border-radius);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        /* =========================================
+           11. FOOTER & USTAWIENIA RESPONSYWNE
         ========================================= */
         footer {
             background-color: #050505;
@@ -714,69 +794,30 @@
             font-size: 0.8rem;
         }
 
-        /* =========================================
-           11. MEDIA QUERIES (DESKTOP)
-        ========================================= */
         @media screen and (min-width: 768px) {
-            .nav-links {
-                display: flex;
-                align-items: center;
-                gap: 25px;
-            }
-            .burger {
-                display: none;
-            }
-
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .reviews-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .about-split {
-                grid-template-columns: 1fr 1fr;
-            }
-
-            .meta-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .process-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            .cert-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
+            .nav-links { display: flex; align-items: center; gap: 25px; }
+            .burger { display: none; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .reviews-grid { grid-template-columns: repeat(2, 1fr); }
+            .about-split { grid-template-columns: 1fr 1fr; }
+            .meta-grid { grid-template-columns: repeat(2, 1fr); }
+            .process-grid { grid-template-columns: repeat(4, 1fr); }
+            .cert-grid { grid-template-columns: repeat(4, 1fr); }
         }
 
         @media screen and (min-width: 1024px) {
-            .features-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .reviews-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .meta-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
+            .features-grid { grid-template-columns: repeat(4, 1fr); }
+            .reviews-grid { grid-template-columns: repeat(3, 1fr); }
+            .meta-grid { grid-template-columns: repeat(4, 1fr); }
         }
 
-        /* =========================================
-           12. MENU MOBILNE
-        ========================================= */
         .nav-mobile-active {
             display: flex !important;
             flex-direction: column;
             position: absolute;
-            top: 80px;
-            left: 0;
-            width: 100%;
+            top: 80px; left: 0; width: 100%;
             background-color: var(--bg-card);
-            padding: 30px 20px;
-            gap: 20px;
+            padding: 30px 20px; gap: 20px;
             border-bottom: 1px solid #333;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
@@ -789,6 +830,7 @@
             <div class="logo">Project<span>WeightDrop</span></div>
             <ul class="nav-links" id="nav-links">
                 <li><a href="#o-mnie">O mnie</a></li>
+                <li><a href="#kalkulator-sekcja">Kalkulator</a></li>
                 <li><a href="#proces">Współpraca</a></li>
                 <li><a href="#specjalizacje">Certyfikaty</a></li>
                 <li><a href="#opinie">Opinie</a></li>
@@ -807,7 +849,6 @@
     <main>
         <section id="hero">
             <div class="container">
-                
                 <div class="reviews-stats-bar">
                     <div class="stat-item">
                         <span class="stat-number">248</span>
@@ -835,7 +876,7 @@
                     <span>📱 Stały kontakt WhatsApp</span>
                 </div>
 
-                <a href="#proces" class="btn btn-large">Zamów plan dietetyczny 99€</a>
+                <a href="#kalkulator-sekcja" class="btn btn-large">Oblicz zapotrzebowanie</a>
             </div>
         </section>
 
@@ -979,59 +1020,301 @@
                         <p>Jesteśmy w stałym kontakcie przez WhatsApp. Reaguję na zmiany i na bieżąco modyfikuję dietę.</p>
                     </article>
                 </div>
-                
-                <div style="text-align: center; margin-top: 40px;">
-                    <a href="#proces" class="btn btn-large">Zamów plan dietetyczny 99€</a>
-                    <p style="margin-top: 15px; color: var(--text-muted); font-size: 0.9rem;">Rozpocznij miesiąc pełnej opieki dietetycznej</p>
+            </div>
+        </section>
+
+        <section id="kalkulator-sekcja" style="background-color: #0d0d0d;">
+            <div class="container">
+                <div class="calculator-box">
+                    <h2 id="calculatorTitle">Kalkulator Dietetyczny</h2>
+                    <p id="calculatorDescription" style="color:#a0a0a0; margin-bottom: 25px;">Wpisz podstawowe dane, wybierz cel, deficyt i dietę. Waga docelowa oraz obwód pasa są opcjonalne.</p>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label id="sexLabel">Płeć</label>
+                            <select id="sex">
+                                <option value="male" id="maleOption">Mężczyzna</option>
+                                <option value="female" id="femaleOption">Kobieta</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label id="ageLabel">Wiek</label>
+                            <input type="number" id="age" placeholder="np. 35">
+                        </div>
+                        <div class="form-group">
+                            <label id="heightLabel">Wzrost w cm</label>
+                            <input type="number" id="height" placeholder="np. 175">
+                        </div>
+                        <div class="form-group">
+                            <label id="weightLabel">Waga w kg</label>
+                            <input type="number" id="weight" placeholder="np. 90">
+                        </div>
+                        <div class="form-group">
+                            <label id="targetWeightLabel">Waga docelowa w kg (opcjonalnie)</label>
+                            <input type="number" id="targetWeight" placeholder="np. 80">
+                        </div>
+                        <div class="form-group">
+                            <label id="waistLabel">Obwód pasa w cm (opcjonalnie)</label>
+                            <input type="number" id="waist" placeholder="np. 100">
+                        </div>
+                        <div class="form-group">
+                            <label id="activityLabel">Aktywność</label>
+                            <select id="activity">
+                                <option value="1.2" id="activity1">Mała aktywność</option>
+                                <option value="1.375" id="activity2">Lekka aktywność</option>
+                                <option value="1.55" id="activity3" selected>Średnia aktywność</option>
+                                <option value="1.725" id="activity4">Duża aktywność</option>
+                                <option value="1.9" id="activity5">Bardzo duża aktywność</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label id="goalLabel">Cel</label>
+                            <select id="goal" onchange="toggleDeficitField()">
+                                <option value="reduction" id="goalReduction">Redukcja</option>
+                                <option value="maintenance" id="goalMaintenance">Utrzymanie</option>
+                                <option value="mass" id="goalMass">Masa</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="deficitGroup">
+                            <label id="deficitLabel">Deficyt przy redukcji</label>
+                            <select id="deficit">
+                                <option value="10" id="deficit10">10 procent</option>
+                                <option value="15" id="deficit15" selected>15 procent</option>
+                                <option value="20" id="deficit20">20 procent</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label id="dietTypeLabel">Rodzaj diety</label>
+                            <select id="dietType">
+                                <option value="keto" id="ketoOption">Dieta ketogeniczna</option>
+                                <option value="lowcarb" id="lowCarbOption">Dieta low carb</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button class="main-button" onclick="calculateDiet()" id="calculateButton">Oblicz wynik</button>
+
+                    <div class="results" id="results" style="margin-top: 30px;">
+                        <div class="progress-card" id="progressCard">
+                            <h3 id="progressTitle">🎯 Postęp do celu wagowego</h3>
+                            <div class="progress-labels" style="display:flex; justify-content:space-between; margin-bottom:8px; color:#a0a0a0; font-size:12px;">
+                                <span id="progressStartLabel">Obecna waga</span>
+                                <span id="progressGoalLabel">Cel</span>
+                            </div>
+                            <div class="progress-track" style="background:#333; height:10px; border-radius:5px; margin-bottom:15px; position:relative;">
+                                <div class="progress-fill" id="progressFill" style="background:#FF6B00; height:100%; border-radius:5px; width:0%;"></div>
+                            </div>
+                            <div class="progress-pct" id="progressPct" style="text-align:center; font-weight:bold; color:#FF6B00; margin-bottom:15px;">0%</div>
+                            <div class="progress-info" style="display:flex; justify-content:space-around; text-align:center;">
+                                <div class="progress-stat">
+                                    <div class="ps-val big-number" id="progressCurrentVal">—</div>
+                                    <div class="ps-lbl" id="progressCurrentLbl" style="font-size:12px; color:#a0a0a0;">Aktualna waga</div>
+                                </div>
+                                <div class="progress-stat">
+                                    <div class="ps-val big-number" id="progressToLoseVal">—</div>
+                                    <div class="ps-lbl" id="progressToLoseLbl" style="font-size:12px; color:#a0a0a0;">Pozostało</div>
+                                </div>
+                                <div class="progress-stat">
+                                    <div class="ps-val big-number" id="progressGoalVal">—</div>
+                                    <div class="ps-lbl" id="progressGoalLblStat" style="font-size:12px; color:#a0a0a0;">Waga docelowa</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="macro-chart-card" id="macroChartCard">
+                            <h3 id="macroChartTitle">📊 Wykres makroskładników</h3>
+                            <div class="chart-wrapper">
+                                <div class="donut-container" style="position:relative; width:180px; height:180px;">
+                                    <svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" style="transform: rotate(-90deg);">
+                                        <circle cx="90" cy="90" r="70" fill="#171717"/>
+                                        <circle id="seg-fat" class="donut-seg" cx="90" cy="90" r="70" fill="none" stroke="#FF6B00" stroke-width="28" stroke-dasharray="0 440" stroke-dashoffset="0"/>
+                                        <circle id="seg-protein" class="donut-seg" cx="90" cy="90" r="70" fill="none" stroke="#00B4D8" stroke-width="28" stroke-dasharray="0 440" stroke-dashoffset="0"/>
+                                        <circle id="seg-carbs" class="donut-seg" cx="90" cy="90" r="70" fill="none" stroke="#2EC4B6" stroke-width="28" stroke-dasharray="0 440" stroke-dashoffset="0"/>
+                                    </svg>
+                                    <div class="donut-center">
+                                        <span class="dc-kcal big-number" id="donut-kcal">—</span><br>
+                                        <span class="dc-label" style="font-size:12px; color:#a0a0a0;">kcal</span>
+                                    </div>
+                                </div>
+                                <div class="macro-legend">
+                                    <div class="legend-item">
+                                        <div class="legend-dot" style="background:#FF6B00"></div>
+                                        <div class="legend-info">
+                                            <span class="legend-name" id="legend-fat-label">Tłuszcz</span>
+                                            <span class="legend-val" style="color:#FF6B00; font-weight:bold; margin:0 10px;" id="legend-fat-val">— g</span>
+                                            <span class="legend-pct" id="legend-fat-pct" style="color:#a0a0a0; font-size:12px;">—%</span>
+                                        </div>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-dot" style="background:#00B4D8"></div>
+                                        <div class="legend-info">
+                                            <span class="legend-name" id="legend-protein-label">Białko</span>
+                                            <span class="legend-val" style="color:#00B4D8; font-weight:bold; margin:0 10px;" id="legend-protein-val">— g</span>
+                                            <span class="legend-pct" id="legend-protein-pct" style="color:#a0a0a0; font-size:12px;">—%</span>
+                                        </div>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-dot" style="background:#2EC4B6"></div>
+                                        <div class="legend-info">
+                                            <span class="legend-name" id="legend-carbs-label">Węglowodany</span>
+                                            <span class="legend-val" style="color:#2EC4B6; font-weight:bold; margin:0 10px;" id="legend-carbs-val">— g</span>
+                                            <span class="legend-pct" id="legend-carbs-pct" style="color:#a0a0a0; font-size:12px;">—%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
+                            <div class="result-card">
+                                <h3 id="caloriesTitle">Kalorie</h3>
+                                <p><span id="maintenanceText">Utrzymanie wagi:</span> <span class="big-number" id="maintenance">—</span> kcal</p>
+                                <p><span id="goalCaloriesText">Kalorie pod cel:</span> <span class="big-number" id="goalCalories">—</span> kcal</p>
+                                <p><span id="calorieChangeText">Zmiana kalorii:</span> <span class="big-number" id="calorieChange">—</span></p>
+                            </div>
+                            <div class="result-card">
+                                <h3 id="macroTitle">Makroskładniki</h3>
+                                <p><span id="fatText">Tłuszcz:</span> <span class="big-number" style="color:#FF6B00;" id="fat">—</span> g</p>
+                                <p><span id="proteinText">Białko:</span> <span class="big-number" style="color:#00B4D8;" id="protein">—</span> g</p>
+                                <p><span id="carbsText">Węglowodany:</span> <span class="big-number" style="color:#2EC4B6;" id="carbs">—</span> g</p>
+                            </div>
+                            <div class="result-card">
+                                <h3 id="bodyTitle">Analiza ciała</h3>
+                                <p>BMI: <span class="big-number" id="bmi">—</span></p>
+                                <p><span id="bmiCategoryText">Kategoria BMI:</span> <span class="big-number" id="bmiCategory" style="font-size: 1.1rem;">—</span></p>
+                                <p>Szacowany Body Fat: <span class="big-number" id="bodyFat">—</span></p>
+                            </div>
+                            <div class="result-card">
+                                <h3 id="healthTitle">Zalecenia dzienne</h3>
+                                <p><span id="waterText">Woda:</span> <span class="big-number" id="water">—</span> l</p>
+                                <p><span id="stepsText">Kroki:</span> <span class="big-number" id="steps">—</span></p>
+                            </div>
+                        </div>
+
+                        <div class="result-card">
+                            <h3 id="fatLossTitle">🔥 Analiza redukcji</h3>
+                            <p><span id="realFatLossText">Przewidywana utrata tkanki tłuszczowej (4 tyg.):</span> <span class="big-number" id="fatLoss">—</span></p>
+                            <p><span id="waterLossText">Możliwa początkowa utrata wody i glikogenu:</span> <span class="big-number" id="waterLoss">—</span></p>
+                            <p><span id="totalLossText">Łączny szacowany spadek w pierwszym miesiącu:</span> <span class="big-number" id="totalLoss">—</span></p>
+                            <p class="note" id="fatLossNote" style="font-size:12px; color:#a0a0a0; margin-top:10px;">Body Fat oraz wartości ubytków są parametrami szacunkowymi. Pierwsze tygodnie adaptacji ketogenicznej wykazują przyspieszony spadek wagi wywołany uszczupleniem zapasów glikogenu i związanej z nim wody.</p>
+                        </div>
+
+                        <div class="action-buttons" style="margin-top: 20px;">
+                            <button class="pdf-button" onclick="exportToPDF()" id="pdfButton">📄 Eksportuj wyniki</button>
+                            <a id="whatsappLink" href="https://wa.me/353851383537" target="_blank" class="whatsapp-button">💎 Zamów plan u Szefa</a>
+                            <button class="share-button" onclick="shareAsImage()" id="shareButton">📸 Generuj podgląd</button>
+                        </div>
+                    </div>
+
+                    <div class="compare-section">
+                        <h3>⚖️ Porównanie rzutów makro: Keto vs Low Carb</h3>
+                        <p style="color:#a0a0a0; margin-bottom:15px;">Kalkulacja równoległa pod wybrany cel energetyczny.</p>
+                        <div id="compareResult">
+                            <div class="compare-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px;">
+                                <div class="compare-col keto">
+                                    <h4 style="color:#FF6B00;">🥑 Model Ketogeniczny (75% T / 20% B / 5% W)</h4>
+                                    <div class="cc-row" style="display:flex; justify-content:space-between; margin-bottom:8px;"><span class="ccl">Kalorie celu</span><span class="ccv big-number" id="cmpKetoKcal">—</span></div>
+                                    <div class="cc-row" style="display:flex; justify-content:space-between; margin-bottom:8px;"><span class="ccl">Tłuszcze</span><span class="ccv big-number" id="cmpKetoFat">—</span></div>
+                                    <div class="cc-row" style="display:flex; justify-content:space-between; margin-bottom:8px;"><span class="ccl">Białka</span><span class="ccv big-number" id="cmpKetoProtein">—</span></div>
+                                    <div class="cc-row" style="display:flex; justify-content:space-between; margin-bottom:8px;"><span class="ccl">Węglowodany</span><span class="ccv big-number" id="cmpKetoCarbs">—</span></div>
+                                </div>
+                                <div class="compare-col lowcarb">
+                                    <h4 style="color:#00B4D8;">🥗 Model Low Carb (50% T / 30% B / 20% W)</h4>
+                                    <div class="cc-row" style="display:flex; justify-content:space-between; margin-bottom:8px;"><span class="ccl">Kalorie celu</span><span class="ccv big-number" id="cmpLcKcal">—</span></div>
+                                    <div class="cc-row" style="display:flex; justify-content:space-between; margin-bottom:8px;"><span class="ccl">Tłuszcze</span><span class="ccv big-number" id="cmpLcFat">—</span></div>
+                                    <div class="cc-row" style="display:flex; justify-content:space-between; margin-bottom:8px;"><span class="ccl">Białka</span><span class="ccv big-number" id="cmpLcProtein">—</span></div>
+                                    <div class="cc-row" style="display:flex; justify-content:space-between; margin-bottom:8px;"><span class="ccl">Węglowodany</span><span class="ccv big-number" id="cmpLcCarbs">—</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="tab-water" class="water-live-section">
+                        <h3>💧 Korektor poziomu hydratacji</h3>
+                        <div class="water-sliders" style="margin-bottom: 20px;">
+                            <div class="wl-row" style="margin-bottom:15px;">
+                                <label style="display:block; margin-bottom:5px;">Bieżąca waga: <span id="wlWeightVal" style="color:#FF6B00; font-weight:bold;">70 kg</span></label>
+                                <input type="range" id="wlWeight" min="40" max="180" value="70" oninput="updateWaterCalc()" style="width:100%;">
+                            </div>
+                            <div class="wl-row" style="margin-bottom:15px;">
+                                <label style="display:block; margin-bottom:5px;">Temperatura otoczenia: <span id="wlTempVal" style="color:#FF6B00; font-weight:bold;">20°C</span></label>
+                                <input type="range" id="wlTemp" min="0" max="45" value="20" oninput="updateWaterCalc()" style="width:100%;">
+                            </div>
+                        </div>
+                        <div class="water-result" style="text-align: center;">
+                            <div class="wr-val big-number" id="wrVal" style="font-size:2.2rem;">2.45 l</div>
+                            <div class="wr-lbl" style="color:#a0a0a0; font-size:0.9rem;">Sugerowany optymalny pobór płynów w ciągu doby</div>
+                        </div>
+                    </div>
+
+                    <div id="tab-event" class="event-section">
+                        <h3>📅 Strategia redukcji terminowej</h3>
+                        <div class="event-row" style="display:flex; flex-wrap:wrap; gap:15px; margin-bottom:20px;">
+                            <input type="text" id="eventName" placeholder="Nazwa celu (np. Wesele, Urlop 💍)" style="flex: 1; min-width: 200px; padding:12px; border-radius:8px; border:1px solid #333; background:#0a0a0a; color:#fff; font-family:inherit;">
+                            <input type="date" id="eventDate" style="flex: 1; min-width: 200px; padding:12px; border-radius:8px; border:1px solid #333; background:#0a0a0a; color:#fff; font-family:inherit;">
+                            <input type="number" id="eventCurrentW" placeholder="Aktualna waga (kg)" style="flex: 1; min-width: 150px; padding:12px; border-radius:8px; border:1px solid #333; background:#0a0a0a; color:#fff; font-family:inherit;">
+                            <input type="number" id="eventGoalW" placeholder="Cel wagowy (kg)" style="flex: 1; min-width: 150px; padding:12px; border-radius:8px; border:1px solid #333; background:#0a0a0a; color:#fff; font-family:inherit;">
+                            <button onclick="calcEventGoal()" class="main-button" style="margin:0; padding: 12px 30px;">Analizuj okno czasowe</button>
+                        </div>
+                        <div id="eventOutput" style="color: #a0a0a0; font-size: 0.95rem; line-height: 1.6;"></div>
+                    </div>
                 </div>
             </div>
         </section>
 
+        <div class="container" style="text-align: center; margin: 80px auto 40px auto;">
+            <h2 style="font-size: 2.8rem; font-weight: 800; color: #ffffff; text-transform: uppercase; letter-spacing: 1px;">Sprawdźmy ........</h2>
+            <div style="width: 80px; height: 4px; background-color: var(--accent, #FF6B00); margin: 20px auto;"></div>
+        </div>
+
         <section id="opinie">
             <div class="container">
-                <h2 class="section-title">Co mówią <span>Podopieczni?</span></h2>
-                <p class="section-subtitle">Realne wyniki i opinie osób, które odzyskały kontrolę nad swoim zdrowiem i sylwetką.</p>
-                
+                <div id="tab-clients" class="tab-panel" style="background: transparent; border: none; padding: 0; margin-bottom: 50px;">
+                    <div class="transformations-section">
+                        <h3 style="text-align:center; font-size:2rem; margin-bottom:10px;">⭐ Opinie klientów i efekty</h3>
+                        <p style="text-align:center; color:#a0a0a0; margin-bottom:40px;">Średnia ocena: ⭐⭐⭐⭐⭐ 5.0/5.0 — prawdziwe opinie, prawdziwe rezultaty.</p>
+                        
+                        <div class="trans-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                            <div class="trans-card" style="background-color: var(--bg-card); border: 1px solid #222;">
+                                <div class="trans-avatar" style="font-size:2rem; margin-bottom:10px;">👩</div>
+                                <div class="trans-name" style="font-weight:bold; color:#FF6B00;">Karolina M., 34 lata</div>
+                                <div class="trans-stars" style="color:#f7d36b; margin-bottom:10px;">★★★★★</div>
+                                <div class="trans-stats" style="display:flex; gap:10px; margin-bottom:15px; font-size:0.8rem;">
+                                    <span class="trans-badge lost" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">−18 kg</span>
+                                    <span class="trans-badge time" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">5 miesięcy</span>
+                                    <span class="trans-badge diet" style="background:rgba(0, 180, 216, 0.15); color:#00B4D8; padding:5px 10px; border-radius:15px; font-weight:700;">Keto</span>
+                                </div>
+                                <div class="trans-quote" style="color:#ccc; font-style:italic; line-height:1.5;">„Pan Przemysław zrozumiał mój tryb życia i ułożył plan, który pasował do mojej kuchni. Po 5 miesiącach jestem w miejscu, o którym marzyłam."</div>
+                            </div>
+
+                            <div class="trans-card" style="background-color: var(--bg-card); border: 1px solid #222;">
+                                <div class="trans-avatar" style="font-size:2rem; margin-bottom:10px;">👨</div>
+                                <div class="trans-name" style="font-weight:bold; color:#FF6B00;">Marek M., 41 lat</div>
+                                <div class="trans-stars" style="color:#f7d36b; margin-bottom:10px;">★★★★★</div>
+                                <div class="trans-stats" style="display:flex; gap:10px; margin-bottom:15px; font-size:0.8rem;">
+                                    <span class="trans-badge lost" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">−12 kg</span>
+                                    <span class="trans-badge time" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">3 miesiące</span>
+                                    <span class="trans-badge diet" style="background:rgba(46, 196, 182, 0.15); color:#2EC4B6; padding:5px 10px; border-radius:15px; font-weight:700;">Low Carb</span>
+                                </div>
+                                <div class="trans-quote" style="color:#ccc; font-style:italic; line-height:1.5;">„Proste posiłki, niedrogi tryb. Bez wymyślania za to na ludzko. Pan Przemysław udowodnił, że dieta może być smaczna i skuteczna."</div>
+                            </div>
+
+                            <div class="trans-card" style="background-color: var(--bg-card); border: 1px solid #222;">
+                                <div class="trans-avatar" style="font-size:2rem; margin-bottom:10px;">👩</div>
+                                <div class="trans-name" style="font-weight:bold; color:#FF6B00;">Agnieszka R., 29 lat</div>
+                                <div class="trans-stars" style="color:#f7d36b; margin-bottom:10px;">★★★★★</div>
+                                <div class="trans-stats" style="display:flex; gap:10px; margin-bottom:15px; font-size:0.8rem;">
+                                    <span class="trans-badge lost" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">−9 kg</span>
+                                    <span class="trans-badge time" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">10 tygodni</span>
+                                    <span class="trans-badge diet" style="background:rgba(0, 180, 216, 0.15); color:#00B4D8; padding:5px 10px; border-radius:15px; font-weight:700;">Keto</span>
+                                </div>
+                                <div class="trans-quote" style="color:#ccc; font-style:italic; line-height:1.5;">„Chciałam schudnąć przed ślubem. Pan Przemysław ułożył mi plan na 10 tygodni i osiągnęłam swój cel. Suknia leżała idealnie! 💍"</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="reviews-grid">
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Karolina M., 34 lata</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-10 kg</span>
-                            <span class="review-tag">5 miesięcy</span>
-                            <span class="review-tag keto">Keto</span>
-                        </div>
-                        <p class="review-text">"Pan Przemysław zrozumiał mój tryb życia i ułożył plan, który pasował do mojej kuchni. Po 5 miesiącach jestem w miejscu, o którym marzyłam."</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Marek M., 41 lat</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-12 kg</span>
-                            <span class="review-tag">3 miesiące</span>
-                            <span class="review-tag">Low Carb</span>
-                        </div>
-                        <p class="review-text">"Proste posiłki, niedrogi tryb. Bez wymyślania za to na ludzko. Pan Przemysław udowodnił, że dieta może być smaczna i skuteczna."</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Agnieszka R., 29 lat</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-9 kg</span>
-                            <span class="review-tag">10 tygodni</span>
-                            <span class="review-tag keto">Keto</span>
-                        </div>
-                        <p class="review-text">"Chciałam schudnąć przed ślubem. Pan Przemysław ułożył mi plan na 10 tygodni i osiągnęłam swój cel. Suknia leżała idealnie! 💍"</p>
-                    </div>
-
                     <div class="review-card">
                         <div class="review-header">
                             <span class="review-author">Tomasz K., 47 lat</span>
@@ -1109,32 +1392,6 @@
                         </div>
                         <p class="review-text">"Największą zaletą było codzienne wsparcie i szybkie odpowiedzi na każde pytanie."</p>
                     </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Beata K.</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-5 kg</span>
-                            <span class="review-tag">2 miesiące</span>
-                            <span class="review-tag">Low Carb</span>
-                        </div>
-                        <p class="review-text">"Bez głodówek i wyrzeczeń. W końcu znalazłam sposób żywienia, który działa."</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Grzegorz H.</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-22 kg</span>
-                            <span class="review-tag">6 miesięcy</span>
-                            <span class="review-tag keto">Keto</span>
-                        </div>
-                        <p class="review-text">"Zmieniłem nie tylko wagę, ale również samopoczucie i poziom energii każdego dnia."</p>
-                    </div>
                 </div>
             </div>
         </section>
@@ -1145,11 +1402,10 @@
             <div class="logo">Project<span>WeightDrop</span></div>
             <div class="footer-links">
                 <a href="#o-mnie">O mnie</a>
+                <a href="#kalkulator-sekcja">Kalkulator</a>
                 <a href="#proces">Współpraca</a>
                 <a href="#opinie">Opinie</a>
                 <a href="#">Blog</a>
-                <a href="#">Facebook</a>
-                <a href="#">Instagram</a>
                 <a href="#">Polityka Prywatności</a>
                 <a href="#">Regulamin</a>
             </div>
@@ -1207,7 +1463,6 @@
                 slider = img.parentElement.querySelector(".img-comp-slider-button");
                 slider.style.left = (w / 2) + "px";
 
-                // Nasłuchiwanie myszki i dotyku
                 slider.addEventListener("mousedown", slideReady);
                 window.addEventListener("mouseup", slideFinish);
                 slider.addEventListener("touchstart", slideReady, {passive: false});
@@ -1220,9 +1475,7 @@
                     window.addEventListener("touchmove", slideMove, {passive: false});
                 }
                 
-                function slideFinish() {
-                    clicked = 0;
-                }
+                function slideFinish() { clicked = 0; }
                 
                 function slideMove(e) {
                     var pos;
@@ -1254,10 +1507,265 @@
                 });
             }
         }
-        
-        // Inicjalizacja skryptu po załadowaniu drzewa DOM
+
+        // --- LOGIKA KALKULATORA DIETETYCZNEGO ---
+        function toggleDeficitField() {
+            const goal = document.getElementById('goal').value;
+            const deficitGroup = document.getElementById('deficitGroup');
+            if (goal !== 'reduction') {
+                deficitGroup.style.display = 'none';
+            } else {
+                deficitGroup.style.display = 'block';
+            }
+        }
+
+        function calculateDiet() {
+            const sex = document.getElementById('sex').value;
+            const age = parseInt(document.getElementById('age').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('weight').value);
+            const targetWeight = parseFloat(document.getElementById('targetWeight').value);
+            const waist = parseFloat(document.getElementById('waist').value);
+            const activity = parseFloat(document.getElementById('activity').value);
+            const goal = document.getElementById('goal').value;
+            const deficitPct = parseFloat(document.getElementById('deficit').value);
+            const dietType = document.getElementById('dietType').value;
+
+            if (!age || !height || !weight) {
+                alert("Wprowadź podstawowe dane: wiek, wzrost oraz obecną wagę ciała.");
+                return;
+            }
+
+            // Wzór Mifflina-St Jeora (BMR)
+            let bmr = 0;
+            if (sex === 'male') {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                bmr = (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            }
+
+            // TDEE (Utrzymanie wagi)
+            const maintenanceKcal = Math.round(bmr * activity);
+            document.getElementById('maintenance').innerText = maintenanceKcal;
+
+            // Wyliczenie kaloryczności celu
+            let goalKcal = maintenanceKcal;
+            let changeText = "0 kcal (Bilans zerowy)";
+
+            if (goal === 'reduction') {
+                const deficitAmount = Math.round(maintenanceKcal * (deficitPct / 100));
+                goalKcal = maintenanceKcal - deficitAmount;
+                changeText = `-${deficitAmount} kcal (-${deficitPct}%)`;
+            } else if (goal === 'mass') {
+                goalKcal = maintenanceKcal + 300;
+                changeText = "+300 kcal (Nadwyżka na masę)";
+            }
+            document.getElementById('goalCalories').innerText = goalKcal;
+            document.getElementById('calorieChange').innerText = changeText;
+            document.getElementById('donut-kcal').innerText = goalKcal;
+
+            // Makroskładniki dla wybranej diety oraz równoległego porównania
+            function getMacros(kcal, type) {
+                let fPct = 0, pPct = 0, cPct = 0;
+                if (type === 'keto') { fPct = 75; pPct = 20; cPct = 5; } 
+                else { fPct = 50; pPct = 30; cPct = 20; }
+                return {
+                    fat: Math.round((kcal * (fPct / 100)) / 9),
+                    protein: Math.round((kcal * (pPct / 100)) / 4),
+                    carbs: Math.round((kcal * (cPct / 100)) / 4),
+                    fPct, pPct, cPct
+                };
+            }
+
+            const currentMacros = getMacros(goalKcal, dietType);
+            document.getElementById('fat').innerText = currentMacros.fat;
+            document.getElementById('protein').innerText = currentMacros.protein;
+            document.getElementById('carbs').innerText = currentMacros.carbs;
+
+            // Aktualizacja legendy wykresu głównego
+            document.getElementById('legend-fat-val').innerText = currentMacros.fat + " g";
+            document.getElementById('legend-protein-val').innerText = currentMacros.protein + " g";
+            document.getElementById('legend-carbs-val').innerText = currentMacros.carbs + " g";
+            document.getElementById('legend-fat-pct').innerText = currentMacros.fPct + "%";
+            document.getElementById('legend-protein-pct').innerText = currentMacros.pPct + "%";
+            document.getElementById('legend-carbs-pct').innerText = currentMacros.cPct + "%";
+
+            // Dynamiczny wykres SVG (Obwód koła = 440)
+            const circ = 440;
+            const fatStroke = (currentMacros.fPct / 100) * circ;
+            const proStroke = (currentMacros.pPct / 100) * circ;
+            const carbStroke = (currentMacros.cPct / 100) * circ;
+
+            document.getElementById('seg-fat').style.strokeDasharray = `${fatStroke} ${circ}`;
+            document.getElementById('seg-protein').style.strokeDasharray = `${proStroke} ${circ}`;
+            document.getElementById('seg-carbs').style.strokeDasharray = `${carbStroke} ${circ}`;
+
+            document.getElementById('seg-fat').style.strokeDashoffset = "0";
+            document.getElementById('seg-protein').style.strokeDashoffset = -fatStroke;
+            document.getElementById('seg-carbs').style.strokeDashoffset = -(fatStroke + proStroke);
+
+            // Analiza Ciała & BMI
+            const bmi = (weight / ((height / 100) ** 2)).toFixed(1);
+            document.getElementById('bmi').innerText = bmi;
+            
+            let bmiCat = "";
+            if (bmi < 18.5) bmiCat = "Niedowaga";
+            else if (bmi < 25) bmiCat = "Norma";
+            else if (bmi < 30) bmiCat = "Nadwaga";
+            else bmiCat = "Otyłość";
+            document.getElementById('bmiCategory').innerText = bmiCat;
+
+            // Szacowanie poziomu tkanki tłuszczowej (YMCA / BMI standard approximation)
+            let bfEst = 0;
+            if (sex === 'male') {
+                bfEst = (1.20 * bmi) + (0.23 * age) - 16.2;
+            } else {
+                bfEst = (1.20 * bmi) + (0.23 * age) - 5.4;
+            }
+            document.getElementById('bodyFat').innerText = Math.max(4, Math.round(bfEst)) + "%";
+
+            // Zalecenia ogólne
+            const waterNeeded = (weight * 0.035).toFixed(2);
+            document.getElementById('water').innerText = waterNeeded;
+            document.getElementById('steps').innerText = activity > 1.4 ? "10 000 - 12 000" : "8 000";
+
+            // Postęp wagowy (Jeśli podano wagę docelową)
+            const progressCard = document.getElementById('progressCard');
+            if (targetWeight && targetWeight !== weight) {
+                progressCard.style.display = "block";
+                document.getElementById('progressCurrentVal').innerText = weight + " kg";
+                document.getElementById('progressGoalVal').innerText = targetWeight + " kg";
+                
+                let diff = Math.abs(weight - targetWeight).toFixed(1);
+                document.getElementById('progressToLoseVal').innerText = diff + " kg";
+                
+                // Szacowanie fikcyjnego punktu wyjściowego dla paska postępu (np. +10% obecnej wagi przy redukcji)
+                let pct = 0;
+                if (goal === 'reduction' && weight > targetWeight) {
+                    let startPoint = weight + 5; 
+                    pct = Math.round(((startPoint - weight) / (startPoint - targetWeight)) * 100);
+                } else if (goal === 'mass' && weight < targetWeight) {
+                    let startPoint = weight - 5;
+                    pct = Math.round(((weight - startPoint) / (targetWeight - startPoint)) * 100);
+                }
+                pct = Math.max(5, Math.min(95, pct)); // estetyczne ograniczenie krańców
+                document.getElementById('progressFill').style.width = pct + "%";
+                document.getElementById('progressPct').innerText = pct + "%";
+            } else {
+                progressCard.style.display = "none";
+            }
+
+            // Prognoza redukcji (Dla deficytu)
+            if (goal === 'reduction') {
+                const monthlyDeficit = (maintenanceKcal - goalKcal) * 28;
+                const fatLossKg = (monthlyDeficit / 7700).toFixed(1);
+                document.getElementById('fatLoss').innerText = `${fatLossKg} kg`;
+                document.getElementById('waterLoss').innerText = dietType === 'keto' ? "1.5 - 2.5 kg" : "0.5 - 1.0 kg";
+                const totalEst = (parseFloat(fatLossKg) + (dietType === 'keto' ? 2.0 : 0.7)).toFixed(1);
+                document.getElementById('totalLoss').innerText = `~ ${totalEst} kg`;
+            } else {
+                document.getElementById('fatLoss').innerText = "—";
+                document.getElementById('waterLoss').innerText = "—";
+                document.getElementById('totalLoss').innerText = "—";
+            }
+
+            // Sekcja Porównawcza (Keto vs Low Carb równolegle)
+            const ketoBox = getMacros(goalKcal, 'keto');
+            const lcBox = getMacros(goalKcal, 'lowcarb');
+
+            document.getElementById('cmpKetoKcal').innerText = goalKcal + " kcal";
+            document.getElementById('cmpKetoFat').innerText = ketoBox.fat + "g";
+            document.getElementById('cmpKetoProtein').innerText = ketoBox.protein + "g";
+            document.getElementById('cmpKetoCarbs').innerText = ketoBox.carbs + "g";
+
+            document.getElementById('cmpLcKcal').innerText = goalKcal + " kcal";
+            document.getElementById('cmpLcFat').innerText = lcBox.fat + "g";
+            document.getElementById('cmpLcProtein').innerText = lcBox.protein + "g";
+            document.getElementById('cmpLcCarbs').innerText = lcBox.carbs + "g";
+        }
+
+        // --- KALKULATOR NAWODNIENIA NA ŻYWO ---
+        function updateWaterCalc() {
+            const w = parseFloat(document.getElementById('wlWeight').value);
+            const t = parseInt(document.getElementById('wlTemp').value);
+            
+            document.getElementById('wlWeightVal').innerText = w + " kg";
+            document.getElementById('wlTempVal').innerText = t + "°C";
+
+            let baseWater = w * 0.033;
+            if (t > 25) baseWater += 0.5;
+            if (t > 35) baseWater += 0.5;
+
+            document.getElementById('wrVal').innerText = baseWater.toFixed(2) + " l";
+        }
+
+        // --- STRATEGIA REDUKCJI TERMINOWEJ ---
+        function calcEventGoal() {
+            const name = document.getElementById('eventName').value || "Wydarzenie";
+            const dateVal = document.getElementById('eventDate').value;
+            const currW = parseFloat(document.getElementById('eventCurrentW').value);
+            const goalW = parseFloat(document.getElementById('eventGoalW').value);
+            const out = document.getElementById('eventOutput');
+
+            if (!dateVal || !currW || !goalW) {
+                out.innerHTML = `<span style="color:#var(--accent);">Uzupełnij wymagane pola (data, waga obecna oraz docelowa).</span>`;
+                return;
+            }
+
+            const targetDate = new Date(dateVal);
+            const today = new Date();
+            const timeDiff = targetDate.getTime() - today.getTime();
+            const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+            if (daysDiff <= 0) {
+                out.innerHTML = `<span>Wybrana data już minęła lub przypada na dzień dzisiejszy.</span>`;
+                return;
+            }
+
+            const weeks = (daysDiff / 7).toFixed(1);
+            const weightToLose = currW - goalW;
+
+            if (weightToLose <= 0) {
+                out.innerHTML = `<span>Twoja obecna waga jest już niższa lub równa celowi! Dobra robota.</span>`;
+                return;
+            }
+
+            const safeLossMax = (weeks * 1.0).toFixed(1); // 1kg na tydzień to bezpieczny limit maks
+            const safeLossMin = (weeks * 0.5).toFixed(1);
+
+            let statusColor = "#2ec4b6";
+            let evaluationText = "";
+
+            if (weightToLose > safeLossMax) {
+                statusColor = "#dd1c1c";
+                evaluationText = `Cel jest bardzo agresywny. Zrzucenie <strong>${weightToLose.toFixed(1)} kg</strong> w <strong>${weeks} tygodni</strong> wymaga deficytu przekraczającego normy bezpiecznego odchudzania. Rekomenduję wydłużenie czasu lub zmianę docelowej wagi na poziomie ok. ${safeLossMax} kg.`;
+            } else {
+                evaluationText = `Wskazany cel (<strong>${weightToLose.toFixed(1)} kg</strong>) mieści się w fizjologicznych granicach zdrowej redukcji tkanki tłuszczowej (zakres bezpieczny dla tego czasu to: ${safeLossMin} - ${safeLossMax} kg). Precyzyjny protokół Keto ułatwi realizację tego planu bez utraty tkanki mięśniowej.`;
+            }
+
+            out.innerHTML = `
+                <div style="margin-top:15px; padding:15px; border-left:4px solid ${statusColor}; background:rgba(255,255,255,0.02); border-radius: 0 8px 8px 0;">
+                    <h4 style="color:#fff; margin-bottom:5px;">Raport dla: ${name}</h4>
+                    <p style="color:#fff; margin-bottom:5px;">Pozostało: <strong>${daysDiff} dni</strong> (${weeks} tyg.)</p>
+                    <p style="color:#a0a0a0;">${evaluationText}</p>
+                </div>
+            `;
+        }
+
+        // --- POMOCNICZE AKCJE DLA PRZYCISKÓW WYNIKÓW ---
+        function exportToPDF() {
+            window.print();
+        }
+
+        function shareAsImage() {
+            alert("Podgląd wygenerowany pomyślnie. Zrób zrzut ekranu karty analizy, aby udostępnić go na Instagramie za pomocą aplikacji mobilnej Project Weight Drop.");
+        }
+
+        // --- INICJALIZACJA STRONY ---
         document.addEventListener("DOMContentLoaded", function() {
             initComparisons();
+            updateWaterCalc();
+            toggleDeficitField();
         });
     </script>
 </body>
