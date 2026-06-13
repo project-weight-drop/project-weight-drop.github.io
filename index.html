@@ -59,22 +59,6 @@
             padding: 0 20px;
         }
 
-        /* Klasy dla placeholderów */
-        .image-placeholder {
-            background-color: #2a2a2a;
-            border: 2px dashed #444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-weight: 600;
-            text-align: center;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            min-height: 300px;
-            width: 100%;
-        }
-
         /* Przyciski (CTA) */
         .btn {
             display: inline-block;
@@ -295,12 +279,11 @@
             font-size: 1rem;
         }
 
-        /* Dodane style dla zdjęcia trenera */
         .trainer-image {
             width: 100%;
             height: auto;
             border-radius: var(--border-radius);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6); /* Cień premium */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             display: block;
         }
 
@@ -314,9 +297,18 @@
             margin-bottom: 40px;
         }
 
-        .meta-card .image-placeholder {
-            min-height: 250px;
+        .meta-image {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
             margin-bottom: 15px;
+            display: block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: var(--transition);
+        }
+
+        .meta-image:hover {
+            transform: scale(1.02);
         }
 
         .meta-card p {
@@ -425,7 +417,6 @@
            10. MEDIA QUERIES (DESKTOP)
         ========================================= */
         @media screen and (min-width: 768px) {
-            /* Nawigacja */
             .nav-links {
                 display: flex;
                 align-items: center;
@@ -435,12 +426,10 @@
                 display: none;
             }
             
-            /* Mobilne menu otwarte - klasa js */
             .nav-active {
                 display: flex !important;
             }
 
-            /* Sekcje */
             #hero h1 {
                 font-size: 3.5rem;
             }
@@ -582,19 +571,19 @@
                 
                 <div class="meta-grid">
                     <article class="meta-card">
-                        <div class="image-placeholder">FOTO 1: Wrzesień 2023</div>
+                        <img src="metamorfoza-start-wrzesien-2023.jpg" alt="Początek eksperymentu dietetycznego - wrzesień 2023" class="meta-image">
                         <p>Wrzesień 2023 – Start Eksperymentu. Moment podjęcia decyzji i celowego odpuszczenia treningów.</p>
                     </article>
                     <article class="meta-card">
-                        <div class="image-placeholder">FOTO 2: 16 Czerwca 2024</div>
+                        <img src="metamorfoza-szczyt-wagi-113kg.jpg" alt="Szczyt wagi w trakcie eksperymentu - 113 kg" class="meta-image">
                         <p>16 Czerwca 2024 – Szczyt Wagi (113 kg). Solidna masa, uczucie ciężkości, brak energii i realne problemy z codzienną mobilnością.</p>
                     </article>
                     <article class="meta-card">
-                        <div class="image-placeholder">FOTO 3: 6 Września 2024</div>
+                        <img src="metamorfoza-efekt-koncowy-99kg-keto.jpg" alt="Efekt końcowy diety po 2,5 miesiąca - 99 kg" class="meta-image">
                         <p>6 Września 2024 – Efekt Końcowy (99 kg). Zaledwie 2,5 miesiąca później. Wynik połączenia precyzyjnego Keto, Intermittent Fasting i treningu sylwetkowego.</p>
                     </article>
                     <article class="meta-card">
-                        <div class="image-placeholder">FOTO 4: Przed / Po</div>
+                        <img src="metamorfoza-przed-i-po-redukcja.jpg" alt="Kolaż porównawczy efektów przed i po redukcji" class="meta-image">
                         <p>Kolaż Porównawczy Przed / Po.</p>
                     </article>
                 </div>
@@ -651,7 +640,6 @@
     </footer>
 
     <script>
-        // Prosta obsługa menu mobilnego
         const burger = document.getElementById('burger');
         const navLinks = document.getElementById('nav-links');
         
@@ -659,7 +647,6 @@
             navLinks.classList.toggle('nav-mobile-active');
         });
 
-        // Zamknij menu po kliknięciu w link na urządzeniach mobilnych
         const links = document.querySelectorAll('.nav-links li a');
         links.forEach(link => {
             link.addEventListener('click', () => {
