@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Weight Drop | Odzyskaj kontrolę nad metabolizmem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* =========================================
+           1. ZMIENNE CSS & BAZOWE USTAWIENIA
+        ========================================= */
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #171717;
+            --bg-card-hover: #222222;
+            --accent: #FF6B00;
+            --accent-hover: #e65c00;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --border-radius: 12px;
+            --transition: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* Klasa pomocnicza na kontenery */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Klasy dla placeholderów */
+        .image-placeholder {
+            background-color: #2a2a2a;
+            border: 2px dashed #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-align: center;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            min-height: 300px;
+            width: 100%;
+        }
+
+        /* Przyciski (CTA) */
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: var(--text-main);
+            font-weight: 700;
+            padding: 16px 32px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
+        }
+
+        /* Typografia sekcji */
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .section-title span {
+            color: var(--accent);
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto 3rem auto;
+            font-size: 1.1rem;
+        }
+
+        section {
+            padding: 80px 0;
+        }
+
+        /* =========================================
+           2. NAWIGACJA (HEADER)
+        ========================================= */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid #222;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: none; /* Ukryte mobilnie wg zasady mobile-first */
+        }
+
+        .nav-links li a {
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .nav-links li a:hover {
+            color: var(--accent);
+        }
+
+        .burger {
+            display: block;
+            cursor: pointer;
+        }
+
+        .burger div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-main);
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        /* =========================================
+           3. HERO SECTION
+        ========================================= */
+        #hero {
+            padding-top: 150px;
+            padding-bottom: 100px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+        }
+
+        #hero h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* =========================================
+           4. DLACZEGO MY (GRID)
+        ========================================= */
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .feature-card {
+            background-color: var(--bg-card);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+            border: 1px solid #222;
+        }
+
+        .feature-card:hover {
+            background-color: var(--bg-card-hover);
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .feature-card h3 {
+            color: var(--accent);
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* =========================================
+           5. SPECJALIZACJE
+        ========================================= */
+        #specjalizacje {
+            background-color: #111;
+        }
+
+        .specializations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .spec-item {
+            background-color: var(--bg-card);
+            padding: 25px 30px;
+            border-left: 4px solid var(--accent);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .spec-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .spec-item p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* =========================================
+           6. O MNIE (SPLIT)
+        ========================================= */
+        .about-split {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .about-text p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        /* Dodane style dla zdjęcia trenera */
+        .trainer-image {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6); /* Cień premium */
+            display: block;
+        }
+
+        /* =========================================
+           7. METAMORFOZA
+        ========================================= */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .meta-card .image-placeholder {
+            min-height: 250px;
+            margin-bottom: 15px;
+        }
+
+        .meta-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .meta-summary {
+            background-color: var(--bg-card);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-style: italic;
+            border: 1px solid #333;
+            margin-bottom: 30px;
+        }
+
+        .meta-cta {
+            text-align: center;
+        }
+
+        /* =========================================
+           8. PROCES (OŚ CZASU / KROKI)
+        ========================================= */
+        #proces {
+            background-color: #111;
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .process-step {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius);
+            position: relative;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent);
+            color: var(--bg-dark);
+            font-weight: 800;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+        }
+
+        .process-step h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .process-step p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* =========================================
+           9. FOOTER
+        ========================================= */
+        footer {
+            background-color: #050505;
+            padding: 40px 0;
+            border-top: 1px solid #222;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-copy {
+            color: #666;
+            font-size: 0.8rem;
+        }
+
+        /* =========================================
+           10. MEDIA QUERIES (DESKTOP)
+        ========================================= */
+        @media screen and (min-width: 768px) {
+            /* Nawigacja */
+            .nav-links {
+                display: flex;
+                align-items: center;
+                gap: 30px;
+            }
+            .burger {
+                display: none;
+            }
+            
+            /* Mobilne menu otwarte - klasa js */
+            .nav-active {
+                display: flex !important;
+            }
+
+            /* Sekcje */
+            #hero h1 {
+                font-size: 3.5rem;
+            }
+
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .about-split {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .meta-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .process-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media screen and (min-width: 1024px) {
+            .features-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .meta-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* =========================================
+           11. MENU MOBILNE (MODAL STYLING)
+        ========================================= */
+        .nav-mobile-active {
+            display: flex !important;
+            flex-direction: column;
+            position: absolute;
+            top: 80px;
+            left: 0;
+            width: 100%;
+            background-color: var(--bg-card);
+            padding: 30px 20px;
+            gap: 20px;
+            border-bottom: 1px solid #333;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container navbar">
+            <div class="logo">Project<span>WeightDrop</span></div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#o-mnie">O mnie</a></li>
+                <li><a href="#proces">Jak wygląda współpraca?</a></li>
+                <li><a href="#specjalizacje">Certyfikaty</a></li>
+                <li><a href="#metamorfoza">Baza Wiedzy</a></li>
+                <li><a href="#hero" class="btn" style="padding: 10px 20px; font-size: 0.8rem;">Rozpocznij współpracę</a></li>
+            </ul>
+            <div class="burger" id="burger">
+                <div class="line1"></div>
+                <div class="line2"></div>
+                <div class="line3"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div class="container">
+                <h1>Odzyskaj kontrolę nad metabolizmem. Przestań się odchudzać, zacznij jeść dla zdrowia i sylwetki.</h1>
+                <p>Indywidualna współpraca dietetyczna online oparta na badaniach krwi, Twoich ulubionych produktach i nowoczesnej diecie Keto / Low Carb. Bez głodówek, bez zgadywania.</p>
+                <a href="#proces" class="btn">Rozpocznij współpracę (Miesiąc Opieki)</a>
+            </div>
+        </section>
+
+        <section id="dlaczego-my">
+            <div class="container">
+                <h2 class="section-title">Dlaczego <span>Project Weight Drop?</span></h2>
+                <div class="features-grid">
+                    <article class="feature-card">
+                        <h3>Fundament w badaniach krwi</h3>
+                        <p>Nie układam diety 'w ciemno'. Zanim rozpiszę Twój plan, analizuję Twoje wyniki badań laboratoryjnych, aby wykluczyć zagrożenia i idealnie uderzyć w przyczynę problemów metabolicznych.</p>
+                    </article>
+                    <article class="feature-card">
+                        <h3>100% Twoich smaków</h3>
+                        <p>Sam wskazujesz, co lubisz, a czego nie znosisz. Twój 7-dniowy plan (każdy dzień rozpisany w dwóch wariantach!) powstanie wyłącznie z dozwolonych produktów, które po prostu Ci smakują.</p>
+                    </article>
+                    <article class="feature-card">
+                        <h3>Matematyczna precyzja makroskładników</h3>
+                        <p>Każdy posiłek i produkt ma czarno na białym rozpisane kalorie, białka, węglowodany i tłuszcze. Wszystko dopasowane do Twojego dobowego zapotrzebowania i aktywności.</p>
+                    </article>
+                    <article class="feature-card">
+                        <h3>Darmowa aplikacja dla podopiecznych</h3>
+                        <p>Twój plan, lista zakupów, miejsce na wpisywanie wagi, obwodów i monitorowanie ciśnienia – wszystko masz zawsze przy sobie w swoim telefonie.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="specjalizacje">
+            <div class="container">
+                <h2 class="section-title">Moje <span>Specjalizacje</span></h2>
+                <div class="specializations-list">
+                    <article class="spec-item">
+                        <h4>Zaburzenia metaboliczne</h4>
+                        <p>Bezpieczne i skuteczne prowadzenie dietetyczne dla osób z insulinoopornością oraz cukrzyków (precyzyjnie niski indeks glikemiczny).</p>
+                    </article>
+                    <article class="spec-item">
+                        <h4>Optymalizacja Keto & Low Carb</h4>
+                        <p>Wprowadzenie w stan ketozy w teorii i praktyce z dbałością o Twoje samopoczucie i zdrowie.</p>
+                    </article>
+                    <article class="spec-item">
+                        <h4>Sporty sylwetkowe i kształtowanie sylwetki</h4>
+                        <p>Doświadczenie w przygotowaniu formy w oparciu o zaawansowaną periodyzację i suplementację celowaną.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section id="o-mnie">
+            <div class="container about-split">
+                <div class="about-text">
+                    <h2 class="section-title" style="text-align: left;">Kim jestem i dlaczego akurat <span>Keto / Low Carb?</span></h2>
+                    <p>Moja fascynacja dietą wysokotłuszczową i ketogeniczną nie zaczęła się wczoraj – moje zainteresowanie tym tematem sięga już lat 2000. W tamtych czasach w Polsce o 'Keto' niemal nikt jeszcze nie słyszał. Na naszym rodzimym rynku dieta wysokotłuszczowa była wtedy traktowana jako elitarna, niemal 'sekretna' odmiana żywienia, stosowana przez sportowców sylwetkowych do ekstremalnej redukcji i maksymalnego docięcia formy przed zawodami.</p>
+                    <p>Jako osoba zakorzeniona w sportach sylwetkowych, testowałem i zgłębiałem te mechanizmy od podszewki przez ponad dwie dekady. Dziś łączę to ponad 20-letnie, praktyczne doświadczenie z oficjalną, certyfikowaną wiedzą żywieniową i trenerską zdobywczą w Akademii Sportów Sylwetkowych pod okiem mistrza IFBB Professional League, Roberta Piotrkowicza. Specjalizuję się w dietetyce sportowej oraz żywieniu w chorobach metabolicznych (Level 6).</p>
+                </div>
+                <div class="about-image">
+                    <img src="mycert.jpg" alt="Trener Project Weight Drop na tle zdobytych certyfikatów" class="trainer-image">
+                </div>
+            </div>
+        </section>
+
+        <section id="metamorfoza">
+            <div class="container">
+                <h2 class="section-title">Eksperyment na własnym ciele: <br>Od 113 kg do formy życia w <span>2,5 miesiąca</span></h2>
+                <p class="section-subtitle">Celowo przytyłem do 113 kg, żeby udowodnić Ci jedną rzecz: Twój metabolizm da się naprawić.</p>
+                
+                <div class="meta-grid">
+                    <article class="meta-card">
+                        <div class="image-placeholder">FOTO 1: Wrzesień 2023</div>
+                        <p>Wrzesień 2023 – Start Eksperymentu. Moment podjęcia decyzji i celowego odpuszczenia treningów.</p>
+                    </article>
+                    <article class="meta-card">
+                        <div class="image-placeholder">FOTO 2: 16 Czerwca 2024</div>
+                        <p>16 Czerwca 2024 – Szczyt Wagi (113 kg). Solidna masa, uczucie ciężkości, brak energii i realne problemy z codzienną mobilnością.</p>
+                    </article>
+                    <article class="meta-card">
+                        <div class="image-placeholder">FOTO 3: 6 Września 2024</div>
+                        <p>6 Września 2024 – Efekt Końcowy (99 kg). Zaledwie 2,5 miesiąca później. Wynik połączenia precyzyjnego Keto, Intermittent Fasting i treningu sylwetkowego.</p>
+                    </article>
+                    <article class="meta-card">
+                        <div class="image-placeholder">FOTO 4: Przed / Po</div>
+                        <p>Kolaż Porównawczy Przed / Po.</p>
+                    </article>
+                </div>
+
+                <div class="meta-summary">
+                    <p>Dlaczego to zrobiłem? Ponieważ jako Twój doradca żywieniowy nie opieram się na suchej teorii z podręczników. Przeszedłem tę drogę na własnej skórze. W Project Weight Drop dostajesz dokładnie ten sam system, narzędzia i moją aplikację mobilną, które pozwoliły mi kontrolować parametry i wrócić do formy w rekordowym tempie.</p>
+                </div>
+                <div class="meta-cta">
+                    <a href="#proces" class="btn">Chcę zacząć swoją transformację</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="proces">
+            <div class="container">
+                <h2 class="section-title">Jak wygląda proces <span>współpracy?</span></h2>
+                <div class="process-grid">
+                    <article class="process-step">
+                        <div class="step-number">1</div>
+                        <h4>Wywiad i Badania</h4>
+                        <p>Wypełniasz szczegółowy kwestionariusz, podajesz listę swoich preferencji smakowych i przesyłasz mi aktualne wyniki badań krwi.</p>
+                    </article>
+                    <article class="process-step">
+                        <div class="step-number">2</div>
+                        <h4>Analiza i Wyliczenia</h4>
+                        <p>Analizuję Twoje zdrowie, obliczam dokładne zapotrzebowanie kaloryczne oraz makroskładniki pod Twój styl życia i cele sylwetkowe.</p>
+                    </article>
+                    <article class="process-step">
+                        <div class="step-number">3</div>
+                        <h4>Odbiór Planu i Aplikacji</h4>
+                        <p>Otrzymujesz skrojony pod Ciebie, urozmaicony plan żywieniowy wraz z rozpisaną suplementacją oraz dostęp do mojej darmowej aplikacji mobilnej.</p>
+                    </article>
+                    <article class="process-step">
+                        <div class="step-number">4</div>
+                        <h4>Stały Monitoring (Miesięczna Opieka)</h4>
+                        <p>Przez cały miesiąc raportujesz swoje postępy (waga, obwody, ciśnienie) w aplikacji. Jesteśmy w stałym kontakcie, reaguję na zmiany i modyfikuję dietę.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="logo">Project<span>WeightDrop</span></div>
+            <div class="footer-links">
+                <a href="#">Facebook</a>
+                <a href="#">Instagram</a>
+                <a href="#">Polityka Prywatności</a>
+                <a href="#">Regulamin</a>
+            </div>
+            <p class="footer-copy">© 2026 Project Weight Drop. Wszystkie prawa zastrzeżone.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Prosta obsługa menu mobilnego
+        const burger = document.getElementById('burger');
+        const navLinks = document.getElementById('nav-links');
+        
+        burger.addEventListener('click', () => {
+            navLinks.classList.toggle('nav-mobile-active');
+        });
+
+        // Zamknij menu po kliknięciu w link na urządzeniach mobilnych
+        const links = document.querySelectorAll('.nav-links li a');
+        links.forEach(link => {
+            link.addEventListener('click', () => {
+                if(navLinks.classList.contains('nav-mobile-active')) {
+                    navLinks.classList.remove('nav-mobile-active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
