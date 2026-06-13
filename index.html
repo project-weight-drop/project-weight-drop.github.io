@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Odzyskaj kontrolę nad metabolizmem z Project Weight Drop. Skuteczna dieta Keto i Low Carb, stała opieka i plany dopasowane do Ciebie.">
     <title>Project Weight Drop | Odzyskaj kontrolę nad metabolizmem</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -226,7 +227,6 @@
             background-attachment: fixed;
         }
 
-        /* Liczniki zaufania w sekcji Hero */
         .reviews-stats-bar {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -259,7 +259,6 @@
             letter-spacing: 1px;
         }
 
-        /* Styl pulsującej zielonej kropki "Live" */
         .live-dot {
             display: inline-block;
             width: 8px;
@@ -459,7 +458,6 @@
             font-size: 0.95rem;
         }
 
-        /* Galeria Certyfikatów */
         .cert-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -486,7 +484,7 @@
         }
 
         /* =========================================
-           7. O MNIE (SPLIT)
+           7. O MNIE (SPLIT & SLIDER)
         ========================================= */
         #o-mnie {
             background-color: #111;
@@ -512,13 +510,84 @@
             margin-bottom: 10px;
         }
 
-        .trainer-image {
+        /* SLIDER PRZED / PO (2010 vs 2025) */
+        .img-comp-container {
+            position: relative;
+            height: 600px; 
             width: 100%;
-            height: auto;
             border-radius: var(--border-radius);
+            overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            display: block;
+            border: 1px solid #333;
         }
+
+        @media screen and (max-width: 768px) {
+            .img-comp-container {
+                height: 450px; 
+            }
+        }
+
+        .img-comp-img {
+            position: absolute;
+            width: auto;
+            height: auto;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+
+        .img-comp-img img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center; 
+        }
+
+        .img-comp-overlay {
+            width: 50%;
+            border-right: 4px solid var(--accent);
+            z-index: 2;
+        }
+
+        .img-comp-slider-button {
+            position: absolute;
+            z-index: 3;
+            cursor: ew-resize;
+            width: 46px;
+            height: 46px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px rgba(0,0,0,0.8);
+            font-weight: 800;
+            font-size: 20px;
+            border: 3px solid #fff;
+        }
+
+        .img-comp-label {
+            position: absolute;
+            top: 15px;
+            background: rgba(10, 10, 10, 0.85);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            z-index: 4;
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .img-comp-label.top-left { left: 15px; }
+        .img-comp-label.top-right { right: 15px; }
 
         /* =========================================
            8. METAMORFOZA
@@ -727,7 +796,7 @@
                 <li><a href="https://drive.google.com/file/d/17xemzNac1Xp8B9xu5xRWk6uPkvgZYdlz/view?usp=sharing" target="_blank" class="btn-outline" style="padding: 10px 20px; font-size: 0.8rem;">Pobierz app</a></li>
                 <li><a href="#proces" class="btn" style="padding: 10px 20px; font-size: 0.8rem;">Zamów plan</a></li>
             </ul>
-            <div class="burger" id="burger">
+            <div class="burger" id="burger" aria-label="Otwórz menu">
                 <div class="line1"></div>
                 <div class="line2"></div>
                 <div class="line3"></div>
@@ -797,15 +866,24 @@
         <section id="o-mnie">
             <div class="container about-split">
                 <div class="about-text">
-                    <h2 class="section-title" style="text-align: left;">Kim jestem i dlaczego akurat <span>Keto / Low Carb?</span></h2>
-                    <p>Moja fascynacja dietą wysokotłuszczową i ketogeniczną nie zaczęła się wczoraj – zgłębiam ten temat w teorii i praktyce od lat 2000. Dziś łączę ponad dwudziestoletnie doświadczenie z oficjalną, certyfikowaną wiedzą żywieniową i trenerską zdobytą w Akademii Sportów Sylwetkowych pod okiem mistrza IFBB PRO, Roberta Piotrkowicza. Specjalizuję się w dietetyce sportowej oraz żywieniu w chorobach metabolicznych (Level 6).</p>
+                    <h2 class="section-title" style="text-align: left;">2010: Szef Kuchni.<br><span>2025: Twój Trener i Szef w jednym.</span></h2>
+                    <p>Moja fascynacja dietą wysokotłuszczową i ketogeniczną nie zaczęła się wczoraj – zgłębiam ten temat w teorii i praktyce od lat 2000. Dziś łączę ponad dwudziestoletnie doświadczenie z oficjalną, certyfikowaną wiedzą żywieniową i trenerską zdobytą w Akademii Sportów Sylwetkowych.</p>
                     
-                    <h3>Szef Kuchni z 20-letnim doświadczeniem</h3>
-                    <p>Moja największa przewaga? Nie rozpisuję "jałowych" i nudnych diet, ponieważ z zawodu jestem profesjonalnym kucharzem. Moja kulinarna droga rozpoczęła się w 2005 roku w Irlandii, gdzie budowałem warsztat w renomowanych obiektach, takich jak 4-gwiazdkowy Meadowlands Hotel czy Earl of Desmond Hotel w Tralee. W latach 2008-2010 doskonaliłem umiejętności w prestiżowym The Malton Hotel (obecnie 4-gwiazdkowy Great Southern Killarney).</p>
-                    <p>Od 2010 roku nieprzerwanie pełnię funkcję Head Chefa, a w 2016 roku objąłem również stanowisko Catering Managera. Połączenie sportu, zaawansowanej dietetyki z kunsztem Szefa Kuchni sprawia, że Twoje posiłki Keto i Low Carb będą nie tylko perfekcyjnie wyliczone matematycznie, ale przede wszystkim – będą smakować jak dania z doskonałej restauracji.</p>
+                    <h3>Ewolucja na własnym ciele</h3>
+                    <p>W 2010 roku opanowałem do perfekcji smak jako Head Chef w renomowanych hotelach (m.in. The Malton Hotel). Przez kolejne 15 lat opanowałem do perfekcji ludzki metabolizm. Złamałem system, łącząc kunszt Szefa Kuchni z precyzyjną dietą Keto i Low Carb.</p>
+                    <p>Dziś udowadniam, że nie musisz wybierać między formą a smakiem. Na Twoim talerzu ląduje jedno i drugie – matematycznie wyliczone posiłki, które smakują jak z doskonałej restauracji.</p>
                 </div>
-                <div class="about-image">
-                    <img src="trener-przemyslaw-wosik.jpg" alt="Trener Przemysław Wosik na tle certyfikatów Project Weight Drop" class="trainer-image">
+                
+                <div class="img-comp-container">
+                    <div class="img-comp-img">
+                        <img src="kucharz-trener-2025.jpg" alt="Przemysław Wosik w 2025 roku jako ekspert od sylwetki">
+                        <div class="img-comp-label top-right">2025</div>
+                    </div>
+                    <div class="img-comp-img img-comp-overlay">
+                        <img src="kucharz-2010.jpg" alt="Przemysław Wosik w 2010 roku jako Szef Kuchni">
+                        <div class="img-comp-label top-left">2010</div>
+                    </div>
+                    <div class="img-comp-slider-button">↔</div>
                 </div>
             </div>
         </section>
@@ -836,6 +914,12 @@
                     <img src="certyfikat-dieta-anaboliczna-redukcja.jpg" alt="Certyfikat Dieta Anaboliczna i Redukcja" class="cert-image">
                     <img src="certyfikat-dieta-ketogeniczna-high-fat.jpg" alt="Certyfikat High Fat and Ketogenic Diet" class="cert-image">
                     <img src="certyfikat-trener-personalny-pro.jpg" alt="Certyfikat Personal Trainer PRO" class="cert-image">
+                </div>
+
+                <div class="trainer-bottom-summary" style="margin-top: 80px; text-align: center;">
+                    <h3 style="font-size: 1.8rem; margin-bottom: 30px;">Certyfikowana wiedza w <span style="color: var(--accent);">praktyce</span></h3>
+                    <img src="trener-przemyslaw-wosik.jpg" alt="Trener i Dietetyk Przemysław Wosik" style="width: 100%; max-width: 500px; height: auto; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin: 0 auto; display: block; border: 1px solid #333;">
+                    <p style="color: var(--text-muted); margin-top: 25px; max-width: 800px; margin-left: auto; margin-right: auto; font-size: 1.05rem;">Zdobytą wiedzę najpierw testuję na sobie, a dopiero potem przekładam na plany treningowe i jadłospisy moich podopiecznych. Gwarantuję Ci system, który realnie działa.</p>
                 </div>
             </div>
         </section>
@@ -1091,30 +1175,90 @@
             });
         });
 
-        // --- REALISTYCZNY LICZNIK AKTUALNYCH UŻYTKOWNIKÓW (10 - 40) ---
+        // --- REALISTYCZNY LICZNIK AKTUALNYCH UŻYTKOWNIKÓW ---
         const liveUsersSpan = document.getElementById('live-users');
         if (liveUsersSpan) {
             setInterval(() => {
-                // Wyciągamy samą liczbę z tekstu
                 let currentText = liveUsersSpan.innerText;
                 let currentUsers = parseInt(currentText.replace(/[^0-9]/g, '')) || 15;
-                
-                // Losujemy zmianę o lekki krok: -2, -1, 0, 1, lub 2 osoby
                 const change = Math.floor(Math.random() * 5) - 2;
                 let newUsers = currentUsers + change;
                 
-                // Twarde granice: trzymamy się przedziału od 10 do 40 osób
-                if (newUsers < 10) {
-                    newUsers = 10 + Math.floor(Math.random() * 4); // Odbijamy w górę
-                }
-                if (newUsers > 40) {
-                    newUsers = 40 - Math.floor(Math.random() * 4); // Odbijamy w dół
+                if (newUsers < 10) newUsers = 10 + Math.floor(Math.random() * 4);
+                if (newUsers > 40) newUsers = 40 - Math.floor(Math.random() * 4);
+                
+                liveUsersSpan.innerHTML = `<span class="live-dot"></span>${newUsers} osób`;
+            }, 4000);
+        }
+
+        // --- LOGIKA SUWAKA PRZED I PO (IMAGE COMPARISON) ---
+        function initComparisons() {
+            var overlays = document.getElementsByClassName("img-comp-overlay");
+            for (var i = 0; i < overlays.length; i++) {
+                compareImages(overlays[i]);
+            }
+
+            function compareImages(img) {
+                var slider, clicked = 0, w, h;
+                w = img.offsetWidth;
+                h = img.offsetHeight;
+                img.style.width = (w / 2) + "px";
+
+                slider = img.parentElement.querySelector(".img-comp-slider-button");
+                slider.style.left = (w / 2) + "px";
+
+                // Nasłuchiwanie myszki i dotyku
+                slider.addEventListener("mousedown", slideReady);
+                window.addEventListener("mouseup", slideFinish);
+                slider.addEventListener("touchstart", slideReady, {passive: false});
+                window.addEventListener("touchend", slideFinish);
+
+                function slideReady(e) {
+                    e.preventDefault();
+                    clicked = 1;
+                    window.addEventListener("mousemove", slideMove);
+                    window.addEventListener("touchmove", slideMove, {passive: false});
                 }
                 
-                // Aktualizujemy kod HTML, zostawiając pulsującą kropkę na miejscu
-                liveUsersSpan.innerHTML = `<span class="live-dot"></span>${newUsers} osób`;
-            }, 4000); // Aktualizacja co 4 sekundy
+                function slideFinish() {
+                    clicked = 0;
+                }
+                
+                function slideMove(e) {
+                    var pos;
+                    if (clicked == 0) return false;
+                    pos = getCursorPos(e);
+                    if (pos < 0) pos = 0;
+                    if (pos > w) pos = w;
+                    slide(pos);
+                }
+                
+                function getCursorPos(e) {
+                    var a, x = 0;
+                    e = (e.changedTouches) ? e.changedTouches[0] : e;
+                    a = img.getBoundingClientRect();
+                    x = e.pageX - a.left;
+                    x = x - window.pageXOffset;
+                    return x;
+                }
+                
+                function slide(x) {
+                    img.style.width = x + "px";
+                    slider.style.left = img.offsetWidth + "px";
+                }
+                
+                window.addEventListener('resize', function() {
+                    w = img.parentElement.offsetWidth;
+                    img.style.width = (w / 2) + "px";
+                    slider.style.left = (w / 2) + "px";
+                });
+            }
         }
+        
+        // Inicjalizacja skryptu po załadowaniu drzewa DOM
+        document.addEventListener("DOMContentLoaded", function() {
+            initComparisons();
+        });
     </script>
 </body>
 </html>
