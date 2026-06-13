@@ -74,12 +74,37 @@
             cursor: pointer;
             transition: var(--transition);
             box-shadow: 0 4px 15px rgba(255, 107, 0, 0.3);
+            text-align: center;
         }
 
         .btn:hover {
             background-color: var(--accent-hover);
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
+        }
+
+        /* Przycisk konturowy (np. Pobierz app) */
+        .btn-outline {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--text-main);
+            font-weight: 700;
+            padding: 14px 30px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--accent);
+            color: var(--text-main);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.4);
         }
 
         /* Duży przycisk CTA w Hero */
@@ -573,6 +598,8 @@
         .footer-links {
             display: flex;
             gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .footer-links a {
@@ -597,7 +624,7 @@
             .nav-links {
                 display: flex;
                 align-items: center;
-                gap: 30px;
+                gap: 25px;
             }
             .burger {
                 display: none;
@@ -676,7 +703,9 @@
                 <li><a href="#proces">Współpraca</a></li>
                 <li><a href="#specjalizacje">Certyfikaty</a></li>
                 <li><a href="#opinie">Opinie</a></li>
-                <li><a href="#hero" class="btn" style="padding: 10px 20px; font-size: 0.8rem;">Zamów plan</a></li>
+                <li><a href="#">Blog</a></li>
+                <li><a href="https://drive.google.com/file/d/17xemzNac1Xp8B9xu5xRWk6uPkvgZYdlz/view?usp=sharing" target="_blank" class="btn-outline" style="padding: 10px 20px; font-size: 0.8rem;">Pobierz app</a></li>
+                <li><a href="#proces" class="btn" style="padding: 10px 20px; font-size: 0.8rem;">Zamów plan</a></li>
             </ul>
             <div class="burger" id="burger">
                 <div class="line1"></div>
@@ -828,7 +857,7 @@
                 </div>
                 
                 <div style="text-align: center; margin-top: 40px;">
-                    <a href="#" class="btn btn-large">Zamów plan dietetyczny 99€</a>
+                    <a href="#proces" class="btn btn-large">Zamów plan dietetyczny 99€</a>
                     <p style="margin-top: 15px; color: var(--text-muted); font-size: 0.9rem;">Rozpocznij miesiąc pełnej opieki dietetycznej</p>
                 </div>
             </div>
@@ -850,7 +879,7 @@
                             <span class="review-tag">5 miesięcy</span>
                             <span class="review-tag keto">Keto</span>
                         </div>
-                        <p class="review-text">"Pan Przemysław zrozumiał mój tryb życia i ułożył plan, który pasował do mojej kuchni. Po 5 miesią জ্ঞ jestem w miejscu, o którym marzyłam."</p>
+                        <p class="review-text">"Pan Przemysław zrozumiał mój tryb życia i ułożył plan, który pasował do mojej kuchni. Po 5 miesiącach jestem w miejscu, o którym marzyłam."</p>
                     </div>
 
                     <div class="review-card">
@@ -1011,6 +1040,10 @@
         <div class="container footer-content">
             <div class="logo">Project<span>WeightDrop</span></div>
             <div class="footer-links">
+                <a href="#o-mnie">O mnie</a>
+                <a href="#proces">Współpraca</a>
+                <a href="#opinie">Opinie</a>
+                <a href="#">Blog</a>
                 <a href="#">Facebook</a>
                 <a href="#">Instagram</a>
                 <a href="#">Polityka Prywatności</a>
