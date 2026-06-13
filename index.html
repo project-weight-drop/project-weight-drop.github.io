@@ -335,7 +335,7 @@
         }
 
         /* =========================================
-           5. O MNIE & OŚ CZASU KUCHARZA
+           5. O MNIE (POPRAWIONY UKŁAD I OŚ CZASU)
         ========================================= */
         #o-mnie {
             background-color: #111;
@@ -345,7 +345,7 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 40px;
-            align-items: center;
+            align-items: flex-start; /* Zmienione na flex-start dla lepszego wyrównania kolumn */
         }
 
         .about-text p {
@@ -367,10 +367,12 @@
             border-radius: var(--border-radius);
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             display: block;
+            margin-bottom: 30px; /* Margines pod zdjęciem trenera */
         }
 
+        /* Oś czasu przeniesiona do prawej kolumny */
         .chef-timeline {
-            margin-top: 30px;
+            width: 100%;
         }
 
         .chef-timeline h4 {
@@ -379,6 +381,7 @@
             margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-align: center;
         }
 
         .chef-grid {
@@ -790,7 +793,7 @@
                 <div class="features-grid">
                     <article class="feature-card">
                         <h3>Fundament w badaniach krwi</h3>
-                        <p>Nie układam diety 'w ciemno'. Zanim rozpiszę Twój plan, analizuję Twoje wyniki badań laboratoryjnych, aby idealnie uderzyć w przyczynę problemów metabolicznych.</p>
+                        <p>Nie układam diety 'w ciemno'. Zanim rozpiszę Twój plan, analizuję Twoje wyniki badań laboratoryjnych, aby wykluczyć zagrożenia i idealnie uderzyć w przyczynę problemów metabolicznych.</p>
                     </article>
                     <article class="feature-card">
                         <h3>100% Twoich smaków</h3>
@@ -817,23 +820,24 @@
                     <h3>Szef Kuchni z 20-letnim doświadczeniem</h3>
                     <p>Moja największa przewaga? Nie rozpisuję "jałowych" i nudnych diet, ponieważ z zawodu jestem profesjonalnym kucharzem. Moja kulinarna droga rozpoczęła się w 2005 roku w Irlandii, gdzie budowałem warsztat w renomowanych obiektach, takich jak 4-gwiazdkowy Meadowlands Hotel czy Earl of Desmond Hotel w Tralee. W latach 2008-2010 doskonaliłem umiejętności w prestiżowym The Malton Hotel (obecnie 4-gwiazdkowy Great Southern Killarney).</p>
                     <p>Od 2010 roku nieprzerwanie pełnię funkcję Head Chefa, a w 2016 roku objąłem również stanowisko Catering Managera. Połączenie sportu, zaawansowanej dietetyki z kunsztem Szefa Kuchni sprawia, że Twoje posiłki Keto i Low Carb będą nie tylko perfekcyjnie wyliczone matematycznie, ale przede wszystkim – będą smakować jak dania z doskonałej restauracji.</p>
+                </div>
+                
+                <div class="about-image">
+                    <img src="trener-przemyslaw-wosik.jpg" alt="Trener Przemysław Wosik na tle certyfikatów Project Weight Drop" class="trainer-image">
                     
                     <div class="chef-timeline">
                         <h4>Moja kulinarna ewolucja:</h4>
                         <div class="chef-grid">
                             <div class="chef-box">
-                                <img src="kucharz-2010.jpg" alt="Szef Kuchni Przemysław Wosik w 2010 roku">
-                                <span>Rok 2010: Head Chef</span>
-                            </div>
-                            <div class="chef-box">
                                 <img src="kucharz-trener-2025.jpg" alt="Szef Kuchni i Trener Dietetyk Przemysław Wosik w 2025 roku">
                                 <span>Rok 2025: Szef & Trener</span>
                             </div>
+                            <div class="chef-box">
+                                <img src="kucharz-2010.jpg" alt="Szef Kuchni Przemysław Wosik w 2010 roku">
+                                <span>Rok 2010: Head Chef</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="about-image">
-                    <img src="trener-przemyslaw-wosik.jpg" alt="Trener Przemysław Wosik na tle certyfikatów Project Weight Drop" class="trainer-image">
                 </div>
             </div>
         </section>
@@ -1110,6 +1114,7 @@
             <div class="footer-links">
                 <a href="#o-mnie">O mnie</a>
                 <a href="#proces">Współpraca</a>
+                <a href="#specjalizacje">Certyfikaty</a>
                 <a href="#opinie">Opinie</a>
                 <a href="#">Blog</a>
                 <a href="#">Facebook</a>
