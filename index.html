@@ -51,7 +51,6 @@
             list-style: none;
         }
 
-        /* Klasa pomocnicza na kontenery */
         .container {
             width: 100%;
             max-width: 1200px;
@@ -83,7 +82,6 @@
             box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
         }
 
-        /* Przycisk konturowy */
         .btn-outline {
             display: inline-block;
             background-color: transparent;
@@ -107,7 +105,6 @@
             box-shadow: 0 6px 20px rgba(255, 107, 0, 0.4);
         }
 
-        /* Duży przycisk CTA w Hero */
         .btn-large {
             font-size: 1.1rem;
             padding: 20px 40px;
@@ -121,7 +118,6 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 107, 0, 0); }
         }
 
-        /* Typografia sekcji */
         .section-title {
             font-size: 2.2rem;
             font-weight: 800;
@@ -204,7 +200,7 @@
         }
 
         /* =========================================
-           3. HERO SECTION & STRIP STATYSTYK
+           3. HERO SECTION
         ========================================= */
         #hero {
             padding-top: 130px;
@@ -226,12 +222,40 @@
             background-attachment: fixed;
         }
 
+        #hero h1 {
+            font-size: 2.6rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-benefits {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .hero-benefits span {
+            background-color: rgba(255, 107, 0, 0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 107, 0, 0.3);
+        }
+
+        /* Liczniki zaufania (Przeniesione na sam dół sekcji współpracy) */
         .reviews-stats-bar {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
             max-width: 900px;
-            margin: 0 auto 40px auto;
+            margin: 50px auto 0 auto;
             text-align: center;
         }
 
@@ -276,50 +300,6 @@
             100% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0); }
         }
 
-        #hero h1 {
-            font-size: 2.6rem;
-            font-weight: 800;
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-            max-width: 1000px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero-benefits {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 3rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #fff;
-        }
-
-        @media screen and (min-width: 768px) {
-            .hero-benefits {
-                flex-direction: row;
-                justify-content: center;
-                gap: 30px;
-            }
-            .reviews-stats-bar {
-                grid-template-columns: repeat(4, 1fr);
-            }
-            .stat-number {
-                font-size: 1.8rem;
-            }
-            #hero h1 {
-                font-size: 3.5rem;
-            }
-        }
-
-        .hero-benefits span {
-            background-color: rgba(255, 107, 0, 0.1);
-            padding: 10px 20px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 107, 0, 0.3);
-        }
-
         /* =========================================
            4. DLACZEGO MY (GRID)
         ========================================= */
@@ -355,7 +335,221 @@
         }
 
         /* =========================================
-           5. OPINIE KLIENTÓW
+           5. O MNIE & OŚ CZASU KUCHARZA
+        ========================================= */
+        #o-mnie {
+            background-color: #111;
+        }
+
+        .about-split {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .about-text p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        
+        .about-text h3 {
+            color: var(--accent);
+            font-size: 1.3rem;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        .trainer-image {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            display: block;
+        }
+
+        /* Nowa sekcja na 2 zdjęcia z osi czasu */
+        .chef-timeline {
+            margin-top: 30px;
+        }
+
+        .chef-timeline h4 {
+            font-size: 1.1rem;
+            color: var(--text-main);
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .chef-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .chef-box {
+            background-color: var(--bg-card);
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #222;
+            text-align: center;
+        }
+
+        .chef-box img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .chef-box span {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        /* =========================================
+           6. SPECJALIZACJE & CERTYFIKATY
+        ========================================= */
+        .specializations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+        }
+
+        .spec-item {
+            background-color: var(--bg-card);
+            padding: 25px 30px;
+            border-left: 4px solid var(--accent);
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+
+        .spec-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .spec-item p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .cert-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .cert-image {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            border: 2px solid #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+            cursor: crosshair;
+        }
+
+        .cert-image:hover {
+            transform: scale(1.05);
+            border-color: var(--accent);
+            z-index: 10;
+            position: relative;
+        }
+
+        /* =========================================
+           7. METAMORFOZA
+        ========================================= */
+        .meta-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .meta-image {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            margin-bottom: 15px;
+            display: block;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: var(--transition);
+        }
+
+        .meta-image:hover {
+            transform: scale(1.02);
+        }
+
+        .meta-card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .meta-summary {
+            background-color: var(--bg-card);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            font-style: italic;
+            border: 1px solid #333;
+            margin-bottom: 30px;
+        }
+
+        /* =========================================
+           8. PROCES (KROKI WSPÓŁPRACY)
+        ========================================= */
+        #proces {
+            background-color: #111;
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .process-step {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: var(--bg-card);
+            border-radius: var(--border-radius);
+            position: relative;
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent);
+            color: var(--bg-dark);
+            font-weight: 800;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+        }
+
+        .process-step h4 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .process-step p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* =========================================
+           9. OPINIE KLIENTÓW
         ========================================= */
         #opinie {
             background-color: var(--bg-dark);
@@ -430,225 +624,6 @@
         }
 
         /* =========================================
-           6. SPECJALIZACJE & CERTYFIKATY
-        ========================================= */
-        .specializations-list {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            max-width: 800px;
-            margin: 0 auto 40px auto;
-        }
-
-        .spec-item {
-            background-color: var(--bg-card);
-            padding: 25px 30px;
-            border-left: 4px solid var(--accent);
-            border-radius: 0 var(--border-radius) var(--border-radius) 0;
-        }
-
-        .spec-item h4 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-
-        .spec-item p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        .cert-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .cert-image {
-            width: 100%;
-            height: auto;
-            border-radius: 6px;
-            border: 2px solid #333;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            transition: all 0.3s ease;
-            cursor: crosshair;
-        }
-
-        .cert-image:hover {
-            transform: scale(1.05);
-            border-color: var(--accent);
-            z-index: 10;
-            position: relative;
-        }
-
-        /* =========================================
-           7. O MNIE (Wzbogacona sekcja graficzna)
-        ========================================= */
-        #o-mnie {
-            background-color: #111;
-        }
-
-        .about-split {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 40px;
-            align-items: start;
-        }
-
-        .about-text p {
-            color: var(--text-muted);
-            margin-bottom: 15px;
-            font-size: 1rem;
-        }
-        
-        .about-text h3 {
-            color: var(--accent);
-            font-size: 1.3rem;
-            margin-top: 25px;
-            margin-bottom: 10px;
-        }
-
-        /* Nowa minigaleria kulinarno-treningowa */
-        .about-images-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .chef-history-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 5px;
-        }
-
-        .chef-photo-card {
-            background-color: var(--bg-card);
-            padding: 10px;
-            border-radius: var(--border-radius);
-            border: 1px solid #222;
-        }
-
-        .chef-photo-card img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            border-radius: 8px;
-            display: block;
-            margin-bottom: 8px;
-            transition: var(--transition);
-        }
-
-        .chef-photo-card img:hover {
-            transform: scale(1.03);
-        }
-
-        .chef-photo-card span {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--accent);
-            font-weight: 700;
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .trainer-image {
-            width: 100%;
-            height: auto;
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-            display: block;
-        }
-
-        /* =========================================
-           8. METAMORFOZA
-        ========================================= */
-        .meta-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .meta-image {
-            width: 100%;
-            height: auto;
-            border-radius: var(--border-radius);
-            margin-bottom: 15px;
-            display: block;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            transition: var(--transition);
-        }
-
-        .meta-image:hover {
-            transform: scale(1.02);
-        }
-
-        .meta-card p {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            text-align: center;
-        }
-
-        .meta-summary {
-            background-color: var(--bg-card);
-            padding: 30px;
-            border-radius: var(--border-radius);
-            text-align: center;
-            font-style: italic;
-            border: 1px solid #333;
-            margin-bottom: 30px;
-        }
-
-        /* =========================================
-           9. PROCES (OŚ CZASU / KROKI)
-        ========================================= */
-        #proces {
-            background-color: #111;
-        }
-
-        .process-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .process-step {
-            text-align: center;
-            padding: 30px 20px;
-            background-color: var(--bg-card);
-            border-radius: var(--border-radius);
-            position: relative;
-        }
-
-        .step-number {
-            width: 50px;
-            height: 50px;
-            background-color: var(--accent);
-            color: var(--bg-dark);
-            font-weight: 800;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            margin: 0 auto 20px auto;
-        }
-
-        .process-step h4 {
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-        }
-
-        .process-step p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
-
-        /* =========================================
            10. FOOTER
         ========================================= */
         footer {
@@ -709,7 +684,7 @@
             }
 
             .about-split {
-                grid-template-columns: 1.2fr 1fr;
+                grid-template-columns: 1fr 1fr;
             }
 
             .meta-grid {
@@ -722,6 +697,24 @@
 
             .cert-grid {
                 grid-template-columns: repeat(4, 1fr);
+            }
+
+            .reviews-stats-bar {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .stat-number {
+                font-size: 1.8rem;
+            }
+
+            #hero h1 {
+                font-size: 3.5rem;
+            }
+            
+            .hero-benefits {
+                flex-direction: row;
+                justify-content: center;
+                gap: 30px;
             }
         }
 
@@ -780,26 +773,6 @@
     <main>
         <section id="hero">
             <div class="container">
-                
-                <div class="reviews-stats-bar">
-                    <div class="stat-item">
-                        <span class="stat-number">248</span>
-                        <span class="stat-label">Zadowolonych klientów</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">5.0 / 5.0</span>
-                        <span class="stars">★★★★★</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">Ponad 3 lata</span>
-                        <span class="stat-label">Doświadczenia</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="live-users"><span class="live-dot"></span>15 osób</span>
-                        <span class="stat-label">Korzysta w tej chwili</span>
-                    </div>
-                </div>
-
                 <h1>Odzyskaj kontrolę nad metabolizmem. Przestań się odchudzać, zacznij jeść.</h1>
                 
                 <div class="hero-benefits">
@@ -845,21 +818,23 @@
                     <h3>Szef Kuchni z 20-letnim doświadczeniem</h3>
                     <p>Moja największa przewaga? Nie rozpisuję "jałowych" i nudnych diet, ponieważ z zawodu jestem profesjonalnym kucharzem. Moja kulinarna droga rozpoczęła się w 2005 roku w Irlandii, gdzie budowałem warsztat w renomowanych obiektach, takich jak 4-gwiazdkowy Meadowlands Hotel czy Earl of Desmond Hotel w Tralee. W latach 2008-2010 doskonaliłem umiejętności w prestiżowym The Malton Hotel (obecnie 4-gwiazdkowy Great Southern Killarney).</p>
                     <p>Od 2010 roku nieprzerwanie pełnię funkcję Head Chefa, a w 2016 roku objąłem również stanowisko Catering Managera. Połączenie sportu, zaawansowanej dietetyki z kunsztem Szefa Kuchni sprawia, że Twoje posiłki Keto i Low Carb będą nie tylko perfekcyjnie wyliczone matematycznie, ale przede wszystkim – będą smakować jak dania z doskonałej restauracji.</p>
-                </div>
-                
-                <div class="about-images-wrapper">
-                    <img src="trener-przemyslaw-wosik.jpg" alt="Trener Przemysław Wosik na tle certyfikatów Project Weight Drop" class="trainer-image">
                     
-                    <div class="chef-history-grid">
-                        <div class="chef-photo-card">
-                            <img src="kucharz-2010.jpg" alt="Przemysław Wosik jako szef kuchni w 2010 roku">
-                            <span>Pasja od 2010</span>
-                        </div>
-                        <div class="chef-photo-card">
-                            <img src="kucharz-trener-2025.jpg" alt="Przemysław Wosik - Kucharz i Trener Personalny w 2025 roku">
-                            <span>Forma & Kuchnia 2025</span>
+                    <div class="chef-timeline">
+                        <h4>Moja kulinarna ewolucja:</h4>
+                        <div class="chef-grid">
+                            <div class="chef-box">
+                                <img src="kucharz-2010.jpg" alt="Szef Kuchni Przemysław Wosik w 2010 roku">
+                                <span>Rok 2010: Head Chef</span>
+                            </div>
+                            <div class="chef-box">
+                                <img src="kucharz-trener-2025.jpg" alt="Szef Kuchni i Trener Dietetyk Przemysław Wosik w 2025 roku">
+                                <span>Rok 2025: Szef & Trener</span>
+                            </div>
                         </div>
                     </div>
+                </div>
+                <div class="about-image">
+                    <img src="trener-przemyslaw-wosik.jpg" alt="Trener Przemysław Wosik na tle certyfikatów Project Weight Drop" class="trainer-image">
                 </div>
             </div>
         </section>
@@ -950,7 +925,26 @@
                     </article>
                 </div>
                 
-                <div style="text-align: center; margin-top: 40px;">
+                <div class="reviews-stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-number">248</span>
+                        <span class="stat-label">Zadowolonych klientów</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">5.0 / 5.0</span>
+                        <span class="stars">★★★★★</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Ponad 3 lata</span>
+                        <span class="stat-label">Doświadczenia</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="live-users"><span class="live-dot"></span>15 osób</span>
+                        <span class="stat-label">Korzysta w tej chwili</span>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 50px;">
                     <a href="#proces" class="btn btn-large">Zamów plan dietetyczny 99€</a>
                     <p style="margin-top: 15px; color: var(--text-muted); font-size: 0.9rem;">Rozpocznij miesiąc pełnej opieki dietetycznej</p>
                 </div>
@@ -1040,6 +1034,71 @@
                         </div>
                         <p class="review-text">"Idealnie dobrany plan – jem to co lubię! Pan Przemek wziął pod uwagę wszystkie moje ulubione produkty, czym byłam zachwycona. 🥑"</p>
                     </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="review-author">Kamila S.</span>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                        <div class="review-tags">
+                            <span class="review-tag">-10 kg</span>
+                            <span class="review-tag">5 miesięcy</span>
+                            <span class="review-tag keto">Keto</span>
+                        </div>
+                        <p class="review-text">"Nigdy nie przypuszczałam, że dieta może być tak prosta. Stałe wsparcie i jasne wskazówki dały świetne efekty."</p>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="review-author">Barbara B.</span>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                        <div class="review-tags">
+                            <span class="review-tag">-13 kg</span>
+                            <span class="review-tag">3 miesiące</span>
+                            <span class="review-tag">Low Carb</span>
+                        </div>
+                        <p class="review-text">"Pełen profesjonalizm. Plan był dopasowany do mojego stylu życia i produktów, które lubię."</p>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="review-author">Gosia P.</span>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                        <div class="review-tags">
+                            <span class="review-tag">-15 kg</span>
+                            <span class="review-tag">6 miesięcy</span>
+                            <span class="review-tag keto">Keto</span>
+                        </div>
+                        <p class="review-text">"Największą zaletą było codzienne wsparcie i szybkie odpowiedzi na każde pytanie."</p>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="review-author">Beata K.</span>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                        <div class="review-tags">
+                            <span class="review-tag">-5 kg</span>
+                            <span class="review-tag">2 miesiące</span>
+                            <span class="review-tag">Low Carb</span>
+                        </div>
+                        <p class="review-text">"Bez głodówek i wyrzeczeń. W końcu znalazłam sposób żywienia, który działa."</p>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
+                            <span class="review-author">Grzegorz H.</span>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                        <div class="review-tags">
+                            <span class="review-tag">-22 kg</span>
+                            <span class="review-tag">6 miesięcy</span>
+                            <span class="review-tag keto">Keto</span>
+                        </div>
+                        <p class="review-text">"Zmieniłem nie tylko wagę, ale również samopoczucie i poziom energii każdego dnia."</p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1063,7 +1122,6 @@
     </footer>
 
     <script>
-        // --- OBSŁUGA MENU MOBILNEGO ---
         const burger = document.getElementById('burger');
         const navLinks = document.getElementById('nav-links');
         
@@ -1080,7 +1138,6 @@
             });
         });
 
-        // --- REALISTYCZNY LICZNIK AKTUALNYCH UŻYTKOWNIKÓW (10 - 40) ---
         const liveUsersSpan = document.getElementById('live-users');
         if (liveUsersSpan) {
             setInterval(() => {
