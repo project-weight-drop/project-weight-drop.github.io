@@ -165,7 +165,7 @@
         }
 
         /* =========================================
-           3. HERO SECTION
+           3. HERO SECTION (Z TŁEM KETO I NAKŁADKĄ)
         ========================================= */
         #hero {
             padding-top: 150px;
@@ -175,7 +175,17 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 100%);
+            
+            /* NOWE TŁO KETO Z CIEMNĄ NAKŁADKĄ */
+            background: linear-gradient(
+                rgba(10, 10, 10, 0.75), /* Górna część - 75% czerni */
+                rgba(10, 10, 10, 0.95)  /* Dolna część - płynnie przechodzi w prawie pełną czerń strony */
+            ), 
+            url('tlo-hero-keto.jpg'); /* Plik zdjęcia w folderze */
+            
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Efekt paralaksy */
         }
 
         #hero h1 {
