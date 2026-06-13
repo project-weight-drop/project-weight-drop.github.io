@@ -138,7 +138,7 @@
         }
 
         .nav-links {
-            display: none; /* Ukryte mobilnie wg zasady mobile-first */
+            display: none;
         }
 
         .nav-links li a {
@@ -232,7 +232,7 @@
         }
 
         /* =========================================
-           5. SPECJALIZACJE
+           5. SPECJALIZACJE & CERTYFIKATY
         ========================================= */
         #specjalizacje {
             background-color: #111;
@@ -243,7 +243,7 @@
             flex-direction: column;
             gap: 20px;
             max-width: 800px;
-            margin: 0 auto;
+            margin: 0 auto 40px auto;
         }
 
         .spec-item {
@@ -261,6 +261,32 @@
         .spec-item p {
             color: var(--text-muted);
             font-size: 0.95rem;
+        }
+
+        /* Galeria Certyfikatów */
+        .cert-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .cert-image {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            border: 2px solid #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            transition: all 0.3s ease;
+            cursor: crosshair;
+        }
+
+        .cert-image:hover {
+            transform: scale(1.05);
+            border-color: var(--accent);
+            z-index: 10;
+            position: relative;
         }
 
         /* =========================================
@@ -449,6 +475,10 @@
             .process-grid {
                 grid-template-columns: repeat(4, 1fr);
             }
+
+            .cert-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
         }
 
         @media screen and (min-width: 1024px) {
@@ -533,7 +563,7 @@
 
         <section id="specjalizacje">
             <div class="container">
-                <h2 class="section-title">Moje <span>Specjalizacje</span></h2>
+                <h2 class="section-title">Moje <span>Specjalizacje i Certyfikaty</span></h2>
                 <div class="specializations-list">
                     <article class="spec-item">
                         <h4>Zaburzenia metaboliczne</h4>
@@ -548,6 +578,16 @@
                         <p>Doświadczenie w przygotowaniu formy w oparciu o zaawansowaną periodyzację i suplementację celowaną.</p>
                     </article>
                 </div>
+
+                <div class="cert-grid">
+                    <img src="certyfikat-doradca-zywieniowy.jpg" alt="Certyfikat Professional Nutrition Advisor" class="cert-image">
+                    <img src="certyfikat-dietetyka-sportowa-kliniczna.jpg" alt="Certyfikat Dietetics for Professional Athletes" class="cert-image">
+                    <img src="certyfikat-instruktor-treningu-silowego.jpg" alt="Certyfikat Strength Training Instructor" class="cert-image">
+                    <img src="certyfikat-dietetyka-suplementacja-poziom-6.jpg" alt="Certyfikat Dietetics Level 6" class="cert-image">
+                    <img src="certyfikat-dieta-ketogeniczna-high-fat.jpg" alt="Certyfikat High Fat and Ketogenic Diet" class="cert-image">
+                    <img src="certyfikat-dieta-anaboliczna-redukcja.jpg" alt="Certyfikat Anabolic Diet Level 4" class="cert-image">
+                    <img src="certyfikat-trener-personalny-pro.jpg" alt="Certyfikat Personal Trainer PRO" class="cert-image">
+                </div>
             </div>
         </section>
 
@@ -559,7 +599,7 @@
                     <p>Jako osoba zakorzeniona w sportach sylwetkowych, testowałem i zgłębiałem te mechanizmy od podszewki przez ponad dwie dekady. Dziś łączę to ponad 20-letnie, praktyczne doświadczenie z oficjalną, certyfikowaną wiedzą żywieniową i trenerską zdobywczą w Akademii Sportów Sylwetkowych pod okiem mistrza IFBB Professional League, Roberta Piotrkowicza. Specjalizuję się w dietetyce sportowej oraz żywieniu w chorobach metabolicznych (Level 6).</p>
                 </div>
                 <div class="about-image">
-                    <img src="mycert.jpg" alt="Trener Project Weight Drop na tle zdobytych certyfikatów" class="trainer-image">
+                    <img src="trener-przemyslaw-wosik.jpg" alt="Trener Przemysław Wosik na tle certyfikatów Project Weight Drop" class="trainer-image">
                 </div>
             </div>
         </section>
