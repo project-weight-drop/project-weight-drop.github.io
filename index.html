@@ -51,7 +51,6 @@
             list-style: none;
         }
 
-        /* Klasa pomocnicza na kontenery */
         .container {
             width: 100%;
             max-width: 1200px;
@@ -59,7 +58,7 @@
             padding: 0 20px;
         }
 
-        /* Przyciski (CTA) */
+        /* Przyciski */
         .btn {
             display: inline-block;
             background-color: var(--accent);
@@ -83,7 +82,6 @@
             box-shadow: 0 6px 20px rgba(255, 107, 0, 0.5);
         }
 
-        /* Przycisk konturowy (np. Pobierz app) */
         .btn-outline {
             display: inline-block;
             background-color: transparent;
@@ -107,7 +105,6 @@
             box-shadow: 0 6px 20px rgba(255, 107, 0, 0.4);
         }
 
-        /* Duży przycisk CTA w Hero */
         .btn-large {
             font-size: 1.1rem;
             padding: 20px 40px;
@@ -121,7 +118,6 @@
             100% { box-shadow: 0 0 0 0 rgba(255, 107, 0, 0); }
         }
 
-        /* Typografia sekcji */
         .section-title {
             font-size: 2.2rem;
             font-weight: 800;
@@ -226,7 +222,6 @@
             background-attachment: fixed;
         }
 
-        /* Liczniki zaufania w sekcji Hero */
         .reviews-stats-bar {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -259,7 +254,6 @@
             letter-spacing: 1px;
         }
 
-        /* Styl pulsującej zielonej kropki "Live" */
         .live-dot {
             display: inline-block;
             width: 8px;
@@ -459,7 +453,6 @@
             font-size: 0.95rem;
         }
 
-        /* Galeria Certyfikatów */
         .cert-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -486,7 +479,7 @@
         }
 
         /* =========================================
-           7. O MNIE (SPLIT)
+           7. O MNIE (Z DUETEM AUTENTYCZNYCH ZDJĘĆ)
         ========================================= */
         #o-mnie {
             background-color: #111;
@@ -496,7 +489,7 @@
             display: grid;
             grid-template-columns: 1fr;
             gap: 40px;
-            align-items: center;
+            align-items: flex-start;
         }
 
         .about-text p {
@@ -512,12 +505,38 @@
             margin-bottom: 10px;
         }
 
-        .trainer-image {
+        /* Nowa siatka na Twoje autentyczne zdjęcia z pracy i treningu */
+        .trainer-images-holder {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .image-wrapper {
+            position: relative;
+            background-color: var(--bg-card);
+            padding: 10px;
+            border-radius: var(--border-radius);
+            border: 1px solid #222;
+        }
+
+        .trainer-photo {
             width: 100%;
             height: auto;
-            border-radius: var(--border-radius);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+            border-radius: 8px;
             display: block;
+            object-fit: cover;
+        }
+
+        .image-caption {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 8px;
+            font-weight: 700;
+            text-align: center;
         }
 
         /* =========================================
@@ -667,7 +686,11 @@
             }
 
             .about-split {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1.2fr 0.8fr;
+            }
+
+            .trainer-images-holder {
+                grid-template-columns: 1fr;
             }
 
             .meta-grid {
@@ -798,14 +821,22 @@
             <div class="container about-split">
                 <div class="about-text">
                     <h2 class="section-title" style="text-align: left;">Kim jestem i dlaczego akurat <span>Keto / Low Carb?</span></h2>
-                    <p>Moja fascynacja dietą wysokotłuszczową i ketogeniczną nie zaczęła się wczoraj – zgłębiam ten temat w teorii i praktyce od lat 2000. Dziś łączę ponad dwudziestoletnie doświadczenie z oficjalną, certyfikowaną wiedzą żywieniową i trenerską zdobytą w Akademii Sportów Sylwetkowych pod okiem mistrza IFBB PRO, Roberta Piotrkowicza. Specjalizuję się w dietetyce sportowej oraz żywieniu w chorobach metabolicznych (Level 6).</p>
+                    <p>Moja fascynacja dietą wysokotłuszczową i ketogeniczną nie zaczęła się wczoraj – zgłębiam ten temat w teorii i praktyce od lat 2000. Dziś łączę ponad dwudzietoletnie doświadczenie z oficjalną, certyfikowaną wiedzą żywieniową i trenerską zdobytą w Akademii Sportów Sylwetkowych pod okiem mistrza IFBB PRO, Roberta Piotrkowicza. Specjalizuję się w dietetyce sportowej oraz żywieniu w chorobach metabolicznych (Level 6).</p>
                     
                     <h3>Szef Kuchni z 20-letnim doświadczeniem</h3>
                     <p>Moja największa przewaga? Nie rozpisuję "jałowych" i nudnych diet, ponieważ z zawodu jestem profesjonalnym kucharzem. Moja kulinarna droga rozpoczęła się w 2005 roku w Irlandii, gdzie budowałem warsztat w renomowanych obiektach, takich jak 4-gwiazdkowy Meadowlands Hotel czy Earl of Desmond Hotel w Tralee. W latach 2008-2010 doskonaliłem umiejętności w prestiżowym The Malton Hotel (obecnie 4-gwiazdkowy Great Southern Killarney).</p>
                     <p>Od 2010 roku nieprzerwanie pełnię funkcję Head Chefa, a w 2016 roku objąłem również stanowisko Catering Managera. Połączenie sportu, zaawansowanej dietetyki z kunsztem Szefa Kuchni sprawia, że Twoje posiłki Keto i Low Carb będą nie tylko perfekcyjnie wyliczone matematycznie, ale przede wszystkim – będą smakować jak dania z doskonałej restauracji.</p>
                 </div>
-                <div class="about-image">
-                    <img src="trener-przemyslaw-wosik.jpg" alt="Trener Przemysław Wosik na tle certyfikatów Project Weight Drop" class="trainer-image">
+                
+                <div class="trainer-images-holder">
+                    <div class="image-wrapper">
+                        <img src="kucharz-2025.jpg" alt="Trener Przemysław Wosik na kuchni w 2025 roku" class="trainer-photo">
+                        <span class="image-caption">Kucharz i Trener (2025 r.)</span>
+                    </div>
+                    <div class="image-wrapper">
+                        <img src="kucharz-2010.jpg" alt="Przemysław Wosik w pracy na kuchni w Irlandii 2010 rok" class="trainer-photo">
+                        <span class="image-caption">Praca na kuchni w Irlandii (2010 r.)</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -986,71 +1017,6 @@
                         </div>
                         <p class="review-text">"Idealnie dobrany plan – jem to co lubię! Pan Przemek wziął pod uwagę wszystkie moje ulubione produkty, czym byłam zachwycona. 🥑"</p>
                     </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Kamila S.</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-10 kg</span>
-                            <span class="review-tag">5 miesięcy</span>
-                            <span class="review-tag keto">Keto</span>
-                        </div>
-                        <p class="review-text">"Nigdy nie przypuszczałam, że dieta może być tak prosta. Stałe wsparcie i jasne wskazówki dały świetne efekty."</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Barbara B.</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-13 kg</span>
-                            <span class="review-tag">3 miesiące</span>
-                            <span class="review-tag">Low Carb</span>
-                        </div>
-                        <p class="review-text">"Pełen profesjonalizm. Plan był dopasowany do mojego stylu życia i produktów, które lubię."</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Gosia P.</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-15 kg</span>
-                            <span class="review-tag">6 miesięcy</span>
-                            <span class="review-tag keto">Keto</span>
-                        </div>
-                        <p class="review-text">"Największą zaletą było codzienne wsparcie i szybkie odpowiedzi na każde pytanie."</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Beata K.</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-5 kg</span>
-                            <span class="review-tag">2 miesiące</span>
-                            <span class="review-tag">Low Carb</span>
-                        </div>
-                        <p class="review-text">"Bez głodówek i wyrzeczeń. W końcu znalazłam sposób żywienia, który działa."</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Grzegorz H.</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-22 kg</span>
-                            <span class="review-tag">6 miesięcy</span>
-                            <span class="review-tag keto">Keto</span>
-                        </div>
-                        <p class="review-text">"Zmieniłem nie tylko wagę, ale również samopoczucie i poziom energii każdego dnia."</p>
-                    </div>
                 </div>
             </div>
         </section>
@@ -1095,25 +1061,21 @@
         const liveUsersSpan = document.getElementById('live-users');
         if (liveUsersSpan) {
             setInterval(() => {
-                // Wyciągamy samą liczbę z tekstu
                 let currentText = liveUsersSpan.innerText;
                 let currentUsers = parseInt(currentText.replace(/[^0-9]/g, '')) || 15;
                 
-                // Losujemy zmianę o lekki krok: -2, -1, 0, 1, lub 2 osoby
                 const change = Math.floor(Math.random() * 5) - 2;
                 let newUsers = currentUsers + change;
                 
-                // Twarde granice: trzymamy się przedziału od 10 do 40 osób
                 if (newUsers < 10) {
-                    newUsers = 10 + Math.floor(Math.random() * 4); // Odbijamy w górę
+                    newUsers = 10 + Math.floor(Math.random() * 4);
                 }
                 if (newUsers > 40) {
-                    newUsers = 40 - Math.floor(Math.random() * 4); // Odbijamy w dół
+                    newUsers = 40 - Math.floor(Math.random() * 4);
                 }
                 
-                // Aktualizujemy kod HTML, zostawiając pulsującą kropkę na miejscu
                 liveUsersSpan.innerHTML = `<span class="live-dot"></span>${newUsers} osób`;
-            }, 4000); // Aktualizacja co 4 sekundy
+            }, 4000);
         }
     </script>
 </body>
