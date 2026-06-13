@@ -204,10 +204,10 @@
         }
 
         /* =========================================
-           3. HERO SECTION
+           3. HERO SECTION & STRIP STATYSTYK
         ========================================= */
         #hero {
-            padding-top: 150px;
+            padding-top: 130px;
             padding-bottom: 100px;
             text-align: center;
             min-height: 100vh;
@@ -226,8 +226,60 @@
             background-attachment: fixed;
         }
 
+        /* Liczniki zaufania w sekcji Hero */
+        .reviews-stats-bar {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+            text-align: center;
+        }
+
+        .stat-item {
+            background-color: rgba(23, 23, 23, 0.85);
+            backdrop-filter: blur(5px);
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Styl pulsującej zielonej kropki "Live" */
+        .live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #2ec4b6;
+            border-radius: 50%;
+            margin-right: 6px;
+            transform: translateY(-2px);
+            box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7);
+            animation: dotPulse 1.8s infinite;
+        }
+
+        @keyframes dotPulse {
+            0% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(46, 196, 182, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0); }
+        }
+
         #hero h1 {
-            font-size: 3rem;
+            font-size: 2.6rem;
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 1.5rem;
@@ -241,7 +293,7 @@
             flex-direction: column;
             gap: 15px;
             margin-bottom: 3rem;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             color: #fff;
         }
@@ -251,6 +303,15 @@
                 flex-direction: row;
                 justify-content: center;
                 gap: 30px;
+            }
+            .reviews-stats-bar {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .stat-number {
+                font-size: 1.8rem;
+            }
+            #hero h1 {
+                font-size: 3.5rem;
             }
         }
 
@@ -296,13 +357,12 @@
         }
 
         /* =========================================
-           5. OPINIE KLIENTÓW & STATYSTYKI Z APLIKACJI
+           5. OPINIE KLIENTÓW
         ========================================= */
         #opinie {
             background-color: var(--bg-dark);
         }
 
-        /* Siatka opinii */
         .reviews-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -369,57 +429,6 @@
             font-style: italic;
             font-size: 0.9rem;
             line-height: 1.6;
-        }
-
-        /* Liczniki zaufania przeniesione na dół sekcji */
-        .reviews-stats-bar {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            max-width: 900px;
-            margin: 50px auto 0 auto;
-            text-align: center;
-        }
-
-        .stat-item {
-            background-color: var(--bg-card);
-            padding: 20px;
-            border-radius: var(--border-radius);
-            border: 1px solid #222;
-        }
-
-        .stat-number {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--accent);
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        /* Styl pulsującej zielonej kropki "Live" dla realizmu */
-        .live-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #2ec4b6;
-            border-radius: 50%;
-            margin-right: 6px;
-            transform: translateY(-2px);
-            box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7);
-            animation: dotPulse 1.8s infinite;
-        }
-
-        @keyframes dotPulse {
-            0% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(46, 196, 182, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0); }
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         /* =========================================
@@ -649,20 +658,12 @@
                 display: none;
             }
 
-            #hero h1 {
-                font-size: 3.5rem;
-            }
-
             .features-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
             .reviews-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-
-            .reviews-stats-bar {
-                grid-template-columns: repeat(4, 1fr);
             }
 
             .about-split {
@@ -737,6 +738,26 @@
     <main>
         <section id="hero">
             <div class="container">
+                
+                <div class="reviews-stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-number">248</span>
+                        <span class="stat-label">Zadowolonych klientów</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">5.0 / 5.0</span>
+                        <span class="stars">★★★★★</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Ponad 3 lata</span>
+                        <span class="stat-label">Doświadczenia</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="live-users"><span class="live-dot"></span>15 osób</span>
+                        <span class="stat-label">Korzysta w tej chwili</span>
+                    </div>
+                </div>
+
                 <h1>Odzyskaj kontrolę nad metabolizmem. Przestań się odchudzać, zacznij jeść.</h1>
                 
                 <div class="hero-benefits">
@@ -781,7 +802,7 @@
                     
                     <h3>Szef Kuchni z 20-letnim doświadczeniem</h3>
                     <p>Moja największa przewaga? Nie rozpisuję "jałowych" i nudnych diet, ponieważ z zawodu jestem profesjonalnym kucharzem. Moja kulinarna droga rozpoczęła się w 2005 roku w Irlandii, gdzie budowałem warsztat w renomowanych obiektach, takich jak 4-gwiazdkowy Meadowlands Hotel czy Earl of Desmond Hotel w Tralee. W latach 2008-2010 doskonaliłem umiejętności w prestiżowym The Malton Hotel (obecnie 4-gwiazdkowy Great Southern Killarney).</p>
-                    <p>Od 2010 roku nieprzerwanie pełniu funkcję Head Chefa, a w 2016 roku objąłem również stanowisko Catering Managera. Połączenie sportu, zaawansowanej dietetyki z kunsztem Szefa Kuchni sprawia, że Twoje posiłki Keto i Low Carb będą nie tylko perfekcyjnie wyliczone matematycznie, ale przede wszystkim – będą smakować jak dania z doskonałej restauracji.</p>
+                    <p>Od 2010 roku nieprzerwanie pełnię funkcję Head Chefa, a w 2016 roku objąłem również stanowisko Catering Managera. Połączenie sportu, zaawansowanej dietetyki z kunsztem Szefa Kuchni sprawia, że Twoje posiłki Keto i Low Carb będą nie tylko perfekcyjnie wyliczone matematycznie, ale przede wszystkim – będą smakować jak dania z doskonałej restauracji.</p>
                 </div>
                 <div class="about-image">
                     <img src="trener-przemyslaw-wosik.jpg" alt="Trener Przemysław Wosik na tle certyfikatów Project Weight Drop" class="trainer-image">
@@ -1031,26 +1052,6 @@
                         <p class="review-text">"Zmieniłem nie tylko wagę, ale również samopoczucie i poziom energii każdego dnia."</p>
                     </div>
                 </div>
-
-                <div class="reviews-stats-bar">
-                    <div class="stat-item">
-                        <span class="stat-number">248</span>
-                        <span class="stat-label">Zadowolonych klientów</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">5.0 / 5.0</span>
-                        <span class="stars">★★★★★</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">Ponad 3 lata</span>
-                        <span class="stat-label">Doświadczenia</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number" id="live-users"><span class="live-dot"></span>23 osób</span>
-                        <span class="stat-label">Korzysta w tej chwili</span>
-                    </div>
-                </div>
-
             </div>
         </section>
     </main>
@@ -1096,7 +1097,7 @@
             setInterval(() => {
                 // Wyciągamy samą liczbę z tekstu
                 let currentText = liveUsersSpan.innerText;
-                let currentUsers = parseInt(currentText.replace(/[^0-9]/g, '')) || 23;
+                let currentUsers = parseInt(currentText.replace(/[^0-9]/g, '')) || 15;
                 
                 // Losujemy zmianę o lekki krok: -2, -1, 0, 1, lub 2 osoby
                 const change = Math.floor(Math.random() * 5) - 2;
