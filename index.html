@@ -2053,11 +2053,11 @@
             const heroBtn = document.querySelector('#hero .btn');
             if (heroBtn) heroBtn.innerHTML = t.heroBtn;
 
-            // Stats bar
+            // Stats bar (statLabels[1] is skipped - the stars item has no .stat-label)
             const statLabels = document.querySelectorAll('.stat-label');
             if (statLabels[0]) statLabels[0].innerHTML = t.statLabel1;
-            if (statLabels[2]) statLabels[2].innerHTML = t.statLabel3;
-            if (statLabels[3]) statLabels[3].innerHTML = t.statLabel4;
+            if (statLabels[1]) statLabels[1].innerHTML = t.statLabel3;
+            if (statLabels[2]) statLabels[2].innerHTML = t.statLabel4;
 
             // Why us
             const whyTitle = document.querySelector('#dlaczego-my .section-title');
