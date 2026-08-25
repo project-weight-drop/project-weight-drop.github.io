@@ -3,11 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Odzyskaj kontrolę nad metabolizmem z Project Weight Drop. Skuteczna dieta Keto i Low Carb, stała opieka i plany dopasowane do Ciebie.">
-    <title>Project Weight Drop | Odzyskaj kontrolę nad metabolizmem</title>
+    <title>Dietetyk Keto i Low Carb online | Project Weight Drop</title>
+    <meta name="description" content="Indywidualne plany Keto i Low Carb online, darmowy kalkulator kalorii i aplikacja Android. Project Weight Drop — wsparcie dietetyczne dopasowane do Ciebie.">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="author" content="Przemysław Wosik">
+    <meta name="application-name" content="Project Weight Drop">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="canonical" href="https://projectweightdrop.com/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml">
+    <link rel="alternate" type="application/rss+xml" title="Project Weight Drop — poradniki" href="https://projectweightdrop.blogspot.com/feeds/posts/default?alt=rss">
+    <link rel="preload" as="image" href="/tlo-hero-keto.jpg" fetchpriority="high">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Project Weight Drop">
+    <meta property="og:locale" content="pl_PL">
+    <meta property="og:locale:alternate" content="en_GB">
+    <meta property="og:locale:alternate" content="de_DE">
+    <meta property="og:title" content="Dietetyk Keto i Low Carb online | Project Weight Drop">
+    <meta property="og:description" content="Indywidualne plany żywieniowe, darmowy kalkulator kalorii i aplikacja Project Weight Drop na Androida.">
+    <meta property="og:url" content="https://projectweightdrop.com/">
+    <meta property="og:image" content="https://projectweightdrop.com/tlo-hero-keto.jpg">
+    <meta property="og:image:width" content="1920">
+    <meta property="og:image:height" content="1281">
+    <meta property="og:image:alt" content="Project Weight Drop — dieta Keto i Low Carb">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Dietetyk Keto i Low Carb online | Project Weight Drop">
+    <meta name="twitter:description" content="Plany Keto i Low Carb, kalkulator kalorii oraz aplikacja na Androida.">
+    <meta name="twitter:image" content="https://projectweightdrop.com/tlo-hero-keto.jpg">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://projectweightdrop.com/#website",
+          "url": "https://projectweightdrop.com/",
+          "name": "Project Weight Drop",
+          "alternateName": "PWD",
+          "inLanguage": ["pl", "en", "de"]
+        },
+        {
+          "@type": "ProfessionalService",
+          "@id": "https://projectweightdrop.com/#business",
+          "name": "Project Weight Drop",
+          "url": "https://projectweightdrop.com/",
+          "description": "Indywidualne plany żywieniowe Keto i Low Carb, prowadzenie online i aplikacja mobilna.",
+          "image": "https://projectweightdrop.com/trener-przemyslaw-wosik.jpg",
+          "telephone": "+353851383537",
+          "sameAs": ["https://projectweightdrop.blogspot.com/"]
+        },
+        {
+          "@type": "Person",
+          "@id": "https://projectweightdrop.com/#przemyslaw-wosik",
+          "name": "Przemysław Wosik",
+          "jobTitle": "Doradca żywieniowy i trener personalny",
+          "url": "https://projectweightdrop.com/#o-mnie",
+          "image": "https://projectweightdrop.com/trener-przemyslaw-wosik.jpg",
+          "worksFor": {"@id": "https://projectweightdrop.com/#business"}
+        },
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://projectweightdrop.com/#android-app",
+          "name": "Project Weight Drop",
+          "operatingSystem": "Android 8.0 or newer",
+          "applicationCategory": "HealthApplication",
+          "softwareVersion": "0.14.0",
+          "downloadUrl": "https://projectweightdrop.com/downloads/Project-Weight-Drop-v0.14.0.apk",
+          "description": "Aplikacja do obsługi planu żywieniowego, monitorowania postępów, posiłków i nawodnienia.",
+          "author": {"@id": "https://projectweightdrop.com/#business"},
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR",
+            "availability": "https://schema.org/InStock"
+          }
+        }
+      ]
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700;800&amp;display=swap" rel="stylesheet">
     
     <style>
         /* =========================================
@@ -112,6 +191,19 @@
             animation: pulse 2s infinite;
         }
 
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 14px;
+        }
+
+        .hero-download-btn {
+            padding: 18px 34px;
+            border-radius: 40px;
+            background-color: rgba(10, 10, 10, 0.55);
+        }
+
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(255, 107, 0, 0.7); }
             70% { box-shadow: 0 0 0 15px rgba(255, 107, 0, 0); }
@@ -123,6 +215,7 @@
             font-weight: 800;
             margin-bottom: 1rem;
             text-align: center;
+            overflow-wrap: anywhere;
         }
 
         .section-title span {
@@ -304,24 +397,6 @@
             letter-spacing: 1px;
         }
 
-        .live-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #2ec4b6;
-            border-radius: 50%;
-            margin-right: 6px;
-            transform: translateY(-2px);
-            box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7);
-            animation: dotPulse 1.8s infinite;
-        }
-
-        @keyframes dotPulse {
-            0% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(46, 196, 182, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0); }
-        }
-
         #hero h1 {
             font-size: 2.6rem;
             font-weight: 800;
@@ -354,6 +429,80 @@
             padding: 10px 20px;
             border-radius: 20px;
             border: 1px solid rgba(255, 107, 0, 0.3);
+        }
+
+        #aplikacja {
+            padding: 46px 0;
+            background: linear-gradient(135deg, #111 0%, #171717 55%, #231308 100%);
+            border-top: 1px solid #2a2a2a;
+            border-bottom: 1px solid #2a2a2a;
+        }
+
+        .app-download-card {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 36px;
+            padding: 34px;
+            border: 1px solid rgba(255, 107, 0, 0.35);
+            border-radius: 20px;
+            background: rgba(10, 10, 10, 0.72);
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+        }
+
+        .app-eyebrow {
+            margin-bottom: 8px;
+            color: var(--accent);
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .app-title {
+            margin-bottom: 12px;
+            font-size: clamp(1.65rem, 3vw, 2.35rem);
+            line-height: 1.2;
+        }
+
+        .app-description {
+            max-width: 760px;
+            color: var(--text-muted);
+        }
+
+        .app-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .app-badge {
+            padding: 7px 12px;
+            border: 1px solid #3a3a3a;
+            border-radius: 999px;
+            color: #ddd;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .app-download-actions {
+            min-width: 250px;
+            text-align: center;
+        }
+
+        .app-download-note {
+            display: block;
+            margin-top: 10px;
+            color: var(--text-muted);
+            font-size: 0.74rem;
+        }
+
+        @media screen and (max-width: 767px) {
+            #hero { background-attachment: scroll; }
+            .app-download-card { grid-template-columns: 1fr; padding: 26px 20px; }
+            .app-download-actions { min-width: 0; }
+            .app-download-actions .btn { width: 100%; }
         }
 
         /* =========================================
@@ -864,6 +1013,13 @@
             font-size: 0.8rem;
         }
 
+        .footer-disclaimer {
+            max-width: 820px;
+            color: #777;
+            font-size: 0.76rem;
+            line-height: 1.6;
+        }
+
         @media screen and (min-width: 768px) {
             .nav-links { display: flex; align-items: center; gap: 20px; }
             .burger { display: none; }
@@ -940,8 +1096,8 @@
                         <span class="stat-label">Doświadczenia</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number" id="live-users"><span class="live-dot"></span>15 osób</span>
-                        <span class="stat-label">Korzysta w tej chwili</span>
+                        <span class="stat-number">Android 8.0+</span>
+                        <span class="stat-label">Bezpłatna aplikacja</span>
                     </div>
                 </div>
 
@@ -953,7 +1109,31 @@
                     <span>📱 Stały kontakt WhatsApp</span>
                 </div>
 
-                <a href="#kalkulator-sekcja" class="btn btn-large">Oblicz zapotrzebowanie</a>
+                <div class="hero-actions">
+                    <a href="#kalkulator-sekcja" class="btn btn-large">Oblicz zapotrzebowanie</a>
+                    <a href="/downloads/Project-Weight-Drop-v0.14.0.apk" download="Project-Weight-Drop-v0.14.0.apk" class="btn-outline hero-download-btn" data-i18n="heroDownload">Pobierz aplikację</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="aplikacja" aria-labelledby="app-download-title">
+            <div class="container">
+                <article class="app-download-card">
+                    <div>
+                        <p class="app-eyebrow" data-i18n="appEyebrow">Aplikacja mobilna</p>
+                        <h2 class="app-title" id="app-download-title" data-i18n="appTitle">Project Weight Drop na Androida</h2>
+                        <p class="app-description" data-i18n="appDescription">Pobierz bezpłatną aplikację do obsługi planu żywieniowego, zapisywania posiłków, monitorowania wagi, nawodnienia i codziennych postępów.</p>
+                        <div class="app-badges" aria-label="Informacje o aplikacji">
+                            <span class="app-badge" data-i18n="appBadgeAndroid">Android 8.0+</span>
+                            <span class="app-badge" data-i18n="appBadgeVersion">Wersja 0.14.0</span>
+                            <span class="app-badge" data-i18n="appBadgeSigned">Podpisany APK</span>
+                        </div>
+                    </div>
+                    <div class="app-download-actions">
+                        <a href="/downloads/Project-Weight-Drop-v0.14.0.apk" download="Project-Weight-Drop-v0.14.0.apk" class="btn" data-i18n="appDownloadButton">Pobierz APK</a>
+                        <small class="app-download-note" data-i18n="appDownloadNote">Około 22 MB · instalacja bezpośrednia</small>
+                    </div>
+                </article>
             </div>
         </section>
 
@@ -994,11 +1174,11 @@
                 
                 <div class="img-comp-container">
                     <div class="img-comp-img">
-                        <img src="kucharz-trener-2025.jpg" alt="Przemysław Wosik w 2025 roku jako ekspert od sylwetki">
+                        <img src="kucharz-trener-2025.jpg" alt="Przemysław Wosik w 2025 roku jako ekspert od sylwetki" width="925" height="1701" loading="lazy" decoding="async">
                         <div class="img-comp-label top-right">2025</div>
                     </div>
                     <div class="img-comp-img img-comp-overlay">
-                        <img src="kucharz-2010.jpg" alt="Przemysław Wosik w 2010 roku jako Szef Kuchni">
+                        <img src="kucharz-2010.jpg" alt="Przemysław Wosik w 2010 roku jako Szef Kuchni" width="925" height="1700" loading="lazy" decoding="async">
                         <div class="img-comp-label top-left">2010</div>
                     </div>
                     <div class="img-comp-slider-button">↔</div>
@@ -1025,23 +1205,23 @@
                 </div>
 
                 <div class="cert-grid">
-                    <img src="certyfikat-doradca-zywieniowy.jpg" alt="Certyfikat Professional Nutrition Advisor" class="cert-image">
-                    <img src="certyfikat-dietetyka-sportowa-kliniczna.jpg" alt="Certyfikat Dietetics for Professional Athletes" class="cert-image">
-                    <img src="certyfikat-instruktor-treningu-silowego.jpg" alt="Certyfikat Strength Training Instructor" class="cert-image">
-                    <img src="certyfikat-dietetyka-suplementacja-poziom-6.jpg" alt="Certyfikat Dietetics Level 6" class="cert-image">
-                    <img src="certyfikat-dieta-anaboliczna-redukcja.jpg" alt="Certyfikat Dieta Anaboliczna i Redukcja" class="cert-image">
-                    <img src="certyfikat-dieta-ketogeniczna-high-fat.jpg" alt="Certyfikat High Fat and Ketogenic Diet" class="cert-image">
-                    <img src="certyfikat-trener-personalny-pro.jpg" alt="Certyfikat Personal Trainer PRO" class="cert-image">
-                    <img src="certyfikat-dietetyka-poziom-1.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 1 - Przemysław Wosik" class="cert-image">
-                    <img src="certyfikat-dietetyka-poziom-2.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 2 - Przemysław Wosik" class="cert-image">
-                    <img src="certyfikat-dietetyka-poziom-3.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 3 - Przemysław Wosik" class="cert-image">
-                    <img src="certyfikat-dietetyka-poziom-4.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 4 - Przemysław Wosik" class="cert-image">
-                    <img src="certyfikat-dietetyka-poziom-5.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 5 - Przemysław Wosik" class="cert-image">
+                    <img src="certyfikat-doradca-zywieniowy.jpg" alt="Certyfikat Professional Nutrition Advisor" class="cert-image" width="1280" height="925" loading="lazy" decoding="async">
+                    <img src="certyfikat-dietetyka-sportowa-kliniczna.jpg" alt="Certyfikat Dietetics for Professional Athletes" class="cert-image" width="1280" height="922" loading="lazy" decoding="async">
+                    <img src="certyfikat-instruktor-treningu-silowego.jpg" alt="Certyfikat Strength Training Instructor" class="cert-image" width="1280" height="907" loading="lazy" decoding="async">
+                    <img src="certyfikat-dietetyka-suplementacja-poziom-6.jpg" alt="Certyfikat Dietetics Level 6" class="cert-image" width="1280" height="926" loading="lazy" decoding="async">
+                    <img src="certyfikat-dieta-anaboliczna-redukcja.jpg" alt="Certyfikat Dieta Anaboliczna i Redukcja" class="cert-image" width="1280" height="924" loading="lazy" decoding="async">
+                    <img src="certyfikat-dieta-ketogeniczna-high-fat.jpg" alt="Certyfikat High Fat and Ketogenic Diet" class="cert-image" width="1280" height="918" loading="lazy" decoding="async">
+                    <img src="certyfikat-trener-personalny-pro.jpg" alt="Certyfikat Personal Trainer PRO" class="cert-image" width="1280" height="911" loading="lazy" decoding="async">
+                    <img src="certyfikat-dietetyka-poziom-1.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 1 - Przemysław Wosik" class="cert-image" width="1600" height="1155" loading="lazy" decoding="async">
+                    <img src="certyfikat-dietetyka-poziom-2.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 2 - Przemysław Wosik" class="cert-image" width="1600" height="1155" loading="lazy" decoding="async">
+                    <img src="certyfikat-dietetyka-poziom-3.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 3 - Przemysław Wosik" class="cert-image" width="1600" height="1155" loading="lazy" decoding="async">
+                    <img src="certyfikat-dietetyka-poziom-4.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 4 - Przemysław Wosik" class="cert-image" width="1600" height="1155" loading="lazy" decoding="async">
+                    <img src="certyfikat-dietetyka-poziom-5.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 5 - Przemysław Wosik" class="cert-image" width="1600" height="1155" loading="lazy" decoding="async">
                 </div>
 
                 <div class="trainer-bottom-summary" style="margin-top: 80px; text-align: center;">
                     <h3 style="font-size: 1.8rem; margin-bottom: 30px;">Certyfikowana wiedza w <span style="color: var(--accent);">praktyce</span></h3>
-                    <img src="trener-przemyslaw-wosik.jpg" alt="Trener i Dietetyk Przemysław Wosik" style="width: 100%; max-width: 500px; height: auto; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin: 0 auto; display: block; border: 1px solid #333;">
+                    <img src="trener-przemyslaw-wosik.jpg" alt="Trener i Dietetyk Przemysław Wosik" width="1200" height="1694" loading="lazy" decoding="async" style="width: 100%; max-width: 500px; height: auto; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin: 0 auto; display: block; border: 1px solid #333;">
                     <p style="color: var(--text-muted); margin-top: 25px; max-width: 800px; margin-left: auto; margin-right: auto; font-size: 1.05rem;">Zdobytą wiedzę najpierw testuję na sobie, a dopiero potem przekładam na plany treningowe i jadłospisy moich podopiecznych. Gwarantuję Ci system, który realnie działa.</p>
                 </div>
             </div>
@@ -1054,19 +1234,19 @@
                 
                 <div class="meta-grid">
                     <article class="meta-card">
-                        <img src="metamorfoza-start-wrzesien-2023.jpg" alt="Początek eksperymentu dietetycznego - wrzesień 2023" class="meta-image">
+                        <img src="metamorfoza-start-wrzesien-2023.jpg" alt="Początek eksperymentu dietetycznego - wrzesień 2023" class="meta-image" width="853" height="1844" loading="lazy" decoding="async">
                         <p>Wrzesień 2023 – Start Eksperymentu. Moment podjęcia decyzji i celowego odpuszczenia treningów.</p>
                     </article>
                     <article class="meta-card">
-                        <img src="metamorfoza-szczyt-wagi-113kg.jpg" alt="Szczyt wagi w trakcie eksperymentu - 113 kg" class="meta-image">
+                        <img src="metamorfoza-szczyt-wagi-113kg.jpg" alt="Szczyt wagi w trakcie eksperymentu - 113 kg" class="meta-image" width="1112" height="1414" loading="lazy" decoding="async">
                         <p>16 Czerwca 2024 – Szczyt Wagi (113 kg). Solidna masa, uczucie ciężkości, brak energii i realne problemy z codzienną mobilnością.</p>
                     </article>
                     <article class="meta-card">
-                        <img src="metamorfoza-efekt-koncowy-99kg-keto.jpg" alt="Efekt końcowy diety po 2,5 miesiąca - 99 kg" class="meta-image">
+                        <img src="metamorfoza-efekt-koncowy-99kg-keto.jpg" alt="Efekt końcowy diety po 2,5 miesiąca - 99 kg" class="meta-image" width="1149" height="1369" loading="lazy" decoding="async">
                         <p>6 Września 2024 – Efekt Końcowy (99 kg). Zaledwie 2,5 miesiąca później. Wynik połączenia precyzyjnego Keto, Intermittent Fasting i treningu sylwetkowego.</p>
                     </article>
                     <article class="meta-card">
-                        <img src="metamorfoza-przed-i-po-redukcja.jpg" alt="Kolaż porównawczy efektów przed i po redukcji" class="meta-image">
+                        <img src="metamorfoza-przed-i-po-redukcja.jpg" alt="Kolaż porównawczy efektów przed i po redukcji" class="meta-image" width="1600" height="1013" loading="lazy" decoding="async">
                         <p>Kolaż Porównawczy Przed / Po.</p>
                     </article>
                 </div>
@@ -1508,10 +1688,11 @@
                 <a href="#o-mnie">O mnie</a>
                 <a href="#proces">Współpraca</a>
                 <a href="#opinie">Opinie</a>
-                <a href="https://projectweightdrop.blogspot.com/?m=1" target="_blank">Blog</a>
+                <a href="https://projectweightdrop.blogspot.com/?m=1" target="_blank" rel="noopener">Blog</a>
                 <a href="#">Polityka Prywatności</a>
                 <a href="#">Regulamin</a>
             </div>
+            <p class="footer-disclaimer" data-i18n="footerDisclaimer">Treści i kalkulatory mają charakter edukacyjny i nie zastępują indywidualnej diagnozy ani konsultacji z lekarzem.</p>
             <p class="footer-copy">© 2026 Project Weight Drop. Wszystkie prawa zastrzeżone.</p>
         </div>
     </footer>
@@ -1533,22 +1714,6 @@
                 }
             });
         });
-
-        // --- REALISTYCZNY LICZNIK AKTUALNYCH UŻYTKOWNIKÓW ---
-        const liveUsersSpan = document.getElementById('live-users');
-        if (liveUsersSpan) {
-            setInterval(() => {
-                let currentText = liveUsersSpan.innerText;
-                let currentUsers = parseInt(currentText.replace(/[^0-9]/g, '')) || 15;
-                const change = Math.floor(Math.random() * 5) - 2;
-                let newUsers = currentUsers + change;
-                
-                if (newUsers < 10) newUsers = 10 + Math.floor(Math.random() * 4);
-                if (newUsers > 40) newUsers = 40 - Math.floor(Math.random() * 4);
-                
-                liveUsersSpan.innerHTML = `<span class="live-dot"></span>${newUsers} osób`;
-            }, 4000);
-        }
 
         // --- LOGIKA SUWAKA PRZED I PO ---
         function initComparisons() {
@@ -1670,9 +1835,18 @@
                 heroBenefit2: "🥗 Dieta dopasowana do Ciebie",
                 heroBenefit3: "📱 Stały kontakt WhatsApp",
                 heroBtn: "Oblicz zapotrzebowanie",
+                heroDownload: "Pobierz aplikację",
                 statLabel1: "Zadowolonych klientów",
                 statLabel3: "Doświadczenia",
-                statLabel4: "Korzysta w tej chwili",
+                statLabel4: "Bezpłatna aplikacja",
+                appEyebrow: "Aplikacja mobilna",
+                appTitle: "Project Weight Drop na Androida",
+                appDescription: "Pobierz bezpłatną aplikację do obsługi planu żywieniowego, zapisywania posiłków, monitorowania wagi, nawodnienia i codziennych postępów.",
+                appBadgeAndroid: "Android 8.0+",
+                appBadgeVersion: "Wersja 0.14.0",
+                appBadgeSigned: "Podpisany APK",
+                appDownloadButton: "Pobierz APK",
+                appDownloadNote: "Około 22 MB · instalacja bezpośrednia",
                 // Dlaczego my
                 whyTitle: "Dlaczego <span>Project Weight Drop?</span>",
                 f1h: "Fundament w badaniach krwi",
@@ -1765,6 +1939,7 @@
                 opinionsSubtitle: "Średnia ocena: ⭐⭐⭐⭐⭐ 5.0/5.0 — prawdziwe opinie, prawdziwe rezultaty.",
                 // Footer
                 footerCopy: "© 2026 Project Weight Drop. Wszystkie prawa zastrzeżone.",
+                footerDisclaimer: "Treści i kalkulatory mają charakter edukacyjny i nie zastępują indywidualnej diagnozy ani konsultacji z lekarzem.",
                 footerCalc: "Kalkulator", footerAbout: "O mnie", footerCoop: "Współpraca",
                 footerOpinions: "Opinie", footerBlog: "Blog", footerPrivacy: "Polityka Prywatności", footerTerms: "Regulamin",
                 // BMI categories
@@ -1795,9 +1970,18 @@
                 heroBenefit2: "🥗 Diet tailored to you",
                 heroBenefit3: "📱 Constant WhatsApp support",
                 heroBtn: "Calculate your needs",
+                heroDownload: "Download the app",
                 statLabel1: "Satisfied clients",
                 statLabel3: "Experience",
-                statLabel4: "Currently using",
+                statLabel4: "Free Android app",
+                appEyebrow: "Mobile application",
+                appTitle: "Project Weight Drop for Android",
+                appDescription: "Download the free app for your nutrition plan, meal logging, weight tracking, hydration and daily progress.",
+                appBadgeAndroid: "Android 8.0+",
+                appBadgeVersion: "Version 0.14.0",
+                appBadgeSigned: "Signed APK",
+                appDownloadButton: "Download APK",
+                appDownloadNote: "About 22 MB · direct installation",
                 whyTitle: "Why <span>Project Weight Drop?</span>",
                 f1h: "Blood test foundation",
                 f1p: "I don't design diets blindly. Before I write your plan, I analyse your blood test results to precisely target the cause of your metabolic issues.",
@@ -1882,6 +2066,7 @@
                 opinionsTitle: "⭐ Client reviews and results",
                 opinionsSubtitle: "Average rating: ⭐⭐⭐⭐⭐ 5.0/5.0 — real reviews, real results.",
                 footerCopy: "© 2026 Project Weight Drop. All rights reserved.",
+                footerDisclaimer: "The content and calculators are educational and do not replace an individual diagnosis or consultation with a doctor.",
                 footerCalc: "Calculator", footerAbout: "About me", footerCoop: "Cooperation",
                 footerOpinions: "Reviews", footerBlog: "Blog", footerPrivacy: "Privacy Policy", footerTerms: "Terms",
                 bmiUnder: "Underweight", bmiNormal: "Normal", bmiOver: "Overweight", bmiObese: "Obese",
@@ -1910,9 +2095,18 @@
                 heroBenefit2: "🥗 Diät auf dich zugeschnitten",
                 heroBenefit3: "📱 Ständiger WhatsApp-Kontakt",
                 heroBtn: "Bedarf berechnen",
+                heroDownload: "App herunterladen",
                 statLabel1: "Zufriedene Kunden",
                 statLabel3: "Erfahrung",
-                statLabel4: "Nutzen gerade",
+                statLabel4: "Kostenlose Android-App",
+                appEyebrow: "Mobile Anwendung",
+                appTitle: "Project Weight Drop für Android",
+                appDescription: "Lade die kostenlose App für deinen Ernährungsplan, Mahlzeiten, Gewichtsverlauf, Flüssigkeitszufuhr und tägliche Fortschritte herunter.",
+                appBadgeAndroid: "Android 8.0+",
+                appBadgeVersion: "Version 0.14.0",
+                appBadgeSigned: "Signierte APK",
+                appDownloadButton: "APK herunterladen",
+                appDownloadNote: "Etwa 22 MB · direkte Installation",
                 whyTitle: "Warum <span>Project Weight Drop?</span>",
                 f1h: "Grundlage in Blutuntersuchungen",
                 f1p: "Ich erstelle keine Diät 'im Blindflug'. Bevor ich deinen Plan ausarbeite, analysiere ich deine Laborbefunde, um die Ursache deiner Stoffwechselprobleme gezielt anzugehen.",
@@ -1997,6 +2191,7 @@
                 opinionsTitle: "⭐ Kundenbewertungen und Ergebnisse",
                 opinionsSubtitle: "Durchschnittsbewertung: ⭐⭐⭐⭐⭐ 5.0/5.0 — echte Bewertungen, echte Ergebnisse.",
                 footerCopy: "© 2026 Project Weight Drop. Alle Rechte vorbehalten.",
+                footerDisclaimer: "Die Inhalte und Rechner dienen der Information und ersetzen keine individuelle Diagnose oder ärztliche Beratung.",
                 footerCalc: "Rechner", footerAbout: "Über mich", footerCoop: "Zusammenarbeit",
                 footerOpinions: "Bewertungen", footerBlog: "Blog", footerPrivacy: "Datenschutz", footerTerms: "AGB",
                 bmiUnder: "Untergewicht", bmiNormal: "Normal", bmiOver: "Übergewicht", bmiObese: "Adipositas",
@@ -2232,12 +2427,6 @@
             const flMap = [t.footerCalc, t.footerAbout, t.footerCoop, t.footerOpinions, t.footerBlog, t.footerPrivacy, t.footerTerms];
             footerLinks.forEach((a, i) => { if (flMap[i]) a.innerHTML = flMap[i]; });
 
-            // Live users suffix (update displayed text if has number)
-            const luSpan = document.getElementById('live-users');
-            if (luSpan) {
-                const num = parseInt(luSpan.innerText.replace(/[^0-9]/g, '')) || 15;
-                luSpan.innerHTML = `<span class="live-dot"></span>${num}${t.liveUsers}`;
-            }
         }
 
         // Override functions to use current language strings
