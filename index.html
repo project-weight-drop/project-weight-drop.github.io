@@ -1690,7 +1690,8 @@
                 <a href="#proces">Współpraca</a>
                 <a href="#opinie">Opinie</a>
                 <a href="https://projectweightdrop.blogspot.com/?m=1" target="_blank" rel="noopener">Blog</a>
-                <a href="#">Polityka Prywatności</a>
+                <a href="privacy.html">Polityka Prywatności</a>
+                <a href="delete-account.html">Usuń konto</a>
                 <a href="#">Regulamin</a>
             </div>
             <p class="footer-disclaimer" data-i18n="footerDisclaimer">Treści i kalkulatory mają charakter edukacyjny i nie zastępują indywidualnej diagnozy ani konsultacji z lekarzem.</p>
@@ -1942,7 +1943,7 @@
                 footerCopy: "© 2026 Project Weight Drop. Wszystkie prawa zastrzeżone.",
                 footerDisclaimer: "Treści i kalkulatory mają charakter edukacyjny i nie zastępują indywidualnej diagnozy ani konsultacji z lekarzem.",
                 footerCalc: "Kalkulator", footerAbout: "O mnie", footerCoop: "Współpraca",
-                footerOpinions: "Opinie", footerBlog: "Blog", footerPrivacy: "Polityka Prywatności", footerTerms: "Regulamin",
+                footerOpinions: "Opinie", footerBlog: "Blog", footerPrivacy: "Polityka Prywatności", footerDelete: "Usuń konto", footerTerms: "Regulamin",
                 // BMI categories
                 bmiUnder: "Niedowaga", bmiNormal: "Norma", bmiOver: "Nadwaga", bmiObese: "Otyłość",
                 // alerts
@@ -2069,7 +2070,7 @@
                 footerCopy: "© 2026 Project Weight Drop. All rights reserved.",
                 footerDisclaimer: "The content and calculators are educational and do not replace an individual diagnosis or consultation with a doctor.",
                 footerCalc: "Calculator", footerAbout: "About me", footerCoop: "Cooperation",
-                footerOpinions: "Reviews", footerBlog: "Blog", footerPrivacy: "Privacy Policy", footerTerms: "Terms",
+                footerOpinions: "Reviews", footerBlog: "Blog", footerPrivacy: "Privacy Policy", footerDelete: "Delete account", footerTerms: "Terms",
                 bmiUnder: "Underweight", bmiNormal: "Normal", bmiOver: "Overweight", bmiObese: "Obese",
                 alertFill: "Please enter basic data: age, height and current body weight.",
                 alertShare: "Preview generated successfully. Take a screenshot of the analysis card to share it on Instagram using the Project Weight Drop mobile app.",
@@ -2194,7 +2195,7 @@
                 footerCopy: "© 2026 Project Weight Drop. Alle Rechte vorbehalten.",
                 footerDisclaimer: "Die Inhalte und Rechner dienen der Information und ersetzen keine individuelle Diagnose oder ärztliche Beratung.",
                 footerCalc: "Rechner", footerAbout: "Über mich", footerCoop: "Zusammenarbeit",
-                footerOpinions: "Bewertungen", footerBlog: "Blog", footerPrivacy: "Datenschutz", footerTerms: "AGB",
+                footerOpinions: "Bewertungen", footerBlog: "Blog", footerPrivacy: "Datenschutz", footerDelete: "Konto löschen", footerTerms: "AGB",
                 bmiUnder: "Untergewicht", bmiNormal: "Normal", bmiOver: "Übergewicht", bmiObese: "Adipositas",
                 alertFill: "Bitte Basisdaten eingeben: Alter, Größe und aktuelles Körpergewicht.",
                 alertShare: "Vorschau erfolgreich generiert. Mache einen Screenshot der Analysekarte, um sie auf Instagram über die mobile App Project Weight Drop zu teilen.",
@@ -2425,7 +2426,7 @@
             const footerCopy = document.querySelector('.footer-copy');
             if (footerCopy) footerCopy.innerHTML = t.footerCopy;
             const footerLinks = document.querySelectorAll('.footer-links a');
-            const flMap = [t.footerCalc, t.footerAbout, t.footerCoop, t.footerOpinions, t.footerBlog, t.footerPrivacy, t.footerTerms];
+            const flMap = [t.footerCalc, t.footerAbout, t.footerCoop, t.footerOpinions, t.footerBlog, t.footerPrivacy, t.footerDelete, t.footerTerms];
             footerLinks.forEach((a, i) => { if (flMap[i]) a.innerHTML = flMap[i]; });
 
         }
