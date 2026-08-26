@@ -9,6 +9,11 @@
     <meta name="theme-color" content="#0d0d0d">
     <link rel="canonical" href="https://projectweightdrop.com/privacy.html">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script>
+        if (new URLSearchParams(window.location.search).get("from") === "app") {
+            document.documentElement.classList.add("app-entry");
+        }
+    </script>
     <style>
         :root { color-scheme: dark; --orange:#ff6a00; --panel:#191919; --muted:#b8b8b8; }
         * { box-sizing:border-box; }
@@ -34,15 +39,19 @@
         th { color:var(--orange); background:#222; }
         .notice { padding:16px 18px; border-left:4px solid var(--orange); background:rgba(255,106,0,.1); border-radius:0 8px 8px 0; }
         .button { display:inline-block; padding:13px 20px; border-radius:8px; background:var(--orange); color:#fff; text-decoration:none; font-weight:bold; }
+        .app-only { display:none; }
+        .app-entry .app-only { display:block; }
+        .app-entry .site-navigation { display:none !important; }
         @media (max-width:720px) { .summary-grid { grid-template-columns:1fr; } }
     </style>
 </head>
 <body>
-<header><div><strong>Project <span style="color:#ff6a00">Weight Drop</span></strong><span><a href="index.html">Strona główna</a> · <a href="delete-account.html">Usuń konto</a></span></div></header>
+<header><div><strong>Project <span style="color:#ff6a00">Weight Drop</span></strong><span><span class="site-navigation"><a href="index.html">Strona główna</a> · </span><a href="delete-account.html" data-app-link>Usuń konto</a></span></div></header>
 <main>
     <p style="color:#ff6a00;font-weight:bold;text-transform:uppercase;letter-spacing:.1em">Aplikacja Android</p>
     <h1>Polityka prywatności Project Weight Drop</h1>
     <p class="muted">Obowiązuje od: 26 sierpnia 2026 r. · Ostatnia aktualizacja: 26 sierpnia 2026 r.</p>
+    <div class="notice app-only"><strong>Dokument otwarty z aplikacji.</strong> Po przeczytaniu zamknij tę kartę i wróć do Project Weight Drop.</div>
 
     <section class="panel summary">
         <h2 style="margin-top:0">Najważniejsze informacje</h2>
@@ -58,7 +67,7 @@
         <h2 style="margin-top:0">1. Administrator i kontakt</h2>
         <p>Administratorem danych jest <strong>Przemysław Wosik, działający pod marką Project Weight Drop</strong>.</p>
         <p>Kontakt w sprawach prywatności: <a href="mailto:przemaladietexpert@gmail.com">przemaladietexpert@gmail.com</a><br>
-        Witryna: <a href="https://projectweightdrop.com/">https://projectweightdrop.com/</a></p>
+        <span class="site-navigation">Witryna: <a href="https://projectweightdrop.com/">https://projectweightdrop.com/</a></span></p>
     </section>
 
     <h2>2. Zakres polityki</h2>
@@ -130,7 +139,7 @@
 
     <h2 id="usuwanie">13. Usuwanie konta i danych</h2>
     <p>W aplikacji otwórz profil, wybierz <strong>„Trwale usuń konto i dane”</strong>, wpisz <strong>DELETE</strong> i potwierdź. Bez dostępu do aplikacji skorzystaj z publicznej strony:</p>
-    <p><a class="button" href="delete-account.html">Instrukcja i prośba o usunięcie konta</a></p>
+    <p><a class="button" href="delete-account.html" data-app-link>Instrukcja i prośba o usunięcie konta</a></p>
     <div class="notice"><strong>Ważne:</strong> usunięcie konta Project Weight Drop nie anuluje subskrypcji Google Play. Subskrypcję należy anulować osobno w ustawieniach Google Play.</div>
 
     <h2>14. Charakter aplikacji</h2>
@@ -139,5 +148,14 @@
     <h2>15. Zmiany polityki</h2>
     <p>Polityka może być aktualizowana, gdy zmieniają się funkcje, dostawcy lub wymagania prawne. Na tej stronie podamy nową datę aktualizacji. O istotnych zmianach możemy także poinformować w aplikacji.</p>
 </main>
+<script>
+    if (document.documentElement.classList.contains("app-entry")) {
+        document.querySelectorAll("[data-app-link]").forEach((link) => {
+            const target = new URL(link.getAttribute("href"), window.location.href);
+            target.searchParams.set("from", "app");
+            link.href = target.href;
+        });
+    }
+</script>
 </body>
 </html>

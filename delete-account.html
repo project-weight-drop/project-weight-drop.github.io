@@ -8,6 +8,11 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://projectweightdrop.com/delete-account.html">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <script>
+        if (new URLSearchParams(window.location.search).get("from") === "app") {
+            document.documentElement.classList.add("app-entry");
+        }
+    </script>
     <style>
         :root { color-scheme:dark; --orange:#ff6a00; --panel:#191919; --muted:#b8b8b8; }
         * { box-sizing:border-box; }
@@ -19,13 +24,18 @@
         .button { display:inline-block; padding:14px 22px; background:var(--orange); color:#fff; text-decoration:none; font-weight:bold; border-radius:8px; }
         a { color:var(--orange); }
         .muted { color:var(--muted); }
+        .notice { padding:16px 18px; border-left:4px solid var(--orange); background:rgba(255,106,0,.1); border-radius:0 8px 8px 0; }
+        .app-only { display:none; }
+        .app-entry .app-only { display:block; }
+        .app-entry .site-navigation { display:none !important; }
     </style>
 </head>
 <body>
 <main>
-    <a href="index.html">Wróć do Project Weight Drop</a> · <a href="privacy.html">Polityka prywatności</a>
+    <span class="site-navigation"><a href="index.html">Wróć do Project Weight Drop</a> · </span><a href="privacy.html" data-app-link>Polityka prywatności</a>
     <h1 id="usun-konto">Usuń konto i dane</h1>
     <p>Użytkownik Project Weight Drop może w każdej chwili poprosić o trwałe usunięcie konta i danych powiązanych z adresem e-mail.</p>
+    <div class="notice app-only"><strong>Dokument otwarty z aplikacji.</strong> Po zakończeniu zamknij tę kartę i wróć do Project Weight Drop.</div>
 
     <div class="panel">
         <h2>W aplikacji</h2>
@@ -43,5 +53,14 @@
     <p>Zweryfikujemy właściciela konta i zrealizujemy żądanie bez zbędnej zwłoki, co do zasady nie później niż w ciągu miesiąca. Subskrypcję Google Play należy anulować osobno w ustawieniach Google Play.</p>
     <p class="muted">Kontakt: <a href="mailto:przemaladietexpert@gmail.com">przemaladietexpert@gmail.com</a></p>
 </main>
+<script>
+    if (document.documentElement.classList.contains("app-entry")) {
+        document.querySelectorAll("[data-app-link]").forEach((link) => {
+            const target = new URL(link.getAttribute("href"), window.location.href);
+            target.searchParams.set("from", "app");
+            link.href = target.href;
+        });
+    }
+</script>
 </body>
 </html>
