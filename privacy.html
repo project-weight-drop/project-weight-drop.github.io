@@ -4,10 +4,14 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Polityka prywatności aplikacji | Project Weight Drop</title>
-    <meta name="description" content="Polityka prywatności aplikacji Project Weight Drop: dane konta, dane żywieniowe i zdrowotne, AI, dostawcy usług oraz usuwanie konta.">
+    <meta id="meta-description" name="description" content="Polityka prywatności aplikacji Project Weight Drop: dane konta, dane żywieniowe i zdrowotne, AI, dostawcy usług oraz usuwanie konta.">
     <meta name="robots" content="index, follow">
     <meta name="theme-color" content="#0d0d0d">
     <link rel="canonical" href="https://projectweightdrop.com/privacy.html">
+    <link rel="alternate" hreflang="pl" href="https://projectweightdrop.com/privacy.html?lang=pl">
+    <link rel="alternate" hreflang="en" href="https://projectweightdrop.com/privacy.html?lang=en">
+    <link rel="alternate" hreflang="de" href="https://projectweightdrop.com/privacy.html?lang=de">
+    <link rel="alternate" hreflang="x-default" href="https://projectweightdrop.com/privacy.html">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <script>
         if (new URLSearchParams(window.location.search).get("from") === "app") {
@@ -15,18 +19,23 @@
         }
     </script>
     <style>
-        :root { color-scheme: dark; --orange:#ff6a00; --panel:#191919; --muted:#b8b8b8; }
+        :root { color-scheme:dark; --orange:#ff6a00; --panel:#191919; --muted:#b8b8b8; }
         * { box-sizing:border-box; }
+        [hidden] { display:none !important; }
         body { margin:0; background:#0d0d0d; color:#f6f6f6; font:16px/1.65 Arial,sans-serif; }
         header { border-bottom:1px solid #333; background:#111; }
-        header div, main { width:min(900px,calc(100% - 32px)); margin:auto; }
-        header div { padding:22px 0; display:flex; justify-content:space-between; align-items:center; gap:20px; }
+        .header-inner, main { width:min(900px,calc(100% - 32px)); margin:auto; }
+        .header-inner { padding:22px 0; display:flex; justify-content:space-between; align-items:center; gap:20px; }
         a { color:var(--orange); }
-        main { padding:34px 0 64px; }
+        main { padding:26px 0 64px; }
         h1 { font-size:clamp(30px,6vw,48px); line-height:1.1; margin:0 0 12px; }
         h2 { margin-top:32px; color:var(--orange); }
         h3 { margin-top:24px; }
         li + li { margin-top:7px; }
+        .language-switch { display:flex; justify-content:flex-end; gap:8px; margin:0 0 20px; }
+        .language-button { min-width:48px; min-height:44px; border:1px solid #484848; border-radius:8px; background:#191919; color:#fff; font-weight:700; cursor:pointer; }
+        .language-button:hover, .language-button:focus-visible { border-color:var(--orange); outline:none; }
+        .language-button[aria-pressed="true"] { border-color:var(--orange); background:var(--orange); color:#fff; }
         .panel { background:var(--panel); border:1px solid #333; border-radius:8px; padding:22px; margin:22px 0; }
         .muted { color:var(--muted); }
         .summary { border-color:rgba(255,106,0,.5); background:linear-gradient(135deg,rgba(255,106,0,.12),var(--panel)); }
@@ -41,119 +50,392 @@
         .button { display:inline-block; padding:13px 20px; border-radius:8px; background:var(--orange); color:#fff; text-decoration:none; font-weight:bold; }
         .app-only { display:none; }
         .app-entry .app-only { display:block; }
-        @media (max-width:720px) { .summary-grid { grid-template-columns:1fr; } }
+        @media (max-width:720px) {
+            .summary-grid { grid-template-columns:1fr; }
+            .header-inner { align-items:flex-start; }
+        }
     </style>
 </head>
 <body>
-<header><div><strong>Project <span style="color:#ff6a00">Weight Drop</span></strong><a href="delete-account.html" data-app-link>Usuń konto</a></div></header>
-<main>
-    <p style="color:#ff6a00;font-weight:bold;text-transform:uppercase;letter-spacing:.1em">Aplikacja Android</p>
-    <h1>Polityka prywatności Project Weight Drop</h1>
-    <p class="muted">Obowiązuje od: 26 sierpnia 2026 r. · Ostatnia aktualizacja: 26 sierpnia 2026 r.</p>
-    <div class="notice app-only"><strong>Dokument otwarty z aplikacji.</strong> Po przeczytaniu zamknij tę kartę i wróć do Project Weight Drop.</div>
-
-    <section class="panel summary">
-        <h2 style="margin-top:0">Najważniejsze informacje</h2>
-        <p>Project Weight Drop zapisuje dane potrzebne do konta, planowania żywienia, śledzenia postępów, funkcji bezpieczeństwa i obsługi użytkownika. Nie sprzedajemy danych osobowych i nie używamy reklamowych identyfikatorów śledzących.</p>
-        <div class="summary-grid">
-            <div class="summary-item"><strong>Kontrola użytkownika</strong>Dane podajesz w aplikacji i możesz usunąć konto wraz z danymi.</div>
-            <div class="summary-item"><strong>Dane chronione</strong>Połączenia są szyfrowane, a dostęp do rekordów jest ograniczony do konta użytkownika.</div>
-            <div class="summary-item"><strong>AI z ujawnieniem</strong>Funkcje AI mogą przekazywać niezbędny kontekst do Google Gemini.</div>
-        </div>
-    </section>
-
-    <section class="panel">
-        <h2 style="margin-top:0">1. Administrator i kontakt</h2>
-        <p>Administratorem danych jest <strong>Przemysław Wosik, działający pod marką Project Weight Drop</strong>.</p>
-        <p>Kontakt w sprawach prywatności: <a href="mailto:przemaladietexpert@gmail.com">przemaladietexpert@gmail.com</a></p>
-    </section>
-
-    <h2>2. Zakres polityki</h2>
-    <p>Polityka dotyczy aplikacji Android Project Weight Drop, konta użytkownika, usług serwerowych aplikacji oraz stron służących do obsługi prywatności i usuwania konta. Aplikacja jest przeznaczona dla osób pełnoletnich — profil wymaga wieku co najmniej 18 lat.</p>
-
-    <h2>3. Jakie dane przetwarzamy</h2>
-    <div class="table-wrap">
-        <table>
-            <thead><tr><th>Kategoria</th><th>Przykłady</th><th>Cel</th></tr></thead>
-            <tbody>
-                <tr><td><strong>Konto</strong></td><td>Adres e-mail, identyfikator konta, status potwierdzenia e-mail i znaczniki czasu. Hasło obsługuje Supabase Auth; nie mamy dostępu do jego jawnej treści.</td><td>Rejestracja, logowanie, synchronizacja i bezpieczeństwo konta.</td></tr>
-                <tr><td><strong>Profil i cele</strong></td><td>Wiek, płeć używana do obliczeń, wzrost, masa obecna i docelowa, aktywność, treningi, typ diety, liczba posiłków, budżet i główne wyzwanie.</td><td>Obliczenia energetyczne, personalizacja i tworzenie planu.</td></tr>
-                <tr><td><strong>Żywienie</strong></td><td>Alergie i nietolerancje, produkty lubiane i wykluczone, limity gotowania, jadłospisy, zamiany posiłków, dziennik jedzenia i wartości odżywcze.</td><td>Tworzenie bezpieczniejszych propozycji posiłków i prowadzenie dziennika.</td></tr>
-                <tr><td><strong>Postępy i samopoczucie</strong></td><td>Waga, woda, kroki, obwody ciała, ciśnienie i puls, notatki, samopoczucie, głód, energia, sen, Check In i cele z datą.</td><td>Wykresy, podsumowania, kontrola realizacji celu i dopasowanie wskazówek.</td></tr>
-                <tr><td><strong>Dane bezpieczeństwa</strong></td><td>Informacje o ciąży, karmieniu piersią, ryzyku zaburzeń odżywiania oraz stosowaniu leków mogących powodować hipoglikemię lub leków SGLT2.</td><td>Ograniczenie lub zablokowanie automatycznych zmian, gdy funkcja może być nieodpowiednia.</td></tr>
-                <tr><td><strong>Komunikacja i AI</strong></td><td>Wiadomości do Coacha, pamięć i kontekst rozmowy, wiadomości wsparcia, zgłoszenia treści AI oraz odpowiedzi administratora lub trenera.</td><td>Odpowiedzi, ciągłość rozmowy, wsparcie i kontrola jakości.</td></tr>
-                <tr><td><strong>Zakupy</strong></td><td>Identyfikator produktu, token zakupu, stan i okres subskrypcji oraz powiązanie zakupu z kontem. Dane karty płatniczej obsługuje Google Play i nie trafiają do Project Weight Drop.</td><td>Weryfikacja dostępu PRO, przywracanie zakupów i przeciwdziałanie nadużyciom.</td></tr>
-                <tr><td><strong>Dane techniczne</strong></td><td>Adres IP i informacje o żądaniu mogą pojawić się w krótkotrwałych logach dostawców; aplikacja zapisuje lokalnie ustawienia powiadomień i identyfikatory ostatnio pokazanych wiadomości.</td><td>Działanie usługi, diagnostyka, bezpieczeństwo i powiadomienia.</td></tr>
-            </tbody>
-        </table>
+<header>
+    <div class="header-inner">
+        <strong>Project <span style="color:#ff6a00">Weight Drop</span></strong>
+        <a id="delete-account-link" href="delete-account.html" data-legal-link="delete-account.html">Usuń konto</a>
     </div>
+</header>
+<main>
+    <nav class="language-switch" aria-label="Wybór języka">
+        <button class="language-button" type="button" data-language="pl" aria-pressed="true">PL</button>
+        <button class="language-button" type="button" data-language="en" aria-pressed="false">EN</button>
+        <button class="language-button" type="button" data-language="de" aria-pressed="false">DE</button>
+    </nav>
 
-    <h2>4. Dane dotyczące zdrowia</h2>
-    <p>Niektóre informacje wymienione wyżej mogą stanowić dane dotyczące zdrowia. Są opcjonalne i są przetwarzane wyłącznie po aktywnym zapisaniu ich przez użytkownika w wybranej funkcji. Podstawą przetwarzania jest wyraźna zgoda użytkownika w zakresie wymaganym przez prawo. Zgodę można wycofać przez usunięcie danych, reset profilu, usunięcie konta lub kontakt z administratorem. Wycofanie zgody nie wpływa na zgodność wcześniejszego przetwarzania z prawem, ale może uniemożliwić działanie części funkcji.</p>
+    <article data-language-page="pl">
+        <p style="color:#ff6a00;font-weight:bold;text-transform:uppercase;letter-spacing:.1em">Aplikacja Android</p>
+        <h1>Polityka prywatności Project Weight Drop</h1>
+        <p class="muted">Obowiązuje od: 26 sierpnia 2026 r. · Ostatnia aktualizacja: 28 sierpnia 2026 r.</p>
+        <div class="notice app-only"><strong>Dokument otwarty z aplikacji.</strong> Po przeczytaniu zamknij tę kartę i wróć do Project Weight Drop.</div>
 
-    <h2>5. Cele i podstawy prawne</h2>
-    <ul>
-        <li><strong>Wykonanie usługi lub działania przed zawarciem umowy</strong> — konto, synchronizacja, obliczenia, plany, dzienniki, Coach, wsparcie i dostęp PRO.</li>
-        <li><strong>Zgoda</strong> — dobrowolnie podawane dane dotyczące zdrowia i funkcje wymagające ich użycia; zgodę można wycofać.</li>
-        <li><strong>Obowiązek prawny</strong> — informacje, które musimy zachować zgodnie z przepisami podatkowymi, rachunkowymi albo żądaniem uprawnionego organu.</li>
-        <li><strong>Prawnie uzasadniony interes</strong> — zabezpieczenie usługi, zapobieganie oszustwom, diagnostyka, obsługa roszczeń i poprawa niezawodności, z poszanowaniem praw użytkownika.</li>
-    </ul>
+        <section class="panel summary">
+            <h2 style="margin-top:0">Najważniejsze informacje</h2>
+            <p>Project Weight Drop zapisuje dane potrzebne do konta, planowania żywienia, śledzenia postępów, funkcji bezpieczeństwa i obsługi użytkownika. Nie sprzedajemy danych osobowych i nie używamy reklamowych identyfikatorów śledzących.</p>
+            <div class="summary-grid">
+                <div class="summary-item"><strong>Kontrola użytkownika</strong>Dane podajesz w aplikacji i możesz usunąć konto wraz z danymi.</div>
+                <div class="summary-item"><strong>Dane chronione</strong>Połączenia są szyfrowane, a dostęp do rekordów jest ograniczony do konta użytkownika.</div>
+                <div class="summary-item"><strong>AI z ujawnieniem</strong>Funkcje AI mogą przekazywać niezbędny kontekst do Google Gemini.</div>
+            </div>
+        </section>
 
-    <h2>6. AI i automatyczne obliczenia</h2>
-    <p>Project Weight Drop korzysta z algorytmów obliczeniowych, Safety Engine oraz Google Gemini. Do Gemini mogą zostać przekazane: treść wiadomości oraz wybrane dane profilu, celu, preferencji, alergii, planu i postępów potrzebne do przygotowania odpowiedzi. Nie należy wpisywać w rozmowie danych, które nie są potrzebne do uzyskania odpowiedzi.</p>
-    <p>Wyniki AI i obliczeń mają charakter pomocniczy. Nie wywołują skutków prawnych ani podobnie istotnych skutków dla użytkownika i nie zastępują decyzji lekarza, dietetyka ani innego uprawnionego specjalisty.</p>
+        <section class="panel">
+            <h2 style="margin-top:0">1. Administrator i kontakt</h2>
+            <p>Administratorem danych jest <strong>Przemysław Wosik, działający pod marką Project Weight Drop</strong>.</p>
+            <p>Kontakt w sprawach prywatności: <a href="mailto:przemaladietexpert@gmail.com">przemaladietexpert@gmail.com</a></p>
+        </section>
 
-    <h2>7. Skaner kodów i dane produktów</h2>
-    <p>Skanowanie kodu odbywa się przez Google Code Scanner w usługach Google Play. Aplikacja nie żąda bezpośredniego uprawnienia do aparatu i otrzymuje wynik w postaci kodu. Przetwarzanie obrazu odbywa się na urządzeniu. Sam kod produktu może być wysłany do serwera i Open Food Facts w celu znalezienia informacji o produkcie. Wyszukiwane nazwy produktów mogą być kierowane do USDA FoodData Central.</p>
-    <p>Dane katalogowe produktu mogą zostać zachowane jako wspólny rekord niepowiązany z konkretnym kontem użytkownika.</p>
+        <h2>2. Zakres polityki</h2>
+        <p>Polityka dotyczy aplikacji Android Project Weight Drop, konta użytkownika, usług serwerowych aplikacji oraz stron służących do obsługi prywatności i usuwania konta. Aplikacja jest przeznaczona dla osób pełnoletnich — profil wymaga wieku co najmniej 18 lat.</p>
 
-    <h2>8. Powiadomienia i uprawnienia urządzenia</h2>
-    <p>Aplikacja korzysta z internetu i może poprosić o zgodę na powiadomienia. Powiadomienia dotyczą m.in. przypomnień o wodzie i nowych wiadomości wsparcia. Ustawienia można zmienić w aplikacji lub w ustawieniach Androida. Aplikacja nie żąda dostępu do lokalizacji, kontaktów ani mikrofonu.</p>
+        <h2>3. Jakie dane przetwarzamy</h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Kategoria</th><th>Przykłady</th><th>Cel</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Konto</strong></td><td>Adres e-mail, identyfikator konta, status potwierdzenia e-mail i znaczniki czasu. Hasło obsługuje Supabase Auth; nie mamy dostępu do jego jawnej treści.</td><td>Rejestracja, logowanie, synchronizacja i bezpieczeństwo konta.</td></tr>
+                    <tr><td><strong>Profil i cele</strong></td><td>Wiek, płeć używana do obliczeń, wzrost, masa obecna i docelowa, aktywność, treningi, typ diety, liczba posiłków, budżet i główne wyzwanie.</td><td>Obliczenia energetyczne, personalizacja i tworzenie planu.</td></tr>
+                    <tr><td><strong>Żywienie</strong></td><td>Alergie i nietolerancje, produkty lubiane i wykluczone, limity gotowania, jadłospisy, zamiany posiłków, dziennik jedzenia i wartości odżywcze.</td><td>Tworzenie bezpieczniejszych propozycji posiłków i prowadzenie dziennika.</td></tr>
+                    <tr><td><strong>Postępy i samopoczucie</strong></td><td>Waga, woda, kroki, obwody ciała, ciśnienie i puls, notatki, samopoczucie, głód, energia, sen, Check In i cele z datą.</td><td>Wykresy, podsumowania, kontrola realizacji celu i dopasowanie wskazówek.</td></tr>
+                    <tr><td><strong>Dane bezpieczeństwa</strong></td><td>Informacje o ciąży, karmieniu piersią, ryzyku zaburzeń odżywiania oraz stosowaniu leków mogących powodować hipoglikemię lub leków SGLT2.</td><td>Ograniczenie lub zablokowanie automatycznych zmian, gdy funkcja może być nieodpowiednia.</td></tr>
+                    <tr><td><strong>Komunikacja i AI</strong></td><td>Wiadomości do Coacha, pamięć i kontekst rozmowy, wiadomości wsparcia, zgłoszenia treści AI oraz odpowiedzi administratora lub trenera.</td><td>Odpowiedzi, ciągłość rozmowy, wsparcie i kontrola jakości.</td></tr>
+                    <tr><td><strong>Zakupy</strong></td><td>Identyfikator produktu, token zakupu, stan i okres subskrypcji oraz powiązanie zakupu z kontem. Dane karty płatniczej obsługuje Google Play i nie trafiają do Project Weight Drop.</td><td>Weryfikacja dostępu PRO, przywracanie zakupów i przeciwdziałanie nadużyciom.</td></tr>
+                    <tr><td><strong>Dane techniczne</strong></td><td>Adres IP i informacje o żądaniu mogą pojawić się w krótkotrwałych logach dostawców; aplikacja zapisuje lokalnie ustawienia powiadomień i identyfikatory ostatnio pokazanych wiadomości.</td><td>Działanie usługi, diagnostyka, bezpieczeństwo i powiadomienia.</td></tr>
+                </tbody>
+            </table>
+        </div>
 
-    <h2>9. Odbiorcy i dostawcy usług</h2>
-    <p>Dostęp do danych otrzymują wyłącznie upoważnione osoby obsługujące Project Weight Drop oraz dostawcy potrzebni do działania konkretnej funkcji:</p>
-    <ul>
-        <li><a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer">Supabase</a> — uwierzytelnianie, baza danych i funkcje serwerowe;</li>
-        <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google</a> — Gemini API, Google Play Billing, weryfikacja zakupów oraz Google Code Scanner;</li>
-        <li><a href="https://world.openfoodfacts.org/privacy" target="_blank" rel="noopener noreferrer">Open Food Facts</a> — wyszukiwanie żywności po kodzie kreskowym;</li>
-        <li><a href="https://www.usda.gov/privacy-policy" target="_blank" rel="noopener noreferrer">USDA FoodData Central</a> — referencyjne dane żywieniowe.</li>
-    </ul>
-    <p>Nie sprzedajemy ani nie wynajmujemy danych osobowych. Dostawcy mogą przetwarzać dane w różnych państwach. Gdy przetwarzanie obejmuje transfer poza Europejski Obszar Gospodarczy lub Wielką Brytanię, stosowane są mechanizmy przewidziane prawem i zabezpieczenia deklarowane przez danego dostawcę.</p>
+        <h2>4. Dane dotyczące zdrowia</h2>
+        <p>Niektóre informacje wymienione wyżej mogą stanowić dane dotyczące zdrowia. Są opcjonalne i są przetwarzane wyłącznie po aktywnym zapisaniu ich przez użytkownika w wybranej funkcji. Podstawą przetwarzania jest wyraźna zgoda użytkownika w zakresie wymaganym przez prawo. Zgodę można wycofać przez usunięcie danych, reset profilu, usunięcie konta lub kontakt z administratorem. Wycofanie zgody nie wpływa na zgodność wcześniejszego przetwarzania z prawem, ale może uniemożliwić działanie części funkcji.</p>
 
-    <h2>10. Jak długo przechowujemy dane</h2>
-    <ul>
-        <li>Dane konta i funkcji aplikacji przechowujemy przez czas posiadania konta.</li>
-        <li>Po usunięciu konta dane powiązane z identyfikatorem użytkownika są usuwane, z zastrzeżeniem danych, które muszą pozostać przez okres wymagany prawem, do rozliczeń, bezpieczeństwa, zapobiegania oszustwom lub ochrony roszczeń.</li>
-        <li>Techniczne logi dostawców są przechowywane zgodnie z ich zasadami i tylko przez okres potrzebny do bezpieczeństwa oraz diagnostyki.</li>
-        <li>Nieosobowe dane katalogowe żywności, których nie można powiązać z użytkownikiem, mogą pozostać po usunięciu konta.</li>
-    </ul>
+        <h2>5. Cele i podstawy prawne</h2>
+        <ul>
+            <li><strong>Wykonanie usługi lub działania przed zawarciem umowy</strong> — konto, synchronizacja, obliczenia, plany, dzienniki, Coach, wsparcie i dostęp PRO.</li>
+            <li><strong>Zgoda</strong> — dobrowolnie podawane dane dotyczące zdrowia i funkcje wymagające ich użycia; zgodę można wycofać.</li>
+            <li><strong>Obowiązek prawny</strong> — informacje, które musimy zachować zgodnie z przepisami podatkowymi, rachunkowymi albo żądaniem uprawnionego organu.</li>
+            <li><strong>Prawnie uzasadniony interes</strong> — zabezpieczenie usługi, zapobieganie oszustwom, diagnostyka, obsługa roszczeń i poprawa niezawodności, z poszanowaniem praw użytkownika.</li>
+        </ul>
 
-    <h2>11. Bezpieczeństwo</h2>
-    <p>Stosujemy szyfrowane połączenia HTTPS, uwierzytelnianie Supabase Auth, kontrolę dostępu i Row Level Security ograniczające dostęp do danych zalogowanego użytkownika. Dostęp administracyjny jest ograniczony do zadań obsługi i bezpieczeństwa. Żaden sposób przechowywania danych nie zapewnia jednak absolutnego bezpieczeństwa.</p>
+        <h2>6. AI i automatyczne obliczenia</h2>
+        <p>Project Weight Drop korzysta z algorytmów obliczeniowych, Safety Engine oraz Google Gemini. Do Gemini mogą zostać przekazane: treść wiadomości oraz wybrane dane profilu, celu, preferencji, alergii, planu i postępów potrzebne do przygotowania odpowiedzi. Nie należy wpisywać w rozmowie danych, które nie są potrzebne do uzyskania odpowiedzi.</p>
+        <p>Wyniki AI i obliczeń mają charakter pomocniczy. Nie wywołują skutków prawnych ani podobnie istotnych skutków dla użytkownika i nie zastępują decyzji lekarza, dietetyka ani innego uprawnionego specjalisty.</p>
 
-    <h2 id="twoje-prawa">12. Twoje prawa</h2>
-    <p>W zależności od właściwych przepisów możesz żądać dostępu do danych, otrzymania kopii, sprostowania, usunięcia, ograniczenia przetwarzania, przeniesienia danych, wnieść sprzeciw oraz wycofać zgodę. Masz również prawo złożyć skargę do właściwego organu ochrony danych.</p>
-    <p>Aby skorzystać z praw, napisz na <a href="mailto:przemaladietexpert@gmail.com">przemaladietexpert@gmail.com</a>. Możemy poprosić o potwierdzenie tożsamości, aby nie ujawnić danych osobie nieuprawnionej.</p>
+        <h2>7. Skaner kodów i dane produktów</h2>
+        <p>Skanowanie kodu odbywa się przez Google Code Scanner w usługach Google Play. Aplikacja nie żąda bezpośredniego uprawnienia do aparatu i otrzymuje wynik w postaci kodu. Przetwarzanie obrazu odbywa się na urządzeniu. Sam kod produktu może być wysłany do serwera i Open Food Facts w celu znalezienia informacji o produkcie. Wyszukiwane nazwy produktów mogą być kierowane do USDA FoodData Central.</p>
+        <p>Dane katalogowe produktu mogą zostać zachowane jako wspólny rekord niepowiązany z konkretnym kontem użytkownika.</p>
 
-    <h2 id="usuwanie">13. Usuwanie konta i danych</h2>
-    <p>W aplikacji otwórz profil, wybierz <strong>„Trwale usuń konto i dane”</strong>, wpisz <strong>DELETE</strong> i potwierdź. Bez dostępu do aplikacji skorzystaj z publicznej strony:</p>
-    <p><a class="button" href="delete-account.html" data-app-link>Instrukcja i prośba o usunięcie konta</a></p>
-    <div class="notice"><strong>Ważne:</strong> usunięcie konta Project Weight Drop nie anuluje subskrypcji Google Play. Subskrypcję należy anulować osobno w ustawieniach Google Play.</div>
+        <h2>8. Powiadomienia i uprawnienia urządzenia</h2>
+        <p>Aplikacja korzysta z internetu i może poprosić o zgodę na powiadomienia. Powiadomienia dotyczą m.in. przypomnień o wodzie i nowych wiadomości wsparcia. Ustawienia można zmienić w aplikacji lub w ustawieniach Androida. Aplikacja nie żąda dostępu do lokalizacji, kontaktów ani mikrofonu.</p>
 
-    <h2>14. Charakter aplikacji</h2>
-    <p>Project Weight Drop wspiera organizację żywienia i codziennych nawyków. Nie jest wyrobem medycznym, nie diagnozuje ani nie leczy i nie zastępuje porady lekarza lub innego uprawnionego specjalisty. W sytuacji zagrożenia zdrowia należy skontaktować się z personelem medycznym lub odpowiednimi służbami.</p>
+        <h2>9. Odbiorcy i dostawcy usług</h2>
+        <p>Dostęp do danych otrzymują wyłącznie upoważnione osoby obsługujące Project Weight Drop oraz dostawcy potrzebni do działania konkretnej funkcji:</p>
+        <ul>
+            <li><a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer">Supabase</a> — uwierzytelnianie, baza danych i funkcje serwerowe;</li>
+            <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google</a> — Gemini API, Google Play Billing, weryfikacja zakupów oraz Google Code Scanner;</li>
+            <li><a href="https://world.openfoodfacts.org/privacy" target="_blank" rel="noopener noreferrer">Open Food Facts</a> — wyszukiwanie żywności po kodzie kreskowym;</li>
+            <li><a href="https://www.usda.gov/privacy-policy" target="_blank" rel="noopener noreferrer">USDA FoodData Central</a> — referencyjne dane żywieniowe.</li>
+        </ul>
+        <p>Nie sprzedajemy ani nie wynajmujemy danych osobowych. Dostawcy mogą przetwarzać dane w różnych państwach. Gdy przetwarzanie obejmuje transfer poza Europejski Obszar Gospodarczy lub Wielką Brytanię, stosowane są mechanizmy przewidziane prawem i zabezpieczenia deklarowane przez danego dostawcę.</p>
 
-    <h2>15. Zmiany polityki</h2>
-    <p>Polityka może być aktualizowana, gdy zmieniają się funkcje, dostawcy lub wymagania prawne. Na tej stronie podamy nową datę aktualizacji. O istotnych zmianach możemy także poinformować w aplikacji.</p>
+        <h2>10. Jak długo przechowujemy dane</h2>
+        <ul>
+            <li>Dane konta i funkcji aplikacji przechowujemy przez czas posiadania konta.</li>
+            <li>Po usunięciu konta dane powiązane z identyfikatorem użytkownika są usuwane, z zastrzeżeniem danych, które muszą pozostać przez okres wymagany prawem, do rozliczeń, bezpieczeństwa, zapobiegania oszustwom lub ochrony roszczeń.</li>
+            <li>Techniczne logi dostawców są przechowywane zgodnie z ich zasadami i tylko przez okres potrzebny do bezpieczeństwa oraz diagnostyki.</li>
+            <li>Nieosobowe dane katalogowe żywności, których nie można powiązać z użytkownikiem, mogą pozostać po usunięciu konta.</li>
+        </ul>
+
+        <h2>11. Bezpieczeństwo</h2>
+        <p>Stosujemy szyfrowane połączenia HTTPS, uwierzytelnianie Supabase Auth, kontrolę dostępu i Row Level Security ograniczające dostęp do danych zalogowanego użytkownika. Dostęp administracyjny jest ograniczony do zadań obsługi i bezpieczeństwa. Żaden sposób przechowywania danych nie zapewnia jednak absolutnego bezpieczeństwa.</p>
+
+        <h2>12. Twoje prawa</h2>
+        <p>W zależności od właściwych przepisów możesz żądać dostępu do danych, otrzymania kopii, sprostowania, usunięcia, ograniczenia przetwarzania, przeniesienia danych, wnieść sprzeciw oraz wycofać zgodę. Masz również prawo złożyć skargę do właściwego organu ochrony danych.</p>
+        <p>Aby skorzystać z praw, napisz na <a href="mailto:przemaladietexpert@gmail.com">przemaladietexpert@gmail.com</a>. Możemy poprosić o potwierdzenie tożsamości, aby nie ujawnić danych osobie nieuprawnionej.</p>
+
+        <h2>13. Usuwanie konta i danych</h2>
+        <p>W aplikacji otwórz profil, wybierz <strong>„Trwale usuń konto i dane”</strong>, wpisz <strong>DELETE</strong> i potwierdź. Bez dostępu do aplikacji skorzystaj z publicznej strony:</p>
+        <p><a class="button" href="delete-account.html" data-legal-link="delete-account.html">Instrukcja i prośba o usunięcie konta</a></p>
+        <div class="notice"><strong>Ważne:</strong> usunięcie konta Project Weight Drop nie anuluje subskrypcji Google Play. Subskrypcję należy anulować osobno w ustawieniach Google Play.</div>
+
+        <h2>14. Charakter aplikacji</h2>
+        <p>Project Weight Drop wspiera organizację żywienia i codziennych nawyków. Nie jest wyrobem medycznym, nie diagnozuje ani nie leczy i nie zastępuje porady lekarza lub innego uprawnionego specjalisty. W sytuacji zagrożenia zdrowia należy skontaktować się z personelem medycznym lub odpowiednimi służbami.</p>
+
+        <h2>15. Zmiany polityki</h2>
+        <p>Polityka może być aktualizowana, gdy zmieniają się funkcje, dostawcy lub wymagania prawne. Na tej stronie podamy nową datę aktualizacji. O istotnych zmianach możemy także poinformować w aplikacji.</p>
+    </article>
+
+    <article data-language-page="en" hidden>
+        <p style="color:#ff6a00;font-weight:bold;text-transform:uppercase;letter-spacing:.1em">Android application</p>
+        <h1>Project Weight Drop Privacy Policy</h1>
+        <p class="muted">Effective from: 26 August 2026 · Last updated: 28 August 2026</p>
+        <div class="notice app-only"><strong>Document opened from the app.</strong> When you have finished reading, close this tab and return to Project Weight Drop.</div>
+
+        <section class="panel summary">
+            <h2 style="margin-top:0">Key information</h2>
+            <p>Project Weight Drop stores the data required for your account, nutrition planning, progress tracking, safety features and user support. We do not sell personal data or use advertising tracking identifiers.</p>
+            <div class="summary-grid">
+                <div class="summary-item"><strong>User control</strong>You provide data in the app and can delete your account together with its data.</div>
+                <div class="summary-item"><strong>Protected data</strong>Connections are encrypted and access to records is restricted to the user's account.</div>
+                <div class="summary-item"><strong>Disclosed AI use</strong>AI features may send the necessary context to Google Gemini.</div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2 style="margin-top:0">1. Data controller and contact</h2>
+            <p>The data controller is <strong>Przemysław Wosik, operating under the Project Weight Drop brand</strong>.</p>
+            <p>Privacy contact: <a href="mailto:przemaladietexpert@gmail.com">przemaladietexpert@gmail.com</a></p>
+        </section>
+
+        <h2>2. Scope of this policy</h2>
+        <p>This policy applies to the Project Weight Drop Android application, user accounts, the application's server services and the pages used to manage privacy and account deletion. The app is intended for adults — a profile requires an age of at least 18.</p>
+
+        <h2>3. Data we process</h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Category</th><th>Examples</th><th>Purpose</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Account</strong></td><td>Email address, account identifier, email confirmation status and timestamps. The password is handled by Supabase Auth; we do not have access to its plain-text content.</td><td>Registration, sign-in, synchronisation and account security.</td></tr>
+                    <tr><td><strong>Profile and goals</strong></td><td>Age, sex used for calculations, height, current and target weight, activity, workouts, diet type, number of meals, budget and main challenge.</td><td>Energy calculations, personalisation and plan creation.</td></tr>
+                    <tr><td><strong>Nutrition</strong></td><td>Allergies and intolerances, liked and excluded foods, cooking limits, meal plans, meal replacements, food diary and nutritional values.</td><td>Creating safer meal suggestions and maintaining the diary.</td></tr>
+                    <tr><td><strong>Progress and wellbeing</strong></td><td>Weight, water, steps, body measurements, blood pressure and pulse, notes, wellbeing, hunger, energy, sleep, Check In and dated goals.</td><td>Charts, summaries, goal monitoring and tailored guidance.</td></tr>
+                    <tr><td><strong>Safety data</strong></td><td>Information about pregnancy, breastfeeding, risk of eating disorders and use of medicines that may cause hypoglycaemia or SGLT2 medicines.</td><td>Restricting or blocking automatic changes when a feature may be unsuitable.</td></tr>
+                    <tr><td><strong>Communication and AI</strong></td><td>Messages to the Coach, conversation memory and context, support messages, AI content reports and responses from the administrator or coach.</td><td>Responses, conversation continuity, support and quality control.</td></tr>
+                    <tr><td><strong>Purchases</strong></td><td>Product identifier, purchase token, subscription status and period, and the link between the purchase and the account. Payment card data is handled by Google Play and is not received by Project Weight Drop.</td><td>Verifying PRO access, restoring purchases and preventing abuse.</td></tr>
+                    <tr><td><strong>Technical data</strong></td><td>IP address and request information may appear in short-lived provider logs; the app stores notification settings and identifiers of recently displayed messages locally.</td><td>Service operation, diagnostics, security and notifications.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>4. Health-related data</h2>
+        <p>Some information listed above may constitute health-related data. It is optional and is processed only after the user actively saves it in a selected feature. The legal basis for processing is the user's explicit consent to the extent required by law. Consent can be withdrawn by deleting the data, resetting the profile, deleting the account or contacting the controller. Withdrawal does not affect the lawfulness of earlier processing, but may prevent some features from working.</p>
+
+        <h2>5. Purposes and legal bases</h2>
+        <ul>
+            <li><strong>Performance of the service or steps before entering into a contract</strong> — account, synchronisation, calculations, plans, diaries, Coach, support and PRO access.</li>
+            <li><strong>Consent</strong> — voluntarily provided health-related data and features that require its use; consent can be withdrawn.</li>
+            <li><strong>Legal obligation</strong> — information we must retain under tax or accounting rules or at the request of an authorised authority.</li>
+            <li><strong>Legitimate interests</strong> — securing the service, preventing fraud, diagnostics, handling claims and improving reliability, while respecting user rights.</li>
+        </ul>
+
+        <h2>6. AI and automated calculations</h2>
+        <p>Project Weight Drop uses calculation algorithms, the Safety Engine and Google Gemini. The following may be sent to Gemini when needed to prepare a response: message content and selected profile, goal, preference, allergy, plan and progress data. Do not enter data in the conversation that is not needed to obtain a response.</p>
+        <p>AI and calculation results are supportive only. They do not produce legal effects or similarly significant effects for the user and do not replace decisions made by a doctor, dietitian or another qualified professional.</p>
+
+        <h2>7. Code scanner and product data</h2>
+        <p>Codes are scanned using Google Code Scanner within Google Play services. The app does not directly request camera permission and receives the result as a code. Image processing takes place on the device. The product code itself may be sent to the server and Open Food Facts to find product information. Product-name searches may be sent to USDA FoodData Central.</p>
+        <p>Product catalogue data may be retained as a shared record that is not linked to a specific user account.</p>
+
+        <h2>8. Notifications and device permissions</h2>
+        <p>The app uses the internet and may ask for permission to send notifications. Notifications include water reminders and new support messages. Settings can be changed in the app or in Android settings. The app does not request access to location, contacts or the microphone.</p>
+
+        <h2>9. Recipients and service providers</h2>
+        <p>Data is accessible only to authorised people supporting Project Weight Drop and to providers required for a specific feature:</p>
+        <ul>
+            <li><a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer">Supabase</a> — authentication, database and server functions;</li>
+            <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google</a> — Gemini API, Google Play Billing, purchase verification and Google Code Scanner;</li>
+            <li><a href="https://world.openfoodfacts.org/privacy" target="_blank" rel="noopener noreferrer">Open Food Facts</a> — barcode-based food lookup;</li>
+            <li><a href="https://www.usda.gov/privacy-policy" target="_blank" rel="noopener noreferrer">USDA FoodData Central</a> — reference nutrition data.</li>
+        </ul>
+        <p>We do not sell or rent personal data. Providers may process data in different countries. Where processing involves a transfer outside the European Economic Area or the United Kingdom, mechanisms provided by law and safeguards declared by the relevant provider are used.</p>
+
+        <h2>10. How long we retain data</h2>
+        <ul>
+            <li>We retain account and app-feature data for as long as the account exists.</li>
+            <li>After account deletion, data linked to the user identifier is deleted, except for data that must be retained for the period required by law or for billing, security, fraud prevention or the protection of legal claims.</li>
+            <li>Providers retain technical logs according to their own policies and only for the period needed for security and diagnostics.</li>
+            <li>Non-personal food catalogue data that cannot be linked to the user may remain after account deletion.</li>
+        </ul>
+
+        <h2>11. Security</h2>
+        <p>We use encrypted HTTPS connections, Supabase Auth authentication, access controls and Row Level Security to restrict access to the signed-in user's data. Administrative access is limited to support and security tasks. No method of data storage can, however, guarantee absolute security.</p>
+
+        <h2>12. Your rights</h2>
+        <p>Depending on applicable law, you may request access to your data, receive a copy, request rectification or deletion, restrict processing, request data portability, object to processing and withdraw consent. You also have the right to lodge a complaint with the competent data protection authority.</p>
+        <p>To exercise your rights, email <a href="mailto:przemaladietexpert@gmail.com">przemaladietexpert@gmail.com</a>. We may ask you to confirm your identity so that data is not disclosed to an unauthorised person.</p>
+
+        <h2>13. Account and data deletion</h2>
+        <p>In the app, open your profile, select <strong>“Permanently delete account and data”</strong>, enter <strong>DELETE</strong> and confirm. If you cannot access the app, use the public page:</p>
+        <p><a class="button" href="delete-account.html" data-legal-link="delete-account.html">Account deletion instructions and request</a></p>
+        <div class="notice"><strong>Important:</strong> deleting your Project Weight Drop account does not cancel a Google Play subscription. The subscription must be cancelled separately in Google Play settings.</div>
+
+        <h2>14. Nature of the application</h2>
+        <p>Project Weight Drop supports the organisation of nutrition and everyday habits. It is not a medical device, does not diagnose or treat conditions and is not a substitute for advice from a doctor or another qualified professional. In a health emergency, contact medical personnel or the appropriate emergency services.</p>
+
+        <h2>15. Changes to this policy</h2>
+        <p>This policy may be updated when features, providers or legal requirements change. A new update date will be shown on this page. We may also notify users about significant changes in the app.</p>
+    </article>
+
+    <article data-language-page="de" hidden>
+        <p style="color:#ff6a00;font-weight:bold;text-transform:uppercase;letter-spacing:.1em">Android-App</p>
+        <h1>Datenschutzerklärung von Project Weight Drop</h1>
+        <p class="muted">Gültig ab: 26. August 2026 · Zuletzt aktualisiert: 28. August 2026</p>
+        <div class="notice app-only"><strong>Dieses Dokument wurde aus der App geöffnet.</strong> Schließe nach dem Lesen diesen Tab und kehre zu Project Weight Drop zurück.</div>
+
+        <section class="panel summary">
+            <h2 style="margin-top:0">Wichtige Informationen</h2>
+            <p>Project Weight Drop speichert Daten, die für dein Konto, die Ernährungsplanung, die Fortschrittsverfolgung, Sicherheitsfunktionen und den Benutzersupport erforderlich sind. Wir verkaufen keine personenbezogenen Daten und verwenden keine Werbe-Tracking-IDs.</p>
+            <div class="summary-grid">
+                <div class="summary-item"><strong>Kontrolle durch den Nutzer</strong>Du gibst die Daten in der App ein und kannst dein Konto zusammen mit den Daten löschen.</div>
+                <div class="summary-item"><strong>Geschützte Daten</strong>Verbindungen sind verschlüsselt und der Zugriff auf Datensätze ist auf das jeweilige Benutzerkonto beschränkt.</div>
+                <div class="summary-item"><strong>Offengelegte KI-Nutzung</strong>KI-Funktionen können den erforderlichen Kontext an Google Gemini übermitteln.</div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2 style="margin-top:0">1. Verantwortlicher und Kontakt</h2>
+            <p>Verantwortlicher für die Datenverarbeitung ist <strong>Przemysław Wosik, tätig unter der Marke Project Weight Drop</strong>.</p>
+            <p>Kontakt für Datenschutzanfragen: <a href="mailto:przemaladietexpert@gmail.com">przemaladietexpert@gmail.com</a></p>
+        </section>
+
+        <h2>2. Geltungsbereich dieser Erklärung</h2>
+        <p>Diese Erklärung gilt für die Android-App Project Weight Drop, Benutzerkonten, die Serverdienste der App sowie die Seiten zur Verwaltung des Datenschutzes und zur Kontolöschung. Die App ist für Erwachsene bestimmt — für ein Profil ist ein Mindestalter von 18 Jahren erforderlich.</p>
+
+        <h2>3. Welche Daten wir verarbeiten</h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Kategorie</th><th>Beispiele</th><th>Zweck</th></tr></thead>
+                <tbody>
+                    <tr><td><strong>Konto</strong></td><td>E-Mail-Adresse, Konto-ID, Status der E-Mail-Bestätigung und Zeitstempel. Das Passwort wird von Supabase Auth verarbeitet; wir haben keinen Zugriff auf den Klartext.</td><td>Registrierung, Anmeldung, Synchronisierung und Kontosicherheit.</td></tr>
+                    <tr><td><strong>Profil und Ziele</strong></td><td>Alter, für Berechnungen verwendetes Geschlecht, Größe, aktuelles Gewicht und Zielgewicht, Aktivität, Training, Ernährungsform, Anzahl der Mahlzeiten, Budget und größte Herausforderung.</td><td>Energieberechnungen, Personalisierung und Planerstellung.</td></tr>
+                    <tr><td><strong>Ernährung</strong></td><td>Allergien und Unverträglichkeiten, bevorzugte und ausgeschlossene Lebensmittel, Kochzeitbegrenzungen, Speisepläne, Mahlzeitentausch, Ernährungstagebuch und Nährwerte.</td><td>Erstellung sichererer Mahlzeitenvorschläge und Führung des Tagebuchs.</td></tr>
+                    <tr><td><strong>Fortschritt und Wohlbefinden</strong></td><td>Gewicht, Wasser, Schritte, Körpermaße, Blutdruck und Puls, Notizen, Wohlbefinden, Hunger, Energie, Schlaf, Check In und Ziele mit Datum.</td><td>Diagramme, Zusammenfassungen, Zielkontrolle und angepasste Hinweise.</td></tr>
+                    <tr><td><strong>Sicherheitsdaten</strong></td><td>Informationen zu Schwangerschaft, Stillzeit, dem Risiko von Essstörungen sowie zur Einnahme von Medikamenten, die Hypoglykämie verursachen können, oder von SGLT2-Medikamenten.</td><td>Einschränkung oder Blockierung automatischer Änderungen, wenn eine Funktion ungeeignet sein könnte.</td></tr>
+                    <tr><td><strong>Kommunikation und KI</strong></td><td>Nachrichten an den Coach, Gesprächsspeicher und -kontext, Supportnachrichten, Meldungen zu KI-Inhalten sowie Antworten des Administrators oder Coaches.</td><td>Antworten, Gesprächskontinuität, Support und Qualitätskontrolle.</td></tr>
+                    <tr><td><strong>Käufe</strong></td><td>Produkt-ID, Kauf-Token, Status und Zeitraum des Abonnements sowie die Verknüpfung des Kaufs mit dem Konto. Zahlungskartendaten werden von Google Play verarbeitet und gelangen nicht an Project Weight Drop.</td><td>Prüfung des PRO-Zugangs, Wiederherstellung von Käufen und Missbrauchsprävention.</td></tr>
+                    <tr><td><strong>Technische Daten</strong></td><td>IP-Adresse und Anfrageinformationen können in kurzzeitig gespeicherten Protokollen der Anbieter erscheinen; die App speichert Benachrichtigungseinstellungen und IDs zuletzt angezeigter Nachrichten lokal.</td><td>Betrieb des Dienstes, Diagnose, Sicherheit und Benachrichtigungen.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>4. Gesundheitsbezogene Daten</h2>
+        <p>Einige der oben genannten Informationen können gesundheitsbezogene Daten darstellen. Sie sind optional und werden nur verarbeitet, nachdem der Nutzer sie aktiv in einer ausgewählten Funktion gespeichert hat. Rechtsgrundlage der Verarbeitung ist die ausdrückliche Einwilligung des Nutzers, soweit sie gesetzlich erforderlich ist. Die Einwilligung kann durch Löschen der Daten, Zurücksetzen des Profils, Löschen des Kontos oder Kontaktaufnahme mit dem Verantwortlichen widerrufen werden. Der Widerruf berührt nicht die Rechtmäßigkeit der früheren Verarbeitung, kann jedoch dazu führen, dass einige Funktionen nicht mehr verfügbar sind.</p>
+
+        <h2>5. Zwecke und Rechtsgrundlagen</h2>
+        <ul>
+            <li><strong>Erfüllung des Dienstes oder vorvertragliche Maßnahmen</strong> — Konto, Synchronisierung, Berechnungen, Pläne, Tagebücher, Coach, Support und PRO-Zugang.</li>
+            <li><strong>Einwilligung</strong> — freiwillig bereitgestellte gesundheitsbezogene Daten und Funktionen, die deren Nutzung erfordern; die Einwilligung kann widerrufen werden.</li>
+            <li><strong>Rechtliche Verpflichtung</strong> — Informationen, die wir aufgrund steuerlicher oder buchhalterischer Vorschriften oder auf Verlangen einer befugten Behörde aufbewahren müssen.</li>
+            <li><strong>Berechtigte Interessen</strong> — Sicherung des Dienstes, Betrugsprävention, Diagnose, Bearbeitung von Ansprüchen und Verbesserung der Zuverlässigkeit unter Wahrung der Nutzerrechte.</li>
+        </ul>
+
+        <h2>6. KI und automatische Berechnungen</h2>
+        <p>Project Weight Drop verwendet Berechnungsalgorithmen, die Safety Engine und Google Gemini. Folgende Daten können an Gemini übermittelt werden, soweit sie für die Erstellung einer Antwort erforderlich sind: Nachrichteninhalte sowie ausgewählte Profil-, Ziel-, Präferenz-, Allergie-, Plan- und Fortschrittsdaten. Gib im Gespräch keine Daten ein, die für die gewünschte Antwort nicht erforderlich sind.</p>
+        <p>Ergebnisse der KI und der Berechnungen dienen nur der Unterstützung. Sie entfalten keine rechtliche oder ähnlich erhebliche Wirkung für den Nutzer und ersetzen keine Entscheidung eines Arztes, Ernährungsberaters oder einer anderen qualifizierten Fachkraft.</p>
+
+        <h2>7. Codescanner und Produktdaten</h2>
+        <p>Codes werden über den Google Code Scanner innerhalb der Google Play-Dienste gescannt. Die App fordert nicht direkt die Kameraberechtigung an und erhält das Ergebnis als Code. Die Bildverarbeitung erfolgt auf dem Gerät. Der Produktcode selbst kann an den Server und an Open Food Facts gesendet werden, um Produktinformationen zu finden. Suchanfragen nach Produktnamen können an USDA FoodData Central übermittelt werden.</p>
+        <p>Produktkatalogdaten können als gemeinsamer Datensatz gespeichert bleiben, der keinem bestimmten Benutzerkonto zugeordnet ist.</p>
+
+        <h2>8. Benachrichtigungen und Geräteberechtigungen</h2>
+        <p>Die App nutzt das Internet und kann um Erlaubnis für Benachrichtigungen bitten. Dazu gehören unter anderem Wasser-Erinnerungen und neue Supportnachrichten. Die Einstellungen können in der App oder in den Android-Einstellungen geändert werden. Die App fordert keinen Zugriff auf Standort, Kontakte oder Mikrofon an.</p>
+
+        <h2>9. Empfänger und Dienstanbieter</h2>
+        <p>Zugriff auf Daten erhalten ausschließlich autorisierte Personen, die Project Weight Drop betreuen, sowie Anbieter, die für eine bestimmte Funktion erforderlich sind:</p>
+        <ul>
+            <li><a href="https://supabase.com/privacy" target="_blank" rel="noopener noreferrer">Supabase</a> — Authentifizierung, Datenbank und Serverfunktionen;</li>
+            <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google</a> — Gemini API, Google Play Billing, Kaufprüfung und Google Code Scanner;</li>
+            <li><a href="https://world.openfoodfacts.org/privacy" target="_blank" rel="noopener noreferrer">Open Food Facts</a> — Lebensmittelsuche per Barcode;</li>
+            <li><a href="https://www.usda.gov/privacy-policy" target="_blank" rel="noopener noreferrer">USDA FoodData Central</a> — Referenzdaten zu Nährwerten.</li>
+        </ul>
+        <p>Wir verkaufen oder vermieten keine personenbezogenen Daten. Anbieter können Daten in verschiedenen Ländern verarbeiten. Wenn die Verarbeitung eine Übermittlung außerhalb des Europäischen Wirtschaftsraums oder des Vereinigten Königreichs umfasst, werden gesetzlich vorgesehene Mechanismen und die vom jeweiligen Anbieter erklärten Schutzmaßnahmen verwendet.</p>
+
+        <h2>10. Speicherdauer</h2>
+        <ul>
+            <li>Konto- und App-Funktionsdaten speichern wir, solange das Konto besteht.</li>
+            <li>Nach der Kontolöschung werden Daten, die mit der Benutzer-ID verknüpft sind, gelöscht. Ausgenommen sind Daten, die für den gesetzlich vorgeschriebenen Zeitraum oder für Abrechnung, Sicherheit, Betrugsprävention oder die Sicherung von Rechtsansprüchen aufbewahrt werden müssen.</li>
+            <li>Technische Protokolle werden von den Anbietern gemäß deren Richtlinien und nur so lange gespeichert, wie es für Sicherheit und Diagnose erforderlich ist.</li>
+            <li>Nicht personenbezogene Lebensmittelkatalogdaten, die nicht mit dem Nutzer verknüpft werden können, dürfen nach der Kontolöschung bestehen bleiben.</li>
+        </ul>
+
+        <h2>11. Sicherheit</h2>
+        <p>Wir verwenden verschlüsselte HTTPS-Verbindungen, Supabase-Auth-Authentifizierung, Zugriffskontrollen und Row Level Security, um den Zugriff auf die Daten des angemeldeten Nutzers zu beschränken. Der administrative Zugriff ist auf Support- und Sicherheitsaufgaben begrenzt. Keine Methode der Datenspeicherung kann jedoch absolute Sicherheit gewährleisten.</p>
+
+        <h2>12. Deine Rechte</h2>
+        <p>Je nach anwendbarem Recht kannst du Auskunft über deine Daten und eine Kopie verlangen sowie Berichtigung, Löschung, Einschränkung der Verarbeitung und Datenübertragbarkeit beantragen, der Verarbeitung widersprechen und eine Einwilligung widerrufen. Du hast außerdem das Recht, eine Beschwerde bei der zuständigen Datenschutzbehörde einzureichen.</p>
+        <p>Um deine Rechte auszuüben, sende eine E-Mail an <a href="mailto:przemaladietexpert@gmail.com">przemaladietexpert@gmail.com</a>. Wir können eine Bestätigung deiner Identität verlangen, damit Daten nicht an eine unbefugte Person weitergegeben werden.</p>
+
+        <h2>13. Löschung von Konto und Daten</h2>
+        <p>Öffne in der App dein Profil, wähle <strong>„Konto und Daten dauerhaft löschen“</strong>, gib <strong>DELETE</strong> ein und bestätige. Wenn du keinen Zugriff auf die App hast, nutze die öffentliche Seite:</p>
+        <p><a class="button" href="delete-account.html" data-legal-link="delete-account.html">Anleitung und Antrag zur Kontolöschung</a></p>
+        <div class="notice"><strong>Wichtig:</strong> Durch das Löschen des Project-Weight-Drop-Kontos wird ein Google-Play-Abonnement nicht gekündigt. Das Abonnement muss separat in den Google-Play-Einstellungen gekündigt werden.</div>
+
+        <h2>14. Art der Anwendung</h2>
+        <p>Project Weight Drop unterstützt die Organisation der Ernährung und alltäglicher Gewohnheiten. Die App ist kein Medizinprodukt, stellt keine Diagnosen, behandelt keine Erkrankungen und ersetzt nicht die Beratung durch einen Arzt oder eine andere qualifizierte Fachkraft. Wende dich bei einem gesundheitlichen Notfall an medizinisches Personal oder den zuständigen Rettungsdienst.</p>
+
+        <h2>15. Änderungen dieser Erklärung</h2>
+        <p>Diese Erklärung kann aktualisiert werden, wenn sich Funktionen, Anbieter oder gesetzliche Anforderungen ändern. Das neue Aktualisierungsdatum wird auf dieser Seite angegeben. Über wesentliche Änderungen können wir zusätzlich in der App informieren.</p>
+    </article>
 </main>
 <script>
-    if (document.documentElement.classList.contains("app-entry")) {
-        document.querySelectorAll("[data-app-link]").forEach((link) => {
-            const target = new URL(link.getAttribute("href"), window.location.href);
-            target.searchParams.set("from", "app");
-            link.href = target.href;
+    (() => {
+        const supportedLanguages = ["pl", "en", "de"];
+        const pageCopy = {
+            pl: {
+                title: "Polityka prywatności aplikacji | Project Weight Drop",
+                description: "Polityka prywatności aplikacji Project Weight Drop: dane konta, dane żywieniowe i zdrowotne, AI, dostawcy usług oraz usuwanie konta.",
+                deleteAccount: "Usuń konto",
+                languageLabel: "Wybór języka"
+            },
+            en: {
+                title: "App Privacy Policy | Project Weight Drop",
+                description: "Project Weight Drop app privacy policy: account, nutrition and health-related data, AI, service providers and account deletion.",
+                deleteAccount: "Delete account",
+                languageLabel: "Choose language"
+            },
+            de: {
+                title: "Datenschutzerklärung der App | Project Weight Drop",
+                description: "Datenschutzerklärung der Project Weight Drop App: Konto-, Ernährungs- und Gesundheitsdaten, KI, Dienstanbieter und Kontolöschung.",
+                deleteAccount: "Konto löschen",
+                languageLabel: "Sprache wählen"
+            }
+        };
+
+        const params = new URLSearchParams(window.location.search);
+        const requestedLanguage = params.get("lang");
+        const initialLanguage = supportedLanguages.includes(requestedLanguage) ? requestedLanguage : "pl";
+
+        const setLanguage = (language, updateUrl) => {
+            const copy = pageCopy[language];
+            document.documentElement.lang = language;
+            document.title = copy.title;
+            document.getElementById("meta-description").setAttribute("content", copy.description);
+            document.getElementById("delete-account-link").textContent = copy.deleteAccount;
+            document.querySelector(".language-switch").setAttribute("aria-label", copy.languageLabel);
+
+            document.querySelectorAll("[data-language-page]").forEach((page) => {
+                page.hidden = page.dataset.languagePage !== language;
+            });
+            document.querySelectorAll("[data-language]").forEach((button) => {
+                button.setAttribute("aria-pressed", String(button.dataset.language === language));
+            });
+            document.querySelectorAll("[data-legal-link]").forEach((link) => {
+                const target = new URL(link.dataset.legalLink, window.location.href);
+                target.searchParams.set("lang", language);
+                if (document.documentElement.classList.contains("app-entry")) {
+                    target.searchParams.set("from", "app");
+                }
+                link.href = target.href;
+            });
+
+            if (updateUrl) {
+                const current = new URL(window.location.href);
+                current.searchParams.set("lang", language);
+                window.history.replaceState(null, "", current);
+            }
+        };
+
+        document.querySelectorAll("[data-language]").forEach((button) => {
+            button.addEventListener("click", () => setLanguage(button.dataset.language, true));
         });
-    }
+        setLanguage(initialLanguage, false);
+    })();
 </script>
 </body>
 </html>
