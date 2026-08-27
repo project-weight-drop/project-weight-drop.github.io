@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Project Weight Drop — aplikacja Android</title>
+    <meta name="description" content="Oficjalna strona aplikacji Project Weight Drop na Androida: planowanie żywienia, dziennik posiłków, postępy, wersja FREE i opcjonalne PRO.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#0b0b0b">
+    <link rel="canonical" href="https://projectweightdrop.com/app/">
+    <link rel="alternate" hreflang="pl" href="https://projectweightdrop.com/app/?lang=pl">
+    <link rel="alternate" hreflang="en" href="https://projectweightdrop.com/app/?lang=en">
+    <link rel="alternate" hreflang="de" href="https://projectweightdrop.com/app/?lang=de">
+    <link rel="alternate" hreflang="x-default" href="https://projectweightdrop.com/app/">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Project Weight Drop">
+    <meta property="og:title" content="Project Weight Drop — aplikacja Android">
+    <meta property="og:description" content="Planowanie żywienia, dziennik posiłków i codzienne postępy w wersji FREE oraz opcjonalnej PRO.">
+    <meta property="og:url" content="https://projectweightdrop.com/app/">
+    <meta property="og:image" content="https://projectweightdrop.com/tlo-hero-keto.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Project Weight Drop",
+      "url": "https://projectweightdrop.com/app/",
+      "operatingSystem": "Android 8.0 or newer",
+      "applicationCategory": "HealthApplication",
+      "softwareVersion": "0.14.0",
+      "description": "Aplikacja do planowania żywienia, prowadzenia dziennika posiłków oraz monitorowania codziennych postępów.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "EUR",
+        "description": "Wersja FREE z opcjonalną subskrypcją PRO w Google Play."
+      }
+    }
+    </script>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg:#0b0b0b;
+            --panel:#171717;
+            --panel-2:#202020;
+            --orange:#ff6a00;
+            --orange-soft:rgba(255,106,0,.13);
+            --text:#f7f7f7;
+            --muted:#b9b9b9;
+            --line:#333;
+            --green:#72d49a;
+        }
+        * { box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 Arial,Helvetica,sans-serif; }
+        a { color:inherit; }
+        button, a { -webkit-tap-highlight-color:transparent; }
+        .container { width:min(1120px,calc(100% - 32px)); margin:auto; }
+        header { position:sticky; top:0; z-index:10; border-bottom:1px solid var(--line); background:rgba(11,11,11,.94); backdrop-filter:blur(12px); }
+        .nav { min-height:72px; display:flex; align-items:center; justify-content:space-between; gap:18px; }
+        .brand { font-size:19px; font-weight:800; letter-spacing:-.03em; white-space:nowrap; }
+        .brand span { color:var(--orange); }
+        .languages { display:flex; gap:6px; }
+        .lang { min-width:42px; min-height:42px; border:1px solid var(--line); border-radius:8px; background:#141414; color:var(--muted); font-weight:700; cursor:pointer; }
+        .lang[aria-pressed="true"] { border-color:var(--orange); color:#fff; background:var(--orange-soft); }
+        .hero { overflow:hidden; background:radial-gradient(circle at 80% 25%,rgba(255,106,0,.17),transparent 30%); }
+        .hero-grid { min-height:660px; display:grid; grid-template-columns:minmax(0,1.08fr) minmax(330px,.92fr); align-items:center; gap:64px; padding:66px 0; }
+        .eyebrow { margin:0 0 14px; color:var(--orange); font-size:13px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; }
+        h1 { margin:0; max-width:720px; font-size:clamp(42px,6vw,72px); line-height:1.02; letter-spacing:-.045em; }
+        .lead { max-width:660px; margin:24px 0 0; color:var(--muted); font-size:clamp(18px,2.2vw,22px); }
+        .badges { display:flex; flex-wrap:wrap; gap:9px; margin:25px 0; }
+        .badge { padding:8px 12px; border:1px solid var(--line); border-radius:999px; color:#ddd; background:#121212; font-size:13px; font-weight:700; }
+        .actions { display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; }
+        .button { display:inline-flex; min-height:50px; align-items:center; justify-content:center; padding:12px 20px; border:1px solid var(--orange); border-radius:8px; background:var(--orange); color:white; text-decoration:none; font-weight:800; }
+        .button.secondary { background:transparent; color:var(--orange); }
+        .availability { margin:18px 0 0; color:var(--muted); font-size:14px; }
+        .phone { width:min(100%,360px); margin:auto; padding:12px; border:1px solid #444; border-radius:36px; background:#050505; box-shadow:0 28px 70px rgba(0,0,0,.55); }
+        .phone-screen { min-height:590px; overflow:hidden; border-radius:26px; background:linear-gradient(180deg,#1d1d1d,#111); padding:25px 18px; }
+        .phone-top { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+        .phone-logo { color:var(--orange); font-weight:900; }
+        .avatar { width:32px; height:32px; border-radius:50%; background:var(--orange-soft); border:1px solid var(--orange); }
+        .phone h2 { margin:0 0 4px; font-size:24px; }
+        .phone-sub { margin:0 0 18px; color:#aaa; font-size:13px; }
+        .mock-card { margin-top:12px; padding:16px; border:1px solid #373737; border-radius:12px; background:#202020; }
+        .mock-label { color:#aaa; font-size:11px; text-transform:uppercase; letter-spacing:.08em; }
+        .mock-value { display:block; margin-top:5px; font-size:23px; font-weight:800; }
+        .bar { height:7px; margin-top:13px; overflow:hidden; border-radius:99px; background:#383838; }
+        .bar span { display:block; width:68%; height:100%; background:var(--orange); }
+        .mock-row { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:12px; }
+        .mock-mini { padding:12px 7px; border-radius:10px; background:#191919; text-align:center; }
+        .mock-mini strong { display:block; color:var(--green); }
+        .trust { border-block:1px solid var(--line); background:#111; }
+        .trust-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; padding:22px 0; }
+        .trust-item { color:#d8d8d8; text-align:center; font-weight:700; }
+        section.content { padding:84px 0; }
+        section.content.alt { background:#111; }
+        .section-head { max-width:720px; margin-bottom:34px; }
+        .section-head h2 { margin:0; font-size:clamp(32px,4.5vw,48px); line-height:1.08; letter-spacing:-.035em; }
+        .section-head p { margin:14px 0 0; color:var(--muted); font-size:18px; }
+        .grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+        .card { padding:24px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+        .card h3 { margin:0 0 9px; font-size:20px; }
+        .card p { margin:0; color:var(--muted); }
+        .number { display:inline-flex; width:34px; height:34px; align-items:center; justify-content:center; margin-bottom:18px; border-radius:9px; background:var(--orange-soft); color:var(--orange); font-weight:900; }
+        .diets .card { border-top:3px solid var(--orange); }
+        .macro { display:block; margin-top:14px; color:#fff; font-size:13px; font-weight:800; }
+        .tiers { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+        .tier { padding:30px; border:1px solid var(--line); border-radius:14px; background:var(--panel); }
+        .tier.pro { border-color:rgba(255,106,0,.7); background:linear-gradient(145deg,var(--orange-soft),var(--panel)); }
+        .tier-name { color:var(--orange); font-weight:900; letter-spacing:.1em; }
+        .tier h3 { margin:8px 0 18px; font-size:28px; }
+        .tier ul { margin:0; padding:0; list-style:none; }
+        .tier li { position:relative; padding:8px 0 8px 28px; color:#ddd; }
+        .tier li::before { content:"✓"; position:absolute; left:0; color:var(--green); font-weight:900; }
+        .tier-note { margin:18px 0 0; color:var(--muted); font-size:14px; }
+        .safety { display:grid; grid-template-columns:1.15fr .85fr; gap:20px; }
+        .notice { padding:28px; border-left:4px solid var(--orange); border-radius:0 12px 12px 0; background:var(--orange-soft); }
+        .notice h2 { margin:0 0 12px; }
+        .notice p { margin:0; color:#ddd; }
+        .legal { padding:28px; border:1px solid var(--line); border-radius:12px; background:var(--panel); }
+        .legal h2 { margin:0 0 12px; }
+        .legal-links { display:flex; flex-direction:column; gap:10px; }
+        .legal a { color:var(--orange); font-weight:700; }
+        .release { text-align:center; }
+        .release-box { max-width:760px; margin:auto; padding:38px; border:1px solid var(--line); border-radius:16px; background:linear-gradient(145deg,var(--orange-soft),var(--panel)); }
+        .release-box h2 { margin:0; font-size:clamp(30px,4vw,44px); }
+        .release-box p { color:var(--muted); }
+        footer { border-top:1px solid var(--line); padding:30px 0; color:var(--muted); }
+        .footer-row { display:flex; justify-content:space-between; align-items:center; gap:20px; }
+        .footer-row a { color:var(--orange); }
+        @media (max-width:840px) {
+            .hero-grid { min-height:auto; grid-template-columns:1fr; gap:48px; padding:52px 0 70px; }
+            .phone { width:min(100%,340px); }
+            .trust-grid, .grid { grid-template-columns:1fr; }
+            .trust-item { text-align:left; }
+            .tiers, .safety { grid-template-columns:1fr; }
+        }
+        @media (max-width:520px) {
+            .container { width:min(100% - 24px,1120px); }
+            .nav { min-height:64px; }
+            .brand { font-size:17px; }
+            .lang { min-width:39px; min-height:39px; }
+            h1 { font-size:42px; }
+            .hero-grid { padding-top:40px; }
+            .actions { flex-direction:column; }
+            .button { width:100%; }
+            section.content { padding:64px 0; }
+            .card, .tier { padding:21px; }
+            .footer-row { flex-direction:column; align-items:flex-start; }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container nav">
+        <div class="brand">Project <span>Weight Drop</span></div>
+        <div class="languages" aria-label="Wybór języka">
+            <button class="lang" type="button" data-lang="pl" aria-pressed="true">PL</button>
+            <button class="lang" type="button" data-lang="en" aria-pressed="false">EN</button>
+            <button class="lang" type="button" data-lang="de" aria-pressed="false">DE</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="hero">
+        <div class="container hero-grid">
+            <div>
+                <p class="eyebrow" data-i18n="eyebrow">Oficjalna strona aplikacji Android</p>
+                <h1 data-i18n="heroTitle">Twój plan żywienia i codzienne postępy w jednym miejscu.</h1>
+                <p class="lead" data-i18n="heroLead">Project Weight Drop pomaga planować posiłki, prowadzić dziennik oraz obserwować wagę, nawodnienie i realizację własnych celów.</p>
+                <div class="badges">
+                    <span class="badge">Android 8.0+</span>
+                    <span class="badge" data-i18n="freeProBadge">FREE + opcjonalne PRO</span>
+                    <span class="badge" data-i18n="noAdsBadge">Bez reklam</span>
+                </div>
+                <div class="actions">
+                    <a class="button" href="#funkcje" data-i18n="featuresButton">Zobacz funkcje</a>
+                    <a class="button secondary" href="mailto:przemaladietexpert@gmail.com" data-i18n="supportButton">Kontakt techniczny</a>
+                </div>
+                <p class="availability" data-i18n="availability">Publikacja w Google Play jest w przygotowaniu. Oficjalny przycisk sklepu pojawi się tutaj po wydaniu.</p>
+            </div>
+            <div class="phone" aria-label="Podgląd interfejsu aplikacji">
+                <div class="phone-screen">
+                    <div class="phone-top"><span class="phone-logo">PROJECT WEIGHT DROP</span><span class="avatar"></span></div>
+                    <h2 data-i18n="mockHello">Dzień dobry</h2>
+                    <p class="phone-sub" data-i18n="mockSubtitle">Twój dzisiejszy plan</p>
+                    <div class="mock-card">
+                        <span class="mock-label" data-i18n="mockCalories">Kalorie</span>
+                        <span class="mock-value">1 420 / 2 050 kcal</span>
+                        <div class="bar"><span></span></div>
+                    </div>
+                    <div class="mock-row">
+                        <div class="mock-mini"><strong>112 g</strong><span data-i18n="protein">Białko</span></div>
+                        <div class="mock-mini"><strong>86 g</strong><span data-i18n="fat">Tłuszcz</span></div>
+                        <div class="mock-mini"><strong>74 g</strong><span data-i18n="carbs">Węgle</span></div>
+                    </div>
+                    <div class="mock-card">
+                        <span class="mock-label" data-i18n="mockProgress">Postęp</span>
+                        <span class="mock-value">−3,4 kg</span>
+                        <p class="phone-sub" style="margin:5px 0 0" data-i18n="mockTrend">od początku śledzenia</p>
+                    </div>
+                    <div class="mock-card">
+                        <span class="mock-label" data-i18n="mockToday">Dzisiaj</span>
+                        <div class="mock-row">
+                            <div class="mock-mini"><strong>1,8 l</strong><span data-i18n="water">Woda</span></div>
+                            <div class="mock-mini"><strong>7 240</strong><span data-i18n="steps">Kroki</span></div>
+                            <div class="mock-mini"><strong>3 / 4</strong><span data-i18n="meals">Posiłki</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="trust">
+        <div class="container trust-grid">
+            <div class="trust-item" data-i18n="trustPrivacy">Kontrola danych użytkownika</div>
+            <div class="trust-item" data-i18n="trustNoAds">Brak reklamowych trackerów</div>
+            <div class="trust-item" data-i18n="trustDelete">Usuwanie konta w aplikacji</div>
+        </div>
+    </div>
+
+    <section class="content" id="funkcje">
+        <div class="container">
+            <div class="section-head">
+                <p class="eyebrow" data-i18n="functionsEyebrow">Funkcje</p>
+                <h2 data-i18n="functionsTitle">Narzędzia do codziennej organizacji żywienia.</h2>
+                <p data-i18n="functionsLead">Aplikacja łączy plan, wykonanie i postępy, ale nie zastępuje decyzji lekarza ani dietetyka.</p>
+            </div>
+            <div class="grid">
+                <article class="card"><span class="number">01</span><h3 data-i18n="feature1Title">Cele i makroskładniki</h3><p data-i18n="feature1Text">Szacowanie energii i makro na podstawie zapisanych danych, aktywności, celu oraz wybranego stylu żywienia.</p></article>
+                <article class="card"><span class="number">02</span><h3 data-i18n="feature2Title">Plan i dziennik</h3><p data-i18n="feature2Text">Plan pokazuje, co możesz zjeść. Dziennik zapisuje to, co faktycznie zostało zjedzone — bez zmieniania zatwierdzonego planu.</p></article>
+                <article class="card"><span class="number">03</span><h3 data-i18n="feature3Title">Produkty i posiłki</h3><p data-i18n="feature3Text">Wyszukiwanie produktów, skanowanie kodów oraz zapisywanie kalorii i makroskładników posiłku.</p></article>
+                <article class="card"><span class="number">04</span><h3 data-i18n="feature4Title">Codzienne postępy</h3><p data-i18n="feature4Text">Waga, nawodnienie, kroki, obwody i podsumowania pomagające obserwować własną regularność.</p></article>
+                <article class="card"><span class="number">05</span><h3 data-i18n="feature5Title">Safety Profile</h3><p data-i18n="feature5Text">Dodatkowe pytania bezpieczeństwa ograniczają automatyczne funkcje, gdy mogą nie być odpowiednie.</p></article>
+                <article class="card"><span class="number">06</span><h3 data-i18n="feature6Title">Trzy języki</h3><p data-i18n="feature6Text">Interfejs aplikacji i najważniejsze informacje są dostępne po polsku, angielsku i niemiecku.</p></article>
+            </div>
+        </div>
+    </section>
+
+    <section class="content alt diets">
+        <div class="container">
+            <div class="section-head">
+                <p class="eyebrow" data-i18n="stylesEyebrow">Style żywienia</p>
+                <h2 data-i18n="stylesTitle">Keto, Low Carb i Balance.</h2>
+                <p data-i18n="stylesLead">Wybrany styl zmienia cel makroskładników. Wartości są punktem wyjścia i zależą od profilu oraz celu użytkownika.</p>
+            </div>
+            <div class="grid">
+                <article class="card"><h3>KETO</h3><p data-i18n="ketoText">Białko dobierane do masy referencyjnej, niski cel węglowodanów i tłuszcz uzupełniający pozostałą energię.</p><span class="macro" data-i18n="ketoMacro">Do 30 g węglowodanów dziennie</span></article>
+                <article class="card"><h3>LOW CARB</h3><p data-i18n="lowCarbText">Mniej węglowodanów bez zasad ścisłego Keto, z limitem chroniącym założenia planu.</p><span class="macro" data-i18n="lowCarbMacro">30% białko · 55% tłuszcz · 15% węglowodany</span></article>
+                <article class="card"><h3>BALANCE</h3><p data-i18n="balanceText">Zbilansowany rozkład makroskładników dla osób, które nie wybierają Keto ani Low Carb.</p><span class="macro" data-i18n="balanceMacro">30% białko · 30% tłuszcz · 40% węglowodany</span></article>
+            </div>
+        </div>
+    </section>
+
+    <section class="content">
+        <div class="container">
+            <div class="section-head">
+                <p class="eyebrow" data-i18n="versionsEyebrow">Wersje</p>
+                <h2 data-i18n="versionsTitle">Zacznij od FREE. PRO jest opcjonalne.</h2>
+                <p data-i18n="versionsLead">Zakup PRO będzie obsługiwany przez Google Play. Cena i warunki zostaną pokazane przed potwierdzeniem zakupu.</p>
+            </div>
+            <div class="tiers">
+                <article class="tier">
+                    <span class="tier-name">FREE</span>
+                    <h3 data-i18n="freeTitle">Podstawy do codziennego użycia</h3>
+                    <ul>
+                        <li data-i18n="free1">Profil, cel energii i makroskładniki</li>
+                        <li data-i18n="free2">Dziennik posiłków i wyszukiwanie produktów</li>
+                        <li data-i18n="free3">Waga, nawodnienie, kroki i postępy</li>
+                        <li data-i18n="free4">Ustawienia konta i kontrola danych</li>
+                    </ul>
+                </article>
+                <article class="tier pro">
+                    <span class="tier-name">PRO</span>
+                    <h3 data-i18n="proTitle">Rozszerzone planowanie i AI</h3>
+                    <ul>
+                        <li data-i18n="pro1">AI Coach z pamięcią kontekstu</li>
+                        <li data-i18n="pro2">Plan posiłków i zamiany posiłków</li>
+                        <li data-i18n="pro3">Listy zakupów powiązane z planem</li>
+                        <li data-i18n="pro4">Adaptacyjne analizy postępów</li>
+                    </ul>
+                    <p class="tier-note" data-i18n="proNote">PRO nie jest wymagane do korzystania z podstawowych funkcji aplikacji.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="content alt">
+        <div class="container safety">
+            <div class="notice">
+                <h2 data-i18n="medicalTitle">Informacja dotycząca zdrowia</h2>
+                <p data-i18n="medicalText">Project Weight Drop nie jest urządzeniem medycznym i nie diagnozuje, nie leczy, nie zapobiega ani nie wylecza żadnych chorób. Informacje i obliczenia mają charakter pomocniczy. Wyniki zależą od indywidualnych warunków, regularności i punktu początkowego.</p>
+            </div>
+            <div class="legal">
+                <h2 data-i18n="privacyTitle">Prywatność i konto</h2>
+                <p data-i18n="privacyText">Sprawdź, jakie dane są używane i jak trwale usunąć konto.</p>
+                <div class="legal-links">
+                    <a href="../privacy.html" data-app-link data-i18n="privacyLink">Polityka prywatności</a>
+                    <a href="../delete-account.html" data-app-link data-i18n="deleteLink">Usuwanie konta i danych</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="content release">
+        <div class="container">
+            <div class="release-box">
+                <p class="eyebrow" data-i18n="releaseEyebrow">Dostępność</p>
+                <h2 data-i18n="releaseTitle">Wydanie Google Play jest w przygotowaniu.</h2>
+                <p data-i18n="releaseText">Ta strona nie prowadzi do zewnętrznego pliku APK ani do zakupu poza Google Play. Po publikacji pojawi się tutaj oficjalny odnośnik do sklepu.</p>
+                <a class="button secondary" href="mailto:przemaladietexpert@gmail.com" data-i18n="contactButton">Napisz do pomocy technicznej</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="container footer-row">
+        <div><strong>Project Weight Drop</strong><br><span data-i18n="footerText">Oficjalna strona aplikacji Android</span></div>
+        <div><span data-i18n="contactLabel">Kontakt:</span> <a href="mailto:przemaladietexpert@gmail.com">przemaladietexpert@gmail.com</a></div>
+    </div>
+</footer>
+
+<script>
+    const translations = {
+        pl: {
+            title:"Project Weight Drop — aplikacja Android",
+            description:"Oficjalna strona aplikacji Project Weight Drop na Androida: planowanie żywienia, dziennik posiłków, postępy, wersja FREE i opcjonalne PRO.",
+            eyebrow:"Oficjalna strona aplikacji Android", heroTitle:"Twój plan żywienia i codzienne postępy w jednym miejscu.", heroLead:"Project Weight Drop pomaga planować posiłki, prowadzić dziennik oraz obserwować wagę, nawodnienie i realizację własnych celów.", freeProBadge:"FREE + opcjonalne PRO", noAdsBadge:"Bez reklam", featuresButton:"Zobacz funkcje", supportButton:"Kontakt techniczny", availability:"Publikacja w Google Play jest w przygotowaniu. Oficjalny przycisk sklepu pojawi się tutaj po wydaniu.",
+            mockHello:"Dzień dobry", mockSubtitle:"Twój dzisiejszy plan", mockCalories:"Kalorie", protein:"Białko", fat:"Tłuszcz", carbs:"Węgle", mockProgress:"Postęp", mockTrend:"od początku śledzenia", mockToday:"Dzisiaj", water:"Woda", steps:"Kroki", meals:"Posiłki",
+            trustPrivacy:"Kontrola danych użytkownika", trustNoAds:"Brak reklamowych trackerów", trustDelete:"Usuwanie konta w aplikacji",
+            functionsEyebrow:"Funkcje", functionsTitle:"Narzędzia do codziennej organizacji żywienia.", functionsLead:"Aplikacja łączy plan, wykonanie i postępy, ale nie zastępuje decyzji lekarza ani dietetyka.",
+            feature1Title:"Cele i makroskładniki", feature1Text:"Szacowanie energii i makro na podstawie zapisanych danych, aktywności, celu oraz wybranego stylu żywienia.", feature2Title:"Plan i dziennik", feature2Text:"Plan pokazuje, co możesz zjeść. Dziennik zapisuje to, co faktycznie zostało zjedzone — bez zmieniania zatwierdzonego planu.", feature3Title:"Produkty i posiłki", feature3Text:"Wyszukiwanie produktów, skanowanie kodów oraz zapisywanie kalorii i makroskładników posiłku.", feature4Title:"Codzienne postępy", feature4Text:"Waga, nawodnienie, kroki, obwody i podsumowania pomagające obserwować własną regularność.", feature5Title:"Safety Profile", feature5Text:"Dodatkowe pytania bezpieczeństwa ograniczają automatyczne funkcje, gdy mogą nie być odpowiednie.", feature6Title:"Trzy języki", feature6Text:"Interfejs aplikacji i najważniejsze informacje są dostępne po polsku, angielsku i niemiecku.",
+            stylesEyebrow:"Style żywienia", stylesTitle:"Keto, Low Carb i Balance.", stylesLead:"Wybrany styl zmienia cel makroskładników. Wartości są punktem wyjścia i zależą od profilu oraz celu użytkownika.", ketoText:"Białko dobierane do masy referencyjnej, niski cel węglowodanów i tłuszcz uzupełniający pozostałą energię.", ketoMacro:"Do 30 g węglowodanów dziennie", lowCarbText:"Mniej węglowodanów bez zasad ścisłego Keto, z limitem chroniącym założenia planu.", lowCarbMacro:"30% białko · 55% tłuszcz · 15% węglowodany", balanceText:"Zbilansowany rozkład makroskładników dla osób, które nie wybierają Keto ani Low Carb.", balanceMacro:"30% białko · 30% tłuszcz · 40% węglowodany",
+            versionsEyebrow:"Wersje", versionsTitle:"Zacznij od FREE. PRO jest opcjonalne.", versionsLead:"Zakup PRO będzie obsługiwany przez Google Play. Cena i warunki zostaną pokazane przed potwierdzeniem zakupu.", freeTitle:"Podstawy do codziennego użycia", free1:"Profil, cel energii i makroskładniki", free2:"Dziennik posiłków i wyszukiwanie produktów", free3:"Waga, nawodnienie, kroki i postępy", free4:"Ustawienia konta i kontrola danych", proTitle:"Rozszerzone planowanie i AI", pro1:"AI Coach z pamięcią kontekstu", pro2:"Plan posiłków i zamiany posiłków", pro3:"Listy zakupów powiązane z planem", pro4:"Adaptacyjne analizy postępów", proNote:"PRO nie jest wymagane do korzystania z podstawowych funkcji aplikacji.",
+            medicalTitle:"Informacja dotycząca zdrowia", medicalText:"Project Weight Drop nie jest urządzeniem medycznym i nie diagnozuje, nie leczy, nie zapobiega ani nie wylecza żadnych chorób. Informacje i obliczenia mają charakter pomocniczy. Wyniki zależą od indywidualnych warunków, regularności i punktu początkowego.", privacyTitle:"Prywatność i konto", privacyText:"Sprawdź, jakie dane są używane i jak trwale usunąć konto.", privacyLink:"Polityka prywatności (PL)", deleteLink:"Usuwanie konta i danych (PL)",
+            releaseEyebrow:"Dostępność", releaseTitle:"Wydanie Google Play jest w przygotowaniu.", releaseText:"Ta strona nie prowadzi do zewnętrznego pliku APK ani do zakupu poza Google Play. Po publikacji pojawi się tutaj oficjalny odnośnik do sklepu.", contactButton:"Napisz do pomocy technicznej", footerText:"Oficjalna strona aplikacji Android", contactLabel:"Kontakt:"
+        },
+        en: {
+            title:"Project Weight Drop — Android app", description:"Official Project Weight Drop Android app page: nutrition planning, meal diary, progress tracking, FREE and optional PRO.", eyebrow:"Official Android app page", heroTitle:"Your nutrition plan and daily progress in one place.", heroLead:"Project Weight Drop helps you plan meals, keep a diary, and follow weight, hydration and progress towards your own goals.", freeProBadge:"FREE + optional PRO", noAdsBadge:"No ads", featuresButton:"Explore features", supportButton:"Technical support", availability:"Google Play publication is in preparation. The official store button will appear here after release.",
+            mockHello:"Hello", mockSubtitle:"Your plan for today", mockCalories:"Calories", protein:"Protein", fat:"Fat", carbs:"Carbs", mockProgress:"Progress", mockTrend:"since tracking started", mockToday:"Today", water:"Water", steps:"Steps", meals:"Meals", trustPrivacy:"Control over your data", trustNoAds:"No advertising trackers", trustDelete:"Account deletion in the app",
+            functionsEyebrow:"Features", functionsTitle:"Tools for organising everyday nutrition.", functionsLead:"The app brings planning, logging and progress together, but does not replace decisions made by a doctor or dietitian.", feature1Title:"Goals and macros", feature1Text:"Energy and macro estimates based on saved data, activity, goal and selected nutrition style.", feature2Title:"Plan and diary", feature2Text:"The plan shows what you can eat. The diary records what you actually ate without changing the approved plan.", feature3Title:"Foods and meals", feature3Text:"Food search, barcode scanning, and meal calorie and macro logging.", feature4Title:"Daily progress", feature4Text:"Weight, hydration, steps, measurements and summaries help you follow your own consistency.", feature5Title:"Safety Profile", feature5Text:"Additional safety questions restrict automated features when they may not be appropriate.", feature6Title:"Three languages", feature6Text:"The app interface and key information are available in Polish, English and German.",
+            stylesEyebrow:"Nutrition styles", stylesTitle:"Keto, Low Carb and Balance.", stylesLead:"The selected style changes macro targets. Values are a starting point and depend on the user's profile and goal.", ketoText:"Protein based on reference weight, a low carbohydrate target and fat filling the remaining energy.", ketoMacro:"Up to 30 g carbohydrates per day", lowCarbText:"Fewer carbohydrates without strict Keto rules, with a limit protecting the plan's assumptions.", lowCarbMacro:"30% protein · 55% fat · 15% carbohydrates", balanceText:"A balanced macro distribution for people who do not choose Keto or Low Carb.", balanceMacro:"30% protein · 30% fat · 40% carbohydrates",
+            versionsEyebrow:"Versions", versionsTitle:"Start with FREE. PRO is optional.", versionsLead:"PRO purchases will be handled by Google Play. Price and terms will be shown before purchase confirmation.", freeTitle:"Everyday essentials", free1:"Profile, energy goal and macros", free2:"Meal diary and food search", free3:"Weight, hydration, steps and progress", free4:"Account settings and data controls", proTitle:"Advanced planning and AI", pro1:"AI Coach with context memory", pro2:"Meal plan and meal swaps", pro3:"Shopping lists connected to the plan", pro4:"Adaptive progress analysis", proNote:"PRO is not required to use the app's core features.",
+            medicalTitle:"Health information", medicalText:"Project Weight Drop is not a medical device and does not diagnose, treat, cure or prevent any medical condition. Information and calculations are supportive only. Results depend on individual circumstances, consistency and starting point.", privacyTitle:"Privacy and account", privacyText:"Learn which data is used and how to permanently delete your account.", privacyLink:"Privacy policy (PL)", deleteLink:"Account and data deletion (PL)", releaseEyebrow:"Availability", releaseTitle:"The Google Play release is in preparation.", releaseText:"This page does not link to an external APK or to purchases outside Google Play. The official store link will appear here after release.", contactButton:"Contact technical support", footerText:"Official Android app page", contactLabel:"Contact:"
+        },
+        de: {
+            title:"Project Weight Drop — Android-App", description:"Offizielle Seite der Project Weight Drop Android-App: Ernährungsplanung, Mahlzeitentagebuch, Fortschritte, FREE und optionales PRO.", eyebrow:"Offizielle Seite der Android-App", heroTitle:"Dein Ernährungsplan und täglicher Fortschritt an einem Ort.", heroLead:"Project Weight Drop hilft bei der Mahlzeitenplanung, beim Führen eines Tagebuchs und beim Beobachten von Gewicht, Flüssigkeitszufuhr und eigenen Zielen.", freeProBadge:"FREE + optionales PRO", noAdsBadge:"Keine Werbung", featuresButton:"Funktionen ansehen", supportButton:"Technischer Support", availability:"Die Veröffentlichung bei Google Play wird vorbereitet. Nach dem Release erscheint hier der offizielle Store-Button.",
+            mockHello:"Guten Tag", mockSubtitle:"Dein heutiger Plan", mockCalories:"Kalorien", protein:"Protein", fat:"Fett", carbs:"Kohlenhydrate", mockProgress:"Fortschritt", mockTrend:"seit Beginn der Aufzeichnung", mockToday:"Heute", water:"Wasser", steps:"Schritte", meals:"Mahlzeiten", trustPrivacy:"Kontrolle über deine Daten", trustNoAds:"Keine Werbe-Tracker", trustDelete:"Kontolöschung in der App",
+            functionsEyebrow:"Funktionen", functionsTitle:"Werkzeuge für die tägliche Ernährungsorganisation.", functionsLead:"Die App verbindet Planung, Protokoll und Fortschritt, ersetzt aber keine Entscheidungen von Ärzten oder Ernährungsfachkräften.", feature1Title:"Ziele und Makros", feature1Text:"Schätzung von Energie und Makros anhand gespeicherter Daten, Aktivität, Ziel und gewähltem Ernährungsstil.", feature2Title:"Plan und Tagebuch", feature2Text:"Der Plan zeigt, was du essen kannst. Das Tagebuch erfasst, was du tatsächlich gegessen hast, ohne den bestätigten Plan zu ändern.", feature3Title:"Lebensmittel und Mahlzeiten", feature3Text:"Lebensmittelsuche, Barcode-Scan sowie Erfassung von Kalorien und Makros einer Mahlzeit.", feature4Title:"Täglicher Fortschritt", feature4Text:"Gewicht, Flüssigkeitszufuhr, Schritte, Maße und Zusammenfassungen helfen dir, deine Regelmäßigkeit zu verfolgen.", feature5Title:"Safety Profile", feature5Text:"Zusätzliche Sicherheitsfragen begrenzen automatische Funktionen, wenn sie möglicherweise nicht geeignet sind.", feature6Title:"Drei Sprachen", feature6Text:"App-Oberfläche und wichtige Informationen sind auf Polnisch, Englisch und Deutsch verfügbar.",
+            stylesEyebrow:"Ernährungsstile", stylesTitle:"Keto, Low Carb und Balance.", stylesLead:"Der gewählte Stil verändert die Makroziele. Werte sind ein Ausgangspunkt und hängen von Profil und Ziel ab.", ketoText:"Protein nach Referenzgewicht, ein niedriges Kohlenhydratziel und Fett für die verbleibende Energie.", ketoMacro:"Bis zu 30 g Kohlenhydrate täglich", lowCarbText:"Weniger Kohlenhydrate ohne strikte Keto-Regeln, mit einem Limit zum Schutz der Planannahmen.", lowCarbMacro:"30% Protein · 55% Fett · 15% Kohlenhydrate", balanceText:"Eine ausgewogene Makroverteilung für Personen, die weder Keto noch Low Carb wählen.", balanceMacro:"30% Protein · 30% Fett · 40% Kohlenhydrate",
+            versionsEyebrow:"Versionen", versionsTitle:"Starte mit FREE. PRO ist optional.", versionsLead:"PRO-Käufe werden über Google Play abgewickelt. Preis und Bedingungen werden vor der Bestätigung angezeigt.", freeTitle:"Grundlagen für jeden Tag", free1:"Profil, Energieziel und Makros", free2:"Mahlzeitentagebuch und Lebensmittelsuche", free3:"Gewicht, Flüssigkeit, Schritte und Fortschritt", free4:"Kontoeinstellungen und Datenkontrolle", proTitle:"Erweiterte Planung und AI", pro1:"AI Coach mit Kontextgedächtnis", pro2:"Mahlzeitenplan und Austausch von Mahlzeiten", pro3:"Mit dem Plan verbundene Einkaufslisten", pro4:"Adaptive Fortschrittsanalyse", proNote:"PRO ist für die Grundfunktionen der App nicht erforderlich.",
+            medicalTitle:"Gesundheitshinweis", medicalText:"Project Weight Drop ist kein Medizinprodukt und diagnostiziert, behandelt, heilt oder verhindert keine Erkrankung. Informationen und Berechnungen dienen nur zur Unterstützung. Ergebnisse hängen von individuellen Umständen, Regelmäßigkeit und Ausgangspunkt ab.", privacyTitle:"Datenschutz und Konto", privacyText:"Erfahre, welche Daten verwendet werden und wie du dein Konto dauerhaft löschen kannst.", privacyLink:"Datenschutzerklärung (PL)", deleteLink:"Konto- und Datenlöschung (PL)", releaseEyebrow:"Verfügbarkeit", releaseTitle:"Die Veröffentlichung bei Google Play wird vorbereitet.", releaseText:"Diese Seite verlinkt weder eine externe APK noch Käufe außerhalb von Google Play. Nach der Veröffentlichung erscheint hier der offizielle Store-Link.", contactButton:"Technischen Support kontaktieren", footerText:"Offizielle Seite der Android-App", contactLabel:"Kontakt:"
+        }
+    };
+
+    const description = document.querySelector('meta[name="description"]');
+    const supported = ["pl", "en", "de"];
+
+    function setLanguage(lang, updateUrl) {
+        if (!supported.includes(lang)) lang = "pl";
+        const copy = translations[lang];
+        document.documentElement.lang = lang;
+        document.title = copy.title;
+        if (description) description.content = copy.description;
+        document.querySelectorAll("[data-i18n]").forEach((element) => {
+            const value = copy[element.dataset.i18n];
+            if (value) element.textContent = value;
+        });
+        document.querySelectorAll("[data-lang]").forEach((button) => {
+            button.setAttribute("aria-pressed", String(button.dataset.lang === lang));
+        });
+        if (updateUrl) {
+            const url = new URL(window.location.href);
+            if (lang === "pl") url.searchParams.delete("lang");
+            else url.searchParams.set("lang", lang);
+            history.replaceState(null, "", url);
+        }
+    }
+
+    document.querySelectorAll("[data-lang]").forEach((button) => {
+        button.addEventListener("click", () => setLanguage(button.dataset.lang, true));
+    });
+
+    const query = new URLSearchParams(window.location.search);
+    setLanguage(query.get("lang") || "pl", false);
+
+    if (query.get("from") === "app") {
+        document.querySelectorAll("[data-app-link]").forEach((link) => {
+            const target = new URL(link.getAttribute("href"), window.location.href);
+            target.searchParams.set("from", "app");
+            link.href = target.href;
+        });
+    }
+</script>
+</body>
+</html>
