@@ -669,7 +669,7 @@
         }
 
         /* =========================================
-           7. O MNIE (SPLIT & SLIDER)
+           7. O MNIE
         ========================================= */
         #o-mnie {
             background-color: #111;
@@ -695,78 +695,32 @@
             margin-bottom: 10px;
         }
 
-        .img-comp-container {
-            position: relative;
-            height: 600px; 
-            width: 100%;
-            border-radius: var(--border-radius);
+        .about-photos {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .about-photo {
+            margin: 0;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
             border: 1px solid #333;
+            border-radius: var(--border-radius);
+            background: var(--bg-card);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
 
-        @media screen and (max-width: 768px) {
-            .img-comp-container { height: 450px; }
-        }
-
-        .img-comp-img {
-            position: absolute;
-            width: auto;
-            height: auto;
-            overflow: hidden;
-            top: 0; left: 0; right: 0; bottom: 0;
-        }
-
-        .img-comp-img img {
+        .about-photo img {
             display: block;
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top center; 
+            height: auto;
         }
 
-        .img-comp-overlay {
-            width: 50%;
-            border-right: 4px solid var(--accent);
-            z-index: 2;
-        }
-
-        .img-comp-slider-button {
-            position: absolute;
-            z-index: 3;
-            cursor: ew-resize;
-            width: 46px;
-            height: 46px;
-            background-color: var(--accent);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 15px rgba(0,0,0,0.8);
+        .about-photo figcaption {
+            padding: 8px 12px;
+            text-align: center;
             font-weight: 800;
-            font-size: 20px;
-            border: 3px solid #fff;
         }
-
-        .img-comp-label {
-            position: absolute;
-            top: 15px;
-            background: rgba(10, 10, 10, 0.85);
-            color: #fff;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-weight: 800;
-            font-size: 0.9rem;
-            z-index: 4;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .img-comp-label.top-left { left: 15px; }
-        .img-comp-label.top-right { right: 15px; }
 
         /* =========================================
            8. METAMORFOZA
@@ -1173,16 +1127,15 @@
                     <p>Od 2010 roku nieprzerwanie pełnię funkcję Head Chefa, a w 2016 roku objąłem również stanowisko Catering Managera. Połączenie sportu, zaawansowanej dietetyki z kunsztem Szefa Kuchni sprawia, że Twoje posiłki Keto i Low Carb będą nie tylko perfekcyjnie wyliczone matematycznie, ale przede wszystkim – będą smakować jak dania z doskonałej restauracji.</p>
                 </div>
                 
-                <div class="img-comp-container">
-                    <div class="img-comp-img">
-                        <img src="kucharz-trener-2025.jpg" alt="Przemysław Wosik w 2025 roku jako ekspert od sylwetki" width="925" height="1701" loading="lazy" decoding="async">
-                        <div class="img-comp-label top-right">2025</div>
-                    </div>
-                    <div class="img-comp-img img-comp-overlay">
+                <div class="about-photos">
+                    <figure class="about-photo">
                         <img src="kucharz-2010.jpg" alt="Przemysław Wosik w 2010 roku jako Szef Kuchni" width="925" height="1700" loading="lazy" decoding="async">
-                        <div class="img-comp-label top-left">2010</div>
-                    </div>
-                    <div class="img-comp-slider-button">↔</div>
+                        <figcaption>2010</figcaption>
+                    </figure>
+                    <figure class="about-photo">
+                        <img src="kucharz-trener-2025.jpg" alt="Przemysław Wosik w 2025 roku jako ekspert od sylwetki" width="925" height="1701" loading="lazy" decoding="async">
+                        <figcaption>2025</figcaption>
+                    </figure>
                 </div>
             </div>
         </section>
@@ -1712,67 +1665,6 @@
             });
         });
 
-        // --- LOGIKA SUWAKA PRZED I PO ---
-        function initComparisons() {
-            var overlays = document.getElementsByClassName("img-comp-overlay");
-            for (var i = 0; i < overlays.length; i++) {
-                compareImages(overlays[i]);
-            }
-
-            function compareImages(img) {
-                var slider, clicked = 0, w, h;
-                w = img.offsetWidth;
-                h = img.offsetHeight;
-                img.style.width = (w / 2) + "px";
-
-                slider = img.parentElement.querySelector(".img-comp-slider-button");
-                slider.style.left = (w / 2) + "px";
-
-                slider.addEventListener("mousedown", slideReady);
-                window.addEventListener("mouseup", slideFinish);
-                slider.addEventListener("touchstart", slideReady, {passive: false});
-                window.addEventListener("touchend", slideFinish);
-
-                function slideReady(e) {
-                    e.preventDefault();
-                    clicked = 1;
-                    window.addEventListener("mousemove", slideMove);
-                    window.addEventListener("touchmove", slideMove, {passive: false});
-                }
-                
-                function slideFinish() { clicked = 0; }
-                
-                function slideMove(e) {
-                    var pos;
-                    if (clicked == 0) return false;
-                    pos = getCursorPos(e);
-                    if (pos < 0) pos = 0;
-                    if (pos > w) pos = w;
-                    slide(pos);
-                }
-                
-                function getCursorPos(e) {
-                    var a, x = 0;
-                    e = (e.changedTouches) ? e.changedTouches[0] : e;
-                    a = img.getBoundingClientRect();
-                    x = e.pageX - a.left;
-                    x = x - window.pageXOffset;
-                    return x;
-                }
-                
-                function slide(x) {
-                    img.style.width = x + "px";
-                    slider.style.left = img.offsetWidth + "px";
-                }
-                
-                window.addEventListener('resize', function() {
-                    w = img.parentElement.offsetWidth;
-                    img.style.width = (w / 2) + "px";
-                    slider.style.left = (w / 2) + "px";
-                });
-            }
-        }
-
         // --- LOGIKA KALKULATORA DIETETYCZNEGO ---
         function toggleDeficitField() {
             const goal = document.getElementById('goal').value;
@@ -1806,7 +1698,6 @@
 
         // --- INICJALIZACJA STRONY ---
         document.addEventListener("DOMContentLoaded", function() {
-            initComparisons();
             updateWaterCalc();
             toggleDeficitField();
             setLang('pl');
