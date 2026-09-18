@@ -298,20 +298,26 @@
         }
 
         .lang-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             background: transparent;
             border: 1px solid #393939;
-            color: #bcbcbc;
-            font: 700 0.68rem 'Montserrat', sans-serif;
             cursor: pointer;
-            padding: 3px 6px;
+            padding: 3px 5px;
             border-radius: 6px;
-            transition: color 0.2s, border-color 0.2s, background-color 0.2s;
-            line-height: 1;
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .lang-btn svg {
+            display: block;
+            width: 24px;
+            height: 16px;
+            border-radius: 2px;
         }
 
         .lang-btn:hover,
         .lang-btn.active {
-            color: var(--accent);
             border-color: rgba(255, 107, 0, 0.65);
             background-color: rgba(255, 107, 0, 0.1);
         }
@@ -1039,9 +1045,15 @@
                     <div class="logo">Project<span>Weight <em>Drop</em></span><small class="brand-tagline">KETO | LOW CARB | BALANCE</small></div>
                 </div>
                 <div class="lang-bar">
-                    <button class="lang-btn active" onclick="setLang('pl')" title="Polski" aria-label="Polski">PL</button>
-                    <button class="lang-btn" onclick="setLang('en')" title="English" aria-label="English">EN</button>
-                    <button class="lang-btn" onclick="setLang('de')" title="Deutsch" aria-label="Deutsch">DE</button>
+                    <button class="lang-btn active" onclick="setLang('pl')" title="Polski" aria-label="Polski">
+                        <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#fff" d="M0 0h60v20H0z"/><path fill="#dc143c" d="M0 20h60v20H0z"/></svg>
+                    </button>
+                    <button class="lang-btn" onclick="setLang('en')" title="English" aria-label="English">
+                        <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#012169" d="M0 0h60v40H0z"/><path stroke="#fff" stroke-width="10" d="M0 0l60 40M60 0L0 40"/><path stroke="#c8102e" stroke-width="4" d="M0 0l60 40M60 0L0 40"/><path stroke="#fff" stroke-width="14" d="M30 0v40M0 20h60"/><path stroke="#c8102e" stroke-width="8" d="M30 0v40M0 20h60"/></svg>
+                    </button>
+                    <button class="lang-btn" onclick="setLang('de')" title="Deutsch" aria-label="Deutsch">
+                        <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#000" d="M0 0h60v14H0z"/><path fill="#dd0000" d="M0 14h60v13H0z"/><path fill="#ffce00" d="M0 27h60v13H0z"/></svg>
+                    </button>
                     <a href="#o-mnie" class="about-btn" id="navAboutBtn">O mnie</a>
                 </div>
             </div>
