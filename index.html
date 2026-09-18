@@ -166,7 +166,7 @@
             position: fixed;
             top: 0;
             width: 100%;
-            background-color: rgba(10, 10, 10, 0.95);
+            background: linear-gradient(90deg, rgba(10, 10, 10, 0.99) 0%, rgba(10, 10, 10, 0.95) 64%, rgba(10, 10, 10, 0.77) 100%), url('/brand-header-background.jpg') right top / 460px auto no-repeat, #0a0a0a;
             backdrop-filter: blur(10px);
             z-index: 1000;
             border-bottom: 1px solid #222;
@@ -176,42 +176,43 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 80px;
+            height: 106px;
         }
 
         .logo-area {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            gap: 2px;
+            gap: 3px;
         }
 
         .brand-lockup {
             display: flex;
             align-items: center;
-            gap: 9px;
+            gap: 10px;
         }
 
         .brand-mark {
             display: block;
-            width: 42px;
-            height: 42px;
-            border-radius: 10px;
-            box-shadow: 0 0 0 1px rgba(255, 107, 0, 0.16);
+            flex: 0 0 58px;
+            width: 58px;
+            height: 68px;
+            background: url('/brand-lockup-source.jpg') -20px -21px / 205px 115px no-repeat;
+            mix-blend-mode: screen;
         }
 
         .logo {
-            font-size: 0.88rem;
-            font-weight: 600;
+            font-size: 0.94rem;
+            font-weight: 400;
             color: var(--text-main);
             letter-spacing: 0.02em;
-            line-height: 1.08;
+            line-height: 1.05;
         }
 
         .logo span {
             display: block;
-            margin-top: 2px;
-            font-size: 1.22rem;
+            margin-top: 3px;
+            font-size: 1.42rem;
             font-weight: 800;
             letter-spacing: -0.025em;
         }
@@ -219,6 +220,75 @@
         .logo em {
             color: var(--accent);
             font-style: normal;
+        }
+
+        .brand-tagline {
+            display: block;
+            margin-top: 6px;
+            color: #bdbdbd;
+            font-size: 0.55rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            white-space: nowrap;
+        }
+
+        main {
+            padding-top: 106px;
+        }
+
+        .app-promo {
+            background: linear-gradient(90deg, #181818, #101010);
+            border-bottom: 1px solid rgba(255, 107, 0, 0.25);
+        }
+
+        .app-promo-inner {
+            min-height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        .app-promo-copy small {
+            display: block;
+            color: var(--accent);
+            font-size: 0.62rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+        }
+
+        .app-promo-copy p {
+            color: #e8e8e8;
+            font-size: 0.88rem;
+            font-weight: 600;
+            line-height: 1.35;
+        }
+
+        .app-promo-link {
+            display: inline-flex;
+            flex: none;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 14px;
+            border: 1px solid rgba(255, 107, 0, 0.8);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 0.78rem;
+            font-weight: 800;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .app-promo-link:hover {
+            background: rgba(255, 107, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .app-promo-link img {
+            width: 22px;
+            height: 22px;
         }
 
         .lang-bar {
@@ -297,7 +367,7 @@
            3. HERO SECTION & STRIP STATYSTYK
         ========================================= */
         #hero {
-            padding-top: 130px;
+            padding-top: 40px;
             padding-bottom: 100px;
             text-align: center;
             min-height: 100vh;
@@ -902,8 +972,8 @@
             font-size: 0.8rem;
         }
 
-        @media screen and (min-width: 1100px) {
-            .nav-links { display: flex; align-items: center; gap: 20px; }
+        @media screen and (min-width: 1200px) {
+            .nav-links { display: flex; align-items: center; gap: 16px; }
             .burger { display: none; }
         }
 
@@ -926,11 +996,36 @@
             display: flex !important;
             flex-direction: column;
             position: absolute;
-            top: 80px; left: 0; width: 100%;
+            top: 106px; left: 0; width: 100%;
             background-color: var(--bg-card);
             padding: 30px 20px; gap: 20px;
             border-bottom: 1px solid #333;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        @media screen and (max-width: 420px) {
+            .brand-mark {
+                flex-basis: 52px;
+                width: 52px;
+                height: 62px;
+                background-size: 185px 104px;
+                background-position: -18px -19px;
+            }
+            .logo span { font-size: 1.26rem; }
+            .brand-tagline { font-size: 0.49rem; }
+            .app-promo-inner { gap: 10px; }
+            .app-promo-copy p { font-size: 0.76rem; }
+            .app-promo-link { padding: 8px 10px; font-size: 0.72rem; }
+        }
+
+        @media screen and (max-width: 360px) {
+            #hero h1 { font-size: 2rem; }
+            .reviews-stats-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+            .stat-item { padding: 12px 8px; }
+            .stat-number { font-size: 1.25rem; }
+            .stat-label { font-size: 0.67rem; letter-spacing: 0.4px; }
+            .calculator-box { padding: 24px 16px; }
+            .compare-grid, .trans-grid { grid-template-columns: minmax(0, 1fr) !important; }
         }
     </style>
 </head>
@@ -940,8 +1035,8 @@
         <div class="container navbar">
             <div class="logo-area">
                 <div class="brand-lockup">
-                    <img class="brand-mark" src="/brand-logo.png" alt="" width="42" height="42">
-                    <div class="logo">Project<span>Weight <em>Drop</em></span></div>
+                    <span class="brand-mark" aria-hidden="true"></span>
+                    <div class="logo">Project<span>Weight <em>Drop</em></span><small class="brand-tagline">KETO | LOW CARB | BALANCE</small></div>
                 </div>
                 <div class="lang-bar">
                     <button class="lang-btn active" onclick="setLang('pl')" title="Polski" aria-label="Polski">PL</button>
@@ -968,6 +1063,18 @@
     </header>
 
     <main>
+        <div class="app-promo">
+            <div class="container app-promo-inner">
+                <div class="app-promo-copy">
+                    <small data-i18n="appPromoLabel">APLIKACJA</small>
+                    <p data-i18n="appPromoText">Posiłki, waga i postępy — wszystko w jednej aplikacji.</p>
+                </div>
+                <a class="app-promo-link" href="https://play.google.com/store/apps/details?id=com.projectweightdrop.app" target="_blank" rel="noopener noreferrer">
+                    <img src="/google-play-mark.svg" alt="" width="22" height="22">
+                    <span data-i18n="navDownload">Google Play</span>
+                </a>
+            </div>
+        </div>
         <section id="hero">
             <div class="container">
                 <div class="reviews-stats-bar">
@@ -1547,8 +1654,8 @@
     <footer>
         <div class="container footer-content">
             <div class="brand-lockup">
-                <img class="brand-mark" src="/brand-logo.png" alt="" width="42" height="42" loading="lazy">
-                <div class="logo">Project<span>Weight <em>Drop</em></span></div>
+                <span class="brand-mark" aria-hidden="true"></span>
+                <div class="logo">Project<span>Weight <em>Drop</em></span><small class="brand-tagline">KETO | LOW CARB | BALANCE</small></div>
             </div>
             <div class="footer-links">
                 <a href="#kalkulator-sekcja">Kalkulator</a>
@@ -1710,6 +1817,8 @@
                 navReviews: "Opinie",
                 navBlog: "Blog",
                 navDownload: "Google Play",
+                appPromoLabel: "APLIKACJA",
+                appPromoText: "Posiłki, waga i postępy — wszystko w jednej aplikacji.",
                 navOrder: "Zamów plan",
                 // Hero
                 heroH1: "Odzyskaj kontrolę nad metabolizmem. Przestań się odchudzać, zacznij jeść.",
@@ -1836,6 +1945,8 @@
                 navReviews: "Reviews",
                 navBlog: "Blog",
                 navDownload: "Google Play",
+                appPromoLabel: "APP",
+                appPromoText: "Meals, weight and progress — all in one app.",
                 navOrder: "Order plan",
                 heroH1: "Regain control over your metabolism. Stop dieting, start eating.",
                 heroBenefit1: "🔥 Lose up to 5-10 kg in 8 weeks",
@@ -1951,6 +2062,8 @@
                 navReviews: "Bewertungen",
                 navBlog: "Blog",
                 navDownload: "Google Play",
+                appPromoLabel: "APP",
+                appPromoText: "Mahlzeiten, Gewicht und Fortschritte — alles in einer App.",
                 navOrder: "Plan bestellen",
                 heroH1: "Gewinne die Kontrolle über deinen Stoffwechsel zurück. Hör auf zu hungern, fang an zu essen.",
                 heroBenefit1: "🔥 Bis zu 5-10 kg in 8 Wochen abnehmen",
