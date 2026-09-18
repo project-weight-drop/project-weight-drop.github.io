@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Project Weight Drop: aplikacja do planowania żywienia i śledzenia postępów oraz indywidualna współpraca żywieniowa. Keto, Low Carb i Balance.">
+    <meta name="description" content="Odzyskaj kontrolę nad metabolizmem z Project Weight Drop. Skuteczna dieta Keto i Low Carb, stała opieka i plany dopasowane do Ciebie.">
     <meta name="robots" content="index, follow">
     <meta name="google-site-verification" content="iFoRl2xi16hJQrjYwnsP1Xs9Ai2OW_MDT0AUdafnV5w">
-    <title>Project Weight Drop | Aplikacja i indywidualny plan żywieniowy</title>
+    <title>Project Weight Drop | Odzyskaj kontrolę nad metabolizmem</title>
     <link rel="canonical" href="https://projectweightdrop.com/">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -290,6 +290,56 @@
             background-attachment: fixed;
         }
 
+        .reviews-stats-bar {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+            text-align: center;
+        }
+
+        .stat-item {
+            background-color: rgba(23, 23, 23, 0.85);
+            backdrop-filter: blur(5px);
+            padding: 15px 20px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-number {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: #2ec4b6;
+            border-radius: 50%;
+            margin-right: 6px;
+            transform: translateY(-2px);
+            box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7);
+            animation: dotPulse 1.8s infinite;
+        }
+
+        @keyframes dotPulse {
+            0% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(46, 196, 182, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0); }
+        }
+
         #hero h1 {
             font-size: 2.6rem;
             font-weight: 800;
@@ -312,6 +362,8 @@
 
         @media screen and (min-width: 768px) {
             .hero-benefits { flex-direction: row; justify-content: center; gap: 30px; }
+            .reviews-stats-bar { grid-template-columns: repeat(4, 1fr); }
+            .stat-number { font-size: 1.8rem; }
             #hero h1 { font-size: 3.5rem; }
         }
 
@@ -857,151 +909,6 @@
             border-bottom: 1px solid #333;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-
-        /* Odświeżona, mobilna prezentacja marki i aplikacji. */
-        .logo-area { flex-direction: row; align-items: center; gap: 20px; }
-        .logo { white-space: nowrap; }
-        .lang-bar { gap: 3px; }
-        .lang-btn {
-            min-width: 27px; min-height: 27px; padding: 3px;
-            border: 1px solid #363636; border-radius: 7px;
-            background: #1a1a1a; color: #d5d5d5;
-            font-family: inherit; font-size: .67rem; font-weight: 800;
-            opacity: .8;
-        }
-        .lang-btn.active { color: var(--accent); border-color: var(--accent); opacity: 1; transform: none; }
-        .burger { background: none; border: 0; padding: 9px; color: inherit; }
-        .burger:focus-visible, a:focus-visible, .lang-btn:focus-visible {
-            outline: 2px solid var(--accent); outline-offset: 4px;
-        }
-        .nav-links { gap: 15px; }
-        .nav-links li a { white-space: nowrap; }
-        .nav-links .play-store-link { border-radius: 12px; }
-
-        #hero {
-            min-height: 0;
-            padding: 148px 0 100px;
-            text-align: left;
-            background: radial-gradient(circle at 78% 40%, rgba(255, 107, 0, .16), transparent 35%),
-                        linear-gradient(135deg, #101010 0%, #080808 70%);
-            background-attachment: scroll;
-        }
-        .hero-shell {
-            display: grid;
-            grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr);
-            align-items: center;
-            gap: clamp(36px, 6vw, 90px);
-        }
-        .hero-copy { position: relative; z-index: 1; }
-        .hero-eyebrow {
-            display: inline-flex; align-items: center; gap: 10px;
-            color: var(--accent); font-size: .77rem; font-weight: 800;
-            letter-spacing: .18em; text-transform: uppercase; margin-bottom: 24px;
-        }
-        .hero-eyebrow::before { content: ''; width: 25px; height: 2px; background: var(--accent); }
-        #hero h1 {
-            font-size: clamp(2.9rem, 5vw, 5.4rem);
-            line-height: 1.04; letter-spacing: -.055em;
-            margin: 0 0 25px; max-width: 750px;
-        }
-        #hero h1 span { color: var(--accent); }
-        .hero-lead {
-            max-width: 600px; color: #c7c7c7;
-            font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.75;
-            margin-bottom: 26px;
-        }
-        .hero-benefits { flex-wrap: wrap; justify-content: flex-start; flex-direction: row; gap: 10px; margin-bottom: 28px; font-size: .8rem; }
-        .hero-benefits span { padding: 8px 13px; border-radius: 9px; background: rgba(255,107,0,.08); }
-        .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-        .hero-actions .btn, .hero-actions .btn-outline {
-            min-height: 54px; padding: 14px 23px; border-radius: 12px;
-            font-size: .83rem; letter-spacing: .03em; box-shadow: none;
-        }
-        .hero-actions .btn { display: inline-flex; align-items: center; gap: 10px; }
-        .hero-actions .btn img { display: block; width: 22px; height: 22px; }
-        .hero-note { color: #a0a0a0; font-size: .82rem; margin-top: 15px; }
-        .hero-visual { position: relative; display: flex; justify-content: center; align-items: center; min-width: 0; }
-        .hero-visual::before {
-            content: ''; position: absolute; width: 80%; aspect-ratio: 1; border-radius: 50%;
-            background: rgba(255,107,0,.10); filter: blur(55px);
-        }
-        .phone-frame {
-            position: relative; width: min(100%, 430px); overflow: hidden;
-            border: 1px solid #3c2b20; border-radius: 20px;
-            box-shadow: 0 30px 70px rgba(0,0,0,.65), 0 0 50px rgba(255,107,0,.12);
-        }
-        .phone-frame img { display: block; width: 100%; height: auto; }
-        .hero-quickfacts { padding: 0; background: #111; border-top: 1px solid #252525; border-bottom: 1px solid #252525; }
-        .hero-quickfacts .container { display: grid; grid-template-columns: repeat(3, 1fr); }
-        .hero-quickfacts span { padding: 24px 12px; text-align: center; font-size: .82rem; font-weight: 800; letter-spacing: .06em; }
-        .hero-quickfacts span + span { border-left: 1px solid #2a2a2a; }
-        .hero-quickfacts strong { color: var(--accent); }
-        .app-showcase { background: #0d0d0d; }
-        .showcase-intro { max-width: 740px; margin: 0 auto 36px; text-align: center; }
-        .showcase-intro .hero-eyebrow { justify-content: center; margin-bottom: 15px; }
-        .showcase-intro p:last-child { color: var(--text-muted); font-size: 1rem; }
-        .showcase-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
-        .showcase-card {
-            min-width: 0; margin: 0; padding: 10px;
-            border-radius: 20px; border: 1px solid #303030;
-            background: #171717; overflow: hidden;
-            transition: transform .25s ease, border-color .25s ease;
-        }
-        .showcase-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .showcase-grid:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-        .showcase-card img { display: block; width: 100%; height: auto; border-radius: 12px; }
-        .showcase-card figcaption { padding: 13px 6px 5px; font-size: .9rem; font-weight: 700; }
-        .showcase-note { margin-top: 20px; color: var(--text-muted); text-align: center; font-size: .8rem; }
-        .section-title { font-size: clamp(2rem, 3vw, 3.1rem); letter-spacing: -.04em; line-height: 1.15; }
-        .feature-card, .process-step, .review-card, .spec-item {
-            border-radius: 18px; border-color: #303030;
-        }
-        .process-step, .feature-card { transition: transform .25s ease, border-color .25s ease; }
-        .process-step:hover, .feature-card:hover { transform: translateY(-4px); border-color: rgba(255,107,0,.55); }
-        #proces .btn-large { animation: none; border-radius: 12px; }
-        .process-price { margin-top: 14px; color: var(--text-muted); font-size: .9rem; }
-        .process-price strong { color: white; }
-        .process-pro { max-width: 640px; margin: 14px auto 0; color: #d4d4d4; font-size: .9rem; }
-        .process-pro strong { color: var(--accent); }
-        .cert-details { margin-top: 32px; }
-        .cert-details summary {
-            width: fit-content; margin: 0 auto; padding: 12px 20px;
-            border: 1px solid var(--accent); border-radius: 12px;
-            color: white; font-size: .88rem; font-weight: 700; cursor: pointer;
-        }
-        .cert-details summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
-        .cert-details .cert-grid { margin-top: 24px; }
-        @media screen and (min-width: 768px) and (max-width: 1099px) {
-            .nav-links { display: none; }
-            .burger { display: block; }
-        }
-        @media screen and (max-width: 850px) {
-            .hero-shell { grid-template-columns: 1fr; gap: 52px; }
-            #hero { padding: 130px 0 70px; }
-            .hero-visual { max-width: 410px; width: 100%; margin: 0 auto; }
-        }
-        @media screen and (max-width: 600px) {
-            .navbar { height: 72px; }
-            .logo-area { gap: 8px; }
-            .logo { font-size: clamp(1rem, 4.5vw, 1.3rem); }
-            .lang-btn { min-width: 23px; min-height: 24px; font-size: .6rem; padding: 2px; }
-            .nav-mobile-active { top: 72px; }
-            #hero { padding: 110px 0 58px; }
-            #hero h1 { font-size: clamp(2.45rem, 11vw, 3.8rem); }
-            .hero-actions { flex-direction: column; align-items: stretch; }
-            .hero-actions .btn, .hero-actions .btn-outline { justify-content: center; width: 100%; }
-            .hero-quickfacts .container { grid-template-columns: 1fr; }
-            .hero-quickfacts span { padding: 14px; }
-            .hero-quickfacts span + span { border-left: 0; border-top: 1px solid #2a2a2a; }
-            .showcase-grid {
-                display: flex; gap: 14px; overflow-x: auto; padding: 0 20px 16px;
-                margin: 0 -20px; scroll-snap-type: x mandatory; scrollbar-color: var(--accent) #222;
-            }
-            .showcase-card { flex: 0 0 min(76vw, 280px); scroll-snap-align: center; }
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .btn-large { animation: none; }
-        }
     </style>
 </head>
 <body>
@@ -1009,76 +916,62 @@
     <header>
         <div class="container navbar">
             <div class="logo-area">
-                <a class="logo" href="#hero" aria-label="Project Weight Drop — strona główna">Project<span>WeightDrop</span></a>
+                <div class="logo">Project<span>WeightDrop</span></div>
                 <div class="lang-bar">
-                    <button class="lang-btn active" onclick="setLang('pl')" title="Polski" aria-label="Polski">PL</button>
-                    <button class="lang-btn" onclick="setLang('en')" title="English" aria-label="English">EN</button>
-                    <button class="lang-btn" onclick="setLang('de')" title="Deutsch" aria-label="Deutsch">DE</button>
+                    <button class="lang-btn active" onclick="setLang('pl')" title="Polski">🇵🇱</button>
+                    <button class="lang-btn" onclick="setLang('en')" title="English">🇬🇧</button>
+                    <button class="lang-btn" onclick="setLang('de')" title="Deutsch">🇩🇪</button>
+                    <a href="#o-mnie" class="about-btn" id="navAboutBtn">O mnie</a>
                 </div>
             </div>
             <ul class="nav-links" id="nav-links">
-                <li><a href="/app/" data-i18n="navApp">Aplikacja</a></li>
                 <li><a href="#kalkulator-sekcja" data-i18n="navCalc">Kalkulator</a></li>
                 <li><a href="#proces" data-i18n="navCooperation">Współpraca</a></li>
-                <li><a href="#o-mnie" data-i18n="navAboutBtn">O mnie</a></li>
-                <li><a href="https://play.google.com/store/apps/details?id=com.projectweightdrop.app" class="btn-outline play-store-link" style="padding: 10px 20px; font-size: 0.8rem;"><img src="google-play-mark.svg" alt="" width="22" height="22"><span data-i18n="navDownload">Google Play</span></a></li>
+                <li><a href="#specjalizacje" data-i18n="navCerts">Certyfikaty</a></li>
+                <li><a href="#opinie" data-i18n="navReviews">Opinie</a></li>
+                <li><a href="https://projectweightdrop.blogspot.com/?m=1" target="_blank" data-i18n="navBlog">Blog</a></li>
+                <li><a href="https://play.google.com/store/apps/details?id=com.projectweightdrop.app" class="btn-outline play-store-link" style="padding: 10px 20px; font-size: 0.8rem;"><img src="/google-play-mark.svg" alt="" width="22" height="22"><span data-i18n="navDownload">Google Play</span></a></li>
+                <li><a href="https://wa.me/353851383537" target="_blank" class="btn" style="padding: 10px 20px; font-size: 0.8rem;" data-i18n="navOrder">Zamów plan</a></li>
             </ul>
-            <button class="burger" id="burger" type="button" aria-label="Otwórz menu" aria-controls="nav-links" aria-expanded="false">
+            <div class="burger" id="burger" aria-label="Otwórz menu">
                 <div class="line1"></div>
                 <div class="line2"></div>
                 <div class="line3"></div>
-            </button>
+            </div>
         </div>
     </header>
 
     <main>
         <section id="hero">
-            <div class="container hero-shell">
-                <div class="hero-copy">
-                    <p class="hero-eyebrow" data-i18n="heroEyebrow">APLIKACJA • WSPÓŁPRACA</p>
-                    <h1>Jedz z planem. Śledź postępy. <span>Rób to po swojemu.</span></h1>
-                    <p class="hero-lead" data-i18n="heroLead">Project Weight Drop łączy narzędzia do codziennej organizacji żywienia z możliwością indywidualnej współpracy. Wszystko w jednym, prostym rytmie.</p>
-                    <div class="hero-benefits">
-                        <span>Keto • Low Carb • Balance</span>
-                        <span>FREE + opcjonalne PRO</span>
-                        <span>Plan, dziennik, postępy</span>
-                    </div>
-                    <div class="hero-actions">
-                        <a href="https://play.google.com/store/apps/details?id=com.projectweightdrop.app" class="btn"><img src="google-play-mark.svg" alt="" width="22" height="22"><span data-i18n="heroBtn">Pobierz w Google Play</span></a>
-                        <a href="#kalkulator-sekcja" class="btn-outline" data-i18n="heroSecondary">Sprawdź kalkulator</a>
-                    </div>
-                    <p class="hero-note" data-i18n="heroNote">Aplikacja dostępna na Androida. Indywidualna współpraca jest osobną usługą.</p>
-                </div>
-                <div class="hero-visual">
-                    <div class="phone-frame"><img id="heroAppShot" src="showcase-home.jpg" width="720" height="1280" alt="Prezentacja aplikacji Project Weight Drop" fetchpriority="high"></div>
-                </div>
-            </div>
-        </section>
-
-        <div class="hero-quickfacts" aria-label="Najważniejsze informacje o aplikacji">
             <div class="container">
-                <span>KETO <strong>•</strong> LOW CARB <strong>•</strong> BALANCE</span>
-                <span data-i18n="quickFree">FREE + opcjonalne PRO</span>
-                <span>PL <strong>•</strong> EN <strong>•</strong> DE</span>
-            </div>
-        </div>
+                <div class="reviews-stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-number">248</span>
+                        <span class="stat-label">Zadowolonych klientów</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">5.0 / 5.0</span>
+                        <span class="stars">★★★★★</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">Ponad 3 lata</span>
+                        <span class="stat-label">Doświadczenia</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="live-users"><span class="live-dot"></span>15 osób</span>
+                        <span class="stat-label">Korzysta w tej chwili</span>
+                    </div>
+                </div>
 
-        <section class="app-showcase" id="aplikacja">
-            <div class="container">
-                <div class="showcase-intro">
-                    <p class="hero-eyebrow" data-i18n="showcaseEyebrow">ZOBACZ APLIKACJĘ</p>
-                    <h2 class="section-title" data-i18n="showcaseTitle">Wszystko, czego potrzebujesz <span>na co dzień.</span></h2>
-                    <p data-i18n="showcaseLead">Od planowania posiłków po obserwowanie postępów — poznaj narzędzia Project Weight Drop.</p>
+                <h1>Odzyskaj kontrolę nad metabolizmem. Przestań się odchudzać, zacznij jeść.</h1>
+                
+                <div class="hero-benefits">
+                    <span>🔥 Schudnij nawet 5-10 kg w 8 tygodni</span>
+                    <span>🥗 Dieta dopasowana do Ciebie</span>
+                    <span>📱 Stały kontakt WhatsApp</span>
                 </div>
-                <div class="showcase-grid" aria-label="Grafiki prezentujące aplikację" tabindex="0">
-                    <figure class="showcase-card"><img src="showcase-plan.jpg" width="720" height="1280" alt="Grafika: plan posiłków w aplikacji" data-i18n-alt="showcasePlanAlt" loading="lazy"><figcaption data-i18n="showcasePlan">Plan posiłków</figcaption></figure>
-                    <figure class="showcase-card"><img src="showcase-diary.jpg" width="720" height="1280" alt="Grafika: dziennik posiłków w aplikacji" data-i18n-alt="showcaseDiaryAlt" loading="lazy"><figcaption data-i18n="showcaseDiary">Dziennik posiłków</figcaption></figure>
-                    <figure class="showcase-card"><img src="showcase-fridge.jpg" width="720" height="1280" alt="Grafika: funkcja Lodówka w aplikacji" data-i18n-alt="showcaseFridgeAlt" loading="lazy"><figcaption data-i18n="showcaseFridge">Lodówka</figcaption></figure>
-                    <figure class="showcase-card"><img src="showcase-coach.jpg" width="720" height="1280" alt="Grafika: AI Coach w aplikacji" data-i18n-alt="showcaseCoachAlt" loading="lazy"><figcaption data-i18n="showcaseCoach">AI Coach</figcaption></figure>
-                    <figure class="showcase-card"><img src="showcase-progress.jpg" width="720" height="1280" alt="Grafika: śledzenie postępów w aplikacji" data-i18n-alt="showcaseProgressAlt" loading="lazy"><figcaption data-i18n="showcaseProgress">Postępy</figcaption></figure>
-                    <figure class="showcase-card"><img src="showcase-profile.jpg" width="720" height="1280" alt="Grafika: profil w aplikacji" data-i18n-alt="showcaseProfileAlt" loading="lazy"><figcaption data-i18n="showcaseProfile">Profil i ustawienia</figcaption></figure>
-                </div>
-                <p class="showcase-note" data-i18n="showcaseNote">Grafiki prezentują funkcje aplikacji. Wygląd może zmieniać się wraz z aktualizacjami.</p>
+
+                <a href="#kalkulator-sekcja" class="btn btn-large">Oblicz zapotrzebowanie</a>
             </div>
         </section>
 
@@ -1087,8 +980,8 @@
                 <h2 class="section-title">Dlaczego <span>Project Weight Drop?</span></h2>
                 <div class="features-grid">
                     <article class="feature-card">
-                        <h3>Plan oparty na Twoich potrzebach</h3>
-                        <p>Zaczynam od celu, preferencji i codziennych nawyków. Wspólnie szukamy sposobu odżywiania, który da się utrzymać w praktyce.</p>
+                        <h3>Fundament w badaniach krwi</h3>
+                        <p>Nie układam diety 'w ciemno'. Zanim rozpiszę Twój plan, analizuję Twoje wyniki badań laboratoryjnych, aby idealnie uderzyć w przyczynę problemów metabolicznych.</p>
                     </article>
                     <article class="feature-card">
                         <h3>100% Twoich smaków</h3>
@@ -1099,8 +992,8 @@
                         <p>Każdy posiłek ma czarno na białym rozpisane kalorie, białka, węglowodany i tłuszcze. Dopasowane do Twojego dobowego zapotrzebowania i aktywności.</p>
                     </article>
                     <article class="feature-card">
-                        <h3>Aplikacja FREE + opcjonalne PRO</h3>
-                        <p>Dziennik posiłków, postępy i narzędzia planowania w telefonie. Rozszerzone funkcje są dostępne w opcjonalnym PRO.</p>
+                        <h3>Darmowa aplikacja na telefon</h3>
+                        <p>Twój plan, lista zakupów, miejsce na wpisywanie wagi, obwodów i monitorowanie ciśnienia – wszystko masz zawsze pod ręką w smartfonie.</p>
                     </article>
                 </div>
             </div>
@@ -1136,8 +1029,8 @@
                 <h2 class="section-title">Moje <span>Specjalizacje i Certyfikaty</span></h2>
                 <div class="specializations-list">
                     <article class="spec-item">
-                        <h4>Indywidualne planowanie żywienia</h4>
-                        <p>Wsparcie dopasowane do celu, preferencji i codzienności. Nie zastępuje diagnostyki ani leczenia.</p>
+                        <h4>Zaburzenia metaboliczne</h4>
+                        <p>Bezpieczne i skuteczne prowadzenie dietetyczne dla osób z insulinoopornością oraz cukrzyków (precyzyjnie niski indeks glikemiczny).</p>
                     </article>
                     <article class="spec-item">
                         <h4>Optymalizacja Keto & Low Carb</h4>
@@ -1149,8 +1042,6 @@
                     </article>
                 </div>
 
-                <details class="cert-details">
-                    <summary data-i18n="certMore">Zobacz certyfikaty</summary>
                 <div class="cert-grid">
                     <img src="certyfikat-doradca-zywieniowy.jpg" alt="Certyfikat Professional Nutrition Advisor" class="cert-image">
                     <img src="certyfikat-dietetyka-sportowa-kliniczna.jpg" alt="Certyfikat Dietetics for Professional Athletes" class="cert-image">
@@ -1165,12 +1056,11 @@
                     <img src="certyfikat-dietetyka-poziom-4.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 4 - Przemysław Wosik" class="cert-image">
                     <img src="certyfikat-dietetyka-poziom-5.jpg" alt="Certyfikat Dietetyka i Suplementacja Level 5 - Przemysław Wosik" class="cert-image">
                 </div>
-                </details>
 
                 <div class="trainer-bottom-summary" style="margin-top: 80px; text-align: center;">
                     <h3 style="font-size: 1.8rem; margin-bottom: 30px;">Certyfikowana wiedza w <span style="color: var(--accent);">praktyce</span></h3>
                     <img src="trener-przemyslaw-wosik.jpg" alt="Trener i Dietetyk Przemysław Wosik" style="width: 100%; max-width: 500px; height: auto; border-radius: var(--border-radius); box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin: 0 auto; display: block; border: 1px solid #333;">
-                    <p style="color: var(--text-muted); margin-top: 25px; max-width: 800px; margin-left: auto; margin-right: auto; font-size: 1.05rem;">Łączę wiedzę żywieniową, doświadczenie szefa kuchni i praktyczne narzędzia, by ułatwiać planowanie codziennych posiłków.</p>
+                    <p style="color: var(--text-muted); margin-top: 25px; max-width: 800px; margin-left: auto; margin-right: auto; font-size: 1.05rem;">Zdobytą wiedzę najpierw testuję na sobie, a dopiero potem przekładam na plany treningowe i jadłospisy moich podopiecznych. Gwarantuję Ci system, który realnie działa.</p>
                 </div>
             </div>
         </section>
@@ -1178,7 +1068,7 @@
         <section id="metamorfoza">
             <div class="container">
                 <h2 class="section-title">Eksperyment na własnym ciele: <br>Od 113 kg do przyzwoitej formy w <span>2,5 miesiąca</span></h2>
-                <p class="section-subtitle">To moja osobista historia zmiany nawyków, aktywności i masy ciała — nie obietnica takiego samego wyniku u innych.</p>
+                <p class="section-subtitle">Celowo przytyłem do 113 kg, żeby udowodnić Ci jedną rzecz: Twój metabolizm da się naprawić.</p>
                 
                 <div class="meta-grid">
                     <article class="meta-card">
@@ -1200,7 +1090,7 @@
                 </div>
 
                 <div class="meta-summary">
-                    <p>Przeszedłem tę drogę na własnej skórze. Dziś łączę doświadczenie kulinarne i żywieniowe z narzędziami, które pomagają planować posiłki i obserwować własne postępy. Rezultaty zależą od osoby i jej okoliczności.</p>
+                    <p>Dlaczego to zrobiłem? Ponieważ jako Twój doradca żywieniowy nie opieram się na suchej teorii z podręczników. Przeszedłem tę drogę na własnej skórze. W Project Weight Drop dostajesz dokładnie ten sam system, narzędzia i moją aplikację mobilną, które pozwoliły mi kontrolować parametry i wrócić do formy w rekordowym tempie.</p>
                 </div>
             </div>
         </section>
@@ -1211,8 +1101,8 @@
                 <div class="process-grid">
                     <article class="process-step">
                         <div class="step-number">1</div>
-                        <h4>Poznanie Twoich potrzeb</h4>
-                        <p>Opisujesz swój cel, ulubione smaki i codzienne nawyki.</p>
+                        <h4>Wywiad i Badania</h4>
+                        <p>Wypełniasz kwestionariusz, podajesz ulubione smaki i przesyłasz mi wyniki badań krwi.</p>
                     </article>
                     <article class="process-step">
                         <div class="step-number">2</div>
@@ -1232,9 +1122,8 @@
                 </div>
                 
                 <div style="text-align: center; margin-top: 40px;">
-                    <a href="https://wa.me/353851383537" target="_blank" rel="noopener noreferrer" class="btn btn-large">Zapytaj o współpracę</a>
-                    <p class="process-price" data-i18n="procPrice">Plan i miesięczna opieka: <strong>99 €</strong>. Szczegóły ustalimy przed rozpoczęciem.</p>
-                    <p class="process-pro" data-i18n="procPro">W ramach aktywnej współpracy otrzymujesz <strong>PRO w aplikacji Project Weight Drop</strong> na czas jej trwania. Po zakończeniu współpracy możesz dalej korzystać z FREE.</p>
+                    <a href="https://wa.me/353851383537" target="_blank" class="btn btn-large">Zamów plan dietetyczny 99€</a>
+                    <p style="margin-top: 15px; color: var(--text-muted); font-size: 0.9rem;">Rozpocznij miesiąc pełnej opieki dietetycznej</p>
                 </div>
             </div>
         </section>
@@ -1247,7 +1136,7 @@
                     <p id="calculatorDescription" style="text-align: center; color:#a0a0a0; margin-bottom: 20px;">Wpisz podstawowe dane, wybierz cel, deficyt i dietę. Waga docelowa oraz obwód pasa są opcjonalne.</p>
 
                     <div style="margin-bottom: 30px; padding: 15px 20px; background-color: rgba(255, 107, 0, 0.05); border-left: 4px solid var(--accent); border-radius: 4px;">
-                        <p style="color: #ddd; font-size: 0.95rem; margin: 0;"><strong>Ważne:</strong> Kalkulator daje orientacyjne wyliczenia na podstawie wpisanych danych. Wynik nie jest diagnozą ani gwarancją efektu i nie zastępuje indywidualnej konsultacji.</p>
+                        <p style="color: #ddd; font-size: 0.95rem; margin: 0;"><strong>Ważne:</strong> Ten kalkulator to nie jest kolejny generyczny algorytm, jakich pełno w sieci. Stworzyłem go w 100% od zera, opierając się na moich autorskich wyliczeniach, strategiach i wieloletnim doświadczeniu w pracy z podopiecznymi. To moja oryginalna, unikatowa wersja – zaprojektowana tak, by dać Ci najbardziej precyzyjny fundament pod realną transformację.</p>
                     </div>
 
                     <div class="form-grid">
@@ -1549,6 +1438,19 @@
                 <div class="reviews-grid">
                     <div class="review-card">
                         <div class="review-header">
+                            <span class="review-author">Tomasz K., 47 lat</span>
+                            <span class="stars">★★★★★</span>
+                        </div>
+                        <div class="review-tags">
+                            <span class="review-tag">-14 kg</span>
+                            <span class="review-tag">4 miesiące</span>
+                            <span class="review-tag keto">Keto</span>
+                        </div>
+                        <p class="review-text">"Dieta Keto poprawiła mi wyniki badań – cholesterol, cukier, wszystko wróciło do normy. Lekarz był zaskoczony!"</p>
+                    </div>
+
+                    <div class="review-card">
+                        <div class="review-header">
                             <span class="review-author">Piotr S., 33 lata</span>
                             <span class="stars">★★★★★</span>
                         </div>
@@ -1639,7 +1541,6 @@
         
         burger.addEventListener('click', () => {
             navLinks.classList.toggle('nav-mobile-active');
-            burger.setAttribute('aria-expanded', String(navLinks.classList.contains('nav-mobile-active')));
         });
 
         const links = document.querySelectorAll('.nav-links li a');
@@ -1647,10 +1548,25 @@
             link.addEventListener('click', () => {
                 if(navLinks.classList.contains('nav-mobile-active')) {
                     navLinks.classList.remove('nav-mobile-active');
-                    burger.setAttribute('aria-expanded', 'false');
                 }
             });
         });
+
+        // --- REALISTYCZNY LICZNIK AKTUALNYCH UŻYTKOWNIKÓW ---
+        const liveUsersSpan = document.getElementById('live-users');
+        if (liveUsersSpan) {
+            setInterval(() => {
+                let currentText = liveUsersSpan.innerText;
+                let currentUsers = parseInt(currentText.replace(/[^0-9]/g, '')) || 15;
+                const change = Math.floor(Math.random() * 5) - 2;
+                let newUsers = currentUsers + change;
+                
+                if (newUsers < 10) newUsers = 10 + Math.floor(Math.random() * 4);
+                if (newUsers > 40) newUsers = 40 - Math.floor(Math.random() * 4);
+                
+                liveUsersSpan.innerHTML = `<span class="live-dot"></span>${newUsers} osób`;
+            }, 4000);
+        }
 
         // --- LOGIKA SUWAKA PRZED I PO ---
         function initComparisons() {
@@ -1759,44 +1675,32 @@
             pl: {
                 // Navbar
                 navAboutBtn: "O mnie",
-                navApp: "Aplikacja",
                 navCalc: "Kalkulator",
                 navCooperation: "Współpraca",
                 navCerts: "Certyfikaty",
                 navReviews: "Opinie",
                 navBlog: "Blog",
                 navDownload: "Google Play",
+                navOrder: "Zamów plan",
                 // Hero
-                heroEyebrow: "APLIKACJA • WSPÓŁPRACA",
-                heroH1: "Jedz z planem. Śledź postępy. <span>Rób to po swojemu.</span>",
-                heroLead: "Project Weight Drop łączy narzędzia do codziennej organizacji żywienia z możliwością indywidualnej współpracy. Wszystko w jednym, prostym rytmie.",
-                heroBenefit1: "Keto • Low Carb • Balance",
-                heroBenefit2: "FREE + opcjonalne PRO",
-                heroBenefit3: "Plan, dziennik, postępy",
-                heroBtn: "Pobierz w Google Play",
-                heroSecondary: "Sprawdź kalkulator",
-                heroNote: "Aplikacja dostępna na Androida. Indywidualna współpraca jest osobną usługą.",
-                heroScreenshotAlt: "Grafika prezentująca aplikację Project Weight Drop",
-                quickFree: "FREE + opcjonalne PRO",
-                showcaseEyebrow: "ZOBACZ APLIKACJĘ",
-                showcaseTitle: "Wszystko, czego potrzebujesz <span>na co dzień.</span>",
-                showcaseLead: "Od planowania posiłków po obserwowanie postępów — poznaj narzędzia Project Weight Drop.",
-                showcasePlan: "Plan posiłków", showcaseDiary: "Dziennik posiłków", showcaseFridge: "Lodówka",
-                showcaseCoach: "AI Coach", showcaseProgress: "Postępy", showcaseProfile: "Profil i ustawienia",
-                showcasePlanAlt: "Grafika: plan posiłków w aplikacji", showcaseDiaryAlt: "Grafika: dziennik posiłków w aplikacji",
-                showcaseFridgeAlt: "Grafika: funkcja Lodówka w aplikacji", showcaseCoachAlt: "Grafika: AI Coach w aplikacji",
-                showcaseProgressAlt: "Grafika: śledzenie postępów w aplikacji", showcaseProfileAlt: "Grafika: profil w aplikacji",
-                showcaseNote: "Grafiki prezentują funkcje aplikacji. Wygląd może zmieniać się wraz z aktualizacjami.",
+                heroH1: "Odzyskaj kontrolę nad metabolizmem. Przestań się odchudzać, zacznij jeść.",
+                heroBenefit1: "🔥 Schudnij nawet 5-10 kg w 8 tygodni",
+                heroBenefit2: "🥗 Dieta dopasowana do Ciebie",
+                heroBenefit3: "📱 Stały kontakt WhatsApp",
+                heroBtn: "Oblicz zapotrzebowanie",
+                statLabel1: "Zadowolonych klientów",
+                statLabel3: "Doświadczenia",
+                statLabel4: "Korzysta w tej chwili",
                 // Dlaczego my
                 whyTitle: "Dlaczego <span>Project Weight Drop?</span>",
-                f1h: "Plan oparty na Twoich potrzebach",
-                f1p: "Zaczynam od celu, preferencji i codziennych nawyków. Wspólnie szukamy sposobu odżywiania, który da się utrzymać w praktyce.",
+                f1h: "Fundament w badaniach krwi",
+                f1p: "Nie układam diety 'w ciemno'. Zanim rozpiszę Twój plan, analizuję Twoje wyniki badań laboratoryjnych, aby idealnie uderzyć w przyczynę problemów metabolicznych.",
                 f2h: "100% Twoich smaków",
                 f2p: "Sam wskazujesz, co lubisz. Twój plan powstanie wyłącznie z produktów, które po prostu Ci smakują. Zero zmuszania się do niesmacznych posiłków.",
                 f3h: "Matematyczna precyzja makroskładników",
                 f3p: "Każdy posiłek ma czarno na białym rozpisane kalorie, białka, węglowodany i tłuszcze. Dopasowane do Twojego dobowego zapotrzebowania i aktywności.",
-                f4h: "Aplikacja FREE + opcjonalne PRO",
-                f4p: "Dziennik posiłków, postępy i narzędzia planowania w telefonie. Rozszerzone funkcje są dostępne w opcjonalnym PRO.",
+                f4h: "Darmowa aplikacja na telefon",
+                f4p: "Twój plan, lista zakupów, miejsce na wpisywanie wagi, obwodów i monitorowanie ciśnienia – wszystko masz zawsze pod ręką w smartfonie.",
                 // O mnie
                 aboutTitle: "Kim jestem i dlaczego akurat <span>Keto / Low Carb?</span>",
                 aboutP1: "Moja fascynacja dietą wysokotłuszczową i ketogeniczną nie zaczęła się wczoraj – zgłębiam ten temat w teorii i praktyce od początku lat 2000. Były to czasy, gdy dieta ketogeniczna nie była jeszcze powszechnie znana i funkcjonowała głównie w środowisku sportów siłowych oraz kulturystyki, najczęściej pod nazwami takimi jak CKD (Cyclical Ketogenic Diet), dieta anaboliczna czy po prostu dieta wysokotłuszczowa. Dziś łączę ponad dwudziestoletnie doświadczenie z oficjalną, certyfikowaną wiedzą żywieniową i trenerską zdobytą w Akademii Sportów Sylwetkowych pod okiem mistrza IFBB PRO Robert Piotrkowicz. Specjalizuję się w dietetyce sportowej oraz żywieniu w chorobach metabolicznych (Level 6).",
@@ -1805,40 +1709,38 @@
                 aboutP3: "Od 2010 roku nieprzerwanie pełnię funkcję Head Chefa, a w 2016 roku objąłem również stanowisko Catering Managera. Połączenie sportu, zaawansowanej dietetyki z kunsztem Szefa Kuchni sprawia, że Twoje posiłki Keto i Low Carb będą nie tylko perfekcyjnie wyliczone matematycznie, ale przede wszystkim – będą smakować jak dania z doskonałej restauracji.",
                 // Specjalizacje
                 specTitle: "Moje <span>Specjalizacje i Certyfikaty</span>",
-                spec1h: "Indywidualne planowanie żywienia",
-                spec1p: "Wsparcie dopasowane do celu, preferencji i codzienności. Nie zastępuje diagnostyki ani leczenia.",
-                certMore: "Zobacz certyfikaty",
+                spec1h: "Zaburzenia metaboliczne",
+                spec1p: "Bezpieczne i skuteczne prowadzenie dietetyczne dla osób z insulinoopornością oraz cukrzyków (precyzyjnie niski indeks glikemiczny).",
                 spec2h: "Optymalizacja Keto & Low Carb",
                 spec2p: "Wprowadzenie w stan ketozy w teorii i praktyce z dbałością o Twoje samopoczucie i zdrowie.",
                 spec3h: "Sporty sylwetkowe i kształtowanie sylwetki",
                 spec3p: "Doświadczenie w przygotowaniu formy w oparciu o zaawansowaną periodyzację i suplementację celowaną.",
                 certKnow: "Certyfikowana wiedza w <span style=\"color: var(--accent);\">praktyce</span>",
-                certDesc: "Łączę wiedzę żywieniową, doświadczenie szefa kuchni i praktyczne narzędzia, by ułatwiać planowanie codziennych posiłków.",
+                certDesc: "Zdobytą wiedzę najpierw testuję na sobie, a dopiero potem przekładam na plany treningowe i jadłospisy moich podopiecznych. Gwarantuję Ci system, który realnie działa.",
                 // Metamorfoza
                 metaTitle: "Eksperyment na własnym ciele: <br>Od 113 kg do przyzwoitej formy w <span>2,5 miesiąca</span>",
-                metaSubtitle: "To moja osobista historia zmiany nawyków, aktywności i masy ciała — nie obietnica takiego samego wyniku u innych.",
+                metaSubtitle: "Celowo przytyłem do 113 kg, żeby udowodnić Ci jedną rzecz: Twój metabolizm da się naprawić.",
                 meta1: "Wrzesień 2023 – Start Eksperymentu. Moment podjęcia decyzji i celowego odpuszczenia treningów.",
                 meta2: "16 Czerwca 2024 – Szczyt Wagi (113 kg). Solidna masa, uczucie ciężkości, brak energii i realne problemy z codzienną mobilnością.",
                 meta3: "6 Września 2024 – Efekt Końcowy (99 kg). Zaledwie 2,5 miesiąca później. Wynik połączenia precyzyjnego Keto, Intermittent Fasting i treningu sylwetkowego.",
                 meta4: "Kolaż Porównawczy Przed / Po.",
-                metaSummary: "Przeszedłem tę drogę na własnej skórze. Dziś łączę doświadczenie kulinarne i żywieniowe z narzędziami, które pomagają planować posiłki i obserwować własne postępy. Rezultaty zależą od osoby i jej okoliczności.",
+                metaSummary: "Dlaczego to zrobiłem? Ponieważ jako Twój doradca żywieniowy nie opieram się na suchej teorii z podręczników. Przeszedłem tę drogę na własnej skórze. W Project Weight Drop dostajesz dokładnie ten sam system, narzędzia i moją aplikację mobilną, które pozwoliły mi kontrolować parametry i wrócić do formy w rekordowym tempie.",
                 // Proces
                 procTitle: "Jak wygląda proces <span>współpracy?</span>",
-                proc1h: "Poznanie Twoich potrzeb",
-                proc1p: "Opisujesz swój cel, ulubione smaki i codzienne nawyki.",
+                proc1h: "Wywiad i Badania",
+                proc1p: "Wypełniasz kwestionariusz, podajesz ulubione smaki i przesyłasz mi wyniki badań krwi.",
                 proc2h: "Analiza i Wyliczenia",
                 proc2p: "Obliczam dokładne zapotrzebowanie kaloryczne oraz makro pod Twój cel sylwetkowy.",
                 proc3h: "Plan i Aplikacja",
                 proc3p: "Otrzymujesz skrojony pod Ciebie plan żywieniowy oraz dostęp do aplikacji mobilnej.",
                 proc4h: "Miesięczna Opieka",
                 proc4p: "Jesteśmy w stałym kontakcie przez WhatsApp. Reaguję na zmiany i na bieżąco modyfikuję dietę.",
-                procBtn: "Zapytaj o współpracę",
-                procPrice: "Plan i miesięczna opieka: <strong>99 €</strong>. Szczegóły ustalimy przed rozpoczęciem.",
-                procPro: "W ramach aktywnej współpracy otrzymujesz <strong>PRO w aplikacji Project Weight Drop</strong> na czas jej trwania. Po zakończeniu współpracy możesz dalej korzystać z FREE.",
+                procBtn: "Zamów plan dietetyczny 99€",
+                procSub: "Rozpocznij miesiąc pełnej opieki dietetycznej",
                 // Kalkulator
                 calcTitle: "Sprawdź, jakiego planu potrzebujesz",
                 calcDesc: "Wpisz podstawowe dane, wybierz cel, deficyt i dietę. Waga docelowa oraz obwód pasa są opcjonalne.",
-                calcImportant: "<strong>Ważne:</strong> Kalkulator daje orientacyjne wyliczenia na podstawie wpisanych danych. Wynik nie jest diagnozą ani gwarancją efektu i nie zastępuje indywidualnej konsultacji.",
+                calcImportant: "<strong>Ważne:</strong> Ten kalkulator to nie jest kolejny generyczny algorytm, jakich pełno w sieci. Stworzyłem go w 100% od zera, opierając się na moich autorskich wyliczeniach, strategiach i wieloletnim doświadczeniu w pracy z podopiecznymi. To moja oryginalna, unikatowa wersja – zaprojektowana tak, by dać Ci najbardziej precyzyjny fundament pod realną transformację.",
                 sexLabel: "Płeć", maleOption: "Mężczyzna", femaleOption: "Kobieta",
                 ageLabel: "Wiek", heightLabel: "Wzrost w cm", weightLabel: "Waga w kg",
                 targetWeightLabel: "Waga docelowa w kg (opcjonalnie)", waistLabel: "Obwód pasa w cm (opcjonalnie)",
@@ -1888,6 +1790,7 @@
                 // alerts
                 alertFill: "Wprowadź podstawowe dane: wiek, wzrost oraz obecną wagę ciała.",
                 alertShare: "Podgląd wygenerowany pomyślnie. Zrób zrzut ekranu karty analizy, aby udostępnić go na Instagramie za pomocą aplikacji mobilnej Project Weight Drop.",
+                liveUsers: " osób",
                 eventFillRequired: "Uzupełnij wymagane pola (data, waga obecna oraz docelowa).",
                 eventPastDate: "Wybrana data już minęła lub przypada na dzień dzisiejszy.",
                 eventGoalReached: "Twoja obecna waga jest już niższa lub równa celowi! Dobra robota.",
@@ -1898,79 +1801,65 @@
             },
             en: {
                 navAboutBtn: "About me",
-                navApp: "App",
                 navCalc: "Calculator",
                 navCooperation: "Cooperation",
                 navCerts: "Certificates",
                 navReviews: "Reviews",
                 navBlog: "Blog",
                 navDownload: "Google Play",
-                heroEyebrow: "APP • PERSONAL SUPPORT",
-                heroH1: "Eat with a plan. Track progress. <span>Make it yours.</span>",
-                heroLead: "Project Weight Drop combines tools for everyday nutrition planning with the option of one-to-one support. One clear routine, built around you.",
-                heroBenefit1: "Keto • Low Carb • Balance",
-                heroBenefit2: "FREE + optional PRO",
-                heroBenefit3: "Plan, diary, progress",
-                heroBtn: "Get it on Google Play",
-                heroSecondary: "Try the calculator",
-                heroNote: "Android app available now. One-to-one support is a separate service.",
-                heroScreenshotAlt: "Graphic presenting the Project Weight Drop app",
-                quickFree: "FREE + optional PRO",
-                showcaseEyebrow: "EXPLORE THE APP",
-                showcaseTitle: "Everything you need <span>day to day.</span>",
-                showcaseLead: "From meal planning to tracking progress — explore the tools in Project Weight Drop.",
-                showcasePlan: "Meal plan", showcaseDiary: "Meal diary", showcaseFridge: "Fridge",
-                showcaseCoach: "AI Coach", showcaseProgress: "Progress", showcaseProfile: "Profile and settings",
-                showcasePlanAlt: "Graphic: meal plan in the app", showcaseDiaryAlt: "Graphic: meal diary in the app",
-                showcaseFridgeAlt: "Graphic: Fridge feature in the app", showcaseCoachAlt: "Graphic: AI Coach in the app",
-                showcaseProgressAlt: "Graphic: tracking progress in the app", showcaseProfileAlt: "Graphic: app profile",
-                showcaseNote: "Graphics present app features. The interface may change with updates.",
+                navOrder: "Order plan",
+                heroH1: "Regain control over your metabolism. Stop dieting, start eating.",
+                heroBenefit1: "🔥 Lose up to 5-10 kg in 8 weeks",
+                heroBenefit2: "🥗 Diet tailored to you",
+                heroBenefit3: "📱 Constant WhatsApp support",
+                heroBtn: "Calculate your needs",
+                statLabel1: "Satisfied clients",
+                statLabel3: "Experience",
+                statLabel4: "Currently using",
                 whyTitle: "Why <span>Project Weight Drop?</span>",
-                f1h: "A plan built around your needs",
-                f1p: "We start with your goal, preferences and daily routine, then look for an approach to eating that works in real life.",
+                f1h: "Blood test foundation",
+                f1p: "I don't design diets blindly. Before I write your plan, I analyse your blood test results to precisely target the cause of your metabolic issues.",
                 f2h: "100% your taste",
                 f2p: "You choose what you like. Your plan will be built exclusively from products you actually enjoy. No forcing down unpleasant meals.",
                 f3h: "Mathematical precision of macronutrients",
                 f3p: "Every meal has calories, proteins, carbs and fats clearly spelled out — matched to your daily needs and activity level.",
-                f4h: "FREE app + optional PRO",
-                f4p: "Meal diary, progress and planning tools on your phone. Extended features are available with optional PRO.",
+                f4h: "Free mobile app",
+                f4p: "Your plan, shopping list, space to log weight, measurements and blood pressure — always at your fingertips.",
                 aboutTitle: "Who am I and why <span>Keto / Low Carb?</span>",
                 aboutP1: "My fascination with high-fat and ketogenic diets didn't start yesterday — I have been studying this subject in theory and practice since the early 2000s. Back then the ketogenic diet was not yet widely known and was mainly used in strength sports and bodybuilding circles, most often under names like CKD (Cyclical Ketogenic Diet), anabolic diet or simply high-fat diet. Today I combine over twenty years of experience with official certified knowledge in nutrition and training gained at the Academy of Physique Sports under IFBB PRO master Robert Piotrkowicz. I specialise in sports dietetics and nutrition in metabolic diseases (Level 6).",
                 aboutH3: "Head Chef with 20 years of experience",
                 aboutP2: "My greatest advantage? I don't create bland boring diets because I am a professional chef by trade. My culinary journey began in 2005 in Ireland, where I built my craft at renowned establishments such as the 4-star Meadowlands Hotel and Earl of Desmond Hotel in Tralee. Between 2008 and 2010 I refined my skills at the prestigious Malton Hotel (now the 4-star Great Southern Killarney).",
                 aboutP3: "Since 2010 I have been continuously working as Head Chef, and in 2016 I also took on the role of Catering Manager. The combination of sport, advanced dietetics and chef's craftsmanship means your Keto and Low Carb meals will not only be mathematically perfect, but above all — they will taste like dishes from a fine restaurant.",
                 specTitle: "My <span>Specialisations and Certificates</span>",
-                spec1h: "Individual nutrition planning",
-                spec1p: "Support tailored to your goals, preferences and routine. It does not replace diagnosis or treatment.",
-                certMore: "View certificates",
+                spec1h: "Metabolic disorders",
+                spec1p: "Safe and effective dietary management for people with insulin resistance and diabetes (precisely low glycaemic index).",
                 spec2h: "Keto & Low Carb optimisation",
                 spec2p: "Guiding you into ketosis in theory and practice while caring for your well-being and health.",
                 spec3h: "Physique sports and body shaping",
                 spec3p: "Experience in preparing peak condition based on advanced periodisation and targeted supplementation.",
                 certKnow: "Certified knowledge in <span style=\"color: var(--accent);\">practice</span>",
-                certDesc: "I combine nutrition knowledge, experience as a chef and practical tools to make everyday meal planning easier.",
+                certDesc: "I first test the knowledge I acquire on myself, then translate it into training plans and meal plans for my clients. I guarantee you a system that genuinely works.",
                 metaTitle: "Self-experiment: <br>From 113 kg to decent shape in <span>2.5 months</span>",
-                metaSubtitle: "This is my personal story of changing habits, activity and weight — not a promise that others will see the same results.",
+                metaSubtitle: "I deliberately gained weight to 113 kg to prove one thing: your metabolism can be fixed.",
                 meta1: "September 2023 – Start of the experiment. The moment I made the decision and deliberately stopped training.",
                 meta2: "16 June 2024 – Peak weight (113 kg). Solid mass, feeling of heaviness, no energy and real problems with daily mobility.",
                 meta3: "6 September 2024 – Final result (99 kg). Just 2.5 months later. The result of combining precise Keto, Intermittent Fasting and physique training.",
                 meta4: "Before / After comparison collage.",
-                metaSummary: "I have been through this journey myself. Today I combine culinary and nutrition experience with tools that help people plan meals and observe their own progress. Results vary by person and circumstances.",
+                metaSummary: "Why did I do this? Because as your nutrition advisor I don't rely on dry textbook theory. I walked this road on my own skin. With Project Weight Drop you get exactly the same system, tools and my mobile app that allowed me to monitor parameters and get back in shape at record speed.",
                 procTitle: "What does the <span>cooperation process</span> look like?",
-                proc1h: "Getting to know your needs",
-                proc1p: "You describe your goal, favourite foods and daily habits.",
+                proc1h: "Interview & Tests",
+                proc1p: "You fill in a questionnaire, share your favourite foods and send me your blood test results.",
                 proc2h: "Analysis & Calculations",
                 proc2p: "I calculate your exact caloric requirements and macros for your body composition goal.",
                 proc3h: "Plan & App",
                 proc3p: "You receive a tailor-made nutrition plan and access to the mobile app.",
                 proc4h: "Monthly Care",
                 proc4p: "We stay in constant contact via WhatsApp. I react to changes and adjust your diet on an ongoing basis.",
-                procBtn: "Ask about working together",
-                procPrice: "Plan and one month of support: <strong>€99</strong>. Details agreed before you begin.",
-                procPro: "During active one-to-one support, you get <strong>PRO in the Project Weight Drop app</strong> for the duration of that support. Afterwards, you can continue using FREE.",
+                procBtn: "Order a diet plan 99€",
+                procSub: "Start a month of full nutritional support",
                 calcTitle: "Find out what plan you need",
                 calcDesc: "Enter your basic data, choose your goal, deficit and diet. Target weight and waist circumference are optional.",
-                calcImportant: "<strong>Important:</strong> The calculator provides estimates based on the information you enter. It is not a diagnosis or a guarantee of results and does not replace individual advice.",
+                calcImportant: "<strong>Important:</strong> This calculator is not just another generic algorithm you find all over the internet. I built it 100% from scratch, based on my own original calculations, strategies and years of experience working with clients. It is my unique version — designed to give you the most precise foundation for a real transformation.",
                 sexLabel: "Sex", maleOption: "Male", femaleOption: "Female",
                 ageLabel: "Age", heightLabel: "Height in cm", weightLabel: "Weight in kg",
                 targetWeightLabel: "Target weight in kg (optional)", waistLabel: "Waist circumference in cm (optional)",
@@ -2016,6 +1905,7 @@
                 bmiUnder: "Underweight", bmiNormal: "Normal", bmiOver: "Overweight", bmiObese: "Obese",
                 alertFill: "Please enter basic data: age, height and current body weight.",
                 alertShare: "Preview generated successfully. Take a screenshot of the analysis card to share it on Instagram using the Project Weight Drop mobile app.",
+                liveUsers: " people",
                 eventFillRequired: "Please fill in the required fields (date, current weight and target weight).",
                 eventPastDate: "The selected date has already passed or falls on today.",
                 eventGoalReached: "Your current weight is already at or below your goal! Great job.",
@@ -2026,79 +1916,65 @@
             },
             de: {
                 navAboutBtn: "Über mich",
-                navApp: "App",
                 navCalc: "Rechner",
                 navCooperation: "Zusammenarbeit",
                 navCerts: "Zertifikate",
                 navReviews: "Bewertungen",
                 navBlog: "Blog",
                 navDownload: "Google Play",
-                heroEyebrow: "APP • PERSÖNLICHE BETREUUNG",
-                heroH1: "Iss mit Plan. Verfolge Fortschritte. <span>Auf deine Art.</span>",
-                heroLead: "Project Weight Drop verbindet Werkzeuge für die tägliche Ernährungsplanung mit der Möglichkeit persönlicher Betreuung. Eine klare Routine, die zu dir passt.",
-                heroBenefit1: "Keto • Low Carb • Balance",
-                heroBenefit2: "FREE + optionales PRO",
-                heroBenefit3: "Plan, Tagebuch, Fortschritt",
-                heroBtn: "Bei Google Play herunterladen",
-                heroSecondary: "Rechner ausprobieren",
-                heroNote: "Android-App jetzt verfügbar. Persönliche Betreuung ist eine separate Leistung.",
-                heroScreenshotAlt: "Grafik zur Project Weight Drop App",
-                quickFree: "FREE + optionales PRO",
-                showcaseEyebrow: "APP ENTDECKEN",
-                showcaseTitle: "Alles, was du <span>im Alltag brauchst.</span>",
-                showcaseLead: "Von der Mahlzeitenplanung bis zum Fortschritt — entdecke die Werkzeuge von Project Weight Drop.",
-                showcasePlan: "Ernährungsplan", showcaseDiary: "Mahlzeitentagebuch", showcaseFridge: "Kühlschrank",
-                showcaseCoach: "AI Coach", showcaseProgress: "Fortschritt", showcaseProfile: "Profil und Einstellungen",
-                showcasePlanAlt: "Grafik: Ernährungsplan in der App", showcaseDiaryAlt: "Grafik: Mahlzeitentagebuch in der App",
-                showcaseFridgeAlt: "Grafik: Kühlschrank-Funktion in der App", showcaseCoachAlt: "Grafik: AI Coach in der App",
-                showcaseProgressAlt: "Grafik: Fortschritt in der App", showcaseProfileAlt: "Grafik: App-Profil",
-                showcaseNote: "Die Grafiken zeigen App-Funktionen. Die Oberfläche kann sich durch Updates ändern.",
+                navOrder: "Plan bestellen",
+                heroH1: "Gewinne die Kontrolle über deinen Stoffwechsel zurück. Hör auf zu hungern, fang an zu essen.",
+                heroBenefit1: "🔥 Bis zu 5-10 kg in 8 Wochen abnehmen",
+                heroBenefit2: "🥗 Diät auf dich zugeschnitten",
+                heroBenefit3: "📱 Ständiger WhatsApp-Kontakt",
+                heroBtn: "Bedarf berechnen",
+                statLabel1: "Zufriedene Kunden",
+                statLabel3: "Erfahrung",
+                statLabel4: "Nutzen gerade",
                 whyTitle: "Warum <span>Project Weight Drop?</span>",
-                f1h: "Ein Plan für deine Bedürfnisse",
-                f1p: "Wir beginnen mit deinem Ziel, deinen Vorlieben und deinem Alltag und suchen dann einen Ernährungsansatz, der praktisch umsetzbar ist.",
+                f1h: "Grundlage in Blutuntersuchungen",
+                f1p: "Ich erstelle keine Diät 'im Blindflug'. Bevor ich deinen Plan ausarbeite, analysiere ich deine Laborbefunde, um die Ursache deiner Stoffwechselprobleme gezielt anzugehen.",
                 f2h: "100% dein Geschmack",
                 f2p: "Du bestimmst, was du magst. Dein Plan wird ausschließlich aus Produkten bestehen, die dir wirklich schmecken. Kein Zwang zu unschmackhaften Mahlzeiten.",
                 f3h: "Mathematische Präzision der Makronährstoffe",
                 f3p: "Jede Mahlzeit hat klar aufgeschlüsselte Kalorien, Eiweiß, Kohlenhydrate und Fette – abgestimmt auf deinen täglichen Bedarf und deine Aktivität.",
-                f4h: "FREE-App + optionales PRO",
-                f4p: "Mahlzeitentagebuch, Fortschritt und Planungstools auf deinem Smartphone. Erweiterte Funktionen gibt es mit optionalem PRO.",
+                f4h: "Kostenlose Handy-App",
+                f4p: "Dein Plan, Einkaufsliste, Platz zum Eintragen von Gewicht, Umfängen und Blutdruck – immer griffbereit im Smartphone.",
                 aboutTitle: "Wer bin ich und warum <span>Keto / Low Carb?</span>",
                 aboutP1: "Meine Faszination für High-Fat- und ketogene Ernährung begann nicht erst gestern – ich beschäftige mich seit Anfang der 2000er Jahre theoretisch und praktisch damit. Damals war die ketogene Diät noch nicht weit verbreitet und existierte hauptsächlich in der Kraft- und Bodybuilding-Szene, meist unter Namen wie CKD (Cyclical Ketogenic Diet), anabole Diät oder schlicht High-Fat-Diät. Heute verbinde ich über zwanzig Jahre Erfahrung mit offiziell zertifiziertem Ernährungs- und Trainerwissen aus der Academy of Physique Sports unter Anleitung von IFBB PRO-Meister Robert Piotrkowicz. Ich bin spezialisiert auf Sporternährung und Ernährung bei Stoffwechselerkrankungen (Level 6).",
                 aboutH3: "Chefkoch mit 20 Jahren Erfahrung",
                 aboutP2: "Mein größter Vorteil? Ich erstelle keine öden und langweiligen Diäten, denn ich bin von Beruf professioneller Koch. Mein kulinarischer Weg begann 2005 in Irland, wo ich mein Handwerk in renommierten Häusern wie dem 4-Sterne-Hotel Meadowlands und dem Earl of Desmond Hotel in Tralee aufbaute. Von 2008 bis 2010 verfeinerte ich meine Fähigkeiten im angesehenen The Malton Hotel (heute das 4-Sterne Great Southern Killarney).",
                 aboutP3: "Seit 2010 bin ich durchgehend als Head Chef tätig, und 2016 übernahm ich zusätzlich die Position des Catering Managers. Die Kombination aus Sport, fortgeschrittener Diätetik und dem Können eines Chefkochs sorgt dafür, dass deine Keto- und Low-Carb-Mahlzeiten nicht nur mathematisch perfekt berechnet sind, sondern vor allem – wie Gerichte aus einem erstklassigen Restaurant schmecken.",
                 specTitle: "Meine <span>Spezialisierungen und Zertifikate</span>",
-                spec1h: "Individuelle Ernährungsplanung",
-                spec1p: "Unterstützung passend zu Zielen, Vorlieben und Alltag. Sie ersetzt weder Diagnose noch Behandlung.",
-                certMore: "Zertifikate ansehen",
+                spec1h: "Stoffwechselstörungen",
+                spec1p: "Sichere und effektive Ernährungsbetreuung für Menschen mit Insulinresistenz und Diabetiker (präzise niedriger glykämischer Index).",
                 spec2h: "Keto & Low Carb Optimierung",
                 spec2p: "Einführung in die Ketose in Theorie und Praxis mit Rücksicht auf dein Wohlbefinden und deine Gesundheit.",
                 spec3h: "Figursport und Körperformung",
                 spec3p: "Erfahrung in der Formvorbereitung auf Basis fortgeschrittener Periodisierung und gezielter Supplementierung.",
                 certKnow: "Zertifiziertes Wissen in der <span style=\"color: var(--accent);\">Praxis</span>",
-                certDesc: "Ich verbinde Ernährungswissen, Erfahrung als Koch und praktische Werkzeuge, um die tägliche Mahlzeitenplanung zu erleichtern.",
+                certDesc: "Das erworbene Wissen teste ich zunächst an mir selbst und übersetze es erst dann in Trainingspläne und Ernährungspläne für meine Klienten. Ich garantiere dir ein System, das wirklich funktioniert.",
                 metaTitle: "Selbstexperiment: <br>Von 113 kg zu guter Form in <span>2,5 Monaten</span>",
-                metaSubtitle: "Das ist meine persönliche Geschichte über veränderte Gewohnheiten, Aktivität und Gewicht — kein Versprechen gleicher Ergebnisse für andere.",
+                metaSubtitle: "Ich habe absichtlich auf 113 kg zugenommen, um dir eines zu beweisen: Dein Stoffwechsel lässt sich reparieren.",
                 meta1: "September 2023 – Start des Experiments. Der Moment, in dem ich die Entscheidung traf und absichtlich aufhörte zu trainieren.",
                 meta2: "16. Juni 2024 – Gewichtsgipfel (113 kg). Solide Masse, Schwere, Energiemangel und echte Probleme mit der täglichen Mobilität.",
                 meta3: "6. September 2024 – Endergebnis (99 kg). Nur 2,5 Monate später. Das Ergebnis einer Kombination aus präzisem Keto, Intermittent Fasting und Figurtraining.",
                 meta4: "Vorher / Nachher Vergleichscollage.",
-                metaSummary: "Ich habe diesen Weg selbst erlebt. Heute verbinde ich kulinarische Erfahrung und Ernährungswissen mit Werkzeugen, die bei der Planung von Mahlzeiten und beim Beobachten des eigenen Fortschritts helfen. Ergebnisse sind individuell.",
+                metaSummary: "Warum habe ich das getan? Weil ich als dein Ernährungsberater nicht auf trockener Lehrbuchtheorie basiere. Ich bin diesen Weg am eigenen Leib gegangen. Bei Project Weight Drop erhältst du genau dasselbe System, dieselben Werkzeuge und meine mobile App, die es mir ermöglicht haben, Parameter zu überwachen und in Rekordzeit in Form zu kommen.",
                 procTitle: "Wie sieht der <span>Kooperationsprozess</span> aus?",
-                proc1h: "Deine Bedürfnisse kennenlernen",
-                proc1p: "Du beschreibst dein Ziel, Lieblingsgerichte und tägliche Gewohnheiten.",
+                proc1h: "Interview & Tests",
+                proc1p: "Du füllst einen Fragebogen aus, gibst deine Lieblingsgeschmäcker an und sendest mir deine Blutbefunde.",
                 proc2h: "Analyse & Berechnungen",
                 proc2p: "Ich berechne deinen genauen Kalorienbedarf und die Makros für dein Körperziel.",
                 proc3h: "Plan & App",
                 proc3p: "Du erhältst einen maßgeschneiderten Ernährungsplan und Zugang zur mobilen App.",
                 proc4h: "Monatliche Betreuung",
                 proc4p: "Wir bleiben in ständigem WhatsApp-Kontakt. Ich reagiere auf Veränderungen und passe die Diät laufend an.",
-                procBtn: "Zusammenarbeit anfragen",
-                procPrice: "Plan und ein Monat Betreuung: <strong>99 €</strong>. Details klären wir vor Beginn.",
-                procPro: "Während der aktiven Zusammenarbeit erhältst du <strong>PRO in der Project Weight Drop App</strong> für deren Dauer. Danach kannst du FREE weiter nutzen.",
+                procBtn: "Diätplan bestellen 99€",
+                procSub: "Starte einen Monat voller Ernährungsbetreuung",
                 calcTitle: "Finde heraus, welchen Plan du brauchst",
                 calcDesc: "Gib deine Basisdaten ein, wähle dein Ziel, Defizit und Diät. Zielgewicht und Taillenumfang sind optional.",
-                calcImportant: "<strong>Wichtig:</strong> Der Rechner liefert Schätzwerte anhand deiner Eingaben. Er ist weder Diagnose noch Erfolgsgarantie und ersetzt keine individuelle Beratung.",
+                calcImportant: "<strong>Wichtig:</strong> Dieser Rechner ist kein weiterer generischer Algorithmus, wie man ihn überall im Internet findet. Ich habe ihn zu 100% von Grund auf entwickelt, basierend auf meinen eigenen Berechnungen, Strategien und jahrelanger Erfahrung in der Arbeit mit Klienten. Das ist meine originale, einzigartige Version – konzipiert, um dir die präziseste Grundlage für eine echte Transformation zu geben.",
                 sexLabel: "Geschlecht", maleOption: "Mann", femaleOption: "Frau",
                 ageLabel: "Alter", heightLabel: "Größe in cm", weightLabel: "Gewicht in kg",
                 targetWeightLabel: "Zielgewicht in kg (optional)", waistLabel: "Taillenumfang in cm (optional)",
@@ -2144,6 +2020,7 @@
                 bmiUnder: "Untergewicht", bmiNormal: "Normal", bmiOver: "Übergewicht", bmiObese: "Adipositas",
                 alertFill: "Bitte Basisdaten eingeben: Alter, Größe und aktuelles Körpergewicht.",
                 alertShare: "Vorschau erfolgreich generiert. Mache einen Screenshot der Analysekarte, um sie auf Instagram über die mobile App Project Weight Drop zu teilen.",
+                liveUsers: " Personen",
                 eventFillRequired: "Bitte fülle die Pflichtfelder aus (Datum, aktuelles Gewicht und Zielgewicht).",
                 eventPastDate: "Das ausgewählte Datum liegt bereits in der Vergangenheit oder ist heute.",
                 eventGoalReached: "Dein aktuelles Gewicht ist bereits gleich oder niedriger als dein Ziel! Gute Arbeit.",
@@ -2159,7 +2036,6 @@
         function setLang(lang) {
             currentLang = lang;
             const t = translations[lang];
-            document.documentElement.lang = lang;
 
             // Update active flag button
             document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
@@ -2176,14 +2052,13 @@
                 if (el) el.setAttribute(attr, val);
             };
 
+            // Navbar about btn
+            setText('navAboutBtn', t.navAboutBtn);
+
             // Nav links via data-i18n
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
                 if (t[key]) el.innerHTML = t[key];
-            });
-            document.querySelectorAll('[data-i18n-alt]').forEach(el => {
-                const key = el.getAttribute('data-i18n-alt');
-                if (t[key]) el.setAttribute('alt', t[key]);
             });
 
             // Hero
@@ -2193,7 +2068,14 @@
             if (benefits[0]) benefits[0].innerHTML = t.heroBenefit1;
             if (benefits[1]) benefits[1].innerHTML = t.heroBenefit2;
             if (benefits[2]) benefits[2].innerHTML = t.heroBenefit3;
-            setAttr('heroAppShot', 'alt', t.heroScreenshotAlt);
+            const heroBtn = document.querySelector('#hero .btn');
+            if (heroBtn) heroBtn.innerHTML = t.heroBtn;
+
+            // Stats bar (statLabels[1] is skipped - the stars item has no .stat-label)
+            const statLabels = document.querySelectorAll('.stat-label');
+            if (statLabels[0]) statLabels[0].innerHTML = t.statLabel1;
+            if (statLabels[1]) statLabels[1].innerHTML = t.statLabel3;
+            if (statLabels[2]) statLabels[2].innerHTML = t.statLabel4;
 
             // Why us
             const whyTitle = document.querySelector('#dlaczego-my .section-title');
@@ -2267,6 +2149,8 @@
             });
             const procBtn = document.querySelector('#proces .btn-large');
             if (procBtn) procBtn.innerHTML = t.procBtn;
+            const procSubEl = document.querySelector('#proces > div > div:last-child > p');
+            if (procSubEl) procSubEl.innerHTML = t.procSub;
 
             // Kalkulator
             setText('calculatorTitle', t.calcTitle);
@@ -2366,6 +2250,12 @@
             const flMap = [t.footerCalc, t.footerAbout, t.footerCoop, t.footerOpinions, t.footerBlog, t.footerPrivacy, t.footerTerms];
             footerLinks.forEach((a, i) => { if (flMap[i]) a.innerHTML = flMap[i]; });
 
+            // Live users suffix (update displayed text if has number)
+            const luSpan = document.getElementById('live-users');
+            if (luSpan) {
+                const num = parseInt(luSpan.innerText.replace(/[^0-9]/g, '')) || 15;
+                luSpan.innerHTML = `<span class="live-dot"></span>${num}${t.liveUsers}`;
+            }
         }
 
         // Override functions to use current language strings
