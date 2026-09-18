@@ -418,24 +418,6 @@
             letter-spacing: 1px;
         }
 
-        .live-dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background-color: #2ec4b6;
-            border-radius: 50%;
-            margin-right: 6px;
-            transform: translateY(-2px);
-            box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7);
-            animation: dotPulse 1.8s infinite;
-        }
-
-        @keyframes dotPulse {
-            0% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0.7); }
-            70% { box-shadow: 0 0 0 6px rgba(46, 196, 182, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 196, 182, 0); }
-        }
-
         #hero h1 {
             font-size: 2.6rem;
             font-weight: 800;
@@ -1103,8 +1085,8 @@
                         <span class="stat-label">Doświadczenia</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number" id="live-users"><span class="live-dot"></span>15 osób</span>
-                        <span class="stat-label">Korzysta w tej chwili</span>
+                        <span class="stat-number" id="simulated-visitors">70 osób</span>
+                        <span class="stat-label">Symulowana liczba osób</span>
                     </div>
                 </div>
 
@@ -1700,20 +1682,32 @@
             });
         });
 
-        // --- REALISTYCZNY LICZNIK AKTUALNYCH UŻYTKOWNIKÓW ---
-        const liveUsersSpan = document.getElementById('live-users');
-        if (liveUsersSpan) {
-            setInterval(() => {
-                let currentText = liveUsersSpan.innerText;
-                let currentUsers = parseInt(currentText.replace(/[^0-9]/g, '')) || 15;
-                const change = Math.floor(Math.random() * 5) - 2;
-                let newUsers = currentUsers + change;
-                
-                if (newUsers < 10) newUsers = 10 + Math.floor(Math.random() * 4);
-                if (newUsers > 40) newUsers = 40 - Math.floor(Math.random() * 4);
-                
-                liveUsersSpan.innerHTML = `<span class="live-dot"></span>${newUsers} osób`;
-            }, 4000);
+        // --- JAWNIE SYMULOWANA AKTYWNOŚĆ (NIE RZECZYWISTY RUCH) ---
+        const simulatedVisitorsSpan = document.getElementById('simulated-visitors');
+        if (simulatedVisitorsSpan) {
+            const randomInt = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+            let simulatedVisitors = 70;
+            let dipEndsAt = 0;
+            let nextDipAt = Date.now() + randomInt(120000, 240000);
+
+            const updateSimulatedVisitors = () => {
+                const now = Date.now();
+                if (dipEndsAt && now >= dipEndsAt) {
+                    dipEndsAt = 0;
+                    simulatedVisitors = randomInt(60, 80);
+                    nextDipAt = now + randomInt(120000, 240000);
+                } else if (!dipEndsAt && now >= nextDipAt) {
+                    dipEndsAt = now + randomInt(12000, 22000);
+                    simulatedVisitors = 20;
+                } else if (!dipEndsAt) {
+                    simulatedVisitors = Math.max(60, Math.min(80, simulatedVisitors + randomInt(-3, 3)));
+                }
+                simulatedVisitorsSpan.textContent = `${simulatedVisitors}${translations[currentLang].visitorSuffix}`;
+            };
+            setInterval(updateSimulatedVisitors, 4000);
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) updateSimulatedVisitors();
+            });
         }
 
         // --- LOGIKA SUWAKA PRZED I PO ---
@@ -1840,7 +1834,7 @@
                 heroBtn: "Oblicz zapotrzebowanie",
                 statLabel1: "Zadowolonych klientów",
                 statLabel3: "Doświadczenia",
-                statLabel4: "Korzysta w tej chwili",
+                statLabel4: "Symulowana liczba osób",
                 // Dlaczego my
                 whyTitle: "Dlaczego <span>Project Weight Drop?</span>",
                 f1h: "Fundament w badaniach krwi",
@@ -1940,7 +1934,7 @@
                 // alerts
                 alertFill: "Wprowadź podstawowe dane: wiek, wzrost oraz obecną wagę ciała.",
                 alertShare: "Podgląd wygenerowany pomyślnie. Zrób zrzut ekranu karty analizy, aby udostępnić go na Instagramie za pomocą aplikacji mobilnej Project Weight Drop.",
-                liveUsers: " osób",
+                visitorSuffix: " osób",
                 eventFillRequired: "Uzupełnij wymagane pola (data, waga obecna oraz docelowa).",
                 eventPastDate: "Wybrana data już minęła lub przypada na dzień dzisiejszy.",
                 eventGoalReached: "Twoja obecna waga jest już niższa lub równa celowi! Dobra robota.",
@@ -1967,7 +1961,7 @@
                 heroBtn: "Calculate your needs",
                 statLabel1: "Satisfied clients",
                 statLabel3: "Experience",
-                statLabel4: "Currently using",
+                statLabel4: "Simulated visitor count",
                 whyTitle: "Why <span>Project Weight Drop?</span>",
                 f1h: "Blood test foundation",
                 f1p: "I don't design diets blindly. Before I write your plan, I analyse your blood test results to precisely target the cause of your metabolic issues.",
@@ -2057,7 +2051,7 @@
                 bmiUnder: "Underweight", bmiNormal: "Normal", bmiOver: "Overweight", bmiObese: "Obese",
                 alertFill: "Please enter basic data: age, height and current body weight.",
                 alertShare: "Preview generated successfully. Take a screenshot of the analysis card to share it on Instagram using the Project Weight Drop mobile app.",
-                liveUsers: " people",
+                visitorSuffix: " people",
                 eventFillRequired: "Please fill in the required fields (date, current weight and target weight).",
                 eventPastDate: "The selected date has already passed or falls on today.",
                 eventGoalReached: "Your current weight is already at or below your goal! Great job.",
@@ -2084,7 +2078,7 @@
                 heroBtn: "Bedarf berechnen",
                 statLabel1: "Zufriedene Kunden",
                 statLabel3: "Erfahrung",
-                statLabel4: "Nutzen gerade",
+                statLabel4: "Simulierte Besucherzahl",
                 whyTitle: "Warum <span>Project Weight Drop?</span>",
                 f1h: "Grundlage in Blutuntersuchungen",
                 f1p: "Ich erstelle keine Diät 'im Blindflug'. Bevor ich deinen Plan ausarbeite, analysiere ich deine Laborbefunde, um die Ursache deiner Stoffwechselprobleme gezielt anzugehen.",
@@ -2174,7 +2168,7 @@
                 bmiUnder: "Untergewicht", bmiNormal: "Normal", bmiOver: "Übergewicht", bmiObese: "Adipositas",
                 alertFill: "Bitte Basisdaten eingeben: Alter, Größe und aktuelles Körpergewicht.",
                 alertShare: "Vorschau erfolgreich generiert. Mache einen Screenshot der Analysekarte, um sie auf Instagram über die mobile App Project Weight Drop zu teilen.",
-                liveUsers: " Personen",
+                visitorSuffix: " Personen",
                 eventFillRequired: "Bitte fülle die Pflichtfelder aus (Datum, aktuelles Gewicht und Zielgewicht).",
                 eventPastDate: "Das ausgewählte Datum liegt bereits in der Vergangenheit oder ist heute.",
                 eventGoalReached: "Dein aktuelles Gewicht ist bereits gleich oder niedriger als dein Ziel! Gute Arbeit.",
@@ -2404,11 +2398,11 @@
             const flMap = [t.footerCalc, t.footerAbout, t.footerCoop, t.footerOpinions, t.footerBlog, t.footerPrivacy, t.footerTerms];
             footerLinks.forEach((a, i) => { if (flMap[i]) a.innerHTML = flMap[i]; });
 
-            // Live users suffix (update displayed text if has number)
-            const luSpan = document.getElementById('live-users');
-            if (luSpan) {
-                const num = parseInt(luSpan.innerText.replace(/[^0-9]/g, '')) || 15;
-                luSpan.innerHTML = `<span class="live-dot"></span>${num}${t.liveUsers}`;
+            // Preserve the simulated value when switching languages.
+            const visitorSpan = document.getElementById('simulated-visitors');
+            if (visitorSpan) {
+                const num = parseInt(visitorSpan.innerText.replace(/[^0-9]/g, '')) || 70;
+                visitorSpan.textContent = `${num}${t.visitorSuffix}`;
             }
         }
 
