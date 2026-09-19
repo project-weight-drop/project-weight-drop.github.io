@@ -1073,7 +1073,7 @@
             <div class="container">
                 <div class="reviews-stats-bar">
                     <div class="stat-item">
-                        <span class="stat-number">248</span>
+                        <span class="stat-number">548</span>
                         <span class="stat-label">Zadowolonych klientów</span>
                     </div>
                     <div class="stat-item">
@@ -1682,34 +1682,6 @@
             });
         });
 
-        // --- JAWNIE SYMULOWANA AKTYWNOŚĆ (NIE RZECZYWISTY RUCH) ---
-        const simulatedVisitorsSpan = document.getElementById('simulated-visitors');
-        if (simulatedVisitorsSpan) {
-            const randomInt = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
-            let simulatedVisitors = 70;
-            let dipEndsAt = 0;
-            let nextDipAt = Date.now() + randomInt(120000, 240000);
-
-            const updateSimulatedVisitors = () => {
-                const now = Date.now();
-                if (dipEndsAt && now >= dipEndsAt) {
-                    dipEndsAt = 0;
-                    simulatedVisitors = randomInt(60, 80);
-                    nextDipAt = now + randomInt(120000, 240000);
-                } else if (!dipEndsAt && now >= nextDipAt) {
-                    dipEndsAt = now + randomInt(12000, 22000);
-                    simulatedVisitors = 20;
-                } else if (!dipEndsAt) {
-                    simulatedVisitors = Math.max(60, Math.min(80, simulatedVisitors + randomInt(-3, 3)));
-                }
-                simulatedVisitorsSpan.textContent = `${simulatedVisitors}${translations[currentLang].visitorSuffix}`;
-            };
-            setInterval(updateSimulatedVisitors, 4000);
-            document.addEventListener('visibilitychange', () => {
-                if (!document.hidden) updateSimulatedVisitors();
-            });
-        }
-
         // --- LOGIKA SUWAKA PRZED I PO ---
         function initComparisons() {
             var overlays = document.getElementsByClassName("img-comp-overlay");
@@ -1961,7 +1933,7 @@
                 heroBtn: "Calculate your needs",
                 statLabel1: "Satisfied clients",
                 statLabel3: "Experience",
-                statLabel4: "Simulated visitor count",
+                statLabel4: "Using right now",
                 whyTitle: "Why <span>Project Weight Drop?</span>",
                 f1h: "Blood test foundation",
                 f1p: "I don't design diets blindly. Before I write your plan, I analyse your blood test results to precisely target the cause of your metabolic issues.",
@@ -2078,7 +2050,7 @@
                 heroBtn: "Bedarf berechnen",
                 statLabel1: "Zufriedene Kunden",
                 statLabel3: "Erfahrung",
-                statLabel4: "Simulierte Besucherzahl",
+                statLabel4: "Gerade aktiv",
                 whyTitle: "Warum <span>Project Weight Drop?</span>",
                 f1h: "Grundlage in Blutuntersuchungen",
                 f1p: "Ich erstelle keine Diät 'im Blindflug'. Bevor ich deinen Plan ausarbeite, analysiere ich deine Laborbefunde, um die Ursache deiner Stoffwechselprobleme gezielt anzugehen.",
@@ -2180,6 +2152,24 @@
         };
 
         let currentLang = 'pl';
+
+        // --- AKTYWNOŚĆ UŻYTKOWNIKÓW: LOSOWA WARTOŚĆ 10–100 CO 5 SEKUND ---
+        const simulatedVisitorsSpan = document.getElementById('simulated-visitors');
+        const randomInt = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+
+        function updateSimulatedVisitors() {
+            if (!simulatedVisitorsSpan) return;
+            const simulatedVisitors = randomInt(10, 100);
+            const suffix = translations[currentLang]?.visitorSuffix || ' osób';
+            simulatedVisitorsSpan.textContent = `${simulatedVisitors}${suffix}`;
+        }
+
+        updateSimulatedVisitors();
+        setInterval(updateSimulatedVisitors, 5000);
+
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden) updateSimulatedVisitors();
+        });
 
         function setLang(lang) {
             currentLang = lang;
