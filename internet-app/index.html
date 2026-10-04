@@ -10,10 +10,10 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
-    <link rel="stylesheet" href="./styles.css?v=20261004-event-meal-generation">
+    <link rel="stylesheet" href="./styles.css?v=20261004-profile-setup">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
-    <script src="./config.js?v=20261004-event-meal-generation" defer></script>
-    <script src="./app.js?v=20261004-event-meal-generation" defer></script>
+    <script src="./config.js?v=20261004-profile-setup" defer></script>
+    <script src="./app.js?v=20261004-profile-setup" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -533,6 +533,53 @@
                     <span id="profile-avatar">U</span>
                     <div><p class="eyebrow">KONTO DEV</p><h2 id="profile-heading">Profil</h2><p id="profile-email">—</p></div>
                 </div>
+                <section id="profile-setup-panel" class="profile-setup-panel" aria-labelledby="profile-setup-heading" hidden>
+                    <div class="section-heading">
+                        <div><p class="eyebrow">KONFIGURACJA STARTOWA</p><h2 id="profile-setup-heading">Utwórz profil i plan</h2></div>
+                        <p>Podaj dane tak jak w Androidzie. Plan zostanie policzony przez ten sam silnik DEV.</p>
+                    </div>
+                    <form id="profile-setup-form" class="profile-setup-form">
+                        <fieldset>
+                            <legend>1. Cel i waga</legend>
+                            <div class="profile-setup-grid">
+                                <label>Aktualna waga (kg)<input id="setup-current-weight" type="number" min="35" max="350" step="0.1" inputmode="decimal" required></label>
+                                <label>Waga docelowa (kg)<input id="setup-goal-weight" type="number" min="35" max="350" step="0.1" inputmode="decimal" required></label>
+                                <label>Cel energetyczny<select id="setup-goal-type" required><option value="reduction">Redukcja</option><option value="maintenance">Utrzymanie</option><option value="gain">Budowanie</option></select></label>
+                                <label id="setup-adjustment-field">Deficyt / nadwyżka<select id="setup-energy-adjustment" required><option value="10">10%</option><option value="15" selected>15%</option><option value="20">20%</option></select></label>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>2. Dane do wyliczeń</legend>
+                            <div class="profile-setup-grid">
+                                <label>Płeć używana do obliczeń<select id="setup-sex" required><option value="male">Mężczyzna</option><option value="female">Kobieta</option></select></label>
+                                <label>Wiek<input id="setup-age" type="number" min="18" max="99" step="1" inputmode="numeric" required></label>
+                                <label>Wzrost (cm)<input id="setup-height" type="number" min="120" max="230" step="0.1" inputmode="decimal" required></label>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>3. Dieta i posiłki</legend>
+                            <div class="profile-setup-grid">
+                                <label>Styl żywienia<select id="setup-diet" required><option value="keto">KETO</option><option value="low_carb">LOW CARB</option><option value="balanced">BALANCE</option></select></label>
+                                <label>Liczba posiłków dziennie<select id="setup-meals" required><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></label>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <legend>4. Aktywność</legend>
+                            <div class="profile-setup-grid">
+                                <label>Codzienna aktywność<select id="setup-activity" required><option value="very_low">Bardzo niska</option><option value="low">Niska</option><option value="light">Lekka</option><option value="moderate" selected>Średnia</option><option value="high">Wysoka</option><option value="very_high">Bardzo wysoka</option></select></label>
+                                <label>Trening siłowy w tygodniu<select id="setup-strength-days" required><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></label>
+                                <label>Średnia liczba kroków<input id="setup-average-steps" type="number" min="0" max="100000" step="1" inputmode="numeric" value="8000" required></label>
+                                <label>Największa trudność<select id="setup-main-challenge" required><option value="weekend">Weekendy</option><option value="evening_hunger">Wieczorny głód</option><option value="sweets">Słodycze</option><option value="time">Brak czasu</option><option value="eating_out">Jedzenie na mieście</option></select></label>
+                            </div>
+                        </fieldset>
+                        <label class="profile-setup-consent"><input id="profile-setup-health-consent" type="checkbox" required><span>Wyrażam zgodę na przetwarzanie danych potrzebnych do utworzenia profilu i planu zgodnie z <a href="/privacy.html?from=internet-app" target="_blank" rel="noopener">Polityką prywatności</a>.</span></label>
+                        <div class="profile-setup-submit">
+                            <div><strong>Wyliczymy kalorie, makro i pierwszy cel</strong><span>Ustawimy także wybraną dietę, aktywność i liczbę posiłków.</span></div>
+                            <button id="profile-setup-submit" class="tool-primary-button" type="submit">Utwórz profil i wylicz plan</button>
+                        </div>
+                        <p id="profile-setup-status" class="profile-setup-status" role="status" aria-live="polite"></p>
+                    </form>
+                </section>
                 <div class="profile-data-panel" id="profile-data-panel" aria-busy="true">
                     <div class="section-heading">
                         <div><p class="eyebrow">DANE KONTA</p><h2>Ustawienia planu</h2></div>

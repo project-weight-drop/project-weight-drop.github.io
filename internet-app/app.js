@@ -56,6 +56,13 @@
     const safetyForm = document.getElementById("safety-form");
     const preferencesForm = document.getElementById("preferences-form");
     const preferenceFoodList = document.getElementById("preference-food-list");
+    const profileSetupPanel = document.getElementById("profile-setup-panel");
+    const profileSetupForm = document.getElementById("profile-setup-form");
+    const profileSetupSubmit = document.getElementById("profile-setup-submit");
+    const profileSetupConsent = document.getElementById("profile-setup-health-consent");
+    const profileSetupGoalType = document.getElementById("setup-goal-type");
+    const profileSetupAdjustmentField = document.getElementById("setup-adjustment-field");
+    const profileSetupAdjustment = document.getElementById("setup-energy-adjustment");
 
     const routeLabels = Object.freeze({
         home: "Home",
@@ -85,6 +92,7 @@
     let premiumSnapshotUnavailable = false;
     let currentNutritionPlan = null;
     let mealPlanGenerating = false;
+    let profileSetupBusy = false;
 
     const numberFormatter = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 });
     const weightFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
@@ -262,6 +270,7 @@
         premiumSnapshotUnavailable = false;
         currentNutritionPlan = null;
         mealPlanGenerating = false;
+        profileSetupBusy = false;
         dashboardOverview?.setAttribute("aria-busy", "true");
         profileDataPanel?.setAttribute("aria-busy", "true");
         setText("dashboard-message", "Pobieranie danych DEV…");
@@ -332,6 +341,10 @@
         eventForm?.reset();
         safetyForm?.reset();
         preferencesForm?.reset();
+        profileSetupForm?.reset();
+        if (profileSetupForm) delete profileSetupForm.dataset.prefilledFor;
+        if (profileSetupPanel) profileSetupPanel.hidden = true;
+        setToolStatus("profile-setup-status", "");
         if (eventDeleteButton) eventDeleteButton.hidden = true;
         if (eventProjection) eventProjection.hidden = true;
         if (preferenceFoodList) preferenceFoodList.innerHTML = '<p class="empty-history">Pobieranie katalogu DEV…</p>';
@@ -351,7 +364,7 @@
 
     function friendlyDataError(error) {
         const message = String(error?.message || error?.details || "").toLowerCase();
-        if (message.includes("profile_not_found")) return "Najpierw dokończ profil w aplikacji DEV na Androidzie.";
+        if (message.includes("profile_not_found")) return "Najpierw dokończ konfigurację profilu DEV.";
         if (message.includes("authentication_required") || message.includes("jwt")) return "Sesja wygasła. Zaloguj się ponownie.";
         if (message.includes("failed to fetch") || message.includes("network")) return "Nie udało się połączyć z danymi DEV.";
         return "Nie udało się pobrać danych DEV. Spróbuj ponownie później.";
@@ -445,7 +458,7 @@
         closeProfileReset();
         if (profileResetResult) {
             profileResetResult.classList.remove("error");
-            profileResetResult.textContent = "Profil i postępy zostały zresetowane. Rozpocznij konfigurację od początku w aplikacji Android DEV.";
+            profileResetResult.textContent = "Profil i postępy zostały zresetowane. Formularz konfiguracji startowej jest gotowy w Profilu.";
         }
         const { data: userData, error: userError } = await client.auth.getUser();
         if (!userError && userData.user) {
@@ -537,7 +550,7 @@
             return false;
         }
         if (!profileReadyForWrites) {
-            setToolStatus(statusId, "Najpierw dokończ profil i plan w aplikacji Android DEV.", "error");
+            setToolStatus(statusId, "Najpierw dokończ konfigurację profilu i planu w zakładce Profil.", "error");
             return false;
         }
         return true;
@@ -624,6 +637,10 @@
     function renderHealthConsent(consent, error = null) {
         healthConsentGranted = Boolean(consent?.explicit_health_data_consent);
         if (healthConsentPanel) healthConsentPanel.hidden = healthConsentGranted;
+        if (profileSetupConsent) {
+            profileSetupConsent.checked = healthConsentGranted || profileSetupConsent.checked;
+            profileSetupConsent.disabled = healthConsentGranted || profileSetupBusy;
+        }
         if (error) {
             setToolStatus("health-consent-status", "Nie udało się sprawdzić zgody DEV. Odśwież stronę.", "error");
         } else {
@@ -783,6 +800,10 @@
         }
         healthConsentGranted = true;
         if (healthConsentPanel) healthConsentPanel.hidden = true;
+        if (profileSetupConsent) {
+            profileSetupConsent.checked = true;
+            profileSetupConsent.disabled = true;
+        }
         updateHealthToolsAvailability();
         setToolStatus("water-form-status", "Zgoda została zapisana. Możesz uzupełniać dane.", "success");
     }
@@ -1037,12 +1058,213 @@
         setStatusCard("dashboard-status-card", "ready");
     }
 
+    function profileSetupValue(id, fallback = "") {
+        const element = document.getElementById(id);
+        return element ? element.value : fallback;
+    }
+
+    function setProfileSetupValue(id, value, fallback = "") {
+        const element = document.getElementById(id);
+        if (element) element.value = value === null || value === undefined || value === "" ? fallback : String(value);
+    }
+
+    function syncProfileSetupGoal() {
+        const maintenance = profileSetupGoalType?.value === "maintenance";
+        if (profileSetupAdjustmentField) profileSetupAdjustmentField.hidden = maintenance;
+        if (profileSetupAdjustment) profileSetupAdjustment.disabled = maintenance || profileSetupBusy;
+    }
+
+    function setProfileSetupBusy(busy) {
+        profileSetupBusy = busy;
+        profileSetupForm?.querySelectorAll("input, select, button").forEach((control) => {
+            control.disabled = busy;
+        });
+        if (profileSetupSubmit) profileSetupSubmit.textContent = busy ? "Wyliczanie planu…" : "Utwórz profil i wylicz plan";
+        if (profileSetupConsent) profileSetupConsent.disabled = busy || healthConsentGranted;
+        syncProfileSetupGoal();
+    }
+
+    function renderProfileSetup(profile, plan, profileError = null, planError = null) {
+        if (!profileSetupPanel || !profileSetupForm) return false;
+        const needsSetup = !profileError && !planError && (!profile?.onboarding_completed || !plan);
+        profileSetupPanel.hidden = !needsSetup;
+        if (!needsSetup) return false;
+
+        if (profileSetupForm.dataset.prefilledFor !== activeUserId) {
+            setProfileSetupValue("setup-current-weight", profile?.current_weight_kg);
+            setProfileSetupValue("setup-goal-weight", profile?.goal_weight_kg);
+            setProfileSetupValue("setup-goal-type", profile?.goal_type, "reduction");
+            const adjustment = [10, 15, 20].includes(Number(profile?.energy_adjustment_percent))
+                ? Number(profile.energy_adjustment_percent)
+                : 15;
+            setProfileSetupValue("setup-energy-adjustment", adjustment, "15");
+            setProfileSetupValue("setup-sex", profile?.sex_for_calculations, "male");
+            setProfileSetupValue("setup-age", profile?.age_years);
+            setProfileSetupValue("setup-height", profile?.height_cm);
+            setProfileSetupValue("setup-diet", profile?.diet_type, "keto");
+            setProfileSetupValue("setup-meals", profile?.meals_per_day, "3");
+            setProfileSetupValue("setup-activity", profile?.activity_level, "moderate");
+            setProfileSetupValue("setup-strength-days", profile?.strength_training_days, "3");
+            setProfileSetupValue("setup-average-steps", profile?.average_steps, "8000");
+            setProfileSetupValue("setup-main-challenge", profile?.main_challenge, "weekend");
+            profileSetupForm.dataset.prefilledFor = activeUserId || "signed-in";
+        }
+        if (profileSetupConsent) profileSetupConsent.checked = healthConsentGranted || profileSetupConsent.checked;
+        setProfileSetupBusy(false);
+        setToolStatus("profile-setup-status", profile
+            ? "Uzupełnij brakujące dane i utwórz aktywny plan DEV."
+            : "Uzupełnij wszystkie pola. Po zatwierdzeniu utworzymy profil i aktywny plan DEV.");
+        return true;
+    }
+
+    function initialPlanErrorMessage(code) {
+        const normalized = String(code || "unknown_error").toLowerCase();
+        const messages = {
+            unauthorized: "Sesja wygasła. Zaloguj się ponownie.",
+            authentication_required: "Sesja wygasła. Zaloguj się ponownie.",
+            invalid_payload: "Sprawdź dane formularza.",
+            invalid_sex: "Wybierz płeć używaną do obliczeń.",
+            invalid_age: "Wiek musi mieścić się w zakresie 18–99 lat.",
+            invalid_height: "Wzrost musi mieścić się w zakresie 120–230 cm.",
+            invalid_weight: "Aktualna waga musi mieścić się w zakresie 35–350 kg.",
+            invalid_goal: "Waga docelowa musi mieścić się w zakresie 35–350 kg.",
+            invalid_diet: "Wybierz KETO, LOW CARB albo BALANCE.",
+            invalid_activity: "Wybierz poziom codziennej aktywności.",
+            invalid_meals: "Wybierz od 2 do 5 posiłków dziennie.",
+            invalid_training: "Podaj od 0 do 7 treningów siłowych tygodniowo.",
+            invalid_goal_type: "Wybierz prawidłowy cel energetyczny.",
+            invalid_energy_adjustment: "Wybierz 10%, 15% albo 20%.",
+            safety_lock: "Tego planu nie można utworzyć automatycznie ze względów bezpieczeństwa. Sprawdź dane i nie obniżaj samodzielnie kalorii.",
+            macro_target_conflict: "Nie udało się bezpiecznie dopasować makro do podanych danych.",
+            keto_target_service_unavailable: "Wyliczenie celu KETO jest chwilowo niedostępne.",
+            low_carb_target_service_unavailable: "Wyliczenie celu LOW CARB jest chwilowo niedostępne.",
+            balanced_target_service_unavailable: "Wyliczenie celu BALANCE jest chwilowo niedostępne.",
+            nutrition_plan_unavailable: "Nie udało się utworzyć aktywnego planu DEV."
+        };
+        return messages[normalized] || "Nie udało się utworzyć profilu i planu DEV. Spróbuj ponownie.";
+    }
+
+    function initialProfilePayload() {
+        const goalType = profileSetupValue("setup-goal-type");
+        return {
+            sex: profileSetupValue("setup-sex"),
+            age: Number(profileSetupValue("setup-age")),
+            height_cm: Number(profileSetupValue("setup-height")),
+            current_weight_kg: Number(profileSetupValue("setup-current-weight")),
+            goal_weight_kg: Number(profileSetupValue("setup-goal-weight")),
+            diet_type: profileSetupValue("setup-diet"),
+            meals_per_day: Number(profileSetupValue("setup-meals")),
+            activity_level: profileSetupValue("setup-activity"),
+            strength_training_days: Number(profileSetupValue("setup-strength-days")),
+            average_steps: Number(profileSetupValue("setup-average-steps")),
+            weekly_budget_eur: null,
+            main_challenge: profileSetupValue("setup-main-challenge"),
+            goal_type: goalType,
+            energy_adjustment_percent: goalType === "maintenance" ? 0 : Number(profileSetupValue("setup-energy-adjustment")),
+            carb_limit_g: null,
+            coach_reference_weight_kg: null,
+            meal_calorie_tolerance_percent: 8,
+            meal_macro_tolerance_percent: 4,
+            clinical_override_required: false,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC"
+        };
+    }
+
+    function validInitialProfilePayload(payload) {
+        return ["male", "female"].includes(payload.sex) &&
+            Number.isInteger(payload.age) && payload.age >= 18 && payload.age <= 99 &&
+            Number.isFinite(payload.height_cm) && payload.height_cm >= 120 && payload.height_cm <= 230 &&
+            Number.isFinite(payload.current_weight_kg) && payload.current_weight_kg >= 35 && payload.current_weight_kg <= 350 &&
+            Number.isFinite(payload.goal_weight_kg) && payload.goal_weight_kg >= 35 && payload.goal_weight_kg <= 350 &&
+            ["keto", "low_carb", "balanced"].includes(payload.diet_type) &&
+            Number.isInteger(payload.meals_per_day) && payload.meals_per_day >= 2 && payload.meals_per_day <= 5 &&
+            ["very_low", "low", "light", "moderate", "high", "very_high"].includes(payload.activity_level) &&
+            Number.isInteger(payload.strength_training_days) && payload.strength_training_days >= 0 && payload.strength_training_days <= 7 &&
+            Number.isInteger(payload.average_steps) && payload.average_steps >= 0 && payload.average_steps <= 100000 &&
+            ["weekend", "evening_hunger", "sweets", "time", "eating_out"].includes(payload.main_challenge) &&
+            ["reduction", "maintenance", "gain"].includes(payload.goal_type) &&
+            (payload.goal_type === "maintenance" || [10, 15, 20].includes(payload.energy_adjustment_percent));
+    }
+
+    async function recoverInitialPlan() {
+        const [profileResult, planResult] = await Promise.all([
+            client.from("profiles").select("onboarding_completed").eq("user_id", activeUserId).maybeSingle(),
+            client.from("nutrition_plans").select("calories_target,protein_g,fat_g,carbs_g,diet_type,status,version")
+                .eq("user_id", activeUserId).eq("status", "active").order("version", { ascending: false }).limit(1).maybeSingle()
+        ]);
+        if (profileResult.error || planResult.error || !profileResult.data?.onboarding_completed || !planResult.data) return null;
+        return planResult.data;
+    }
+
+    async function createInitialPlanWithRecovery(payload) {
+        let lastCode = "unknown_error";
+        for (let attempt = 0; attempt < 3; attempt += 1) {
+            const { data, error } = await client.functions.invoke("create-initial-plan", { body: payload });
+            if (!error && !data?.error) return { data, recovered: false };
+            lastCode = await edgeFunctionErrorCode(error, data);
+            const recoveredPlan = await recoverInitialPlan();
+            if (recoveredPlan) return { data: recoveredPlan, recovered: true };
+            if (attempt < 2) await new Promise((resolve) => window.setTimeout(resolve, 1200));
+        }
+        return { errorCode: lastCode };
+    }
+
+    async function submitInitialProfile() {
+        if (!client || !activeUserId || profileSetupBusy) return;
+        if (!profileSetupForm?.reportValidity()) return;
+        const payload = initialProfilePayload();
+        if (!validInitialProfilePayload(payload)) {
+            setToolStatus("profile-setup-status", "Sprawdź wszystkie pola konfiguracji startowej.", "error");
+            return;
+        }
+        if (!healthConsentGranted && !profileSetupConsent?.checked) {
+            setToolStatus("profile-setup-status", "Zaznacz zgodę na przetwarzanie danych potrzebnych do utworzenia planu.", "error");
+            return;
+        }
+
+        setProfileSetupBusy(true);
+        setToolStatus("profile-setup-status", "Zapisywanie zgody i wyliczanie planu DEV. To może potrwać kilkadziesiąt sekund…");
+        if (!healthConsentGranted) {
+            const consentResult = await client.rpc("record_explicit_health_data_consent", {
+                p_policy_version: CURRENT_PRIVACY_POLICY_VERSION,
+                p_app_version: WEB_APP_VERSION,
+                p_locale: "pl-PL"
+            });
+            if (consentResult.error || consentResult.data?.recorded !== true) {
+                setProfileSetupBusy(false);
+                setToolStatus("profile-setup-status", healthWriteError(consentResult.error, "Nie udało się zapisać zgody DEV."), "error");
+                return;
+            }
+            healthConsentGranted = true;
+            if (healthConsentPanel) healthConsentPanel.hidden = true;
+            if (healthConsentCheckbox) healthConsentCheckbox.checked = true;
+        }
+
+        const result = await createInitialPlanWithRecovery(payload);
+        if (result.errorCode) {
+            setProfileSetupBusy(false);
+            setToolStatus("profile-setup-status", initialPlanErrorMessage(result.errorCode), "error");
+            return;
+        }
+
+        const refreshed = await refreshAccountData();
+        setProfileSetupBusy(false);
+        if (!refreshed) {
+            setToolStatus("profile-setup-status", "Plan został wysłany do wyliczenia, ale sesja wymaga odświeżenia.", "error");
+            return;
+        }
+        const calories = finiteNumber(result.data?.target_kcal ?? result.data?.calories ?? result.data?.calories_target);
+        const detail = calories === null ? "Profil i aktywny plan DEV są gotowe." : `Profil i aktywny plan są gotowe: ${formatNumber(calories)} kcal.`;
+        setText("profile-data-message", detail);
+        profileDataPanel?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
     function renderProfile(profile, plan) {
         if (!profile) {
             profileReadyForWrites = false;
             updateHealthToolsAvailability();
             profileDataPanel?.setAttribute("aria-busy", "false");
-            setText("profile-data-message", "Brak profilu. Dokończ konfigurację w aplikacji DEV na Androidzie.");
+            setText("profile-data-message", "Brak profilu. Uzupełnij konfigurację startową powyżej.");
             setText("home-profile-status", "Brak profilu");
             setText("home-profile-detail", "Wymagane dokończenie konfiguracji DEV");
             setStatusCard("profile-status-card", "error");
@@ -1064,7 +1286,7 @@
         setText("profile-average-steps", formatNumber(profile.average_steps));
         setText("profile-timezone", profile.timezone || "—");
         setText("profile-plan-status", plan
-            ? `${formatDiet(plan.diet_type)} · ${formatNumber(plan.calories_target)} kcal`
+            ? `${formatDiet(plan.diet_type)} · ${formatNumber(plan.calories_target)} kcal · B ${formatNumber(plan.protein_g)} / T ${formatNumber(plan.fat_g)} / W ${formatNumber(plan.carbs_g)} g`
             : "Brak aktywnego planu");
         profileDataPanel?.setAttribute("aria-busy", "false");
         setText("profile-data-message", "Dane tylko do odczytu, chronione polityką RLS.");
@@ -1798,7 +2020,8 @@
         const profileColumns = [
             "user_id", "start_weight_kg", "current_weight_kg", "goal_weight_kg", "diet_type",
             "meals_per_day", "activity_level", "strength_training_days", "average_steps",
-            "timezone", "goal_type", "onboarding_completed"
+            "timezone", "goal_type", "onboarding_completed", "sex_for_calculations", "age_years",
+            "height_cm", "main_challenge", "energy_adjustment_percent"
         ].join(",");
         const planColumns = "calories_target,protein_g,fat_g,carbs_g,diet_type,status,version";
 
@@ -1900,8 +2123,15 @@
             preferenceCatalogResult.error ? [] : preferenceCatalogResult.data,
             preferencesResult.error || preferenceCatalogResult.error
         );
+        const needsProfileSetup = renderProfileSetup(
+            profileResult.error ? null : profileResult.data,
+            planResult.error ? null : planResult.data,
+            profileResult.error,
+            planResult.error
+        );
         updateMealGenerationAccess();
         healthToolsContent?.setAttribute("aria-busy", "false");
+        if (needsProfileSetup) navigateTo("profile");
     }
 
     function renderUser(user) {
@@ -2220,6 +2450,15 @@
     preferencesForm?.addEventListener("submit", (event) => {
         event.preventDefault();
         void saveMealPreferences();
+    });
+    profileSetupGoalType?.addEventListener("change", () => {
+        syncProfileSetupGoal();
+        setToolStatus("profile-setup-status", "");
+    });
+    profileSetupForm?.addEventListener("input", () => setToolStatus("profile-setup-status", ""));
+    profileSetupForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void submitInitialProfile();
     });
 
     document.querySelectorAll("[data-coach-prompt]").forEach((button) => {
