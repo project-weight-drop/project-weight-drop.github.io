@@ -385,6 +385,35 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .profile-card > span { display: grid; place-items: center; flex: 0 0 96px; width: 96px; height: 96px; border: 2px solid rgba(255,106,0,.65); border-radius: 50%; background: var(--orange-soft); color: var(--orange); font-size: 36px; font-weight: 900; }
 .profile-card h2 { margin: 8px 0 5px; font-size: 40px; }
 .profile-card div > p:last-child { margin: 0; color: var(--muted); }
+.danger-zone { display: flex; align-items: center; justify-content: space-between; gap: 28px; margin-top: 18px; padding: clamp(22px, 4vw, 30px); border: 1px solid rgba(255,106,0,.38); border-radius: 14px; background: linear-gradient(135deg, #191919, #25150d); }
+.danger-zone > div { max-width: 780px; }
+.danger-zone h3 { margin: 7px 0 10px; font-size: 24px; }
+.danger-zone p:not(.eyebrow) { margin: 0; color: #aaa; font-size: 12px; line-height: 1.65; }
+.danger-zone .danger-zone-retained { margin-top: 8px; color: #d6d6d6; }
+.danger-button, .dialog-danger-button, .dialog-secondary-button { min-height: 46px; border-radius: 9px; padding: 0 17px; cursor: pointer; font-weight: 850; }
+.danger-button { flex: 0 0 auto; border: 1px solid var(--orange); background: transparent; color: var(--orange); }
+.danger-button:hover { background: var(--orange-soft); }
+.profile-reset-result { min-height: 0; }
+.profile-reset-result:not(:empty) { margin-top: 12px !important; color: var(--success) !important; font-weight: 750; }
+.profile-reset-result.error { color: var(--error) !important; }
+.modal-backdrop { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; overflow-y: auto; padding: 22px; background: rgba(0,0,0,.82); backdrop-filter: blur(8px); }
+.confirm-dialog { width: min(100%, 560px); padding: clamp(24px, 5vw, 38px); border: 1px solid rgba(255,106,0,.48); border-radius: 16px; background: #171717; box-shadow: 0 24px 80px rgba(0,0,0,.58); }
+.confirm-dialog h2 { margin: 8px 0 13px; font-size: clamp(30px, 6vw, 42px); letter-spacing: -.035em; }
+.confirm-dialog > p:not(.eyebrow) { margin: 0; color: #b4b4b4; font-size: 13px; line-height: 1.7; }
+.reset-retained-note { display: grid; gap: 5px; margin-top: 18px; padding: 14px 16px; border: 1px solid #383838; border-radius: 10px; background: #121212; }
+.reset-retained-note strong { color: var(--success); font-size: 11px; text-transform: uppercase; letter-spacing: .08em; }
+.reset-retained-note span { color: #aaa; font-size: 11px; line-height: 1.55; }
+.reset-confirm-field { display: grid; gap: 9px; margin-top: 22px; color: #d7d7d7; font-size: 12px; }
+.reset-confirm-field input { width: 100%; min-height: 50px; border: 1px solid #454545; border-radius: 9px; padding: 0 14px; background: #101010; color: white; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; outline: none; }
+.reset-confirm-field input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,106,0,.12); }
+.profile-reset-status { min-height: 18px; margin: 10px 0 0 !important; color: var(--error) !important; font-size: 11px !important; }
+.profile-reset-status.success { color: var(--success) !important; }
+.confirm-dialog-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 20px; }
+.dialog-secondary-button { border: 1px solid #444; background: #202020; color: #ddd; }
+.dialog-danger-button { border: 0; background: var(--orange); color: #111; }
+.dialog-danger-button:disabled, .dialog-secondary-button:disabled { cursor: wait; opacity: .48; }
+.dialog-danger-button:not(:disabled):hover { background: var(--orange-strong); }
+body.modal-open { overflow: hidden; }
 
 @media (max-width: 980px) {
     :root { --sidebar-width: 208px; }
@@ -455,6 +484,10 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
     .capability-list span { text-align: left; }
     .profile-card { align-items: flex-start; flex-direction: column; }
     .profile-card > span { width: 76px; height: 76px; flex-basis: 76px; font-size: 28px; }
+    .danger-zone { align-items: stretch; flex-direction: column; }
+    .danger-button { width: 100%; }
+    .confirm-dialog-actions { flex-direction: column-reverse; }
+    .confirm-dialog-actions button { width: 100%; }
 }
 
 @media (max-width: 390px) {

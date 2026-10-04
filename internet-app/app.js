@@ -30,6 +30,13 @@
     const coachForm = document.getElementById("coach-form");
     const coachInput = document.getElementById("coach-input");
     const coachSendButton = document.getElementById("coach-send-button");
+    const profileResetModal = document.getElementById("profile-reset-modal");
+    const openProfileResetButton = document.getElementById("open-profile-reset");
+    const cancelProfileResetButton = document.getElementById("cancel-profile-reset");
+    const confirmProfileResetButton = document.getElementById("confirm-profile-reset");
+    const profileResetConfirmation = document.getElementById("profile-reset-confirmation");
+    const profileResetStatus = document.getElementById("profile-reset-status");
+    const profileResetResult = document.getElementById("profile-reset-result");
 
     const routeLabels = Object.freeze({
         home: "Home",
@@ -48,6 +55,8 @@
     let selectedMealPlanDay = 0;
     let currentCoachConversationId = null;
     let authMode = "sign-in";
+    let profileResetBusy = false;
+    let profileResetPreviousFocus = null;
 
     const numberFormatter = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 });
     const weightFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
@@ -298,6 +307,90 @@
             }
         }
         return "unknown_error";
+    }
+
+    function setProfileResetStatus(message = "", kind = "error") {
+        if (!profileResetStatus) return;
+        profileResetStatus.textContent = message;
+        profileResetStatus.classList.toggle("success", kind === "success");
+    }
+
+    function setProfileResetBusy(busy) {
+        profileResetBusy = busy;
+        if (profileResetConfirmation) profileResetConfirmation.disabled = busy;
+        if (cancelProfileResetButton) cancelProfileResetButton.disabled = busy;
+        if (confirmProfileResetButton) {
+            confirmProfileResetButton.disabled = busy || profileResetConfirmation?.value !== "RESET";
+            confirmProfileResetButton.textContent = busy ? "Resetowanie…" : "Zacznij od nowa";
+        }
+    }
+
+    function openProfileReset() {
+        if (!profileResetModal || !activeUserId) return;
+        profileResetPreviousFocus = document.activeElement;
+        profileResetConfirmation.value = "";
+        setProfileResetStatus();
+        setProfileResetBusy(false);
+        profileResetModal.hidden = false;
+        document.body.classList.add("modal-open");
+        window.setTimeout(() => profileResetConfirmation?.focus(), 0);
+    }
+
+    function closeProfileReset() {
+        if (!profileResetModal || profileResetBusy) return;
+        profileResetModal.hidden = true;
+        document.body.classList.remove("modal-open");
+        profileResetConfirmation.value = "";
+        setProfileResetStatus();
+        if (profileResetPreviousFocus instanceof HTMLElement) profileResetPreviousFocus.focus();
+        profileResetPreviousFocus = null;
+    }
+
+    function profileResetErrorMessage(code) {
+        const messages = {
+            authentication_required: "Sesja wygasła. Zaloguj się ponownie.",
+            reset_confirmation_required: "Wpisz dokładnie RESET, aby potwierdzić.",
+            self_profile_reset_failed: "Nie udało się zresetować danych. Spróbuj ponownie później."
+        };
+        return messages[code] || "Nie udało się zresetować danych DEV. Spróbuj ponownie.";
+    }
+
+    async function resetOwnProfile() {
+        if (!client || !activeUserId) {
+            setProfileResetStatus("Sesja wygasła. Zaloguj się ponownie.");
+            return;
+        }
+        if (profileResetConfirmation?.value !== "RESET") {
+            setProfileResetStatus("Wpisz dokładnie RESET, aby potwierdzić.");
+            profileResetConfirmation?.focus();
+            return;
+        }
+
+        setProfileResetBusy(true);
+        setProfileResetStatus("Trwa bezpieczne resetowanie danych DEV…", "success");
+        const { data, error } = await client.functions.invoke("reset-my-profile", {
+            body: { confirmation: "RESET", understands_data_loss: true }
+        });
+
+        if (error || data?.reset !== true) {
+            const code = await edgeFunctionErrorCode(error, data);
+            setProfileResetBusy(false);
+            setProfileResetStatus(profileResetErrorMessage(code));
+            return;
+        }
+
+        setProfileResetBusy(false);
+        closeProfileReset();
+        if (profileResetResult) {
+            profileResetResult.classList.remove("error");
+            profileResetResult.textContent = "Profil i postępy zostały zresetowane. Rozpocznij konfigurację od początku w aplikacji Android DEV.";
+        }
+        const { data: userData, error: userError } = await client.auth.getUser();
+        if (!userError && userData.user) {
+            activeUserId = null;
+            showSignedIn(userData.user);
+            navigateTo("profile");
+        }
     }
 
     function featureErrorMessage(code, feature) {
@@ -1089,6 +1182,10 @@
     function showSignedOut(message = "Połączenie wyłącznie z projektem DEV", kind = "neutral") {
         dataLoadSequence += 1;
         activeUserId = null;
+        profileResetBusy = false;
+        if (profileResetModal) profileResetModal.hidden = true;
+        document.body.classList.remove("modal-open");
+        if (profileResetResult) profileResetResult.textContent = "";
         appView.hidden = true;
         authView.hidden = false;
         loginForm.reset();
@@ -1349,6 +1446,20 @@
     });
     document.querySelectorAll("[data-sign-out]").forEach((button) => {
         button.addEventListener("click", () => void signOut());
+    });
+    openProfileResetButton?.addEventListener("click", openProfileReset);
+    cancelProfileResetButton?.addEventListener("click", closeProfileReset);
+    confirmProfileResetButton?.addEventListener("click", () => void resetOwnProfile());
+    profileResetConfirmation?.addEventListener("input", () => {
+        profileResetConfirmation.value = profileResetConfirmation.value.toLocaleUpperCase("pl-PL");
+        setProfileResetStatus();
+        setProfileResetBusy(false);
+    });
+    profileResetModal?.addEventListener("click", (event) => {
+        if (event.target === profileResetModal) closeProfileReset();
+    });
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !profileResetModal?.hidden) closeProfileReset();
     });
     window.addEventListener("hashchange", () => {
         if (!appView.hidden) navigateTo(window.location.hash.slice(1), false);

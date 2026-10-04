@@ -10,10 +10,10 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
-    <link rel="stylesheet" href="./styles.css?v=20261004-logout">
+    <link rel="stylesheet" href="./styles.css?v=20261004-profile-reset">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
-    <script src="./config.js?v=20261004-logout" defer></script>
-    <script src="./app.js?v=20261004-logout" defer></script>
+    <script src="./config.js?v=20261004-profile-reset" defer></script>
+    <script src="./app.js?v=20261004-profile-reset" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -411,10 +411,41 @@
                         <div><dt>Aktywny plan DEV</dt><dd id="profile-plan-status">—</dd></div>
                     </dl>
                 </div>
-                <div class="capability-list"><div><strong>Sesja internetowa</strong><span class="available-label">Aktywna</span></div><div><strong>Edycja profilu i ustawień</strong><span>W przygotowaniu — obecnie tylko odczyt</span></div><div><strong>Zakup PRO przez Google Play</strong><span>Tylko Android</span></div></div>
+                <section class="danger-zone" aria-labelledby="profile-reset-heading">
+                    <div>
+                        <p class="eyebrow">DANE I POSTĘPY</p>
+                        <h3 id="profile-reset-heading">Zacznij od nowa</h3>
+                        <p>Usuń profil, wyliczenia, wybraną dietę, plany, posiłki, wagę, wodę, postępy, Check In, preferencje, Safety oraz historię i pamięć Coacha.</p>
+                        <p class="danger-zone-retained">Konto logowania, hasło, dostęp PRO, wykorzystanie darmowego Coacha i uprawnienia administratora pozostaną.</p>
+                        <p id="profile-reset-result" class="profile-reset-result" role="status" aria-live="polite"></p>
+                    </div>
+                    <button id="open-profile-reset" class="danger-button" type="button">Zresetuj profil i postępy</button>
+                </section>
+                <div class="capability-list"><div><strong>Sesja internetowa</strong><span class="available-label">Aktywna</span></div><div><strong>Reset profilu i ustawień</strong><span class="available-label">Dostępny</span></div><div><strong>Zakup PRO przez Google Play</strong><span>Tylko Android</span></div></div>
             </section>
         </main>
     </div>
+</div>
+
+<div id="profile-reset-modal" class="modal-backdrop" hidden>
+    <section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-reset-dialog-title" aria-describedby="profile-reset-dialog-copy">
+        <p class="eyebrow">NIEODWRACALNA OPERACJA</p>
+        <h2 id="profile-reset-dialog-title">Zacząć od nowa?</h2>
+        <p id="profile-reset-dialog-copy">Reset usunie dane Project Weight Drop: profil i dane do wyliczeń, wybraną dietę, plany, wagę, posiłki, wodę, postępy, Check In, preferencje, Safety oraz historię i pamięć Coacha.</p>
+        <div class="reset-retained-note">
+            <strong>Tego nie usuwamy</strong>
+            <span>Konto logowania, hasło, PRO, wykorzystanie darmowego Coacha i uprawnienia administratora pozostaną.</span>
+        </div>
+        <label class="reset-confirm-field" for="profile-reset-confirmation">
+            <span>Aby potwierdzić, wpisz <strong>RESET</strong></span>
+            <input id="profile-reset-confirmation" type="text" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="RESET">
+        </label>
+        <p id="profile-reset-status" class="profile-reset-status" role="status" aria-live="polite"></p>
+        <div class="confirm-dialog-actions">
+            <button id="cancel-profile-reset" class="dialog-secondary-button" type="button">Anuluj</button>
+            <button id="confirm-profile-reset" class="dialog-danger-button" type="button" disabled>Zacznij od nowa</button>
+        </div>
+    </section>
 </div>
 </body>
 </html>
