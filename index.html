@@ -266,6 +266,14 @@
             line-height: 1.35;
         }
 
+        .app-promo-actions {
+            display: flex;
+            flex: none;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
         .app-promo-link {
             display: inline-flex;
             flex: none;
@@ -289,6 +297,21 @@
         .app-promo-link img {
             width: 22px;
             height: 22px;
+        }
+
+        .app-promo-link svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .app-promo-link.web-app-link {
+            border-color: var(--accent);
+            background: var(--accent);
+            color: #090909;
+        }
+
+        .app-promo-link.web-app-link:hover {
+            background: #ff7a1a;
         }
 
         .lang-bar {
@@ -911,6 +934,9 @@
         
         @media screen and (max-width: 768px) {
             .chart-wrapper { flex-direction: column; }
+            .app-promo-inner { align-items: stretch; flex-direction: column; }
+            .app-promo-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
+            .app-promo-link { justify-content: center; }
         }
 
         .tab-panel {
@@ -1003,7 +1029,9 @@
             .brand-tagline { font-size: 0.49rem; }
             .app-promo-inner { gap: 10px; }
             .app-promo-copy p { font-size: 0.76rem; }
-            .app-promo-link { padding: 8px 10px; font-size: 0.72rem; }
+            .app-promo-actions { gap: 7px; }
+            .app-promo-link { padding: 8px 7px; font-size: 0.66rem; }
+            .app-promo-link img, .app-promo-link svg { width: 19px; height: 19px; }
         }
 
         @media screen and (max-width: 360px) {
@@ -1064,10 +1092,16 @@
                     <small data-i18n="appPromoLabel">APLIKACJA</small>
                     <p data-i18n="appPromoText">Posiłki, waga i postępy — wszystko w jednej aplikacji.</p>
                 </div>
-                <a class="app-promo-link" href="https://play.google.com/store/apps/details?id=com.projectweightdrop.app" target="_blank" rel="noopener noreferrer">
-                    <img src="/google-play-mark.svg" alt="" width="22" height="22">
-                    <span data-i18n="navDownload">Google Play</span>
-                </a>
+                <div class="app-promo-actions">
+                    <a class="app-promo-link web-app-link" href="/internet-app/">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H13v2h3a1 1 0 1 1 0 2H8a1 1 0 1 1 0-2h3v-2H6.5A2.5 2.5 0 0 1 4 14.5v-9Zm2.5-.5a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-11Z"/></svg>
+                        <span data-i18n="navWebApp">Aplikacja internetowa</span>
+                    </a>
+                    <a class="app-promo-link" href="https://play.google.com/store/apps/details?id=com.projectweightdrop.app" target="_blank" rel="noopener noreferrer">
+                        <img src="/google-play-mark.svg" alt="" width="22" height="22">
+                        <span data-i18n="navDownload">Google Play</span>
+                    </a>
+                </div>
             </div>
         </div>
         <section id="hero">
