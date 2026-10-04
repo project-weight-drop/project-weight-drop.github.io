@@ -1142,9 +1142,18 @@
     }
 
     async function signOut() {
-        document.querySelectorAll("[data-sign-out]").forEach((button) => { button.disabled = true; });
-        const { error } = await client.auth.signOut();
-        document.querySelectorAll("[data-sign-out]").forEach((button) => { button.disabled = false; });
+        const signOutButtons = [...document.querySelectorAll("[data-sign-out]")];
+        signOutButtons.forEach((button) => {
+            button.disabled = true;
+            const label = button.querySelector("span");
+            if (label) label.textContent = "Wylogowywanie…";
+        });
+        const { error } = await client.auth.signOut({ scope: "local" });
+        signOutButtons.forEach((button) => {
+            button.disabled = false;
+            const label = button.querySelector("span");
+            if (label) label.textContent = "Wyloguj";
+        });
         if (error) {
             window.alert("Nie udało się wylogować. Spróbuj ponownie.");
             return;

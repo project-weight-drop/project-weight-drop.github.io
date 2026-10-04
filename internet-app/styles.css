@@ -162,7 +162,10 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .header-actions { display: flex; align-items: center; gap: 12px; }
 .connection-status { display: inline-flex; align-items: center; gap: 8px; min-height: 35px; padding: 0 12px; border: 1px solid #333; border-radius: 999px; background: #171717; color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .connection-status i { width: 6px; height: 6px; background: var(--success); box-shadow: 0 0 0 4px rgba(114,199,133,.1); }
-.mobile-logout { display: none; }
+.header-logout { display: flex; align-items: center; gap: 7px; min-height: 38px; border: 1px solid rgba(255,106,0,.45); border-radius: 8px; padding: 0 12px; background: rgba(255,106,0,.08); color: var(--orange); cursor: pointer; font-size: 11px; font-weight: 800; transition: border-color .2s, background .2s, color .2s, opacity .2s; }
+.header-logout:hover:not(:disabled) { border-color: var(--orange); background: rgba(255,106,0,.16); color: #fff; }
+.header-logout:disabled { cursor: wait; opacity: .6; }
+.header-logout svg { width: 16px; height: 16px; }
 .route-content { width: min(1320px, 100%); margin: 0 auto; padding: clamp(24px, 4vw, 54px); }
 .route-page { display: none; animation: page-in .24s ease-out; }
 .route-page.active { display: block; }
@@ -424,8 +427,8 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
     .app-kicker { display: none; }
     .app-header h1 { font-size: 21px; }
     .connection-status { display: none; }
-    .mobile-logout { display: flex; align-items: center; gap: 6px; min-height: 36px; border: 1px solid #373737; border-radius: 8px; padding: 0 10px; background: #171717; color: #aaa; cursor: pointer; font-size: 10px; font-weight: 700; }
-    .mobile-logout svg { width: 15px; height: 15px; }
+    .header-logout { min-height: 36px; padding: 0 10px; font-size: 10px; }
+    .header-logout svg { width: 15px; height: 15px; }
     .route-content { padding: 20px 14px 28px; }
     .welcome-card { min-height: 260px; display: flex; flex-direction: column; align-items: flex-start; padding: 28px 22px; }
     .dashboard-grid, .macro-grid, .profile-data-grid { grid-template-columns: 1fr; }
@@ -459,7 +462,6 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
     .auth-heading h2 { font-size: 34px; }
     .mobile-brand { margin-bottom: 36px; }
     .nav-item { flex-basis: 68px; }
-    .mobile-logout span { display: none; }
     .module-grid button { grid-template-columns: 42px 1fr auto; padding: 15px; }
 }
 
