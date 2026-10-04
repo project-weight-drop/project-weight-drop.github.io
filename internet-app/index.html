@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="pl">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Project Weight Drop — aplikacja internetowa DEV</title>
+    <meta name="description" content="Wersja rozwojowa aplikacji internetowej Project Weight Drop.">
+    <meta name="robots" content="noindex, nofollow, noarchive">
+    <meta name="theme-color" content="#101010">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
+    <link rel="icon" href="/brand-logo.png" type="image/png">
+    <link rel="stylesheet" href="./styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
+    <script src="./config.js" defer></script>
+    <script src="./app.js" defer></script>
+</head>
+<body>
+<svg class="svg-sprite" aria-hidden="true" focusable="false">
+    <symbol id="icon-home" viewBox="0 0 24 24"><path d="M3 10.8 12 3l9 7.8v9.7a.5.5 0 0 1-.5.5H15v-6H9v6H3.5a.5.5 0 0 1-.5-.5z"/></symbol>
+    <symbol id="icon-meals" viewBox="0 0 24 24"><path d="M7 2v8M4 2v5.5A2.5 2.5 0 0 0 6.5 10H9a2 2 0 0 0 2-2V2M7 10v12M17 2v20M17 2c-3 2.5-3 8 0 9"/></symbol>
+    <symbol id="icon-fridge" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="19" rx="2"/><path d="M5 10h14M9 6v2M9 13v3M8 21v1M16 21v1"/></symbol>
+    <symbol id="icon-coach" viewBox="0 0 24 24"><path d="m12 2 1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6zM19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></symbol>
+    <symbol id="icon-progress" viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19V2M2 19h20"/></symbol>
+    <symbol id="icon-community" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><circle cx="18" cy="9" r="2"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M15 14.5a4.5 4.5 0 0 1 6 4.25V20"/></symbol>
+    <symbol id="icon-profile" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="icon-logout" viewBox="0 0 24 24"><path d="M10 5H4v14h6M14 8l4 4-4 4M8 12h10"/></symbol>
+    <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+</svg>
+
+<noscript>
+    <div class="noscript">Aplikacja internetowa wymaga włączonego JavaScriptu.</div>
+</noscript>
+
+<main id="auth-view" class="auth-layout">
+    <section class="auth-visual" aria-labelledby="auth-brand-title">
+        <a class="brand" href="/" aria-label="Project Weight Drop — strona główna">
+            <img src="/brand-logo.png" alt="" width="72" height="72">
+            <span><strong>PROJECT</strong><b id="auth-brand-title">WEIGHT <em>DROP</em></b></span>
+        </a>
+        <div class="dev-badge"><span></span> Aplikacja internetowa · DEV</div>
+        <div class="auth-copy">
+            <p class="eyebrow">KETO · LOW CARB · BALANCE</p>
+            <h1>Twój plan.<br><span>Także w przeglądarce.</span></h1>
+            <p>Bezpieczny dostęp do rozwojowej wersji aplikacji Project Weight Drop. Ten etap obsługuje logowanie kontami testowymi DEV.</p>
+        </div>
+        <ul class="auth-points" aria-label="Zakres wersji rozwojowej">
+            <li><span><svg><use href="#icon-check"></use></svg></span>Logowanie i trwała sesja DEV</li>
+            <li><span><svg><use href="#icon-check"></use></svg></span>Wspólny układ wszystkich modułów</li>
+            <li><span class="muted-check">01</span>Dane funkcji będą podłączane etapami</li>
+        </ul>
+        <p class="auth-visual-foot">LEPSZA TY KAŻDEGO DNIA</p>
+    </section>
+
+    <section class="auth-panel" aria-labelledby="login-title">
+        <div class="auth-panel-inner">
+            <a class="back-link" href="/"><span aria-hidden="true">←</span> Wróć do strony głównej</a>
+            <div class="mobile-brand">
+                <img src="/brand-logo.png" alt="" width="48" height="48">
+                <span>Project <strong>Weight Drop</strong></span>
+            </div>
+            <div class="auth-heading">
+                <p class="eyebrow">APLIKACJA INTERNETOWA</p>
+                <h2 id="login-title">Witaj ponownie</h2>
+                <p>Zaloguj się testowym kontem Project Weight Drop DEV.</p>
+            </div>
+
+            <div id="configuration-alert" class="alert alert-error" role="alert" hidden></div>
+
+            <form id="login-form" class="login-form" novalidate>
+                <label for="email">E-mail</label>
+                <div class="input-wrap">
+                    <span aria-hidden="true">@</span>
+                    <input id="email" name="email" type="email" autocomplete="username" inputmode="email" placeholder="twoj@email.com" required>
+                </div>
+                <label for="password">Hasło</label>
+                <div class="input-wrap">
+                    <svg aria-hidden="true"><use href="#icon-lock"></use></svg>
+                    <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="••••••••" required>
+                    <button id="password-toggle" class="password-toggle" type="button" aria-label="Pokaż hasło">Pokaż</button>
+                </div>
+                <button id="login-button" class="primary-button" type="submit">
+                    <span>Zaloguj się</span>
+                    <svg aria-hidden="true"><use href="#icon-arrow"></use></svg>
+                </button>
+            </form>
+
+            <div id="auth-status" class="auth-status" role="status" aria-live="polite">
+                <span class="status-dot"></span>
+                Połączenie wyłącznie z projektem DEV
+            </div>
+            <p class="privacy-note">Logując się, korzystasz z <a href="/privacy.html?from=internet-app">Polityki prywatności</a>. Nie używaj tutaj kont produkcyjnych.</p>
+        </div>
+    </section>
+</main>
+
+<div id="app-view" class="app-shell" hidden>
+    <aside class="sidebar" aria-label="Główna nawigacja aplikacji">
+        <div class="sidebar-brand">
+            <img src="/brand-logo.png" alt="" width="52" height="52">
+            <span><small>PROJECT</small><strong>WEIGHT <em>DROP</em></strong></span>
+        </div>
+        <div class="environment-pill"><span></span> WEB · DEV</div>
+
+        <nav class="main-nav">
+            <button class="nav-item active" type="button" data-route="home" aria-current="page">
+                <svg><use href="#icon-home"></use></svg><span>Home</span>
+            </button>
+            <button class="nav-item" type="button" data-route="meals">
+                <svg><use href="#icon-meals"></use></svg><span>Posiłki</span><small>Odczyt</small>
+            </button>
+            <button class="nav-item" type="button" data-route="fridge">
+                <svg><use href="#icon-fridge"></use></svg><span>Lodówka</span><small>AI DEV</small>
+            </button>
+            <button class="nav-item" type="button" data-route="coach">
+                <svg><use href="#icon-coach"></use></svg><span>AI Coach</span><small>AI DEV</small>
+            </button>
+            <button class="nav-item" type="button" data-route="progress">
+                <svg><use href="#icon-progress"></use></svg><span>Postępy</span><small>Odczyt</small>
+            </button>
+            <button class="nav-item" type="button" data-route="community">
+                <svg><use href="#icon-community"></use></svg><span>Społeczność</span><small>Odczyt</small>
+            </button>
+            <button class="nav-item" type="button" data-route="profile">
+                <svg><use href="#icon-profile"></use></svg><span>Profil</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="mini-user">
+                <span id="sidebar-avatar">U</span>
+                <div><strong id="sidebar-user-name">Użytkownik DEV</strong><small id="sidebar-user-email">—</small></div>
+            </div>
+            <button class="logout-button" type="button" data-sign-out aria-label="Wyloguj się">
+                <svg><use href="#icon-logout"></use></svg>
+            </button>
+        </div>
+    </aside>
+
+    <div class="app-workspace">
+        <header class="app-header">
+            <div>
+                <p class="app-kicker">PROJECT WEIGHT DROP</p>
+                <h1 id="route-title">Home</h1>
+            </div>
+            <div class="header-actions">
+                <span class="connection-status"><i></i> Supabase DEV</span>
+                <button class="mobile-logout" type="button" data-sign-out>
+                    <svg><use href="#icon-logout"></use></svg><span>Wyloguj</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="route-content" id="route-content">
+            <section class="route-page active" data-page="home" aria-labelledby="home-heading">
+                <div class="welcome-card">
+                    <div>
+                        <p class="eyebrow">DZIEŃ DOBRY</p>
+                        <h2 id="home-heading">Witaj, <span id="welcome-name">Użytkowniku</span></h2>
+                        <p>Twoje dzisiejsze dane są pobierane z tego samego projektu DEV, którego używa aplikacja Android. Strona niczego nie przelicza samodzielnie.</p>
+                    </div>
+                    <div class="phase-chip"><span>ETAP 1</span> Logowanie + Home + Profil</div>
+                </div>
+
+                <div class="status-grid">
+                    <article class="status-card ready">
+                        <div class="status-icon"><svg><use href="#icon-check"></use></svg></div>
+                        <p>Autoryzacja</p><h3>Połączono</h3><small>Zweryfikowana sesja Supabase DEV</small>
+                    </article>
+                    <article class="status-card" id="profile-status-card">
+                        <div class="status-icon"><svg><use href="#icon-profile"></use></svg></div>
+                        <p>Profil</p><h3 id="home-profile-status">Ładowanie…</h3><small id="home-profile-detail">Sprawdzanie własnego rekordu DEV</small>
+                    </article>
+                    <article class="status-card" id="dashboard-status-card">
+                        <div class="status-icon"><svg><use href="#icon-progress"></use></svg></div>
+                        <p>Dane dnia</p><h3 id="home-data-status">Ładowanie…</h3><small id="home-data-detail">Bez danych przykładowych i bez PROD</small>
+                    </article>
+                </div>
+
+                <section class="dashboard-overview" aria-labelledby="today-heading" aria-busy="true" id="dashboard-overview">
+                    <div class="section-heading">
+                        <div><p class="eyebrow">DZISIAJ</p><h2 id="today-heading">Twój plan i postęp</h2></div>
+                        <p id="dashboard-message" role="status" aria-live="polite">Pobieranie danych DEV…</p>
+                    </div>
+                    <div class="dashboard-grid">
+                        <article class="dashboard-card featured">
+                            <p>Pozostało dzisiaj</p>
+                            <h3><span id="home-calories-remaining">—</span> <small>kcal</small></h3>
+                            <div class="progress-track"><i id="home-calories-bar"></i></div>
+                            <span id="home-calories-detail">—</span>
+                        </article>
+                        <article class="dashboard-card">
+                            <p>Aktualna waga</p>
+                            <h3><span id="home-current-weight">—</span> <small>kg</small></h3>
+                            <span>Cel: <b id="home-goal-weight">—</b> kg</span>
+                        </article>
+                        <article class="dashboard-card">
+                            <p>Woda</p>
+                            <h3><span id="home-water">—</span> <small>ml</small></h3>
+                            <span>Zapis z dzisiejszego podsumowania</span>
+                        </article>
+                        <article class="dashboard-card">
+                            <p>Kroki</p>
+                            <h3 id="home-steps">—</h3>
+                            <span>Odczyt danych zapisanych w DEV</span>
+                        </article>
+                    </div>
+                    <div class="macro-grid" aria-label="Dzisiejsze makroskładniki">
+                        <article><div><p>Białko</p><strong id="home-protein">—</strong></div><div class="progress-track protein"><i id="home-protein-bar"></i></div></article>
+                        <article><div><p>Tłuszcz</p><strong id="home-fat">—</strong></div><div class="progress-track fat"><i id="home-fat-bar"></i></div></article>
+                        <article><div><p>Węglowodany</p><strong id="home-carbs">—</strong></div><div class="progress-track carbs"><i id="home-carbs-bar"></i></div></article>
+                    </div>
+                    <article class="weight-progress-card">
+                        <div><p>Postęp celu wagowego</p><strong id="home-weight-progress">—</strong></div>
+                        <div class="progress-track"><i id="home-weight-progress-bar"></i></div>
+                        <span id="home-weight-detail">—</span>
+                    </article>
+                </section>
+
+                <section class="module-overview" aria-labelledby="modules-heading">
+                    <div class="section-heading">
+                        <div><p class="eyebrow">WSPÓLNY UKŁAD</p><h2 id="modules-heading">Moduły aplikacji</h2></div>
+                        <p>Home i Profil korzystają już z prawdziwych danych DEV. Pozostałe moduły są uruchamiane etapami.</p>
+                    </div>
+                    <div class="module-grid">
+                        <button type="button" data-route-link="meals"><svg><use href="#icon-meals"></use></svg><span><strong>Posiłki</strong><small>Dziennik i plan</small></span><i>→</i></button>
+                        <button type="button" data-route-link="fridge"><svg><use href="#icon-fridge"></use></svg><span><strong>Lodówka</strong><small>Posiłek z produktów</small></span><i>→</i></button>
+                        <button type="button" data-route-link="coach"><svg><use href="#icon-coach"></use></svg><span><strong>AI Coach</strong><small>Rozmowa i wsparcie</small></span><i>→</i></button>
+                        <button type="button" data-route-link="progress"><svg><use href="#icon-progress"></use></svg><span><strong>Postępy</strong><small>Waga, woda i kroki</small></span><i>→</i></button>
+                    </div>
+                </section>
+            </section>
+
+            <section class="route-page" data-page="meals" aria-labelledby="meals-heading">
+                <div class="meals-hero">
+                    <div><p class="eyebrow">DZISIAJ</p><h2 id="meals-heading">Posiłki</h2><p id="meals-message" role="status" aria-live="polite">Pobieranie dziennika DEV…</p></div>
+                    <div class="meal-total"><span>Kalorie</span><strong id="meals-calories-total">—</strong><small>kcal zapisane dziś</small></div>
+                </div>
+                <div class="meals-layout">
+                    <section class="meals-panel" aria-labelledby="today-meals-heading">
+                        <div class="history-heading"><div><p class="eyebrow">DZIENNIK</p><h3 id="today-meals-heading">Dzisiejsze posiłki</h3></div><span id="today-meals-count">—</span></div>
+                        <div class="meal-list" id="today-meals-list"><p class="empty-history">Pobieranie…</p></div>
+                    </section>
+                    <section class="meals-panel" aria-labelledby="food-search-heading">
+                        <div class="history-heading"><div><p class="eyebrow">BAZA DEV</p><h3 id="food-search-heading">Wyszukaj produkt</h3></div></div>
+                        <form class="food-search-form" id="food-search-form">
+                            <label for="food-search-input">Nazwa produktu lub marka</label>
+                            <div><input id="food-search-input" type="search" minlength="2" maxlength="80" autocomplete="off" placeholder="np. jajka, awokado"><button type="submit">Szukaj</button></div>
+                        </form>
+                        <p class="food-search-status" id="food-search-status" role="status" aria-live="polite">Wpisz co najmniej 2 znaki.</p>
+                        <div class="food-results" id="food-search-results"></div>
+                    </section>
+                </div>
+                <section class="meal-plan-panel" aria-labelledby="meal-plan-heading">
+                    <div class="section-heading">
+                        <div><p class="eyebrow">PLAN 7 DNI</p><h2 id="meal-plan-heading">Twój plan</h2></div>
+                        <p id="meal-plan-message" role="status" aria-live="polite">Pobieranie aktywnego planu DEV…</p>
+                    </div>
+                    <div class="meal-day-tabs" id="meal-day-tabs" role="tablist" aria-label="Dni planu"></div>
+                    <div class="meal-plan-list" id="meal-plan-list"><p class="empty-history">Pobieranie…</p></div>
+                </section>
+                <div class="capability-list"><div><strong>Dziennik, plan i wyszukiwarka</strong><span class="available-label">Aktywny odczyt DEV</span></div><div><strong>Dodawanie i usuwanie posiłków</strong><span>Następny etap</span></div><div><strong>Skaner kodów i dyktowanie</strong><span>Tylko Android — w WWW ukryte</span></div></div>
+            </section>
+
+            <section class="route-page" data-page="fridge" aria-labelledby="fridge-heading">
+                <div class="feature-hero">
+                    <svg><use href="#icon-fridge"></use></svg>
+                    <div><p class="eyebrow">POSIŁEK Z TEGO, CO MASZ</p><h2 id="fridge-heading">Lodówka</h2><p>Wpisz produkty i dostępne ilości. Bezpieczna funkcja DEV dopasuje jeden posiłek do pozostałego planu dnia, diety i wykluczeń.</p></div>
+                </div>
+                <div class="fridge-layout">
+                    <form class="ai-form-panel" id="fridge-form">
+                        <label for="fridge-products">Produkty w lodówce</label>
+                        <textarea id="fridge-products" minlength="3" maxlength="2000" rows="7" placeholder="np. pierś z kurczaka 300 g, jajka 4 szt., szpinak 200 g, mozzarella 100 g" required></textarea>
+                        <p>Oddziel produkty przecinkami i podaj przybliżone ilości. Treść zostanie wysłana wyłącznie do funkcji AI projektu DEV i może wykorzystać dzienny limit Lodówki.</p>
+                        <button class="primary-button compact" id="fridge-generate-button" type="submit"><span>Ułóż posiłek</span><svg><use href="#icon-arrow"></use></svg></button>
+                        <div class="feature-status" id="fridge-status" role="status" aria-live="polite">Gotowe do wygenerowania.</div>
+                    </form>
+                    <article class="fridge-result" id="fridge-result" hidden>
+                        <div class="fridge-result-head"><div><p class="eyebrow">PROPOZYCJA DEV</p><h3 id="fridge-result-title">—</h3></div><strong id="fridge-fit">—</strong></div>
+                        <p id="fridge-fit-note">—</p>
+                        <div class="fridge-macros"><span><small>Kalorie</small><b id="fridge-calories">—</b></span><span><small>Białko</small><b id="fridge-protein">—</b></span><span><small>Tłuszcz</small><b id="fridge-fat">—</b></span><span><small>Węgle</small><b id="fridge-carbs">—</b></span></div>
+                        <h4>Składniki</h4><div class="fridge-ingredients" id="fridge-ingredients"></div>
+                        <h4>Przygotowanie</h4><p class="fridge-instructions" id="fridge-instructions">—</p>
+                    </article>
+                </div>
+                <p class="feature-note">Dodanie wygenerowanego posiłku do dziennika pozostaje na razie wyłączone. Najpierw możesz bezpiecznie sprawdzić propozycję bez zapisu posiłku.</p>
+            </section>
+
+            <section class="route-page" data-page="coach" aria-labelledby="coach-heading">
+                <div class="feature-hero coach-hero">
+                    <svg><use href="#icon-coach"></use></svg>
+                    <div><p class="eyebrow">TWOJE DANE · TWOJE CELE</p><h2 id="coach-heading">AI Coach</h2><p>Coach korzysta z bieżącego planu, dziennika i postępów z DEV. Nie zmienia samodzielnie kalorii, makro, leków ani ustawień bezpieczeństwa.</p></div>
+                </div>
+                <section class="coach-panel" aria-label="Rozmowa z AI Coach">
+                    <div class="coach-topline"><span id="coach-status">Pobieranie historii DEV…</span><small id="coach-limit">Limit sprawdzany przy wysłaniu</small></div>
+                    <div class="coach-messages" id="coach-messages" aria-live="polite"><p class="empty-history">Pobieranie…</p></div>
+                    <div class="coach-prompts" aria-label="Szybkie pytania">
+                        <button type="button" data-coach-prompt="Co mogę dziś zjeść?">Co mogę dziś zjeść?</button>
+                        <button type="button" data-coach-prompt="Jak wygląda mój postęp?">Jak wygląda mój postęp?</button>
+                        <button type="button" data-coach-prompt="Dlaczego moja waga stoi?">Dlaczego waga stoi?</button>
+                    </div>
+                    <form class="coach-form" id="coach-form">
+                        <label for="coach-input">Wiadomość do Coacha</label>
+                        <div><textarea id="coach-input" maxlength="2000" rows="2" placeholder="Napisz wiadomość…" required></textarea><button id="coach-send-button" type="submit" aria-label="Wyślij wiadomość"><svg><use href="#icon-arrow"></use></svg></button></div>
+                        <p>Wysłanie wiadomości wykorzystuje limit AI Coacha przypisany do Twojego konta DEV i zapisuje rozmowę w historii.</p>
+                    </form>
+                </section>
+            </section>
+
+            <section class="route-page" data-page="progress" aria-labelledby="progress-heading">
+                <div class="progress-hero">
+                    <div><p class="eyebrow">OSTATNIE 7 DNI</p><h2 id="progress-heading">Postępy</h2><p id="progress-message" role="status" aria-live="polite">Pobieranie raportu DEV…</p></div>
+                    <div class="phase-chip"><span>TYLKO ODCZYT</span> Te same dane co w Androidzie</div>
+                </div>
+                <div class="progress-summary-grid" id="progress-summary" aria-busy="true">
+                    <article><p>Dni z danymi</p><h3 id="progress-data-days">—</h3><span>z ostatnich 7 dni</span></article>
+                    <article><p>Zapisane posiłki</p><h3 id="progress-meals">—</h3><span>łącznie w tygodniu</span></article>
+                    <article><p>Średnie kalorie</p><h3 id="progress-calories">—</h3><span>kcal dziennie</span></article>
+                    <article><p>Średnie kroki</p><h3 id="progress-steps">—</h3><span>z dni z pomiarem</span></article>
+                    <article><p>Średnia woda</p><h3 id="progress-water">—</h3><span>ml dziennie</span></article>
+                    <article><p>Zmiana wagi</p><h3 id="progress-weight-change">—</h3><span>kg w okresie raportu</span></article>
+                </div>
+                <div class="history-grid">
+                    <section class="history-panel" aria-labelledby="weight-history-heading">
+                        <div class="history-heading"><div><p class="eyebrow">WAGA</p><h3 id="weight-history-heading">Ostatnie pomiary</h3></div><span id="weight-history-count">—</span></div>
+                        <div class="history-list" id="weight-history-list"><p class="empty-history">Pobieranie…</p></div>
+                    </section>
+                    <section class="history-panel" aria-labelledby="steps-history-heading">
+                        <div class="history-heading"><div><p class="eyebrow">AKTYWNOŚĆ</p><h3 id="steps-history-heading">Ostatnie dni</h3></div><span id="steps-history-count">—</span></div>
+                        <div class="history-list" id="steps-history-list"><p class="empty-history">Pobieranie…</p></div>
+                    </section>
+                </div>
+                <p class="feature-note">Kroki z Health Connect nie synchronizują się bezpośrednio z przeglądarką. Widoczne są wyłącznie wartości zapisane wcześniej w DEV.</p>
+            </section>
+
+            <section class="route-page" data-page="community" aria-labelledby="community-heading">
+                <div class="community-hero">
+                    <div><p class="eyebrow">RAZEM ŁATWIEJ</p><h2 id="community-heading">Społeczność i wyzwania</h2><p id="community-message" role="status" aria-live="polite">Pobieranie danych DEV…</p></div>
+                    <div class="community-stats"><span><small>Punkty</small><b id="community-points">—</b></span><span><small>Pozycja</small><b id="community-rank">—</b></span></div>
+                </div>
+                <div class="community-layout">
+                    <section class="community-panel" aria-labelledby="challenges-heading">
+                        <div class="history-heading"><div><p class="eyebrow">WYZWANIA</p><h3 id="challenges-heading">Aktywne wyzwania</h3></div><span id="challenges-count">—</span></div>
+                        <div class="challenge-list" id="challenge-list"><p class="empty-history">Pobieranie…</p></div>
+                    </section>
+                    <section class="community-panel" aria-labelledby="leaderboard-heading">
+                        <div class="history-heading"><div><p class="eyebrow">RANKING</p><h3 id="leaderboard-heading">Najlepsze wyniki</h3></div><span id="leaderboard-count">—</span></div>
+                        <div class="leaderboard-list" id="leaderboard-list"><p class="empty-history">Pobieranie…</p></div>
+                    </section>
+                </div>
+                <section class="community-panel posts-panel" aria-labelledby="posts-heading">
+                    <div class="history-heading"><div><p class="eyebrow">SPOŁECZNOŚĆ</p><h3 id="posts-heading">Najnowsze posty</h3></div><span id="posts-count">—</span></div>
+                    <div class="community-posts" id="community-posts"><p class="empty-history">Pobieranie…</p></div>
+                </section>
+                <div class="capability-list"><div><strong>Posty, wyzwania i ranking</strong><span class="available-label">Aktywny odczyt DEV</span></div><div><strong>Publikowanie, komentarze i udział</strong><span>Następny etap po testach konta</span></div><div><strong>Powiadomienia systemowe</strong><span>Tylko Android</span></div></div>
+            </section>
+
+            <section class="route-page" data-page="profile" aria-labelledby="profile-heading">
+                <div class="profile-card">
+                    <span id="profile-avatar">U</span>
+                    <div><p class="eyebrow">KONTO DEV</p><h2 id="profile-heading">Profil</h2><p id="profile-email">—</p></div>
+                </div>
+                <div class="profile-data-panel" id="profile-data-panel" aria-busy="true">
+                    <div class="section-heading">
+                        <div><p class="eyebrow">DANE KONTA</p><h2>Ustawienia planu</h2></div>
+                        <p id="profile-data-message" role="status" aria-live="polite">Pobieranie własnego profilu DEV…</p>
+                    </div>
+                    <dl class="profile-data-grid">
+                        <div><dt>Status profilu</dt><dd id="profile-onboarding">—</dd></div>
+                        <div><dt>Plan żywieniowy</dt><dd id="profile-diet">—</dd></div>
+                        <div><dt>Cel</dt><dd id="profile-goal">—</dd></div>
+                        <div><dt>Posiłki dziennie</dt><dd id="profile-meals">—</dd></div>
+                        <div><dt>Waga startowa</dt><dd id="profile-start-weight">—</dd></div>
+                        <div><dt>Aktualna waga</dt><dd id="profile-current-weight">—</dd></div>
+                        <div><dt>Waga docelowa</dt><dd id="profile-goal-weight">—</dd></div>
+                        <div><dt>Aktywność</dt><dd id="profile-activity">—</dd></div>
+                        <div><dt>Trening siłowy</dt><dd id="profile-strength">—</dd></div>
+                        <div><dt>Średnia kroków</dt><dd id="profile-average-steps">—</dd></div>
+                        <div><dt>Strefa czasowa</dt><dd id="profile-timezone">—</dd></div>
+                        <div><dt>Aktywny plan DEV</dt><dd id="profile-plan-status">—</dd></div>
+                    </dl>
+                </div>
+                <div class="capability-list"><div><strong>Sesja internetowa</strong><span class="available-label">Aktywna</span></div><div><strong>Edycja profilu i ustawień</strong><span>W przygotowaniu — obecnie tylko odczyt</span></div><div><strong>Zakup PRO przez Google Play</strong><span>Tylko Android</span></div></div>
+            </section>
+        </main>
+    </div>
+</div>
+</body>
+</html>
