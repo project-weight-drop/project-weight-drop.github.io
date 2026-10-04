@@ -2,6 +2,8 @@
     "use strict";
 
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
+    const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
+    const WEB_APP_VERSION = "web-dev-2026.10.04";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -37,6 +39,20 @@
     const profileResetConfirmation = document.getElementById("profile-reset-confirmation");
     const profileResetStatus = document.getElementById("profile-reset-status");
     const profileResetResult = document.getElementById("profile-reset-result");
+    const healthConsentPanel = document.getElementById("health-consent-panel");
+    const healthConsentCheckbox = document.getElementById("health-consent-checkbox");
+    const healthConsentButton = document.getElementById("health-consent-button");
+    const healthToolsContent = document.getElementById("health-tools-content");
+    const waterForm = document.getElementById("water-form");
+    const waterAmountInput = document.getElementById("water-amount");
+    const stepsForm = document.getElementById("steps-form");
+    const stepsAmountInput = document.getElementById("steps-amount");
+    const measurementsForm = document.getElementById("measurements-form");
+    const eventForm = document.getElementById("event-form");
+    const eventDeleteButton = document.getElementById("event-delete-button");
+    const safetyForm = document.getElementById("safety-form");
+    const preferencesForm = document.getElementById("preferences-form");
+    const preferenceFoodList = document.getElementById("preference-food-list");
 
     const routeLabels = Object.freeze({
         home: "Home",
@@ -57,6 +73,10 @@
     let authMode = "sign-in";
     let profileResetBusy = false;
     let profileResetPreviousFocus = null;
+    let healthConsentGranted = false;
+    let profileReadyForWrites = false;
+    let currentMealPreferences = null;
+    let currentPreferenceCatalog = [];
 
     const numberFormatter = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 });
     const weightFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
@@ -225,6 +245,10 @@
         currentMealPlan = null;
         selectedMealPlanDay = 0;
         currentCoachConversationId = null;
+        healthConsentGranted = false;
+        profileReadyForWrites = false;
+        currentMealPreferences = null;
+        currentPreferenceCatalog = [];
         dashboardOverview?.setAttribute("aria-busy", "true");
         profileDataPanel?.setAttribute("aria-busy", "true");
         setText("dashboard-message", "Pobieranie danych DEV…");
@@ -285,6 +309,26 @@
         if (challengeList) challengeList.innerHTML = '<p class="empty-history">Pobieranie…</p>';
         if (leaderboardList) leaderboardList.innerHTML = '<p class="empty-history">Pobieranie…</p>';
         if (communityPosts) communityPosts.innerHTML = '<p class="empty-history">Pobieranie…</p>';
+        waterForm?.reset();
+        stepsForm?.reset();
+        measurementsForm?.reset();
+        eventForm?.reset();
+        safetyForm?.reset();
+        preferencesForm?.reset();
+        if (eventDeleteButton) eventDeleteButton.hidden = true;
+        if (preferenceFoodList) preferenceFoodList.innerHTML = '<p class="empty-history">Pobieranie katalogu DEV…</p>';
+        if (healthConsentCheckbox) healthConsentCheckbox.checked = false;
+        if (healthConsentButton) healthConsentButton.disabled = true;
+        if (healthConsentPanel) healthConsentPanel.hidden = true;
+        setText("water-tool-summary", "Dzisiejszy zapis");
+        setText("steps-tool-summary", "Dzisiejszy wynik");
+        setText("measurements-tool-summary", "Ostatni pomiar");
+        setText("event-tool-summary", "Ustaw cel z datą");
+        setText("safety-profile-state", "Pobieranie…");
+        setText("preferences-state", "Pobieranie…");
+        ["health-consent-status", "water-form-status", "steps-form-status", "measurements-form-status", "event-form-status", "safety-form-status", "preferences-form-status"]
+            .forEach((id) => setToolStatus(id, ""));
+        updateHealthToolsAvailability();
     }
 
     function friendlyDataError(error) {
@@ -415,6 +459,397 @@
         return messages[code] || `Nie udało się uruchomić funkcji ${feature} w DEV.`;
     }
 
+    function setToolStatus(id, message, kind = "neutral") {
+        const element = document.getElementById(id);
+        if (!element) return;
+        element.textContent = message;
+        element.classList.toggle("success", kind === "success");
+        element.classList.toggle("error", kind === "error");
+    }
+
+    function healthForms() {
+        return [waterForm, stepsForm, measurementsForm, eventForm, safetyForm, preferencesForm].filter(Boolean);
+    }
+
+    function updateHealthToolsAvailability() {
+        const available = healthConsentGranted && profileReadyForWrites;
+        healthToolsContent?.classList.toggle("is-disabled", !available);
+        document.querySelector(".safety-grid")?.classList.toggle("is-disabled", !available);
+        healthForms().forEach((form) => {
+            const busy = form.dataset.busy === "true";
+            form.querySelectorAll("input, select, button").forEach((control) => {
+                control.disabled = !available || busy;
+            });
+        });
+    }
+
+    function setToolFormBusy(form, busy) {
+        if (!form) return;
+        form.dataset.busy = String(busy);
+        updateHealthToolsAvailability();
+    }
+
+    function requireHealthWrite(statusId) {
+        if (!client || !activeUserId) {
+            setToolStatus(statusId, "Sesja wygasła. Zaloguj się ponownie.", "error");
+            return false;
+        }
+        if (!healthConsentGranted) {
+            setToolStatus(statusId, "Najpierw zapisz zgodę na przetwarzanie danych zdrowotnych.", "error");
+            healthConsentPanel?.scrollIntoView({ behavior: "smooth", block: "center" });
+            return false;
+        }
+        if (!profileReadyForWrites) {
+            setToolStatus(statusId, "Najpierw dokończ profil i plan w aplikacji Android DEV.", "error");
+            return false;
+        }
+        return true;
+    }
+
+    function healthWriteError(error, fallback) {
+        const message = String(error?.message || error?.details || error?.hint || "").toLowerCase();
+        if (message.includes("authentication_required") || message.includes("jwt")) return "Sesja wygasła. Zaloguj się ponownie.";
+        if (message.includes("profile_not_found")) return "Najpierw dokończ profil w aplikacji Android DEV.";
+        if (message.includes("invalid_water_amount")) return "Wpisz od 50 do 2000 ml.";
+        if (message.includes("invalid_steps")) return "Wpisz liczbę kroków od 0 do 200 000.";
+        if (message.includes("body_measurement_required")) return "Wpisz przynajmniej jeden obwód.";
+        if (message.includes("invalid_body_measurement")) return "Każdy obwód musi mieścić się w zakresie 10–300 cm.";
+        if (message.includes("invalid_event_name")) return "Nazwa wydarzenia musi mieć od 1 do 80 znaków.";
+        if (message.includes("event_date_in_past")) return "Data wydarzenia nie może być wcześniejsza niż dzisiaj.";
+        if (message.includes("invalid_allergen_key") || message.includes("invalid_food_preference")) return "Jedna z wybranych preferencji jest nieprawidłowa.";
+        if (message.includes("invalid_max_cook_minutes")) return "Wybierz prawidłowy czas przygotowania.";
+        if (message.includes("health_data_consent")) return "Najpierw zapisz zgodę na przetwarzanie danych zdrowotnych.";
+        if (message.includes("failed to fetch") || message.includes("network")) return "Brak połączenia z bazą DEV.";
+        return fallback;
+    }
+
+    function localToday() {
+        const now = new Date();
+        return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    }
+
+    function renderHealthConsent(consent, error = null) {
+        healthConsentGranted = Boolean(consent?.explicit_health_data_consent);
+        if (healthConsentPanel) healthConsentPanel.hidden = healthConsentGranted;
+        if (error) {
+            setToolStatus("health-consent-status", "Nie udało się sprawdzić zgody DEV. Odśwież stronę.", "error");
+        } else {
+            setToolStatus("health-consent-status", "");
+        }
+        updateHealthToolsAvailability();
+    }
+
+    function renderBodyMeasurement(entry, error = null) {
+        if (error) {
+            setText("measurements-tool-summary", "Odczyt niedostępny");
+            return;
+        }
+        const fields = [
+            ["measurement-waist", entry?.waist_cm], ["measurement-hips", entry?.hips_cm],
+            ["measurement-chest", entry?.chest_cm], ["measurement-arm", entry?.arm_cm],
+            ["measurement-thigh", entry?.thigh_cm]
+        ];
+        fields.forEach(([id, value]) => {
+            const input = document.getElementById(id);
+            if (input) input.value = finiteNumber(value) === null ? "" : String(value);
+        });
+        const values = fields.filter(([, value]) => finiteNumber(value) !== null).length;
+        setText("measurements-tool-summary", entry
+            ? `${entry.measurement_date || "Ostatni pomiar"} · ${values} ${values === 1 ? "wartość" : "wartości"}`
+            : "Brak zapisanych obwodów");
+    }
+
+    function renderEventGoal(goal, error = null) {
+        const name = document.getElementById("event-name");
+        const date = document.getElementById("event-date");
+        if (date) date.min = localToday();
+        if (error) {
+            setText("event-tool-summary", "Odczyt niedostępny");
+            return;
+        }
+        if (name) name.value = goal?.event_name || "";
+        if (date) date.value = goal?.event_date || "";
+        if (eventDeleteButton) eventDeleteButton.hidden = !goal;
+        setText("event-tool-summary", goal ? `${goal.event_name} · ${goal.event_date}` : "Ustaw cel z datą");
+    }
+
+    function setTriState(id, value) {
+        const select = document.getElementById(id);
+        if (select) select.value = value === true ? "true" : value === false ? "false" : "unknown";
+    }
+
+    function triStateValue(id) {
+        const value = document.getElementById(id)?.value;
+        return value === "true" ? true : value === "false" ? false : null;
+    }
+
+    function renderSafetyProfile(profile, error = null) {
+        if (error) {
+            setText("safety-profile-state", "Odczyt niedostępny");
+            return;
+        }
+        setTriState("safety-pregnant", profile?.pregnant);
+        setTriState("safety-breastfeeding", profile?.breastfeeding);
+        setTriState("safety-eating-disorder", profile?.eating_disorder_risk);
+        setTriState("safety-hypoglycemia", profile?.uses_hypoglycemia_medication);
+        setTriState("safety-sglt2", profile?.uses_sglt2_inhibitor);
+        const values = [profile?.pregnant, profile?.breastfeeding, profile?.eating_disorder_risk,
+            profile?.uses_hypoglycemia_medication, profile?.uses_sglt2_inhibitor];
+        const complete = Boolean(profile?.confirmed_at) && values.every((value) => typeof value === "boolean");
+        setText("safety-profile-state", complete ? "Uzupełniony" : "Wymaga uzupełnienia");
+    }
+
+    function renderPreferenceFoods(preferences, catalog) {
+        if (!preferenceFoodList) return;
+        preferenceFoodList.replaceChildren();
+        const foods = Array.isArray(catalog) ? catalog : [];
+        if (!foods.length) {
+            const empty = document.createElement("p");
+            empty.className = "empty-history";
+            empty.textContent = "Katalog produktów DEV jest chwilowo niedostępny.";
+            preferenceFoodList.append(empty);
+            return;
+        }
+        const disliked = new Set(Array.isArray(preferences?.disliked_food_ids) ? preferences.disliked_food_ids : []);
+        const preferred = new Set(Array.isArray(preferences?.preferred_food_ids) ? preferences.preferred_food_ids : []);
+        foods.forEach((food, index) => {
+            const row = document.createElement("div");
+            row.className = "preference-food-row";
+            const title = document.createElement("strong");
+            title.textContent = food.name || "Produkt";
+            row.append(title);
+            const selected = disliked.has(food.id) ? "disliked" : preferred.has(food.id) ? "preferred" : "neutral";
+            [["neutral", "Neutralny"], ["disliked", "Nie lubię"], ["preferred", "Lubię"]].forEach(([value, labelText]) => {
+                const label = document.createElement("label");
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.name = `food-preference-${index}`;
+                input.value = value;
+                input.dataset.foodPreference = "";
+                input.dataset.foodId = food.id;
+                input.checked = selected === value;
+                label.append(input, document.createTextNode(labelText));
+                row.append(label);
+            });
+            preferenceFoodList.append(row);
+        });
+    }
+
+    function renderMealPreferences(preferences, catalog, error = null) {
+        currentMealPreferences = preferences || null;
+        currentPreferenceCatalog = Array.isArray(catalog) ? catalog : [];
+        if (error) {
+            setText("preferences-state", "Odczyt niedostępny");
+            renderPreferenceFoods(null, []);
+            return;
+        }
+        const allergens = new Set(Array.isArray(preferences?.allergen_keys) ? preferences.allergen_keys : []);
+        document.querySelectorAll("[data-allergen]").forEach((input) => {
+            input.checked = allergens.has(input.value);
+        });
+        const cook = document.getElementById("max-cook-minutes");
+        if (cook) cook.value = finiteNumber(preferences?.max_cook_minutes) === null ? "" : String(preferences.max_cook_minutes);
+        renderPreferenceFoods(preferences, currentPreferenceCatalog);
+        setText("preferences-state", preferences?.complete ? "Uzupełnione" : "Wymagają uzupełnienia");
+    }
+
+    async function refreshAccountData() {
+        const { data, error } = await client.auth.getUser();
+        if (error || !data.user || data.user.id !== activeUserId) return false;
+        await loadAccountData(data.user);
+        return true;
+    }
+
+    async function recordHealthConsent() {
+        if (!client || !activeUserId || !healthConsentCheckbox?.checked) return;
+        healthConsentButton.disabled = true;
+        healthConsentButton.textContent = "Zapisywanie…";
+        setToolStatus("health-consent-status", "Zapisywanie zgody w DEV…");
+        const { data, error } = await client.rpc("record_explicit_health_data_consent", {
+            p_policy_version: CURRENT_PRIVACY_POLICY_VERSION,
+            p_app_version: WEB_APP_VERSION,
+            p_locale: "pl-PL"
+        });
+        healthConsentButton.textContent = "Zapisz zgodę";
+        if (error || data?.recorded !== true) {
+            healthConsentButton.disabled = false;
+            setToolStatus("health-consent-status", healthWriteError(error, "Nie udało się zapisać zgody DEV."), "error");
+            return;
+        }
+        healthConsentGranted = true;
+        if (healthConsentPanel) healthConsentPanel.hidden = true;
+        updateHealthToolsAvailability();
+        setToolStatus("water-form-status", "Zgoda została zapisana. Możesz uzupełniać dane.", "success");
+    }
+
+    async function saveWater(amount) {
+        if (!requireHealthWrite("water-form-status")) return;
+        if (!Number.isInteger(amount) || amount < 50 || amount > 2000) {
+            setToolStatus("water-form-status", "Wpisz od 50 do 2000 ml.", "error");
+            return;
+        }
+        setToolFormBusy(waterForm, true);
+        setToolStatus("water-form-status", "Zapisywanie wody w DEV…");
+        const { error } = await client.rpc("log_water", { p_amount_ml: amount });
+        if (error) {
+            setToolFormBusy(waterForm, false);
+            setToolStatus("water-form-status", healthWriteError(error, "Nie udało się zapisać wody."), "error");
+            return;
+        }
+        await refreshAccountData();
+        setToolFormBusy(waterForm, false);
+        if (waterAmountInput) waterAmountInput.value = "";
+        setToolStatus("water-form-status", `Dodano ${amount} ml wody.`, "success");
+    }
+
+    async function saveSteps(steps) {
+        if (!requireHealthWrite("steps-form-status")) return;
+        if (!Number.isInteger(steps) || steps < 0 || steps > 200000) {
+            setToolStatus("steps-form-status", "Wpisz liczbę kroków od 0 do 200 000.", "error");
+            return;
+        }
+        setToolFormBusy(stepsForm, true);
+        setToolStatus("steps-form-status", "Zapisywanie kroków w DEV…");
+        const { error } = await client.rpc("log_steps", { p_steps: steps });
+        if (error) {
+            setToolFormBusy(stepsForm, false);
+            setToolStatus("steps-form-status", healthWriteError(error, "Nie udało się zapisać kroków."), "error");
+            return;
+        }
+        await refreshAccountData();
+        setToolFormBusy(stepsForm, false);
+        setToolStatus("steps-form-status", `Zapisano ${numberFormatter.format(steps)} kroków na dzisiaj.`, "success");
+    }
+
+    function optionalMeasurement(id) {
+        const value = document.getElementById(id)?.value.trim();
+        if (!value) return null;
+        const parsed = Number(value.replace(",", "."));
+        return Number.isFinite(parsed) ? parsed : NaN;
+    }
+
+    async function saveMeasurements() {
+        if (!requireHealthWrite("measurements-form-status")) return;
+        const values = {
+            p_waist_cm: optionalMeasurement("measurement-waist"),
+            p_hips_cm: optionalMeasurement("measurement-hips"),
+            p_chest_cm: optionalMeasurement("measurement-chest"),
+            p_arm_cm: optionalMeasurement("measurement-arm"),
+            p_thigh_cm: optionalMeasurement("measurement-thigh")
+        };
+        const entries = Object.values(values).filter((value) => value !== null);
+        if (!entries.length) {
+            setToolStatus("measurements-form-status", "Wpisz przynajmniej jeden obwód.", "error");
+            return;
+        }
+        if (entries.some((value) => !Number.isFinite(value) || value < 10 || value > 300)) {
+            setToolStatus("measurements-form-status", "Każdy obwód musi mieścić się w zakresie 10–300 cm.", "error");
+            return;
+        }
+        setToolFormBusy(measurementsForm, true);
+        setToolStatus("measurements-form-status", "Zapisywanie obwodów w DEV…");
+        const { error } = await client.rpc("save_body_measurements", values);
+        if (error) {
+            setToolFormBusy(measurementsForm, false);
+            setToolStatus("measurements-form-status", healthWriteError(error, "Nie udało się zapisać obwodów."), "error");
+            return;
+        }
+        await refreshAccountData();
+        setToolFormBusy(measurementsForm, false);
+        setToolStatus("measurements-form-status", "Dzisiejsze obwody zostały zapisane.", "success");
+    }
+
+    async function saveEventGoal() {
+        if (!requireHealthWrite("event-form-status")) return;
+        const name = document.getElementById("event-name")?.value.trim() || "";
+        const date = document.getElementById("event-date")?.value || "";
+        if (!name || name.length > 80 || !date) {
+            setToolStatus("event-form-status", "Podaj nazwę wydarzenia i prawidłową datę.", "error");
+            return;
+        }
+        if (date < localToday()) {
+            setToolStatus("event-form-status", "Data wydarzenia nie może być wcześniejsza niż dzisiaj.", "error");
+            return;
+        }
+        setToolFormBusy(eventForm, true);
+        setToolStatus("event-form-status", "Zapisywanie wydarzenia w DEV…");
+        const { error } = await client.rpc("save_event_goal", { p_event_name: name, p_event_date: date });
+        if (error) {
+            setToolFormBusy(eventForm, false);
+            setToolStatus("event-form-status", healthWriteError(error, "Nie udało się zapisać wydarzenia."), "error");
+            return;
+        }
+        await refreshAccountData();
+        setToolFormBusy(eventForm, false);
+        setToolStatus("event-form-status", "Wydarzenie zostało zapisane.", "success");
+    }
+
+    async function deleteEventGoal() {
+        if (!requireHealthWrite("event-form-status")) return;
+        setToolFormBusy(eventForm, true);
+        setToolStatus("event-form-status", "Usuwanie wydarzenia z DEV…");
+        const { error } = await client.rpc("delete_event_goal");
+        if (error) {
+            setToolFormBusy(eventForm, false);
+            setToolStatus("event-form-status", healthWriteError(error, "Nie udało się usunąć wydarzenia."), "error");
+            return;
+        }
+        await refreshAccountData();
+        setToolFormBusy(eventForm, false);
+        setToolStatus("event-form-status", "Wydarzenie zostało usunięte.", "success");
+    }
+
+    async function saveSafetyProfile() {
+        if (!requireHealthWrite("safety-form-status")) return;
+        setToolFormBusy(safetyForm, true);
+        setToolStatus("safety-form-status", "Zapisywanie profilu bezpieczeństwa w DEV…");
+        const { data, error } = await client.rpc("save_safety_profile", {
+            p_pregnant: triStateValue("safety-pregnant"),
+            p_breastfeeding: triStateValue("safety-breastfeeding"),
+            p_eating_disorder_risk: triStateValue("safety-eating-disorder"),
+            p_uses_hypoglycemia_medication: triStateValue("safety-hypoglycemia"),
+            p_uses_sglt2_inhibitor: triStateValue("safety-sglt2")
+        });
+        if (error) {
+            setToolFormBusy(safetyForm, false);
+            setToolStatus("safety-form-status", healthWriteError(error, "Nie udało się zapisać profilu bezpieczeństwa."), "error");
+            return;
+        }
+        await refreshAccountData();
+        setToolFormBusy(safetyForm, false);
+        setToolStatus("safety-form-status", data?.complete
+            ? "Profil bezpieczeństwa został potwierdzony."
+            : "Zapisano. Odpowiedź „Nie wiem” pozostawia profil niekompletny.", "success");
+    }
+
+    async function saveMealPreferences() {
+        if (!requireHealthWrite("preferences-form-status")) return;
+        const allergens = [...document.querySelectorAll("[data-allergen]:checked")].map((input) => input.value).sort();
+        const selections = [...document.querySelectorAll("[data-food-preference]:checked")];
+        const disliked = selections.filter((input) => input.value === "disliked").map((input) => input.dataset.foodId).sort();
+        const preferred = selections.filter((input) => input.value === "preferred").map((input) => input.dataset.foodId).sort();
+        const cookValue = document.getElementById("max-cook-minutes")?.value || "";
+        const maxCook = cookValue ? Number(cookValue) : null;
+        setToolFormBusy(preferencesForm, true);
+        setToolStatus("preferences-form-status", "Zapisywanie alergii i preferencji w DEV…");
+        const { data, error } = await client.rpc("save_meal_preferences", {
+            p_allergen_keys: allergens,
+            p_disliked_food_ids: disliked,
+            p_preferred_food_ids: preferred,
+            p_max_cook_minutes: maxCook
+        });
+        if (error) {
+            setToolFormBusy(preferencesForm, false);
+            setToolStatus("preferences-form-status", healthWriteError(error, "Nie udało się zapisać preferencji."), "error");
+            return;
+        }
+        await refreshAccountData();
+        setToolFormBusy(preferencesForm, false);
+        setToolStatus("preferences-form-status", data?.archived_conflicting_plan
+            ? "Preferencje zapisano. Poprzedni plan został wyłączony, ponieważ zawierał konflikt."
+            : "Alergie i preferencje zostały zapisane.", "success");
+    }
+
     function formatDiet(value) {
         const labels = { keto: "KETO", low_carb: "LOW CARB", balanced: "BALANCE" };
         return labels[String(value || "").toLowerCase()] || "—";
@@ -455,6 +890,11 @@
         setText("home-goal-weight", formatWeight(data?.goal_weight_kg));
         setText("home-water", formatNumber(data?.water_ml));
         setText("home-steps", formatNumber(data?.steps));
+        setText("water-tool-summary", `${formatNumber(data?.water_ml)} ml dzisiaj`);
+        setText("steps-tool-summary", `${formatNumber(data?.steps)} kroków dzisiaj`);
+        if (stepsAmountInput && document.activeElement !== stepsAmountInput) {
+            stepsAmountInput.value = finiteNumber(data?.steps) === null ? "" : String(data.steps);
+        }
 
         const macroRows = [
             ["protein", data?.protein_consumed, data?.protein_target],
@@ -485,6 +925,8 @@
 
     function renderProfile(profile, plan) {
         if (!profile) {
+            profileReadyForWrites = false;
+            updateHealthToolsAvailability();
             profileDataPanel?.setAttribute("aria-busy", "false");
             setText("profile-data-message", "Brak profilu. Dokończ konfigurację w aplikacji DEV na Androidzie.");
             setText("home-profile-status", "Brak profilu");
@@ -492,6 +934,9 @@
             setStatusCard("profile-status-card", "error");
             return;
         }
+
+        profileReadyForWrites = Boolean(profile.onboarding_completed);
+        updateHealthToolsAvailability();
 
         setText("profile-onboarding", profile.onboarding_completed ? "Ukończony" : "Niedokończony");
         setText("profile-diet", formatDiet(profile.diet_type));
@@ -1097,7 +1542,11 @@
         ].join(",");
         const planColumns = "calories_target,protein_g,fat_g,carbs_g,diet_type,status,version";
 
-        const [dashboardResult, profileResult, planResult, weeklyResult, weightResult, stepsResult, todayMealsResult, mealPlanResult] = await Promise.all([
+        const [
+            dashboardResult, profileResult, planResult, weeklyResult, weightResult, stepsResult,
+            todayMealsResult, mealPlanResult, consentResult, bodyResult, eventResult,
+            safetyResult, preferencesResult, preferenceCatalogResult
+        ] = await Promise.all([
             client.rpc("get_dashboard_snapshot"),
             client.from("profiles").select(profileColumns).eq("user_id", user.id).maybeSingle(),
             client.from("nutrition_plans").select(planColumns).eq("user_id", user.id)
@@ -1108,7 +1557,18 @@
             client.from("daily_summaries").select("summary_date,steps,steps_recorded_at,water_ml,wellbeing_score")
                 .eq("user_id", user.id).order("summary_date", { ascending: false }).limit(7),
             client.rpc("get_today_meals"),
-            client.rpc("get_current_meal_plan")
+            client.rpc("get_current_meal_plan"),
+            client.from("user_privacy_consents").select("explicit_health_data_consent,consented_at")
+                .eq("user_id", user.id).eq("policy_version", CURRENT_PRIVACY_POLICY_VERSION)
+                .eq("explicit_health_data_consent", true).limit(1).maybeSingle(),
+            client.from("body_measurements").select("measurement_date,waist_cm,hips_cm,chest_cm,arm_cm,thigh_cm,measured_at")
+                .eq("user_id", user.id).order("measurement_date", { ascending: false }).limit(1).maybeSingle(),
+            client.from("user_event_goals").select("event_name,event_date,updated_at")
+                .eq("user_id", user.id).limit(1).maybeSingle(),
+            client.from("safety_profiles").select("pregnant,breastfeeding,eating_disorder_risk,uses_hypoglycemia_medication,uses_sglt2_inhibitor,confirmed_at")
+                .eq("user_id", user.id).limit(1).maybeSingle(),
+            client.rpc("get_meal_preferences"),
+            client.rpc("get_meal_preference_catalog")
         ]);
 
         if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
@@ -1165,6 +1625,17 @@
         } else {
             renderMealPlan(mealPlanResult.data);
         }
+
+        renderHealthConsent(consentResult.error ? null : consentResult.data, consentResult.error);
+        renderBodyMeasurement(bodyResult.error ? null : bodyResult.data, bodyResult.error);
+        renderEventGoal(eventResult.error ? null : eventResult.data, eventResult.error);
+        renderSafetyProfile(safetyResult.error ? null : safetyResult.data, safetyResult.error);
+        renderMealPreferences(
+            preferencesResult.error ? null : preferencesResult.data,
+            preferenceCatalogResult.error ? [] : preferenceCatalogResult.data,
+            preferencesResult.error || preferenceCatalogResult.error
+        );
+        healthToolsContent?.setAttribute("aria-busy", "false");
     }
 
     function renderUser(user) {
@@ -1428,6 +1899,55 @@
             return;
         }
         void sendCoachMessage(message);
+    });
+
+    healthConsentCheckbox?.addEventListener("change", () => {
+        healthConsentButton.disabled = !healthConsentCheckbox.checked;
+        setToolStatus("health-consent-status", "");
+    });
+    healthConsentButton?.addEventListener("click", () => void recordHealthConsent());
+
+    document.querySelectorAll("[data-water-amount]").forEach((button) => {
+        button.addEventListener("click", () => {
+            if (!waterAmountInput) return;
+            waterAmountInput.value = button.dataset.waterAmount || "";
+            waterAmountInput.focus();
+        });
+    });
+    waterForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const rawAmount = waterAmountInput?.value.trim() || "";
+        if (!rawAmount) {
+            setToolStatus("water-form-status", "Wpisz ilość wody.", "error");
+            return;
+        }
+        void saveWater(Number(rawAmount));
+    });
+    stepsForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const rawSteps = stepsAmountInput?.value.trim() || "";
+        if (!rawSteps) {
+            setToolStatus("steps-form-status", "Wpisz dzisiejszą liczbę kroków.", "error");
+            return;
+        }
+        void saveSteps(Number(rawSteps));
+    });
+    measurementsForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void saveMeasurements();
+    });
+    eventForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void saveEventGoal();
+    });
+    eventDeleteButton?.addEventListener("click", () => void deleteEventGoal());
+    safetyForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void saveSafetyProfile();
+    });
+    preferencesForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void saveMealPreferences();
     });
 
     document.querySelectorAll("[data-coach-prompt]").forEach((button) => {
