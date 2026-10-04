@@ -44,17 +44,17 @@
         <div class="auth-copy">
             <p class="eyebrow">KETO · LOW CARB · BALANCE</p>
             <h1>Twój plan.<br><span>Także w przeglądarce.</span></h1>
-            <p>Bezpieczny dostęp do rozwojowej wersji aplikacji Project Weight Drop. Ten etap obsługuje logowanie kontami testowymi DEV.</p>
+            <p>Bezpieczny dostęp do rozwojowej wersji aplikacji Project Weight Drop. Zaloguj się lub utwórz konto wspólne z aplikacją Android DEV.</p>
         </div>
         <ul class="auth-points" aria-label="Zakres wersji rozwojowej">
-            <li><span><svg><use href="#icon-check"></use></svg></span>Logowanie i trwała sesja DEV</li>
+            <li><span><svg><use href="#icon-check"></use></svg></span>Wspólne konto WWW i Android DEV</li>
             <li><span><svg><use href="#icon-check"></use></svg></span>Wspólny układ wszystkich modułów</li>
             <li><span class="muted-check">01</span>Dane funkcji będą podłączane etapami</li>
         </ul>
         <p class="auth-visual-foot">LEPSZA TY KAŻDEGO DNIA</p>
     </section>
 
-    <section class="auth-panel" aria-labelledby="login-title">
+    <section class="auth-panel" aria-labelledby="auth-heading-title">
         <div class="auth-panel-inner">
             <a class="back-link" href="/"><span aria-hidden="true">←</span> Wróć do strony głównej</a>
             <div class="mobile-brand">
@@ -63,24 +63,53 @@
             </div>
             <div class="auth-heading">
                 <p class="eyebrow">APLIKACJA INTERNETOWA</p>
-                <h2 id="login-title">Witaj ponownie</h2>
-                <p>Zaloguj się testowym kontem Project Weight Drop DEV.</p>
+                <h2 id="auth-heading-title">Witaj ponownie</h2>
+                <p id="auth-heading-copy">Zaloguj się kontem Project Weight Drop DEV.</p>
             </div>
 
             <div id="configuration-alert" class="alert alert-error" role="alert" hidden></div>
 
             <form id="login-form" class="login-form" novalidate>
-                <label for="email">E-mail</label>
-                <div class="input-wrap">
-                    <span aria-hidden="true">@</span>
-                    <input id="email" name="email" type="email" autocomplete="username" inputmode="email" placeholder="twoj@email.com" required>
+                <div class="auth-mode-tabs" role="tablist" aria-label="Dostęp do konta">
+                    <button class="active" type="button" role="tab" aria-selected="true" data-auth-mode="sign-in">Logowanie</button>
+                    <button type="button" role="tab" aria-selected="false" data-auth-mode="sign-up">Rejestracja</button>
                 </div>
-                <label for="password">Hasło</label>
-                <div class="input-wrap">
-                    <svg aria-hidden="true"><use href="#icon-lock"></use></svg>
-                    <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="••••••••" required>
-                    <button id="password-toggle" class="password-toggle" type="button" aria-label="Pokaż hasło">Pokaż</button>
+
+                <div class="form-field" data-signup-only hidden>
+                    <label for="display-name">Nazwa użytkownika</label>
+                    <div class="input-wrap">
+                        <span aria-hidden="true">P</span>
+                        <input id="display-name" name="display-name" type="text" autocomplete="nickname" minlength="2" maxlength="30" placeholder="Jak mamy się do Ciebie zwracać?">
+                    </div>
                 </div>
+
+                <div class="form-field">
+                    <label for="email">E-mail</label>
+                    <div class="input-wrap">
+                        <span aria-hidden="true">@</span>
+                        <input id="email" name="email" type="email" autocomplete="username" inputmode="email" placeholder="twoj@email.com" required>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label for="password">Hasło</label>
+                    <div class="input-wrap">
+                        <svg aria-hidden="true"><use href="#icon-lock"></use></svg>
+                        <input id="password" name="password" type="password" autocomplete="current-password" minlength="8" placeholder="Minimum 8 znaków" required>
+                        <button id="password-toggle" class="password-toggle" type="button" aria-label="Pokaż hasło">Pokaż</button>
+                    </div>
+                </div>
+
+                <div class="form-field" data-signup-only hidden>
+                    <label for="password-confirm">Powtórz hasło</label>
+                    <div class="input-wrap">
+                        <svg aria-hidden="true"><use href="#icon-lock"></use></svg>
+                        <input id="password-confirm" name="password-confirm" type="password" autocomplete="new-password" minlength="8" placeholder="Powtórz hasło">
+                    </div>
+                </div>
+
+                <p class="signup-note" data-signup-only hidden>Po rejestracji sprawdź pocztę oraz folder Spam i potwierdź adres e-mail.</p>
+
                 <button id="login-button" class="primary-button" type="submit">
                     <span>Zaloguj się</span>
                     <svg aria-hidden="true"><use href="#icon-arrow"></use></svg>
@@ -91,7 +120,7 @@
                 <span class="status-dot"></span>
                 Połączenie wyłącznie z projektem DEV
             </div>
-            <p class="privacy-note">Logując się, korzystasz z <a href="/privacy.html?from=internet-app">Polityki prywatności</a>. Nie używaj tutaj kont produkcyjnych.</p>
+            <p class="privacy-note"><span id="privacy-action">Logując się</span>, korzystasz z <a href="/privacy.html?from=internet-app">Polityki prywatności</a>. To środowisko DEV, niezależne od PROD.</p>
         </div>
     </section>
 </main>

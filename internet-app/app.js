@@ -9,8 +9,15 @@
     const loginButton = document.getElementById("login-button");
     const authStatus = document.getElementById("auth-status");
     const configurationAlert = document.getElementById("configuration-alert");
+    const authHeadingTitle = document.getElementById("auth-heading-title");
+    const authHeadingCopy = document.getElementById("auth-heading-copy");
+    const authModeButtons = [...document.querySelectorAll("[data-auth-mode]")];
+    const signupOnlyElements = [...document.querySelectorAll("[data-signup-only]")];
+    const privacyAction = document.getElementById("privacy-action");
+    const displayNameInput = document.getElementById("display-name");
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
+    const passwordConfirmInput = document.getElementById("password-confirm");
     const passwordToggle = document.getElementById("password-toggle");
     const routeTitle = document.getElementById("route-title");
     const dashboardOverview = document.getElementById("dashboard-overview");
@@ -40,6 +47,7 @@
     let currentMealPlan = null;
     let selectedMealPlanDay = 0;
     let currentCoachConversationId = null;
+    let authMode = "sign-in";
 
     const numberFormatter = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 });
     const weightFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
@@ -59,21 +67,79 @@
         authStatus.append(dot, document.createTextNode(message));
     }
 
-    function setLoginBusy(busy) {
-        loginButton.disabled = busy;
-        emailInput.disabled = busy;
-        passwordInput.disabled = busy;
-        loginButton.classList.toggle("loading", busy);
-        loginButton.querySelector("span").textContent = busy ? "Logowanie…" : "Zaloguj się";
+    function resetPasswordVisibility() {
+        passwordInput.type = "password";
+        passwordToggle.textContent = "Pokaż";
+        passwordToggle.setAttribute("aria-label", "Pokaż hasło");
     }
 
-    function friendlyAuthError(error) {
+    function setAuthMode(mode, { resetStatus = true } = {}) {
+        authMode = mode === "sign-up" ? "sign-up" : "sign-in";
+        const signingUp = authMode === "sign-up";
+        authModeButtons.forEach((button) => {
+            const active = button.dataset.authMode === authMode;
+            button.classList.toggle("active", active);
+            button.setAttribute("aria-selected", String(active));
+            button.tabIndex = active ? 0 : -1;
+        });
+        signupOnlyElements.forEach((element) => { element.hidden = !signingUp; });
+        displayNameInput.disabled = !signingUp;
+        displayNameInput.required = signingUp;
+        passwordConfirmInput.disabled = !signingUp;
+        passwordConfirmInput.required = signingUp;
+        emailInput.autocomplete = signingUp ? "email" : "username";
+        passwordInput.autocomplete = signingUp ? "new-password" : "current-password";
+        authHeadingTitle.textContent = signingUp ? "Utwórz konto" : "Witaj ponownie";
+        authHeadingCopy.textContent = signingUp
+            ? "Zarejestruj konto wspólne z aplikacją Android DEV."
+            : "Zaloguj się kontem Project Weight Drop DEV.";
+        privacyAction.textContent = signingUp ? "Tworząc konto" : "Logując się";
+        loginButton.querySelector("span").textContent = signingUp ? "Utwórz konto" : "Zaloguj się";
+        resetPasswordVisibility();
+        if (resetStatus) {
+            setAuthStatus(signingUp
+                ? "Rejestracja wyłącznie w projekcie DEV"
+                : "Połączenie wyłącznie z projektem DEV");
+        }
+    }
+
+    function setAuthBusy(busy) {
+        loginButton.disabled = busy;
+        authModeButtons.forEach((button) => { button.disabled = busy; });
+        displayNameInput.disabled = busy || authMode !== "sign-up";
+        emailInput.disabled = busy;
+        passwordInput.disabled = busy;
+        passwordConfirmInput.disabled = busy || authMode !== "sign-up";
+        loginButton.classList.toggle("loading", busy);
+        loginButton.querySelector("span").textContent = busy
+            ? (authMode === "sign-up" ? "Tworzenie konta…" : "Logowanie…")
+            : (authMode === "sign-up" ? "Utwórz konto" : "Zaloguj się");
+    }
+
+    function friendlyAuthError(error, mode = authMode) {
         const message = String(error?.message || "").toLowerCase();
         if (message.includes("email not confirmed")) return "Najpierw potwierdź adres e-mail.";
         if (message.includes("invalid login credentials")) return "Nieprawidłowy e-mail lub hasło.";
+        if (message.includes("user already registered")) return "Konto z tym adresem już istnieje. Przejdź do logowania.";
+        if (message.includes("invalid email") || message.includes("email address is invalid")) return "Podaj poprawny adres e-mail.";
+        if (message.includes("password") && (message.includes("weak") || message.includes("at least"))) return "Hasło musi mieć co najmniej 8 znaków.";
         if (message.includes("rate limit") || message.includes("too many")) return "Zbyt wiele prób. Odczekaj chwilę i spróbuj ponownie.";
         if (message.includes("failed to fetch") || message.includes("network")) return "Brak połączenia z usługą logowania DEV.";
-        return "Nie udało się zalogować. Spróbuj ponownie.";
+        return mode === "sign-up"
+            ? "Nie udało się utworzyć konta. Spróbuj ponownie."
+            : "Nie udało się zalogować. Spróbuj ponownie.";
+    }
+
+    function normalizeDisplayName(value) {
+        return value.trim().replace(/\s+/g, " ");
+    }
+
+    function validDisplayName(value) {
+        const normalized = normalizeDisplayName(value);
+        return normalized.length >= 2 &&
+            normalized.length <= 30 &&
+            !/[\u0000-\u001f\u007f]/.test(normalized) &&
+            /[\p{L}\p{N}]/u.test(normalized);
     }
 
     function userDisplayName(user) {
@@ -1026,10 +1092,8 @@
         appView.hidden = true;
         authView.hidden = false;
         loginForm.reset();
-        passwordInput.type = "password";
-        passwordToggle.textContent = "Pokaż";
-        passwordToggle.setAttribute("aria-label", "Pokaż hasło");
-        setLoginBusy(false);
+        setAuthMode("sign-in", { resetStatus: false });
+        setAuthBusy(false);
         setAuthStatus(message, kind);
         resetAccountViews();
         window.history.replaceState(null, "", window.location.pathname);
@@ -1142,18 +1206,67 @@
             return;
         }
 
-        setLoginBusy(true);
+        if (authMode === "sign-up") {
+            const displayName = normalizeDisplayName(displayNameInput.value);
+            if (!validDisplayName(displayName)) {
+                setAuthStatus("Nazwa użytkownika musi mieć od 2 do 30 znaków i zawierać literę lub cyfrę.", "error");
+                displayNameInput.focus();
+                return;
+            }
+            if (password !== passwordConfirmInput.value) {
+                setAuthStatus("Podane hasła nie są takie same.", "error");
+                passwordConfirmInput.focus();
+                return;
+            }
+
+            setAuthBusy(true);
+            setAuthStatus("Tworzenie konta w projekcie DEV…");
+            const { data, error } = await client.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: { display_name: displayName },
+                    emailRedirectTo: "https://projectweightdrop.com/email-confirmed.html"
+                }
+            });
+            if (error) {
+                setAuthBusy(false);
+                setAuthStatus(friendlyAuthError(error, "sign-up"), "error");
+                return;
+            }
+            if (data.session) {
+                const user = await verifyCurrentUser();
+                if (!user) setAuthBusy(false);
+                return;
+            }
+
+            passwordInput.value = "";
+            passwordConfirmInput.value = "";
+            setAuthBusy(false);
+            setAuthStatus("Sprawdź e-mail (również Spam) i potwierdź adres. Jeśli konto już istnieje, przejdź do logowania.", "success");
+            return;
+        }
+
+        setAuthBusy(true);
         setAuthStatus("Bezpieczne logowanie do projektu DEV…");
         const { error } = await client.auth.signInWithPassword({ email, password });
         if (error) {
-            setLoginBusy(false);
-            setAuthStatus(friendlyAuthError(error), "error");
+            setAuthBusy(false);
+            setAuthStatus(friendlyAuthError(error, "sign-in"), "error");
             passwordInput.focus();
             passwordInput.select();
             return;
         }
         const user = await verifyCurrentUser();
-        if (!user) setLoginBusy(false);
+        if (!user) setAuthBusy(false);
+    });
+
+    authModeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            setAuthMode(button.dataset.authMode);
+            if (authMode === "sign-up") displayNameInput.focus();
+            else emailInput.focus();
+        });
     });
 
     passwordToggle.addEventListener("click", () => {

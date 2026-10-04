@@ -84,7 +84,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .auth-points svg { width: 14px; height: 14px; stroke-width: 2.4; }
 .auth-points .muted-check { border: 1px solid #555; background: #222; color: var(--muted); }
 .auth-visual-foot { position: relative; z-index: 1; margin: auto 0 0; color: #777; font-size: 9px; font-weight: 800; letter-spacing: .25em; }
-.auth-panel { min-height: 100vh; display: grid; place-items: center; padding: 48px clamp(28px, 6vw, 88px); background: radial-gradient(circle at 80% 12%, rgba(255,106,0,.08), transparent 27%), var(--bg); }
+.auth-panel { min-height: 100vh; display: grid; place-items: center; overflow-y: auto; padding: 48px clamp(28px, 6vw, 88px); background: radial-gradient(circle at 80% 12%, rgba(255,106,0,.08), transparent 27%), var(--bg); }
 .auth-panel-inner { width: min(100%, 470px); }
 .back-link { display: inline-flex; gap: 8px; margin-bottom: clamp(48px, 8vh, 92px); color: #969696; font-size: 13px; text-decoration: none; transition: color .2s; }
 .back-link:hover { color: var(--orange); }
@@ -92,8 +92,13 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .auth-heading h2 { margin: 10px 0 9px; font-size: clamp(34px, 4vw, 45px); line-height: 1.05; letter-spacing: -.04em; }
 .auth-heading > p:last-child { margin: 0 0 34px; color: var(--muted); line-height: 1.6; }
 .login-form { display: grid; }
-.login-form > label { margin: 0 0 8px; color: #ddd; font-size: 13px; font-weight: 700; }
-.login-form > label:not(:first-child) { margin-top: 20px; }
+.auth-mode-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border: 1px solid #303030; border-radius: 10px; background: #131313; }
+.auth-mode-tabs button { min-height: 42px; border: 0; border-radius: 7px; background: transparent; color: #8f8f8f; cursor: pointer; font-size: 13px; font-weight: 800; transition: background .2s, color .2s, box-shadow .2s; }
+.auth-mode-tabs button:hover:not(:disabled) { color: #fff; }
+.auth-mode-tabs button.active { background: var(--orange); color: #090909; box-shadow: 0 5px 16px rgba(255,106,0,.18); }
+.auth-mode-tabs button:disabled { cursor: wait; opacity: .65; }
+.form-field { display: grid; gap: 8px; margin-top: 20px; }
+.form-field > label { color: #ddd; font-size: 13px; font-weight: 700; }
 .input-wrap { display: flex; align-items: center; min-height: 56px; border: 1px solid #414141; border-radius: 9px; background: #151515; transition: border-color .2s, box-shadow .2s; }
 .input-wrap:focus-within { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,106,0,.12); }
 .input-wrap > span, .input-wrap > svg { flex: 0 0 auto; width: 20px; height: 20px; margin-left: 16px; color: #888; text-align: center; }
@@ -108,6 +113,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .primary-button svg { width: 18px; height: 18px; stroke-width: 2.4; }
 .primary-button.loading svg { animation: nudge 1s infinite alternate; }
 @keyframes nudge { to { transform: translateX(4px); } }
+.signup-note { margin: 15px 2px -7px; color: #9a9a9a; font-size: 11px; line-height: 1.55; }
 .auth-status { min-height: 42px; display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 20px; padding: 10px 12px; border: 1px solid #303030; border-radius: 8px; background: #131313; color: #929292; font-size: 12px; text-align: center; }
 .auth-status .status-dot { width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: var(--orange); }
 .auth-status.error { border-color: rgba(255,138,128,.35); color: var(--error); background: rgba(127,29,29,.12); }
