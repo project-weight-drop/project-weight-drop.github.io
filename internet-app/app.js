@@ -3,10 +3,11 @@
 
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
-    const WEB_APP_VERSION = "web-dev-2026.10.04";
+    const WEB_APP_VERSION = "web-dev-2026.10.04-home-parity";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
+    const appShell = document.getElementById("app-view");
     const loginForm = document.getElementById("login-form");
     const loginButton = document.getElementById("login-button");
     const authStatus = document.getElementById("auth-status");
@@ -56,6 +57,13 @@
     const safetyForm = document.getElementById("safety-form");
     const preferencesForm = document.getElementById("preferences-form");
     const preferenceFoodList = document.getElementById("preference-food-list");
+    const homeRefreshButton = document.getElementById("home-refresh-button");
+    const weightEntryModal = document.getElementById("weight-entry-modal");
+    const openWeightEntryButton = document.getElementById("open-weight-entry");
+    const cancelWeightEntryButton = document.getElementById("cancel-weight-entry");
+    const weightEntryForm = document.getElementById("weight-entry-form");
+    const weightEntryValue = document.getElementById("weight-entry-value");
+    const saveWeightEntryButton = document.getElementById("save-weight-entry");
     const profileSetupPanel = document.getElementById("profile-setup-panel");
     const profileSetupForm = document.getElementById("profile-setup-form");
     const profileSetupSubmit = document.getElementById("profile-setup-submit");
@@ -98,6 +106,9 @@
     let expandedMealPlanIds = new Set();
     let lockedMealPlanIds = new Set();
     let profileSetupBusy = false;
+    let currentDashboardSnapshot = null;
+    let weightEntryBusy = false;
+    let weightEntryPreviousFocus = null;
 
     const numberFormatter = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 });
     const weightFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
@@ -287,6 +298,9 @@
         expandedMealPlanIds = new Set();
         lockedMealPlanIds = new Set();
         profileSetupBusy = false;
+        currentDashboardSnapshot = null;
+        weightEntryBusy = false;
+        if (weightEntryModal) weightEntryModal.hidden = true;
         dashboardOverview?.setAttribute("aria-busy", "true");
         profileDataPanel?.setAttribute("aria-busy", "true");
         setText("dashboard-message", "Pobieranie danych DEV…");
@@ -300,7 +314,10 @@
         [
             "home-calories-remaining", "home-calories-detail", "home-current-weight", "home-goal-weight",
             "home-water", "home-steps", "home-protein", "home-fat", "home-carbs",
-            "home-weight-progress", "home-weight-detail", "profile-onboarding", "profile-diet",
+            "home-calories-target", "home-calories-consumed", "home-calories-total",
+            "home-protein-percent", "home-fat-percent", "home-carbs-percent",
+            "home-weight-progress", "home-weight-detail", "home-next-milestone",
+            "home-start-weight", "home-average-weight", "home-weight-change", "profile-onboarding", "profile-diet",
             "profile-goal", "profile-meals", "profile-start-weight", "profile-current-weight",
             "profile-goal-weight", "profile-activity", "profile-strength", "profile-average-steps",
             "profile-timezone", "profile-plan-status", "progress-data-days", "progress-meals",
@@ -367,6 +384,7 @@
         if (healthConsentCheckbox) healthConsentCheckbox.checked = false;
         if (healthConsentButton) healthConsentButton.disabled = true;
         if (healthConsentPanel) healthConsentPanel.hidden = true;
+        setHomeTool(null);
         setText("water-tool-summary", "Dzisiejszy zapis");
         setText("steps-tool-summary", "Dzisiejszy wynik");
         setText("measurements-tool-summary", "Ostatni pomiar");
@@ -435,6 +453,67 @@
         setProfileResetStatus();
         if (profileResetPreviousFocus instanceof HTMLElement) profileResetPreviousFocus.focus();
         profileResetPreviousFocus = null;
+    }
+
+    function setWeightEntryBusy(busy) {
+        weightEntryBusy = busy;
+        if (weightEntryValue) weightEntryValue.disabled = busy;
+        if (cancelWeightEntryButton) cancelWeightEntryButton.disabled = busy;
+        if (saveWeightEntryButton) {
+            saveWeightEntryButton.disabled = busy;
+            saveWeightEntryButton.textContent = busy ? "Zapisywanie…" : "Zapisz";
+        }
+    }
+
+    function openWeightEntry() {
+        if (!weightEntryModal) return;
+        weightEntryPreviousFocus = document.activeElement;
+        const currentWeight = finiteNumber(currentDashboardSnapshot?.current_weight_kg);
+        if (weightEntryValue) weightEntryValue.value = currentWeight === null ? "" : String(currentWeight);
+        setToolStatus("weight-entry-status", "");
+        setWeightEntryBusy(false);
+        weightEntryModal.hidden = false;
+        document.body.classList.add("modal-open");
+        window.setTimeout(() => {
+            weightEntryValue?.focus();
+            weightEntryValue?.select();
+        }, 0);
+    }
+
+    function closeWeightEntry() {
+        if (!weightEntryModal || weightEntryBusy) return;
+        weightEntryModal.hidden = true;
+        document.body.classList.remove("modal-open");
+        setToolStatus("weight-entry-status", "");
+        if (weightEntryPreviousFocus instanceof HTMLElement) weightEntryPreviousFocus.focus();
+        weightEntryPreviousFocus = null;
+    }
+
+    async function saveWeightEntry() {
+        if (!requireHealthWrite("weight-entry-status")) return;
+        const value = decimalInputValue(weightEntryValue);
+        if (value === null || value < 35 || value > 350) {
+            setToolStatus("weight-entry-status", "Wpisz wagę od 35 do 350 kg.", "error");
+            weightEntryValue?.focus();
+            return;
+        }
+
+        setWeightEntryBusy(true);
+        setToolStatus("weight-entry-status", "Zapisywanie w DEV…");
+        const { error } = await client.rpc("log_weight", {
+            p_weight_kg: value,
+            p_measured_at: new Date().toISOString()
+        });
+        if (error) {
+            setWeightEntryBusy(false);
+            setToolStatus("weight-entry-status", healthWriteError(error, "Nie udało się zapisać wagi w DEV."), "error");
+            return;
+        }
+
+        setWeightEntryBusy(false);
+        closeWeightEntry();
+        const { data, error: userError } = await client.auth.getUser();
+        if (!userError && data.user) await loadAccountData(data.user);
     }
 
     function profileResetErrorMessage(code) {
@@ -544,6 +623,38 @@
         element.textContent = message;
         element.classList.toggle("success", kind === "success");
         element.classList.toggle("error", kind === "error");
+    }
+
+    function renderHomeDate() {
+        const target = document.getElementById("home-today-date");
+        if (!target) return;
+        target.dateTime = localToday();
+        target.textContent = new Intl.DateTimeFormat("pl-PL", {
+            weekday: "short", day: "numeric", month: "short"
+        }).format(new Date()).replace(/\.$/, "");
+    }
+
+    function setHomeTool(tool) {
+        const selectedTool = String(tool || "");
+        document.querySelectorAll("[data-home-tool]").forEach((button) => {
+            const selected = button.dataset.homeTool === selectedTool;
+            button.setAttribute("aria-selected", String(selected));
+            button.tabIndex = 0;
+        });
+        document.querySelectorAll("[data-home-tool-panel]").forEach((panel) => {
+            panel.hidden = panel.dataset.homeToolPanel !== selectedTool;
+        });
+    }
+
+    function openHomeTool(tool) {
+        const normalized = String(tool || "");
+        const button = document.querySelector(`[data-home-tool="${normalized}"]`);
+        if (!button) return;
+        const alreadySelected = button.getAttribute("aria-selected") === "true";
+        setHomeTool(alreadySelected ? null : normalized);
+        if (!alreadySelected) {
+            document.getElementById(`home-${normalized}-panel`)?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
     }
 
     function healthForms() {
@@ -728,10 +839,18 @@
         return value === "true" ? true : value === "false" ? false : null;
     }
 
+    function setCompletionState(id, complete, error = false) {
+        const element = document.getElementById(id);
+        if (!element) return;
+        element.classList.toggle("complete", Boolean(complete) && !error);
+        element.classList.toggle("state-error", Boolean(error));
+    }
+
     function renderSafetyProfile(profile, error = null) {
         if (error) {
             currentSafetyProfileComplete = false;
             setText("safety-profile-state", "Odczyt niedostępny");
+            setCompletionState("safety-profile-state", false, true);
             updateMealGenerationAccess();
             return;
         }
@@ -745,6 +864,7 @@
         const complete = Boolean(profile?.confirmed_at) && values.every((value) => typeof value === "boolean");
         currentSafetyProfileComplete = complete;
         setText("safety-profile-state", complete ? "Uzupełniony" : "Wymaga uzupełnienia");
+        setCompletionState("safety-profile-state", complete);
         updateMealGenerationAccess();
     }
 
@@ -789,6 +909,7 @@
         currentPreferenceCatalog = Array.isArray(catalog) ? catalog : [];
         if (error) {
             setText("preferences-state", "Odczyt niedostępny");
+            setCompletionState("preferences-state", false, true);
             renderPreferenceFoods(null, []);
             updateMealGenerationAccess();
             return;
@@ -801,13 +922,29 @@
         if (cook) cook.value = finiteNumber(preferences?.max_cook_minutes) === null ? "" : String(preferences.max_cook_minutes);
         renderPreferenceFoods(preferences, currentPreferenceCatalog);
         setText("preferences-state", preferences?.complete ? "Uzupełnione" : "Wymagają uzupełnienia");
+        setCompletionState("preferences-state", Boolean(preferences?.complete));
         updateMealGenerationAccess();
     }
 
     async function refreshAccountData() {
+        if (!client || !activeUserId) return false;
+        if (homeRefreshButton) {
+            homeRefreshButton.disabled = true;
+            homeRefreshButton.classList.add("loading");
+        }
         const { data, error } = await client.auth.getUser();
-        if (error || !data.user || data.user.id !== activeUserId) return false;
+        if (error || !data.user || data.user.id !== activeUserId) {
+            if (homeRefreshButton) {
+                homeRefreshButton.disabled = false;
+                homeRefreshButton.classList.remove("loading");
+            }
+            return false;
+        }
         await loadAccountData(data.user);
+        if (homeRefreshButton) {
+            homeRefreshButton.disabled = false;
+            homeRefreshButton.classList.remove("loading");
+        }
         return true;
     }
 
@@ -1041,17 +1178,20 @@
     }
 
     function renderDashboard(data) {
+        currentDashboardSnapshot = data || null;
         const caloriesTarget = finiteNumber(data?.calories_target);
         const caloriesConsumed = finiteNumber(data?.calories_consumed) ?? 0;
         const remaining = caloriesTarget === null ? null : Math.max(0, caloriesTarget - caloriesConsumed);
         setText("home-calories-remaining", formatNumber(remaining));
-        setText("home-calories-detail", caloriesTarget === null
-            ? "Brak aktywnego celu kalorii"
-            : `${formatNumber(caloriesConsumed)} / ${formatNumber(caloriesTarget)} kcal wykorzystane`);
+        setText("home-calories-target", formatNumber(caloriesTarget));
+        setText("home-calories-consumed", formatNumber(caloriesConsumed));
+        setText("home-calories-total", formatNumber(caloriesTarget));
+        setText("home-calories-detail", caloriesTarget === null ? "Brak celu" : `/ ${formatNumber(caloriesTarget)} kcal`);
         setProgress("home-calories-bar", caloriesConsumed, caloriesTarget);
 
         setText("home-current-weight", formatWeight(data?.current_weight_kg));
         setText("home-goal-weight", formatWeight(data?.goal_weight_kg));
+        setText("home-next-milestone", formatWeight(data?.first_milestone_kg ?? data?.goal_weight_kg));
         setText("home-water", formatNumber(data?.water_ml));
         setText("home-steps", formatNumber(data?.steps));
         setText("water-tool-summary", `${formatNumber(data?.water_ml)} ml dzisiaj`);
@@ -1067,6 +1207,12 @@
         ];
         macroRows.forEach(([name, consumed, target]) => {
             setText(`home-${name}`, `${formatNumber(consumed)} / ${formatNumber(target)} g`);
+            const consumedValue = finiteNumber(consumed);
+            const targetValue = finiteNumber(target);
+            const percent = consumedValue === null || targetValue === null || targetValue <= 0
+                ? null
+                : Math.round((consumedValue / targetValue) * 100);
+            setText(`home-${name}-percent`, percent === null ? "—" : `${percent}%`);
             setProgress(`home-${name}-bar`, consumed, target);
         });
 
@@ -1075,6 +1221,16 @@
         setProgress("home-weight-progress-bar", weightProgress, 100);
         const change = finiteNumber(data?.change_from_start_kg);
         const average = finiteNumber(data?.average_7d);
+        const start = finiteNumber(data?.start_weight_kg);
+        setText("home-start-weight", start === null ? "—" : `${formatWeight(start)} kg`);
+        setText("home-average-weight", average === null ? "—" : `${formatWeight(average)} kg`);
+        setText("home-weight-change", change === null
+            ? "—"
+            : change > 0
+                ? `−${formatWeight(change)} kg`
+                : change < 0
+                    ? `+${formatWeight(-change)} kg`
+                    : "0,0 kg");
         const details = [];
         if (change !== null) details.push(`Zmiana od startu: ${weightFormatter.format(change)} kg`);
         if (average !== null) details.push(`Średnia 7 dni: ${weightFormatter.format(average)} kg`);
@@ -2491,7 +2647,7 @@
         const name = userDisplayName(user);
         const email = user.email || "Konto DEV";
         const letter = avatarLetter(name);
-        document.getElementById("welcome-name").textContent = name;
+        setText("welcome-name", name);
         document.getElementById("sidebar-user-name").textContent = name;
         document.getElementById("sidebar-user-email").textContent = email;
         document.getElementById("sidebar-avatar").textContent = letter;
@@ -2543,6 +2699,7 @@
 
     function navigateTo(route, updateHash = true) {
         const safeRoute = Object.hasOwn(routeLabels, route) ? route : "home";
+        appShell?.classList.toggle("home-route-active", safeRoute === "home");
         document.querySelectorAll(".route-page").forEach((page) => {
             page.classList.toggle("active", page.dataset.page === safeRoute);
         });
@@ -2756,6 +2913,27 @@
     });
     healthConsentButton?.addEventListener("click", () => void recordHealthConsent());
 
+    document.querySelectorAll("[data-home-tool]").forEach((button) => {
+        button.addEventListener("click", () => openHomeTool(button.dataset.homeTool));
+    });
+    document.querySelectorAll("[data-home-tool-open]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const tool = button.dataset.homeToolOpen;
+            setHomeTool(tool);
+            document.getElementById(`home-${tool}-panel`)?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        });
+    });
+    homeRefreshButton?.addEventListener("click", () => void refreshAccountData());
+    openWeightEntryButton?.addEventListener("click", openWeightEntry);
+    cancelWeightEntryButton?.addEventListener("click", closeWeightEntry);
+    weightEntryForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        void saveWeightEntry();
+    });
+    weightEntryModal?.addEventListener("click", (event) => {
+        if (event.target === weightEntryModal) closeWeightEntry();
+    });
+
     document.querySelectorAll("[data-water-amount]").forEach((button) => {
         button.addEventListener("click", () => {
             if (!waterAmountInput) return;
@@ -2843,11 +3021,17 @@
         if (event.target === profileResetModal) closeProfileReset();
     });
     document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !weightEntryModal?.hidden) {
+            closeWeightEntry();
+            return;
+        }
         if (event.key === "Escape" && !profileResetModal?.hidden) closeProfileReset();
     });
     window.addEventListener("hashchange", () => {
         if (!appView.hidden) navigateTo(window.location.hash.slice(1), false);
     });
 
+    renderHomeDate();
+    setHomeTool(null);
     void initializeAuth();
 })();

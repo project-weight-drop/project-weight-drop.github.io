@@ -10,10 +10,10 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
-    <link rel="stylesheet" href="./styles.css?v=20261004-meals-parity">
+    <link rel="stylesheet" href="./styles.css?v=20261004-home-parity">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
-    <script src="./config.js?v=20261004-meals-parity" defer></script>
-    <script src="./app.js?v=20261004-meals-parity" defer></script>
+    <script src="./config.js?v=20261004-home-parity" defer></script>
+    <script src="./app.js?v=20261004-home-parity" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -28,6 +28,15 @@
     <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
     <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
     <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 6v5h-5M4 18v-5h5M6.1 9A7 7 0 0 1 18.6 6.4L20 11M4 13l1.4 4.6A7 7 0 0 0 17.9 15"/></symbol>
+    <symbol id="icon-water" viewBox="0 0 24 24"><path d="M12 2S5.5 9.1 5.5 14.5a6.5 6.5 0 0 0 13 0C18.5 9.1 12 2 12 2Z"/></symbol>
+    <symbol id="icon-steps" viewBox="0 0 24 24"><path d="M8.5 3.5c1.7 0 3 1.4 3 3.1 0 2.6-1.8 5.9-4.1 7.5-1.3.9-3 .4-3.6-1-.8-1.8.6-3.1 1.5-4.5.9-1.5 1.2-5.1 3.2-5.1ZM16.5 10.5c1.8 0 3.2 1.5 3.2 3.3 0 2.8-1.9 6.4-4.4 8-1.4.9-3.2.4-3.9-1.1-.8-1.9.6-3.3 1.6-4.9 1-1.6 1.3-5.3 3.5-5.3Z"/></symbol>
+    <symbol id="icon-weight" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M8 9a4.5 4.5 0 0 1 8 0M12 9l2-2"/></symbol>
+    <symbol id="icon-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="m14 10 6-6M16 4h4v4"/></symbol>
+    <symbol id="icon-measure" viewBox="0 0 24 24"><path d="M4 18 18 4l2 2L6 20zM14 8l2 2M11 11l2 2M8 14l2 2"/></symbol>
+    <symbol id="icon-event" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></symbol>
+    <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6z"/><path d="m9 12 2 2 4-5"/></symbol>
+    <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
 </svg>
 
 <noscript>
@@ -184,75 +193,62 @@
 
         <main class="route-content" id="route-content">
             <section class="route-page active" data-page="home" aria-labelledby="home-heading">
-                <div class="welcome-card">
-                    <div>
-                        <p class="eyebrow">DZIEŃ DOBRY</p>
-                        <h2 id="home-heading">Witaj, <span id="welcome-name">Użytkowniku</span></h2>
-                        <p>Twoje dzisiejsze dane są pobierane z tego samego projektu DEV, którego używa aplikacja Android. Strona niczego nie przelicza samodzielnie.</p>
+                <header class="home-brand-header">
+                    <div class="home-brand-lockup">
+                        <img src="/brand-lockup-source.jpg" alt="Project Weight Drop — KETO, LOW CARB, BALANCE" width="300" height="169">
                     </div>
-                    <div class="phase-chip"><span>ETAP 2</span> Home + zdrowie + bezpieczeństwo</div>
+                    <div class="home-brand-meta">
+                        <span>Lepsza wersja Ciebie<br>każdego dnia</span>
+                        <div><time id="home-today-date">—</time><button id="home-refresh-button" type="button" aria-label="Odśwież dane Home"><svg><use href="#icon-refresh"></use></svg></button></div>
+                    </div>
+                </header>
+
+                <div class="home-runtime-status" aria-live="polite">
+                    <span id="profile-status-card"><b id="home-profile-status">Ładowanie…</b><small id="home-profile-detail">Sprawdzanie profilu DEV</small></span>
+                    <span id="dashboard-status-card"><b id="home-data-status">Ładowanie…</b><small id="home-data-detail">Pobieranie danych dnia</small></span>
                 </div>
 
-                <div class="status-grid">
-                    <article class="status-card ready">
-                        <div class="status-icon"><svg><use href="#icon-check"></use></svg></div>
-                        <p>Autoryzacja</p><h3>Połączono</h3><small>Zweryfikowana sesja Supabase DEV</small>
-                    </article>
-                    <article class="status-card" id="profile-status-card">
-                        <div class="status-icon"><svg><use href="#icon-profile"></use></svg></div>
-                        <p>Profil</p><h3 id="home-profile-status">Ładowanie…</h3><small id="home-profile-detail">Sprawdzanie własnego rekordu DEV</small>
-                    </article>
-                    <article class="status-card" id="dashboard-status-card">
-                        <div class="status-icon"><svg><use href="#icon-progress"></use></svg></div>
-                        <p>Dane dnia</p><h3 id="home-data-status">Ładowanie…</h3><small id="home-data-detail">Bez danych przykładowych i bez PROD</small>
-                    </article>
-                </div>
+                <section class="dashboard-overview" aria-labelledby="home-heading" aria-busy="true" id="dashboard-overview">
+                    <div class="home-today-heading"><h2 id="home-heading">Dzisiaj</h2><i></i><p id="dashboard-message" role="status" aria-live="polite">Pobieranie danych DEV…</p></div>
 
-                <section class="dashboard-overview" aria-labelledby="today-heading" aria-busy="true" id="dashboard-overview">
-                    <div class="section-heading">
-                        <div><p class="eyebrow">DZISIAJ</p><h2 id="today-heading">Twój plan i postęp</h2></div>
-                        <p id="dashboard-message" role="status" aria-live="polite">Pobieranie danych DEV…</p>
+                    <article class="today-summary-card">
+                        <div class="today-summary-top">
+                            <div><svg><use href="#icon-target"></use></svg><strong>Pozostało dzisiaj</strong></div>
+                            <span>Cel dzienny <b><i id="home-calories-target">—</i> kcal</b></span>
+                        </div>
+                        <div class="today-calories"><strong id="home-calories-remaining">—</strong><span>kcal</span></div>
+                        <div class="progress-track calorie-progress"><i id="home-calories-bar"></i></div>
+                        <div class="calorie-scale"><b id="home-calories-consumed">—</b><span id="home-calories-detail">—</span><span><i id="home-calories-total">—</i> kcal</span></div>
+                        <div class="home-macro-grid" aria-label="Dzisiejsze makroskładniki">
+                            <article class="protein"><div><span class="macro-dot"></span><p>Białko</p></div><div><strong id="home-protein">—</strong><small id="home-protein-percent">—</small></div><div class="progress-track"><i id="home-protein-bar"></i></div></article>
+                            <article class="fat"><div><span class="macro-drop">●</span><p>Tłuszcz</p></div><div><strong id="home-fat">—</strong><small id="home-fat-percent">—</small></div><div class="progress-track"><i id="home-fat-bar"></i></div></article>
+                            <article class="carbs"><div><span class="macro-leaf">◆</span><p>Węgle</p></div><div><strong id="home-carbs">—</strong><small id="home-carbs-percent">—</small></div><div class="progress-track"><i id="home-carbs-bar"></i></div></article>
+                        </div>
+                        <div class="home-inline-metrics">
+                            <button type="button" data-home-tool-open="water"><svg><use href="#icon-water"></use></svg><span><small>Woda</small><strong><i id="home-water">—</i> ml</strong></span><b>›</b></button>
+                            <button type="button" data-home-tool-open="steps"><svg><use href="#icon-steps"></use></svg><span><small>Kroki</small><strong id="home-steps">—</strong></span><b>›</b></button>
+                        </div>
+                    </article>
+
+                    <div class="home-quick-actions">
+                        <button class="primary" type="button" data-route-link="meals"><svg><use href="#icon-meals"></use></svg><span>Dodaj posiłek</span></button>
+                        <button id="open-weight-entry" type="button"><svg><use href="#icon-weight"></use></svg><span>Dodaj wagę</span></button>
                     </div>
-                    <div class="dashboard-grid">
-                        <article class="dashboard-card featured">
-                            <p>Pozostało dzisiaj</p>
-                            <h3><span id="home-calories-remaining">—</span> <small>kcal</small></h3>
-                            <div class="progress-track"><i id="home-calories-bar"></i></div>
-                            <span id="home-calories-detail">—</span>
-                        </article>
-                        <article class="dashboard-card">
-                            <p>Aktualna waga</p>
-                            <h3><span id="home-current-weight">—</span> <small>kg</small></h3>
-                            <span>Cel: <b id="home-goal-weight">—</b> kg</span>
-                        </article>
-                        <article class="dashboard-card">
-                            <p>Woda</p>
-                            <h3><span id="home-water">—</span> <small>ml</small></h3>
-                            <span>Zapis z dzisiejszego podsumowania</span>
-                        </article>
-                        <article class="dashboard-card">
-                            <p>Kroki</p>
-                            <h3 id="home-steps">—</h3>
-                            <span>Odczyt danych zapisanych w DEV</span>
-                        </article>
-                    </div>
-                    <div class="macro-grid" aria-label="Dzisiejsze makroskładniki">
-                        <article><div><p>Białko</p><strong id="home-protein">—</strong></div><div class="progress-track protein"><i id="home-protein-bar"></i></div></article>
-                        <article><div><p>Tłuszcz</p><strong id="home-fat">—</strong></div><div class="progress-track fat"><i id="home-fat-bar"></i></div></article>
-                        <article><div><p>Węglowodany</p><strong id="home-carbs">—</strong></div><div class="progress-track carbs"><i id="home-carbs-bar"></i></div></article>
-                    </div>
-                    <article class="weight-progress-card">
-                        <div><p>Postęp celu wagowego</p><strong id="home-weight-progress">—</strong></div>
+
+                    <article class="home-weight-card">
+                        <div class="home-weight-heading"><div><svg><use href="#icon-weight"></use></svg><strong>Aktualna waga</strong></div><button type="button" data-route-link="progress">Zobacz postępy <span>›</span></button></div>
+                        <div class="home-weight-main">
+                            <div><strong><span id="home-current-weight">—</span> kg</strong><small>Najbliższy cel: <b id="home-next-milestone">—</b> kg</small></div>
+                            <div><svg><use href="#icon-target"></use></svg><span>Cel <b id="home-goal-weight">—</b> kg<strong id="home-weight-progress">—</strong></span></div>
+                        </div>
                         <div class="progress-track"><i id="home-weight-progress-bar"></i></div>
-                        <span id="home-weight-detail">—</span>
+                        <div class="home-weight-metrics"><div><span>Start</span><strong id="home-start-weight">—</strong></div><div><span>Średnia 7 dni</span><strong id="home-average-weight">—</strong></div><div><span>Zmiana</span><strong id="home-weight-change">—</strong></div></div>
+                        <p id="home-weight-detail">—</p>
                     </article>
                 </section>
 
                 <section class="home-health-section" aria-labelledby="health-tools-heading">
-                    <div class="section-heading">
-                        <div><p class="eyebrow">ZDROWIE I AKTYWNOŚĆ</p><h2 id="health-tools-heading">Uzupełnij dzisiejsze dane</h2></div>
-                        <p>Zapisy trafiają do tego samego konta DEV i są od razu widoczne również w aplikacji Android.</p>
-                    </div>
+                    <h2 id="health-tools-heading">Zdrowie i aktywność</h2>
 
                     <article id="health-consent-panel" class="health-consent-panel" hidden>
                         <div>
@@ -265,9 +261,16 @@
                         <button id="health-consent-button" class="tool-primary-button" type="button" disabled>Zapisz zgodę</button>
                     </article>
 
-                    <div id="health-tools-content" class="home-tool-grid" aria-busy="true">
-                        <details class="home-tool-card" open>
-                            <summary><span><b>Woda</b><small id="water-tool-summary">Dzisiejszy zapis</small></span><i>+</i></summary>
+                    <div class="home-wellness-tabs" role="tablist" aria-label="Zdrowie i aktywność">
+                        <button type="button" role="tab" aria-selected="false" data-home-tool="water" aria-controls="home-water-panel"><svg><use href="#icon-water"></use></svg><span>Woda</span></button>
+                        <button type="button" role="tab" aria-selected="false" data-home-tool="steps" aria-controls="home-steps-panel"><svg><use href="#icon-steps"></use></svg><span>Kroki</span></button>
+                        <button type="button" role="tab" aria-selected="false" data-home-tool="measurements" aria-controls="home-measurements-panel"><svg><use href="#icon-measure"></use></svg><span>Obwody</span></button>
+                        <button type="button" role="tab" aria-selected="false" data-home-tool="event" aria-controls="home-event-panel"><svg><use href="#icon-event"></use></svg><span>Wydarzenie</span></button>
+                    </div>
+
+                    <div id="health-tools-content" class="home-tool-panels" aria-busy="true">
+                        <section id="home-water-panel" class="home-tool-panel" data-home-tool-panel="water" hidden>
+                            <header><svg><use href="#icon-water"></use></svg><span><b>Woda</b><small id="water-tool-summary">Dzisiejszy zapis</small></span></header>
                             <form id="water-form" class="tool-form">
                                 <label for="water-amount">Ilość wody</label>
                                 <div class="quick-values" aria-label="Szybki wybór ilości wody">
@@ -279,20 +282,20 @@
                                 <p class="tool-help">Jednorazowo od 50 do 2000 ml.</p>
                                 <p id="water-form-status" class="tool-status" role="status" aria-live="polite"></p>
                             </form>
-                        </details>
+                        </section>
 
-                        <details class="home-tool-card">
-                            <summary><span><b>Kroki</b><small id="steps-tool-summary">Dzisiejszy wynik</small></span><i>+</i></summary>
+                        <section id="home-steps-panel" class="home-tool-panel" data-home-tool-panel="steps" hidden>
+                            <header><svg><use href="#icon-steps"></use></svg><span><b>Kroki dzisiejszego dnia</b><small id="steps-tool-summary">Dzisiejszy wynik</small></span></header>
                             <form id="steps-form" class="tool-form">
                                 <label for="steps-amount">Dzisiejsza liczba kroków</label>
                                 <div class="tool-inline-form"><input id="steps-amount" type="number" min="0" max="200000" step="1" inputmode="numeric" placeholder="np. 7500" required><button class="tool-primary-button" type="submit">Zapisz kroki</button></div>
                                 <p class="tool-help">Nowy zapis zastępuje dzisiejszą wartość kroków.</p>
                                 <p id="steps-form-status" class="tool-status" role="status" aria-live="polite"></p>
                             </form>
-                        </details>
+                        </section>
 
-                        <details class="home-tool-card">
-                            <summary><span><b>Obwody ciała</b><small id="measurements-tool-summary">Ostatni pomiar</small></span><i>+</i></summary>
+                        <section id="home-measurements-panel" class="home-tool-panel" data-home-tool-panel="measurements" hidden>
+                            <header><svg><use href="#icon-measure"></use></svg><span><b>Obwody ciała</b><small id="measurements-tool-summary">Ostatni pomiar</small></span></header>
                             <form id="measurements-form" class="tool-form">
                                 <div class="measurement-fields">
                                     <label>Talia <span><input id="measurement-waist" type="number" min="10" max="300" step="0.1" inputmode="decimal" placeholder="cm"> cm</span></label>
@@ -305,10 +308,10 @@
                                 <p class="tool-help">Wystarczy podać jeden obwód. Zakres każdego pomiaru: 10–300 cm.</p>
                                 <p id="measurements-form-status" class="tool-status" role="status" aria-live="polite"></p>
                             </form>
-                        </details>
+                        </section>
 
-                        <details class="home-tool-card">
-                            <summary><span><b>Wydarzenie</b><small id="event-tool-summary">Ustaw cel z datą</small></span><i>+</i></summary>
+                        <section id="home-event-panel" class="home-tool-panel" data-home-tool-panel="event" hidden>
+                            <header><svg><use href="#icon-event"></use></svg><span><b>Wydarzenie</b><small id="event-tool-summary">Ustaw cel z datą</small></span></header>
                             <form id="event-form" class="tool-form">
                                 <label for="event-name">Nazwa wydarzenia</label>
                                 <input id="event-name" type="text" minlength="1" maxlength="80" placeholder="np. Wakacje" required>
@@ -333,68 +336,54 @@
                                 </section>
                                 <p id="event-form-status" class="tool-status" role="status" aria-live="polite"></p>
                             </form>
-                        </details>
+                        </section>
                     </div>
                 </section>
 
                 <section class="home-safety-section" aria-labelledby="home-safety-heading">
-                    <div class="section-heading">
-                        <div><p class="eyebrow">KONTROLA BEZPIECZEŃSTWA</p><h2 id="home-safety-heading">Zdrowie, alergie i preferencje</h2></div>
-                        <p>Te ustawienia chronią generowane plany i wpływają na możliwość automatycznych zmian kalorii.</p>
-                    </div>
-                    <div class="safety-grid">
-                        <details class="safety-card">
-                            <summary><span><b>Profil bezpieczeństwa</b><small id="safety-profile-state">Pobieranie…</small></span><i>+</i></summary>
-                            <form id="safety-form" class="tool-form safety-form">
-                                <p class="safety-warning">Odpowiedź „Nie wiem” lub odpowiedź wymagająca ostrożności może zablokować automatyczne zmiany kalorii. Pozostałe funkcje nadal będą dostępne.</p>
-                                <label>Ciąża<select id="safety-pregnant"><option value="unknown">Nie wiem</option><option value="false">Nie</option><option value="true">Tak</option></select></label>
-                                <label>Karmienie piersią<select id="safety-breastfeeding"><option value="unknown">Nie wiem</option><option value="false">Nie</option><option value="true">Tak</option></select></label>
-                                <label>Obecne lub przebyte zaburzenia odżywiania wymagające opieki<select id="safety-eating-disorder"><option value="unknown">Nie wiem</option><option value="false">Nie</option><option value="true">Tak</option></select></label>
-                                <label>Insulina lub lek mogący powodować hipoglikemię<select id="safety-hypoglycemia"><option value="unknown">Nie wiem</option><option value="false">Nie</option><option value="true">Tak</option></select></label>
-                                <label>Lek z grupy SGLT2<select id="safety-sglt2"><option value="unknown">Nie wiem</option><option value="false">Nie</option><option value="true">Tak</option></select></label>
-                                <button class="tool-primary-button wide" type="submit">Zapisz profil bezpieczeństwa</button>
-                                <p id="safety-form-status" class="tool-status" role="status" aria-live="polite"></p>
-                            </form>
-                        </details>
+                    <div class="home-safety-card">
+                        <header><svg><use href="#icon-shield"></use></svg><span><h2 id="home-safety-heading">Bezpieczeństwo i preferencje</h2><p>Ustawienia zdrowia, planu i wykluczonych produktów</p></span></header>
+                        <div class="safety-grid">
+                            <details class="safety-card">
+                                <summary><svg><use href="#icon-shield"></use></svg><span><b>Profil bezpieczeństwa</b><small id="safety-profile-state">Pobieranie…</small></span><i><svg><use href="#icon-chevron"></use></svg></i></summary>
+                                <form id="safety-form" class="tool-form safety-form">
+                                    <p class="safety-warning">Odpowiedź „Nie wiem” lub odpowiedź wymagająca ostrożności może zablokować automatyczne zmiany kalorii. Pozostałe funkcje nadal będą dostępne.</p>
+                                    <label>Ciąża<select id="safety-pregnant"><option value="unknown">Nie wiem</option><option value="false">Nie</option><option value="true">Tak</option></select></label>
+                                    <label>Karmienie piersią<select id="safety-breastfeeding"><option value="unknown">Nie wiem</option><option value="false">Nie</option><option value="true">Tak</option></select></label>
+                                    <label>Obecne lub przebyte zaburzenia odżywiania wymagające opieki<select id="safety-eating-disorder"><option value="unknown">Nie wiem</option><option value="false">Nie</option><option value="true">Tak</option></select></label>
+                                    <label>Insulina lub lek mogący powodować hipoglikemię<select id="safety-hypoglycemia"><option value="unknown">Nie wiem</option><option value="false">Nie</option><option value="true">Tak</option></select></label>
+                                    <label>Lek z grupy SGLT2<select id="safety-sglt2"><option value="unknown">Nie wiem</option><option value="false">Nie</option><option value="true">Tak</option></select></label>
+                                    <button class="tool-primary-button wide" type="submit">Zapisz profil bezpieczeństwa</button>
+                                    <p id="safety-form-status" class="tool-status" role="status" aria-live="polite"></p>
+                                </form>
+                            </details>
 
-                        <details class="safety-card">
-                            <summary><span><b>Alergie i preferencje</b><small id="preferences-state">Pobieranie…</small></span><i>+</i></summary>
-                            <form id="preferences-form" class="tool-form preferences-form">
-                                <fieldset>
-                                    <legend>Alergie pokarmowe</legend>
-                                    <div class="allergen-grid">
-                                        <label><input type="checkbox" value="gluten_cereals" data-allergen> Gluten</label><label><input type="checkbox" value="crustaceans" data-allergen> Skorupiaki</label>
-                                        <label><input type="checkbox" value="eggs" data-allergen> Jaja</label><label><input type="checkbox" value="fish" data-allergen> Ryby</label>
-                                        <label><input type="checkbox" value="peanuts" data-allergen> Orzeszki ziemne</label><label><input type="checkbox" value="soybeans" data-allergen> Soja</label>
-                                        <label><input type="checkbox" value="milk" data-allergen> Mleko</label><label><input type="checkbox" value="tree_nuts" data-allergen> Orzechy drzewne</label>
-                                        <label><input type="checkbox" value="celery" data-allergen> Seler</label><label><input type="checkbox" value="mustard" data-allergen> Gorczyca</label>
-                                        <label><input type="checkbox" value="sesame" data-allergen> Sezam</label><label><input type="checkbox" value="sulphites" data-allergen> Siarczyny</label>
-                                        <label><input type="checkbox" value="lupin" data-allergen> Łubin</label><label><input type="checkbox" value="molluscs" data-allergen> Mięczaki</label>
-                                    </div>
-                                </fieldset>
-                                <label for="max-cook-minutes">Maksymalny czas przygotowania<select id="max-cook-minutes"><option value="">Bez limitu</option><option value="10">10 minut</option><option value="15">15 minut</option><option value="20">20 minut</option><option value="30">30 minut</option><option value="45">45 minut</option><option value="60">60 minut</option></select></label>
-                                <fieldset>
-                                    <legend>Produkty — wybierz neutralny, nielubiany lub preferowany</legend>
-                                    <div id="preference-food-list" class="preference-food-list"><p class="empty-history">Pobieranie katalogu DEV…</p></div>
-                                </fieldset>
-                                <p class="safety-warning">Przy alergii zawsze sprawdzaj etykietę konkretnego produktu i ostrzeżenia o zanieczyszczeniu krzyżowym. Zapisanie nowych wykluczeń może wyłączyć aktywny plan, jeżeli zawiera konflikt.</p>
-                                <button class="tool-primary-button wide" type="submit">Zapisz alergie i preferencje</button>
-                                <p id="preferences-form-status" class="tool-status" role="status" aria-live="polite"></p>
-                            </form>
-                        </details>
-                    </div>
-                </section>
-
-                <section class="module-overview" aria-labelledby="modules-heading">
-                    <div class="section-heading">
-                        <div><p class="eyebrow">WSPÓLNY UKŁAD</p><h2 id="modules-heading">Moduły aplikacji</h2></div>
-                        <p>Home zapisuje dane zdrowia i bezpieczeństwa, a Posiłki generują dni planu w DEV. Pozostałe moduły są rozwijane etapami.</p>
-                    </div>
-                    <div class="module-grid">
-                        <button type="button" data-route-link="meals"><svg><use href="#icon-meals"></use></svg><span><strong>Posiłki</strong><small>Dziennik i plan</small></span><i>→</i></button>
-                        <button type="button" data-route-link="fridge"><svg><use href="#icon-fridge"></use></svg><span><strong>Lodówka</strong><small>Posiłek z produktów</small></span><i>→</i></button>
-                        <button type="button" data-route-link="coach"><svg><use href="#icon-coach"></use></svg><span><strong>AI Coach</strong><small>Rozmowa i wsparcie</small></span><i>→</i></button>
-                        <button type="button" data-route-link="progress"><svg><use href="#icon-progress"></use></svg><span><strong>Postępy</strong><small>Waga, woda i kroki</small></span><i>→</i></button>
+                            <details class="safety-card">
+                                <summary><svg><use href="#icon-meals"></use></svg><span><b>Preferencje żywieniowe</b><small id="preferences-state">Pobieranie…</small></span><i><svg><use href="#icon-chevron"></use></svg></i></summary>
+                                <form id="preferences-form" class="tool-form preferences-form">
+                                    <fieldset>
+                                        <legend>Alergie pokarmowe</legend>
+                                        <div class="allergen-grid">
+                                            <label><input type="checkbox" value="gluten_cereals" data-allergen> Gluten</label><label><input type="checkbox" value="crustaceans" data-allergen> Skorupiaki</label>
+                                            <label><input type="checkbox" value="eggs" data-allergen> Jaja</label><label><input type="checkbox" value="fish" data-allergen> Ryby</label>
+                                            <label><input type="checkbox" value="peanuts" data-allergen> Orzeszki ziemne</label><label><input type="checkbox" value="soybeans" data-allergen> Soja</label>
+                                            <label><input type="checkbox" value="milk" data-allergen> Mleko</label><label><input type="checkbox" value="tree_nuts" data-allergen> Orzechy drzewne</label>
+                                            <label><input type="checkbox" value="celery" data-allergen> Seler</label><label><input type="checkbox" value="mustard" data-allergen> Gorczyca</label>
+                                            <label><input type="checkbox" value="sesame" data-allergen> Sezam</label><label><input type="checkbox" value="sulphites" data-allergen> Siarczyny</label>
+                                            <label><input type="checkbox" value="lupin" data-allergen> Łubin</label><label><input type="checkbox" value="molluscs" data-allergen> Mięczaki</label>
+                                        </div>
+                                    </fieldset>
+                                    <label for="max-cook-minutes">Maksymalny czas przygotowania<select id="max-cook-minutes"><option value="">Bez limitu</option><option value="10">10 minut</option><option value="15">15 minut</option><option value="20">20 minut</option><option value="30">30 minut</option><option value="45">45 minut</option><option value="60">60 minut</option></select></label>
+                                    <fieldset>
+                                        <legend>Produkty — wybierz neutralny, nielubiany lub preferowany</legend>
+                                        <div id="preference-food-list" class="preference-food-list"><p class="empty-history">Pobieranie katalogu DEV…</p></div>
+                                    </fieldset>
+                                    <p class="safety-warning">Przy alergii zawsze sprawdzaj etykietę konkretnego produktu i ostrzeżenia o zanieczyszczeniu krzyżowym. Zapisanie nowych wykluczeń może wyłączyć aktywny plan, jeżeli zawiera konflikt.</p>
+                                    <button class="tool-primary-button wide" type="submit">Zapisz alergie i preferencje</button>
+                                    <p id="preferences-form-status" class="tool-status" role="status" aria-live="polite"></p>
+                                </form>
+                            </details>
+                        </div>
                     </div>
                 </section>
             </section>
@@ -614,6 +603,24 @@
             </section>
         </main>
     </div>
+</div>
+
+<div id="weight-entry-modal" class="modal-backdrop" hidden>
+    <section class="confirm-dialog weight-entry-dialog" role="dialog" aria-modal="true" aria-labelledby="weight-entry-title" aria-describedby="weight-entry-copy">
+        <div class="weight-dialog-icon"><svg><use href="#icon-weight"></use></svg></div>
+        <p class="eyebrow">POSTĘPY</p>
+        <h2 id="weight-entry-title">Dodaj wagę</h2>
+        <p id="weight-entry-copy">Zapis będzie widoczny również w aplikacji Android DEV.</p>
+        <form id="weight-entry-form" class="weight-entry-form">
+            <label for="weight-entry-value">Aktualna waga</label>
+            <div><input id="weight-entry-value" type="number" min="35" max="350" step="0.1" inputmode="decimal" required><span>kg</span></div>
+            <p id="weight-entry-status" class="tool-status" role="status" aria-live="polite"></p>
+            <div class="confirm-dialog-actions">
+                <button id="cancel-weight-entry" class="dialog-secondary-button" type="button">Anuluj</button>
+                <button id="save-weight-entry" class="dialog-danger-button" type="submit">Zapisz</button>
+            </div>
+        </form>
+    </section>
 </div>
 
 <div id="profile-reset-modal" class="modal-backdrop" hidden>
