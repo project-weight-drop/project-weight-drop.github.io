@@ -2390,7 +2390,7 @@
             const footerCopy = document.querySelector('.footer-copy');
             if (footerCopy) footerCopy.innerHTML = t.footerCopy;
             const footerLinks = document.querySelectorAll('.footer-links a');
-            const flMap = [t.footerCalc, t.footerAbout, t.footerCoop, t.footerOpinions, t.footerBlog, t.footerPrivacy, t.footerTerms];
+            const flMap = [t.footerCalc, t.footerAbout, t.footerCoop, t.footerOpinions, t.footerBlog, t.navWebApp, t.footerPrivacy, t.footerTerms];
             footerLinks.forEach((a, i) => { if (flMap[i]) a.innerHTML = flMap[i]; });
 
             // Preserve the simulated value when switching languages.
