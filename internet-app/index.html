@@ -10,10 +10,10 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
-    <link rel="stylesheet" href="./styles.css?v=20261004-home-health">
+    <link rel="stylesheet" href="./styles.css?v=20261004-event-meal-generation">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
-    <script src="./config.js?v=20261004-home-health" defer></script>
-    <script src="./app.js?v=20261004-home-health" defer></script>
+    <script src="./config.js?v=20261004-event-meal-generation" defer></script>
+    <script src="./app.js?v=20261004-event-meal-generation" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -314,7 +314,23 @@
                                 <input id="event-name" type="text" minlength="1" maxlength="80" placeholder="np. Wakacje" required>
                                 <label for="event-date">Data</label>
                                 <input id="event-date" type="date" required>
-                                <div class="event-actions"><button class="tool-primary-button" type="submit">Zapisz wydarzenie</button><button id="event-delete-button" class="tool-secondary-button" type="button" hidden>Usuń</button></div>
+                                <div class="event-weight-fields">
+                                    <label for="event-current-weight">Aktualna waga <span><input id="event-current-weight" type="number" min="30" max="350" step="0.1" inputmode="decimal" placeholder="kg"> kg</span></label>
+                                    <label for="event-goal-weight">Waga docelowa <span><input id="event-goal-weight" type="number" min="30" max="350" step="0.1" inputmode="decimal" placeholder="kg"> kg</span></label>
+                                </div>
+                                <p class="tool-help">Wagi służą tylko temu obliczeniu i nie zmieniają profilu, kalorii ani makro.</p>
+                                <div class="event-actions"><button class="tool-primary-button" type="submit">Zapisz i oblicz</button><button id="event-delete-button" class="tool-secondary-button" type="button" hidden>Usuń</button></div>
+                                <section id="event-projection" class="event-projection" aria-live="polite" hidden>
+                                    <div><strong id="event-days">—</strong><span>dni do wydarzenia</span></div>
+                                    <p>Orientacyjny zakres: <b id="event-loss-range">—</b></p>
+                                    <dl>
+                                        <div><dt>Waga w dniu wydarzenia</dt><dd id="event-weight-range">—</dd></div>
+                                        <div><dt>Do celu</dt><dd id="event-target-loss">—</dd></div>
+                                        <div><dt>Tempo potrzebne do celu</dt><dd id="event-required-pace">—</dd></div>
+                                    </dl>
+                                    <p id="event-pace-warning" class="event-pace-warning" hidden>Cel wymaga szybszego tempa niż przyjęty zakres orientacyjny. Nie obniżaj samodzielnie kalorii.</p>
+                                    <small>To orientacyjny zakres, nie gwarancja wyniku. Obliczenie nie zmienia planu.</small>
+                                </section>
                                 <p id="event-form-status" class="tool-status" role="status" aria-live="polite"></p>
                             </form>
                         </details>
@@ -372,7 +388,7 @@
                 <section class="module-overview" aria-labelledby="modules-heading">
                     <div class="section-heading">
                         <div><p class="eyebrow">WSPÓLNY UKŁAD</p><h2 id="modules-heading">Moduły aplikacji</h2></div>
-                        <p>Home zapisuje już dane zdrowia i bezpieczeństwa w DEV. Pozostałe moduły są uruchamiane etapami.</p>
+                        <p>Home zapisuje dane zdrowia i bezpieczeństwa, a Posiłki generują dni planu w DEV. Pozostałe moduły są rozwijane etapami.</p>
                     </div>
                     <div class="module-grid">
                         <button type="button" data-route-link="meals"><svg><use href="#icon-meals"></use></svg><span><strong>Posiłki</strong><small>Dziennik i plan</small></span><i>→</i></button>
@@ -405,13 +421,18 @@
                 </div>
                 <section class="meal-plan-panel" aria-labelledby="meal-plan-heading">
                     <div class="section-heading">
-                        <div><p class="eyebrow">PLAN 7 DNI</p><h2 id="meal-plan-heading">Twój plan</h2></div>
+                        <div><p class="eyebrow">PLAN 7 DNI · PRO</p><h2 id="meal-plan-heading">Twój plan</h2></div>
                         <p id="meal-plan-message" role="status" aria-live="polite">Pobieranie aktywnego planu DEV…</p>
+                    </div>
+                    <div class="meal-plan-access">
+                        <div><strong id="meal-plan-access-title">Sprawdzanie dostępu…</strong><span id="meal-plan-access-copy">Plan korzysta z aktywnej diety, kalorii, makro i zabezpieczeń konta DEV.</span></div>
+                        <span id="meal-plan-quota">—</span>
                     </div>
                     <div class="meal-day-tabs" id="meal-day-tabs" role="tablist" aria-label="Dni planu"></div>
                     <div class="meal-plan-list" id="meal-plan-list"><p class="empty-history">Pobieranie…</p></div>
+                    <p id="meal-plan-action-status" class="meal-plan-action-status" role="status" aria-live="polite"></p>
                 </section>
-                <div class="capability-list"><div><strong>Dziennik, plan i wyszukiwarka</strong><span class="available-label">Aktywny odczyt DEV</span></div><div><strong>Dodawanie i usuwanie posiłków</strong><span>Następny etap</span></div><div><strong>Skaner kodów i dyktowanie</strong><span>Tylko Android — w WWW ukryte</span></div></div>
+                <div class="capability-list"><div><strong>Plan 7 dni</strong><span class="available-label">Generowanie dni DEV</span></div><div><strong>Dziennik i wyszukiwarka</strong><span class="available-label">Aktywny odczyt DEV</span></div><div><strong>Dodawanie i usuwanie posiłków</strong><span>Następny etap</span></div><div><strong>Skaner kodów i dyktowanie</strong><span>Tylko Android — w WWW ukryte</span></div></div>
             </section>
 
             <section class="route-page" data-page="fridge" aria-labelledby="fridge-heading">

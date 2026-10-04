@@ -50,6 +50,9 @@
     const measurementsForm = document.getElementById("measurements-form");
     const eventForm = document.getElementById("event-form");
     const eventDeleteButton = document.getElementById("event-delete-button");
+    const eventCurrentWeightInput = document.getElementById("event-current-weight");
+    const eventGoalWeightInput = document.getElementById("event-goal-weight");
+    const eventProjection = document.getElementById("event-projection");
     const safetyForm = document.getElementById("safety-form");
     const preferencesForm = document.getElementById("preferences-form");
     const preferenceFoodList = document.getElementById("preference-food-list");
@@ -77,6 +80,11 @@
     let profileReadyForWrites = false;
     let currentMealPreferences = null;
     let currentPreferenceCatalog = [];
+    let currentSafetyProfileComplete = false;
+    let currentPremiumSnapshot = null;
+    let premiumSnapshotUnavailable = false;
+    let currentNutritionPlan = null;
+    let mealPlanGenerating = false;
 
     const numberFormatter = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 });
     const weightFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
@@ -249,6 +257,11 @@
         profileReadyForWrites = false;
         currentMealPreferences = null;
         currentPreferenceCatalog = [];
+        currentSafetyProfileComplete = false;
+        currentPremiumSnapshot = null;
+        premiumSnapshotUnavailable = false;
+        currentNutritionPlan = null;
+        mealPlanGenerating = false;
         dashboardOverview?.setAttribute("aria-busy", "true");
         profileDataPanel?.setAttribute("aria-busy", "true");
         setText("dashboard-message", "Pobieranie danych DEV…");
@@ -290,6 +303,10 @@
         setText("meals-calories-total", "—");
         setText("today-meals-count", "—");
         setText("meal-plan-message", "Pobieranie aktywnego planu DEV…");
+        setText("meal-plan-access-title", "Sprawdzanie dostępu…");
+        setText("meal-plan-access-copy", "Plan korzysta z aktywnej diety, kalorii, makro i zabezpieczeń konta DEV.");
+        setText("meal-plan-quota", "—");
+        setToolStatus("meal-plan-action-status", "");
         setText("food-search-status", "Wpisz co najmniej 2 znaki.");
         if (fridgeProducts) fridgeProducts.value = "";
         document.getElementById("fridge-result")?.setAttribute("hidden", "");
@@ -316,6 +333,7 @@
         safetyForm?.reset();
         preferencesForm?.reset();
         if (eventDeleteButton) eventDeleteButton.hidden = true;
+        if (eventProjection) eventProjection.hidden = true;
         if (preferenceFoodList) preferenceFoodList.innerHTML = '<p class="empty-history">Pobieranie katalogu DEV…</p>';
         if (healthConsentCheckbox) healthConsentCheckbox.checked = false;
         if (healthConsentButton) healthConsentButton.disabled = true;
@@ -438,6 +456,7 @@
     }
 
     function featureErrorMessage(code, feature) {
+        const normalizedCode = String(code || "unknown_error").toLowerCase();
         const messages = {
             authentication_required: "Sesja wygasła. Zaloguj się ponownie.",
             invalid_fridge_products: "Podaj produkty i ilości (od 3 do 2000 znaków).",
@@ -450,13 +469,31 @@
             generation_quota_unavailable: "Nie udało się sprawdzić limitu generowania.",
             coach_daily_quota_exhausted: "Dzisiejszy limit AI Coacha został wykorzystany.",
             coach_free_quota_exhausted: "Wykorzystano dostępny limit AI Coacha.",
-            premium_state_unavailable: "Nie udało się sprawdzić dostępu do AI Coacha.",
+            premium_state_unavailable: "Nie udało się sprawdzić dostępu PRO.",
             coach_context_unavailable: "Dane potrzebne Coachowi są chwilowo niedostępne.",
             coach_meal_context_unavailable: "Dziennik posiłków jest chwilowo niedostępny dla Coacha.",
             ai_service_error: "Usługa AI DEV nie odpowiedziała poprawnie. Spróbuj ponownie.",
-            invalid_message: "Wiadomość jest pusta albo zbyt długa."
+            invalid_message: "Wiadomość jest pusta albo zbyt długa.",
+            premium_required: "Generowanie planu posiłków wymaga aktywnego dostępu PRO.",
+            meal_preferences_required: "Najpierw zapisz alergie i preferencje na Home — również wtedy, gdy nie masz alergii.",
+            meal_preferences_unavailable: "Nie udało się pobrać alergii i preferencji DEV.",
+            profile_not_found: "Najpierw dokończ profil Project Weight Drop DEV.",
+            active_plan_not_found: "Brak aktywnego planu kalorii i makro. Najpierw dokończ konfigurację planu.",
+            meal_plan_unavailable: "Nie udało się pobrać aktualnego planu posiłków.",
+            invalid_day_index: "Wybrano nieprawidłowy dzień planu.",
+            keto_target_not_validated: "Cel KETO wymaga ponownej walidacji w aplikacji DEV.",
+            low_carb_target_not_validated: "Cel LOW CARB wymaga ponownej walidacji w aplikacji DEV.",
+            balanced_target_not_validated: "Cel BALANCE wymaga ponownej walidacji w aplikacji DEV.",
+            meal_day_regeneration_quota_exhausted: "Dzisiejszy limit ponownego generowania dni został wykorzystany.",
+            no_valid_day: "Generator nie przygotował poprawnego dnia. Spróbuj ponownie.",
+            build_failed: "Generator nie zbudował poprawnego dnia. Spróbuj ponownie.",
+            day_validation_failed: "Wygenerowany dzień nie przeszedł kontroli kalorii, makro lub składników. Spróbuj ponownie.",
+            keto_day_validation_failed: "Wygenerowany dzień KETO nie przeszedł kontroli kalorii, makro lub składników. Spróbuj ponownie.",
+            food_store_failed: "Nie udało się zapisać produktów wygenerowanego dnia.",
+            day_store_failed: "Nie udało się zapisać wygenerowanego dnia.",
+            meal_planner_not_configured: "Generator planów DEV jest chwilowo niedostępny."
         };
-        return messages[code] || `Nie udało się uruchomić funkcji ${feature} w DEV.`;
+        return messages[normalizedCode] || `Nie udało się uruchomić funkcji ${feature} w DEV.`;
     }
 
     function setToolStatus(id, message, kind = "neutral") {
@@ -528,6 +565,62 @@
         return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
     }
 
+    function localDateOffset(days) {
+        const date = new Date();
+        date.setDate(date.getDate() + days);
+        return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+    }
+
+    function decimalInputValue(input) {
+        const raw = input?.value.trim().replace(",", ".") || "";
+        if (!raw) return null;
+        const value = Number(raw);
+        return Number.isFinite(value) ? value : null;
+    }
+
+    function eventProjectionResult(eventDate, currentWeightKg, goalWeightKg) {
+        const eventTime = Date.parse(`${eventDate}T00:00:00Z`);
+        const todayTime = Date.parse(`${localToday()}T00:00:00Z`);
+        const days = Math.round((eventTime - todayTime) / 86400000);
+        if (!Number.isFinite(currentWeightKg) || !Number.isFinite(goalWeightKg) ||
+            !Number.isInteger(days) || days <= 0 || currentWeightKg < 30 || currentWeightKg > 350 ||
+            goalWeightKg < 30 || goalWeightKg > 350 || currentWeightKg <= goalWeightKg) return null;
+        const weeks = days / 7;
+        const targetLossKg = currentWeightKg - goalWeightKg;
+        const minimumLossKg = Math.min(targetLossKg, weeks * 0.5);
+        const maximumLossKg = Math.min(targetLossKg, weeks * 1);
+        return {
+            days,
+            minimumLossKg,
+            maximumLossKg,
+            requiredWeeklyLossKg: targetLossKg / weeks,
+            targetLossKg,
+            minimumEstimatedWeightKg: currentWeightKg - maximumLossKg,
+            maximumEstimatedWeightKg: currentWeightKg - minimumLossKg
+        };
+    }
+
+    function renderEventProjection() {
+        if (!eventProjection) return null;
+        const date = document.getElementById("event-date")?.value || "";
+        const projection = eventProjectionResult(
+            date,
+            decimalInputValue(eventCurrentWeightInput),
+            decimalInputValue(eventGoalWeightInput)
+        );
+        eventProjection.hidden = !projection;
+        if (!projection) return null;
+        const oneDecimal = (value) => value.toLocaleString("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        setText("event-days", String(projection.days));
+        setText("event-loss-range", `${oneDecimal(projection.minimumLossKg)}–${oneDecimal(projection.maximumLossKg)} kg`);
+        setText("event-weight-range", `${oneDecimal(projection.minimumEstimatedWeightKg)}–${oneDecimal(projection.maximumEstimatedWeightKg)} kg`);
+        setText("event-target-loss", `${oneDecimal(projection.targetLossKg)} kg`);
+        setText("event-required-pace", `${projection.requiredWeeklyLossKg.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kg/tydzień`);
+        const warning = document.getElementById("event-pace-warning");
+        if (warning) warning.hidden = projection.requiredWeeklyLossKg <= 1;
+        return projection;
+    }
+
     function renderHealthConsent(consent, error = null) {
         healthConsentGranted = Boolean(consent?.explicit_health_data_consent);
         if (healthConsentPanel) healthConsentPanel.hidden = healthConsentGranted;
@@ -559,18 +652,24 @@
             : "Brak zapisanych obwodów");
     }
 
-    function renderEventGoal(goal, error = null) {
+    function renderEventGoal(goal, profile, error = null) {
         const name = document.getElementById("event-name");
         const date = document.getElementById("event-date");
-        if (date) date.min = localToday();
+        if (date) date.min = localDateOffset(1);
         if (error) {
             setText("event-tool-summary", "Odczyt niedostępny");
+            if (eventProjection) eventProjection.hidden = true;
             return;
         }
         if (name) name.value = goal?.event_name || "";
         if (date) date.value = goal?.event_date || "";
+        if (eventCurrentWeightInput) eventCurrentWeightInput.value = finiteNumber(profile?.current_weight_kg) === null ? "" : String(profile.current_weight_kg);
+        if (eventGoalWeightInput) eventGoalWeightInput.value = finiteNumber(profile?.goal_weight_kg) === null ? "" : String(profile.goal_weight_kg);
         if (eventDeleteButton) eventDeleteButton.hidden = !goal;
-        setText("event-tool-summary", goal ? `${goal.event_name} · ${goal.event_date}` : "Ustaw cel z datą");
+        const projection = renderEventProjection();
+        setText("event-tool-summary", goal
+            ? `${goal.event_name} · ${projection ? `${projection.days} dni` : goal.event_date}`
+            : "Ustaw cel z datą");
     }
 
     function setTriState(id, value) {
@@ -585,7 +684,9 @@
 
     function renderSafetyProfile(profile, error = null) {
         if (error) {
+            currentSafetyProfileComplete = false;
             setText("safety-profile-state", "Odczyt niedostępny");
+            updateMealGenerationAccess();
             return;
         }
         setTriState("safety-pregnant", profile?.pregnant);
@@ -596,7 +697,9 @@
         const values = [profile?.pregnant, profile?.breastfeeding, profile?.eating_disorder_risk,
             profile?.uses_hypoglycemia_medication, profile?.uses_sglt2_inhibitor];
         const complete = Boolean(profile?.confirmed_at) && values.every((value) => typeof value === "boolean");
+        currentSafetyProfileComplete = complete;
         setText("safety-profile-state", complete ? "Uzupełniony" : "Wymaga uzupełnienia");
+        updateMealGenerationAccess();
     }
 
     function renderPreferenceFoods(preferences, catalog) {
@@ -641,6 +744,7 @@
         if (error) {
             setText("preferences-state", "Odczyt niedostępny");
             renderPreferenceFoods(null, []);
+            updateMealGenerationAccess();
             return;
         }
         const allergens = new Set(Array.isArray(preferences?.allergen_keys) ? preferences.allergen_keys : []);
@@ -651,6 +755,7 @@
         if (cook) cook.value = finiteNumber(preferences?.max_cook_minutes) === null ? "" : String(preferences.max_cook_minutes);
         renderPreferenceFoods(preferences, currentPreferenceCatalog);
         setText("preferences-state", preferences?.complete ? "Uzupełnione" : "Wymagają uzupełnienia");
+        updateMealGenerationAccess();
     }
 
     async function refreshAccountData() {
@@ -763,12 +868,18 @@
         if (!requireHealthWrite("event-form-status")) return;
         const name = document.getElementById("event-name")?.value.trim() || "";
         const date = document.getElementById("event-date")?.value || "";
+        const currentWeightKg = decimalInputValue(eventCurrentWeightInput);
+        const goalWeightKg = decimalInputValue(eventGoalWeightInput);
         if (!name || name.length > 80 || !date) {
             setToolStatus("event-form-status", "Podaj nazwę wydarzenia i prawidłową datę.", "error");
             return;
         }
-        if (date < localToday()) {
-            setToolStatus("event-form-status", "Data wydarzenia nie może być wcześniejsza niż dzisiaj.", "error");
+        if (date <= localToday()) {
+            setToolStatus("event-form-status", "Data wydarzenia musi być późniejsza niż dzisiaj.", "error");
+            return;
+        }
+        if (!eventProjectionResult(date, currentWeightKg, goalWeightKg)) {
+            setToolStatus("event-form-status", "Podaj aktualną i docelową wagę od 30 do 350 kg. Aktualna waga musi być wyższa od docelowej.", "error");
             return;
         }
         setToolFormBusy(eventForm, true);
@@ -780,8 +891,11 @@
             return;
         }
         await refreshAccountData();
+        if (eventCurrentWeightInput) eventCurrentWeightInput.value = String(currentWeightKg);
+        if (eventGoalWeightInput) eventGoalWeightInput.value = String(goalWeightKg);
+        renderEventProjection();
         setToolFormBusy(eventForm, false);
-        setToolStatus("event-form-status", "Wydarzenie zostało zapisane.", "success");
+        setToolStatus("event-form-status", "Wydarzenie zapisano i obliczono orientacyjny wynik.", "success");
     }
 
     async function deleteEventGoal() {
@@ -1090,6 +1204,88 @@
         setText("meals-message", "Dzisiejszy dziennik pobrany z DEV.");
     }
 
+    function mealPlanDay(dayIndex) {
+        return currentMealPlan?.days?.find((entry) => Number(entry.day_index) === dayIndex) || null;
+    }
+
+    function mealPlanGenerationRequirement(dayIndex) {
+        if (!client || !activeUserId) return "Sesja wygasła. Zaloguj się ponownie.";
+        if (!profileReadyForWrites) return "Najpierw dokończ profil Project Weight Drop DEV.";
+        if (!healthConsentGranted) return "Najpierw zapisz zgodę na dane zdrowotne na Home.";
+        if (!currentNutritionPlan) return "Brak aktywnego planu kalorii i makro. Najpierw dokończ konfigurację planu.";
+        if (premiumSnapshotUnavailable || !currentPremiumSnapshot) return "Nie udało się sprawdzić dostępu PRO. Odśwież stronę i spróbuj ponownie.";
+        if (!currentPremiumSnapshot.meal_plan_allowed) return "Generowanie planu 7 dni wymaga aktywnego dostępu PRO.";
+        if (!currentSafetyProfileComplete) return "Najpierw uzupełnij profil bezpieczeństwa na Home.";
+        if (currentMealPreferences?.complete !== true) return "Najpierw zapisz alergie i preferencje na Home — również wtedy, gdy nie masz alergii.";
+        if (mealPlanDay(dayIndex) && currentPremiumSnapshot?.meal_day_regeneration_allowed !== true) {
+            return "Dzisiejszy limit ponownego generowania dni został wykorzystany.";
+        }
+        return null;
+    }
+
+    function updateMealGenerationAccess() {
+        const premium = currentPremiumSnapshot;
+        let title = "Sprawdzanie dostępu…";
+        let copy = "Plan korzysta z aktywnej diety, kalorii, makro i zabezpieczeń konta DEV.";
+        let quota = "—";
+        if (premiumSnapshotUnavailable) {
+            title = "Nie udało się sprawdzić dostępu PRO";
+            copy = "Odśwież stronę i spróbuj ponownie.";
+            quota = "BŁĄD ODCZYTU";
+        } else if (premium) {
+            if (!premium.meal_plan_allowed) {
+                title = "Plan 7 dni jest dostępny w PRO";
+                copy = "Aktywuj PRO w aplikacji Android, aby generować dni planu także w przeglądarce.";
+                quota = "FREE";
+            } else if (!profileReadyForWrites) {
+                title = "Dokończ profil Project Weight Drop";
+                copy = "Aktywny profil DEV jest wymagany do użycia planu kalorii i makro.";
+                quota = "WYMAGANE";
+            } else if (!healthConsentGranted) {
+                title = "Zapisz zgodę na dane zdrowotne";
+                copy = "Zgoda na Home jest wymagana przed generowaniem planu w przeglądarce.";
+                quota = "WYMAGANE";
+            } else if (!currentSafetyProfileComplete) {
+                title = "Uzupełnij profil bezpieczeństwa";
+                copy = "Odpowiedz na wszystkie pytania bezpieczeństwa na Home przed generowaniem.";
+                quota = "WYMAGANE";
+            } else if (currentMealPreferences?.complete !== true) {
+                title = "Potwierdź alergie i preferencje";
+                copy = "Zapisz formularz na Home, nawet jeżeli nie masz alergii ani wykluczeń.";
+                quota = "WYMAGANE";
+            } else if (!currentNutritionPlan) {
+                title = "Brak aktywnego planu kalorii i makro";
+                copy = "Najpierw dokończ konfigurację planu Project Weight Drop DEV.";
+                quota = "BRAK PLANU";
+            } else {
+                title = `Gotowe do generowania · ${formatDiet(currentNutritionPlan.diet_type)}`;
+                copy = "Każdy dzień powstaje osobno z tych samych ustawień i zabezpieczeń co w Androidzie.";
+                quota = premium.admin_granted
+                    ? "ADMIN · BEZ LIMITU"
+                    : `ZMIANY DNIA ${formatNumber(premium.meal_day_regeneration_remaining)}/${formatNumber(premium.meal_day_regeneration_limit)}`;
+            }
+        }
+        setText("meal-plan-access-title", title);
+        setText("meal-plan-access-copy", copy);
+        setText("meal-plan-quota", quota);
+        document.querySelectorAll("[data-generate-meal-day]").forEach((button) => {
+            button.disabled = mealPlanGenerating;
+            if (mealPlanGenerating && Number(button.dataset.generateMealDay) === selectedMealPlanDay) {
+                button.textContent = `Przemala układa dzień ${selectedMealPlanDay + 1}…`;
+            }
+        });
+    }
+
+    function mealGenerationButton(dayIndex, regenerate = false) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = regenerate ? "meal-plan-regenerate" : "meal-plan-generate";
+        button.dataset.generateMealDay = String(dayIndex);
+        button.textContent = regenerate ? `Wygeneruj ponownie dzień ${dayIndex + 1}` : `Wygeneruj dzień ${dayIndex + 1}`;
+        button.addEventListener("click", () => void generateMealPlanDay(dayIndex));
+        return button;
+    }
+
     function renderMealPlanDay(dayIndex) {
         selectedMealPlanDay = dayIndex;
         document.querySelectorAll("#meal-day-tabs button").forEach((button) => {
@@ -1100,12 +1296,17 @@
         const list = document.getElementById("meal-plan-list");
         if (!list) return;
         list.replaceChildren();
-        const day = currentMealPlan?.days?.find((entry) => Number(entry.day_index) === dayIndex);
+        const day = mealPlanDay(dayIndex);
         if (!day) {
-            const empty = document.createElement("p");
-            empty.className = "empty-history";
-            empty.textContent = `Dzień ${dayIndex + 1} nie został jeszcze wygenerowany.`;
+            const empty = document.createElement("div");
+            empty.className = "meal-plan-empty";
+            const heading = document.createElement("h4");
+            const copy = document.createElement("p");
+            heading.textContent = `Dzień ${dayIndex + 1}`;
+            copy.textContent = "Ten dzień nie został jeszcze wygenerowany. Użyje aktywnego planu, ustawionej diety, alergii i profilu bezpieczeństwa.";
+            empty.append(heading, copy, mealGenerationButton(dayIndex));
             list.append(empty);
+            updateMealGenerationAccess();
             return;
         }
         (Array.isArray(day.meals) ? day.meals : []).forEach((meal) => {
@@ -1129,23 +1330,19 @@
             empty.textContent = "Ten dzień nie zawiera posiłków.";
             list.append(empty);
         }
+        const action = document.createElement("div");
+        action.className = "meal-plan-regenerate-wrap";
+        action.append(mealGenerationButton(dayIndex, true));
+        list.append(action);
+        updateMealGenerationAccess();
     }
 
-    function renderMealPlan(plan) {
+    function renderMealPlan(plan, preferredDay = null) {
         currentMealPlan = plan && Array.isArray(plan.days) ? plan : null;
         const tabs = document.getElementById("meal-day-tabs");
         const list = document.getElementById("meal-plan-list");
         if (!tabs || !list) return;
         tabs.replaceChildren();
-        if (!currentMealPlan) {
-            list.replaceChildren();
-            const empty = document.createElement("p");
-            empty.className = "empty-history";
-            empty.textContent = "Brak aktywnego planu posiłków. Plan PRO można przygotować w aplikacji DEV na Androidzie.";
-            list.append(empty);
-            setText("meal-plan-message", "Brak planu dostępnego dla tego konta DEV.");
-            return;
-        }
         for (let dayIndex = 0; dayIndex < 7; dayIndex += 1) {
             const button = document.createElement("button");
             button.type = "button";
@@ -1155,9 +1352,72 @@
             button.addEventListener("click", () => renderMealPlanDay(dayIndex));
             tabs.append(button);
         }
-        const firstGeneratedDay = currentMealPlan.days.find((day) => Array.isArray(day.meals) && day.meals.length)?.day_index;
-        renderMealPlanDay(Number.isFinite(Number(firstGeneratedDay)) ? Number(firstGeneratedDay) : 0);
-        setText("meal-plan-message", `${formatDiet(currentMealPlan.diet_type)} · ${formatNumber(currentMealPlan.calories_target)} kcal · tydzień od ${formatDate(currentMealPlan.week_start)}`);
+        const firstGeneratedDay = currentMealPlan?.days?.find((day) => Array.isArray(day.meals) && day.meals.length)?.day_index;
+        const hasPreferredDay = preferredDay !== null && preferredDay !== undefined;
+        const requestedDay = Number(preferredDay);
+        const startDay = hasPreferredDay && Number.isInteger(requestedDay) && requestedDay >= 0 && requestedDay <= 6
+            ? requestedDay
+            : Number.isFinite(Number(firstGeneratedDay)) ? Number(firstGeneratedDay) : 0;
+        renderMealPlanDay(startDay);
+        if (currentMealPlan) {
+            setText("meal-plan-message", `${formatDiet(currentMealPlan.diet_type)} · ${formatNumber(currentMealPlan.calories_target)} kcal · tydzień od ${formatDate(currentMealPlan.week_start)}`);
+        } else {
+            setText("meal-plan-message", "Wybierz dzień i wygeneruj pierwszy plan DEV.");
+        }
+    }
+
+    async function generateMealPlanDay(dayIndex) {
+        if (mealPlanGenerating || !Number.isInteger(dayIndex) || dayIndex < 0 || dayIndex > 6) return;
+        const requirement = mealPlanGenerationRequirement(dayIndex);
+        if (requirement) {
+            setToolStatus("meal-plan-action-status", requirement, "error");
+            return;
+        }
+        mealPlanGenerating = true;
+        selectedMealPlanDay = dayIndex;
+        setToolStatus("meal-plan-action-status", `Przemala układa dzień ${dayIndex + 1}. To może potrwać kilkadziesiąt sekund…`);
+        updateMealGenerationAccess();
+        try {
+            const regenerate = Boolean(mealPlanDay(dayIndex));
+            const { data, error } = await client.functions.invoke("generate-meal-plan", {
+                body: {
+                    regenerate,
+                    day_index: dayIndex,
+                    locked_meal_ids: [],
+                    language: "pl"
+                }
+            });
+            if (error || data?.error) {
+                const baseCode = await edgeFunctionErrorCode(error, data);
+                const code = String(baseCode).toUpperCase() === "NO_VALID_DAY" && data?.reason_code
+                    ? data.reason_code
+                    : baseCode;
+                setToolStatus("meal-plan-action-status", featureErrorMessage(code, "generatora planu"), "error");
+                return;
+            }
+            let generatedPlan = data?.plan && Array.isArray(data.plan.days) ? data.plan : null;
+            if (!generatedPlan) {
+                const readback = await client.rpc("get_current_meal_plan");
+                if (!readback.error && readback.data && Array.isArray(readback.data.days)) generatedPlan = readback.data;
+            }
+            if (!generatedPlan || !generatedPlan.days.some((day) => Number(day.day_index) === dayIndex)) {
+                setToolStatus("meal-plan-action-status", "Dzień został wysłany do generatora, ale nie udało się potwierdzić zapisu. Odśwież stronę.", "error");
+                return;
+            }
+            const premiumResult = await client.rpc("get_premium_snapshot");
+            if (!premiumResult.error) {
+                currentPremiumSnapshot = premiumResult.data;
+                premiumSnapshotUnavailable = false;
+            }
+            renderMealPlan(generatedPlan, dayIndex);
+            setToolStatus("meal-plan-action-status", `Dzień ${dayIndex + 1} jest gotowy i zapisany w DEV.`, "success");
+        } catch {
+            setToolStatus("meal-plan-action-status", "Nie udało się połączyć z generatorem planu DEV.", "error");
+        } finally {
+            mealPlanGenerating = false;
+            renderMealPlanDay(selectedMealPlanDay);
+            updateMealGenerationAccess();
+        }
     }
 
     function renderFoodResults(rows) {
@@ -1545,7 +1805,7 @@
         const [
             dashboardResult, profileResult, planResult, weeklyResult, weightResult, stepsResult,
             todayMealsResult, mealPlanResult, consentResult, bodyResult, eventResult,
-            safetyResult, preferencesResult, preferenceCatalogResult
+            safetyResult, preferencesResult, preferenceCatalogResult, premiumResult
         ] = await Promise.all([
             client.rpc("get_dashboard_snapshot"),
             client.from("profiles").select(profileColumns).eq("user_id", user.id).maybeSingle(),
@@ -1568,10 +1828,15 @@
             client.from("safety_profiles").select("pregnant,breastfeeding,eating_disorder_risk,uses_hypoglycemia_medication,uses_sglt2_inhibitor,confirmed_at")
                 .eq("user_id", user.id).limit(1).maybeSingle(),
             client.rpc("get_meal_preferences"),
-            client.rpc("get_meal_preference_catalog")
+            client.rpc("get_meal_preference_catalog"),
+            client.rpc("get_premium_snapshot")
         ]);
 
         if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
+
+        currentNutritionPlan = planResult.error ? null : planResult.data;
+        currentPremiumSnapshot = premiumResult.error ? null : premiumResult.data;
+        premiumSnapshotUnavailable = Boolean(premiumResult.error);
 
         if (profileResult.error) {
             const message = friendlyDataError(profileResult.error);
@@ -1628,13 +1893,14 @@
 
         renderHealthConsent(consentResult.error ? null : consentResult.data, consentResult.error);
         renderBodyMeasurement(bodyResult.error ? null : bodyResult.data, bodyResult.error);
-        renderEventGoal(eventResult.error ? null : eventResult.data, eventResult.error);
+        renderEventGoal(eventResult.error ? null : eventResult.data, profileResult.error ? null : profileResult.data, eventResult.error);
         renderSafetyProfile(safetyResult.error ? null : safetyResult.data, safetyResult.error);
         renderMealPreferences(
             preferencesResult.error ? null : preferencesResult.data,
             preferenceCatalogResult.error ? [] : preferenceCatalogResult.data,
             preferencesResult.error || preferenceCatalogResult.error
         );
+        updateMealGenerationAccess();
         healthToolsContent?.setAttribute("aria-busy", "false");
     }
 
@@ -1939,6 +2205,12 @@
     eventForm?.addEventListener("submit", (event) => {
         event.preventDefault();
         void saveEventGoal();
+    });
+    [document.getElementById("event-date"), eventCurrentWeightInput, eventGoalWeightInput].filter(Boolean).forEach((input) => {
+        input.addEventListener("input", () => {
+            renderEventProjection();
+            setToolStatus("event-form-status", "");
+        });
     });
     eventDeleteButton?.addEventListener("click", () => void deleteEventGoal());
     safetyForm?.addEventListener("submit", (event) => {
