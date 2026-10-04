@@ -92,10 +92,16 @@
     let premiumSnapshotUnavailable = false;
     let currentNutritionPlan = null;
     let mealPlanGenerating = false;
+    let mealPlanSwappingId = null;
+    let mealPlanLoggingId = null;
+    let mealPlanShoppingOpen = false;
+    let expandedMealPlanIds = new Set();
+    let lockedMealPlanIds = new Set();
     let profileSetupBusy = false;
 
     const numberFormatter = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 });
     const weightFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+    const macroFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
     function validConfiguration() {
         if (!config || config.environment !== "DEV" || config.projectRef !== REQUIRED_PROJECT_REF) return false;
@@ -222,6 +228,11 @@
         return parsed === null ? "—" : weightFormatter.format(parsed);
     }
 
+    function formatMacro(value) {
+        const parsed = finiteNumber(value);
+        return parsed === null ? "—" : macroFormatter.format(parsed);
+    }
+
     function formatDate(value, includesTime = false) {
         if (!value) return "—";
         let date;
@@ -270,6 +281,11 @@
         premiumSnapshotUnavailable = false;
         currentNutritionPlan = null;
         mealPlanGenerating = false;
+        mealPlanSwappingId = null;
+        mealPlanLoggingId = null;
+        mealPlanShoppingOpen = false;
+        expandedMealPlanIds = new Set();
+        lockedMealPlanIds = new Set();
         profileSetupBusy = false;
         dashboardOverview?.setAttribute("aria-busy", "true");
         profileDataPanel?.setAttribute("aria-busy", "true");
@@ -498,6 +514,19 @@
             low_carb_target_not_validated: "Cel LOW CARB wymaga ponownej walidacji w aplikacji DEV.",
             balanced_target_not_validated: "Cel BALANCE wymaga ponownej walidacji w aplikacji DEV.",
             meal_day_regeneration_quota_exhausted: "Dzisiejszy limit ponownego generowania dni został wykorzystany.",
+            pro_day_regeneration_daily_limit_reached: "Dzisiejszy limit ponownego generowania dni został wykorzystany.",
+            meal_swap_quota_exhausted: "Dzisiejszy limit zamian posiłków został wykorzystany.",
+            pro_meal_swap_daily_limit_reached: "Dzisiejszy limit zamian posiłków został wykorzystany.",
+            trial_meal_swap_limit_reached: "Limit zamian posiłków w okresie próbnym został wykorzystany.",
+            invalid_meal_id: "Nie udało się rozpoznać wybranego posiłku.",
+            meal_not_found: "Wybrany posiłek nie należy już do aktywnego planu.",
+            meal_plan_not_found: "Nie znaleziono aktywnego planu posiłków.",
+            meal_plan_day_unavailable: "Nie udało się pobrać wybranego dnia planu.",
+            meal_items_unavailable: "Nie udało się pobrać składników wybranego posiłku.",
+            meal_swap_target_unavailable: "Nie udało się bezpiecznie dopasować zamiany do celu dnia.",
+            meal_swap_unavailable: "Nie udało się przygotować poprawnej zamiany. Spróbuj ponownie.",
+            meal_swap_store_failed: "Nowy posiłek nie został zapisany. Spróbuj ponownie.",
+            meal_plan_readback_failed: "Zmiana została wysłana, ale nie udało się odświeżyć planu.",
             no_valid_day: "Generator nie przygotował poprawnego dnia. Spróbuj ponownie.",
             build_failed: "Generator nie zbudował poprawnego dnia. Spróbuj ponownie.",
             day_validation_failed: "Wygenerowany dzień nie przeszedł kontroli kalorii, makro lub składników. Spróbuj ponownie.",
@@ -1430,6 +1459,45 @@
         return currentMealPlan?.days?.find((entry) => Number(entry.day_index) === dayIndex) || null;
     }
 
+    function mealPlanActionBusy() {
+        return mealPlanGenerating || Boolean(mealPlanSwappingId) || Boolean(mealPlanLoggingId);
+    }
+
+    function planFoodName(value) {
+        const clean = String(value || "").trim().replace(/\s+/g, " ");
+        const lower = clean.toLocaleLowerCase("pl-PL");
+        if (lower.startsWith("majonez")) return "Majonez";
+        if (lower.startsWith("masło ekstra") || lower.startsWith("maslo ekstra")) return "Masło";
+        return clean
+            .replace(/\b(Koral|Winiary|Hellmann'?s|Kotlin|Pudliszki)\b/gi, "")
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    function formatShoppingQuantity(value) {
+        const grams = finiteNumber(value);
+        if (grams === null || grams <= 0) return "0 g";
+        if (grams >= 1000) {
+            return `${new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 2 }).format(grams / 1000)} kg`;
+        }
+        return `${formatNumber(grams)} g`;
+    }
+
+    function planElement(tag, className = "", textContent = "") {
+        const element = document.createElement(tag);
+        if (className) element.className = className;
+        if (textContent) element.textContent = textContent;
+        return element;
+    }
+
+    function mealSwapRequirement() {
+        if (!client || !activeUserId) return "Sesja wygasła. Zaloguj się ponownie.";
+        if (!currentPremiumSnapshot?.meal_plan_allowed) return "Zamiany posiłków wymagają aktywnego dostępu PRO.";
+        if (currentMealPreferences?.complete !== true) return "Najpierw zapisz alergie i preferencje na Home.";
+        if (currentPremiumSnapshot?.meal_swap_allowed !== true) return "Dzisiejszy limit zamian posiłków został wykorzystany.";
+        return null;
+    }
+
     function mealPlanGenerationRequirement(dayIndex) {
         if (!client || !activeUserId) return "Sesja wygasła. Zaloguj się ponownie.";
         if (!profileReadyForWrites) return "Najpierw dokończ profil Project Weight Drop DEV.";
@@ -1484,14 +1552,14 @@
                 copy = "Każdy dzień powstaje osobno z tych samych ustawień i zabezpieczeń co w Androidzie.";
                 quota = premium.admin_granted
                     ? "ADMIN · BEZ LIMITU"
-                    : `ZMIANY DNIA ${formatNumber(premium.meal_day_regeneration_remaining)}/${formatNumber(premium.meal_day_regeneration_limit)}`;
+                    : `DZIEŃ ${formatNumber(premium.meal_day_regeneration_remaining)}/${formatNumber(premium.meal_day_regeneration_limit)} · POSIŁKI ${formatNumber(premium.meal_swap_remaining)}/${formatNumber(premium.meal_swap_limit)}`;
             }
         }
         setText("meal-plan-access-title", title);
         setText("meal-plan-access-copy", copy);
         setText("meal-plan-quota", quota);
         document.querySelectorAll("[data-generate-meal-day]").forEach((button) => {
-            button.disabled = mealPlanGenerating;
+            button.disabled = mealPlanActionBusy();
             if (mealPlanGenerating && Number(button.dataset.generateMealDay) === selectedMealPlanDay) {
                 button.textContent = `Przemala układa dzień ${selectedMealPlanDay + 1}…`;
             }
@@ -1506,6 +1574,189 @@
         button.textContent = regenerate ? `Wygeneruj ponownie dzień ${dayIndex + 1}` : `Wygeneruj dzień ${dayIndex + 1}`;
         button.addEventListener("click", () => void generateMealPlanDay(dayIndex));
         return button;
+    }
+
+    function renderMealPlanDaySummary(day) {
+        const card = planElement("section", "meal-plan-day-summary");
+        card.setAttribute("aria-label", `Podsumowanie dnia ${Number(day.day_index) + 1}`);
+        const heading = planElement(
+            "h3",
+            "",
+            `Dzień ${Number(day.day_index) + 1} - ${formatMacro(day.calories)} / ${formatNumber(currentMealPlan?.calories_target)} kcal`
+        );
+        const macros = planElement("div", "meal-plan-summary-macros");
+        [
+            ["Białko", `${formatMacro(day.protein_g)} g`, "protein"],
+            ["Tłuszcz", `${formatMacro(day.fat_g)} g`, "fat"],
+            ["Węgle", `${formatMacro(day.carbs_g)} g`, "carbs"]
+        ].forEach(([label, value, kind]) => {
+            const pill = planElement("div", `meal-plan-macro-pill ${kind}`);
+            pill.append(planElement("span", "", label), planElement("strong", "", value));
+            macros.append(pill);
+        });
+        const progress = planElement("div", "meal-plan-day-progress");
+        const target = finiteNumber(currentMealPlan?.calories_target) ?? 0;
+        const calories = finiteNumber(day.calories) ?? 0;
+        const percent = target > 0 ? Math.min(100, Math.max(0, (calories / target) * 100)) : 0;
+        progress.setAttribute("role", "progressbar");
+        progress.setAttribute("aria-valuemin", "0");
+        progress.setAttribute("aria-valuemax", String(target || 100));
+        progress.setAttribute("aria-valuenow", String(Math.round(calories)));
+        const progressValue = planElement("span");
+        progressValue.style.width = `${percent}%`;
+        progress.append(progressValue);
+        card.append(heading, macros, progress);
+        if (String(currentMealPlan?.diet_type || "").toLowerCase() === "keto") {
+            card.append(planElement(
+                "p",
+                "meal-plan-keto-line",
+                `Błonnik ${formatMacro(day.fiber_g)} g · Węglowodany netto ${formatMacro(day.net_carbs_g)} g`
+            ));
+        }
+        return card;
+    }
+
+    function renderMealPlanMealCard(meal) {
+        const mealId = String(meal.id || "");
+        const expanded = expandedMealPlanIds.has(mealId);
+        const locked = lockedMealPlanIds.has(mealId);
+        const eaten = meal.eaten_today === true;
+        const card = planElement("article", `meal-plan-card${expanded ? " expanded" : ""}`);
+
+        const top = planElement("div", "meal-plan-card-top");
+        top.append(planElement("h4", "", formatMealType(meal.meal_type)));
+        const logButton = planElement(
+            "button",
+            `meal-plan-log${eaten ? " complete" : ""}`,
+            mealPlanLoggingId === mealId ? "Dodawanie…" : eaten ? "✓ Dodano do dzisiaj" : "✓ Zjedzone — dodaj do dzisiaj"
+        );
+        logButton.type = "button";
+        logButton.dataset.logMeal = mealId;
+        logButton.disabled = eaten || mealPlanActionBusy();
+        logButton.addEventListener("click", () => void logMealPlanMealToday(mealId));
+        top.append(logButton);
+
+        const title = planElement("p", "meal-plan-meal-title", meal.title || "Posiłek");
+        const macroLine = planElement(
+            "p",
+            "meal-plan-meal-macros",
+            `${formatNumber(meal.calories)} kcal · Białko ${formatMacro(meal.protein_g)} g · Tłuszcz ${formatMacro(meal.fat_g)} g · Węgle ${formatMacro(meal.carbs_g)} g`
+        );
+        card.append(top, title, macroLine);
+        if (String(currentMealPlan?.diet_type || "").toLowerCase() === "keto") {
+            card.append(planElement(
+                "p",
+                "meal-plan-keto-line",
+                `Błonnik ${formatMacro(meal.fiber_g)} g · Netto ${formatMacro(meal.net_carbs_g)} g`
+            ));
+        }
+
+        const ingredients = Array.isArray(meal.ingredients) ? meal.ingredients : [];
+        const toggle = planElement("button", "meal-plan-expand");
+        toggle.type = "button";
+        toggle.setAttribute("aria-expanded", String(expanded));
+        toggle.append(
+            planElement("span", "meal-plan-chevron", expanded ? "⌄" : "›"),
+            planElement("span", "", `Składniki (${ingredients.length})`)
+        );
+        toggle.addEventListener("click", () => {
+            if (expandedMealPlanIds.has(mealId)) expandedMealPlanIds.delete(mealId);
+            else expandedMealPlanIds.add(mealId);
+            renderMealPlanDay(selectedMealPlanDay);
+        });
+        card.append(toggle);
+
+        const details = planElement("div", "meal-plan-card-details");
+        details.hidden = !expanded;
+        const ingredientList = planElement("div", "meal-plan-ingredients");
+        ingredients.forEach((ingredient) => {
+            const row = planElement("div", "meal-plan-ingredient");
+            row.append(
+                planElement("span", "", planFoodName(ingredient.food_name) || "Składnik"),
+                planElement("strong", "", `${formatMacro(ingredient.grams)} g`)
+            );
+            ingredientList.append(row);
+        });
+        if (!ingredients.length) ingredientList.append(planElement("p", "meal-plan-no-ingredients", "Brak listy składników."));
+        details.append(ingredientList);
+        const instructions = String(meal.preparation_instructions || "").trim();
+        if (instructions) {
+            const preparation = planElement("section", "meal-plan-preparation");
+            preparation.append(
+                planElement("h5", "", `Sposób przygotowania · ${formatNumber(meal.estimated_prep_minutes)} min`),
+                planElement("p", "", instructions)
+            );
+            details.append(preparation);
+        }
+        card.append(details);
+
+        const actions = planElement("div", "meal-plan-card-actions");
+        const swapRequirement = mealSwapRequirement();
+        const swapButton = planElement(
+            "button",
+            "meal-plan-link-action swap",
+            mealPlanSwappingId === mealId
+                ? "Zamieniam posiłek…"
+                : swapRequirement && currentPremiumSnapshot?.meal_swap_allowed === false
+                    ? "Limit wykorzystany"
+                    : "Zamień ten posiłek ›"
+        );
+        swapButton.type = "button";
+        swapButton.dataset.swapMeal = mealId;
+        swapButton.disabled = Boolean(swapRequirement) || mealPlanActionBusy();
+        swapButton.title = swapRequirement || "Zamień tylko ten posiłek i zachowaj resztę dnia";
+        swapButton.addEventListener("click", () => void swapMealPlanMeal(mealId));
+
+        const lockButton = planElement("button", `meal-plan-link-action lock${locked ? " active" : ""}`, locked ? "✓ Zachowany" : "Zachowaj");
+        lockButton.type = "button";
+        lockButton.dataset.lockMeal = mealId;
+        lockButton.setAttribute("aria-pressed", String(locked));
+        lockButton.disabled = mealPlanActionBusy();
+        lockButton.addEventListener("click", () => {
+            if (lockedMealPlanIds.has(mealId)) lockedMealPlanIds.delete(mealId);
+            else lockedMealPlanIds.add(mealId);
+            renderMealPlanDay(selectedMealPlanDay);
+        });
+        actions.append(swapButton, lockButton);
+        card.append(actions);
+        return card;
+    }
+
+    function renderMealPlanShoppingList(day) {
+        const wrapper = planElement("div", "meal-plan-shopping-wrap");
+        const button = planElement("button", "meal-plan-shopping-toggle", mealPlanShoppingOpen ? "Ukryj listę zakupów" : "Lista zakupów");
+        button.type = "button";
+        button.setAttribute("aria-expanded", String(mealPlanShoppingOpen));
+        button.addEventListener("click", () => {
+            mealPlanShoppingOpen = !mealPlanShoppingOpen;
+            renderMealPlanDay(selectedMealPlanDay);
+        });
+        wrapper.append(button);
+        if (!mealPlanShoppingOpen) return wrapper;
+
+        const aggregated = new Map();
+        (Array.isArray(day.meals) ? day.meals : []).forEach((meal) => {
+            (Array.isArray(meal.ingredients) ? meal.ingredients : []).forEach((ingredient) => {
+                const name = planFoodName(ingredient.food_name);
+                const key = String(ingredient.food_id || name).toLowerCase();
+                if (!name || !key) return;
+                const current = aggregated.get(key) || { name, grams: 0 };
+                current.grams += finiteNumber(ingredient.grams) ?? 0;
+                aggregated.set(key, current);
+            });
+        });
+        const panel = planElement("section", "meal-plan-shopping-list");
+        panel.append(planElement("h4", "", `Lista zakupów · Dzień ${Number(day.day_index) + 1}`));
+        [...aggregated.values()]
+            .filter((item) => item.grams > 0)
+            .sort((left, right) => left.name.localeCompare(right.name, "pl"))
+            .forEach((item) => {
+                const row = planElement("div", "meal-plan-shopping-row");
+                row.append(planElement("span", "", item.name), planElement("strong", "", formatShoppingQuantity(item.grams)));
+                panel.append(row);
+            });
+        wrapper.append(panel);
+        return wrapper;
     }
 
     function renderMealPlanDay(dayIndex) {
@@ -1531,26 +1782,20 @@
             updateMealGenerationAccess();
             return;
         }
-        (Array.isArray(day.meals) ? day.meals : []).forEach((meal) => {
-            const card = document.createElement("article");
-            card.className = "meal-plan-card";
-            const copy = document.createElement("div");
-            const title = document.createElement("h4");
-            const detail = document.createElement("p");
-            const kcal = document.createElement("span");
-            title.textContent = `${formatMealType(meal.meal_type)} · ${meal.title || "Posiłek"}`;
-            const ingredients = (Array.isArray(meal.ingredients) ? meal.ingredients : []).map((item) => item.food_name).join(", ");
-            detail.textContent = `${ingredients || "Brak listy składników"} · B ${formatNumber(meal.protein_g)} g · T ${formatNumber(meal.fat_g)} g · W ${formatNumber(meal.carbs_g)} g`;
-            kcal.textContent = `${formatNumber(meal.calories)} kcal`;
-            copy.append(title, detail);
-            card.append(copy, kcal);
-            list.append(card);
-        });
-        if (!list.children.length) {
+        list.append(renderMealPlanDaySummary(day));
+        const meals = (Array.isArray(day.meals) ? day.meals : [])
+            .slice()
+            .sort((left, right) => Number(left.meal_order) - Number(right.meal_order));
+        meals.forEach((meal) => list.append(renderMealPlanMealCard(meal)));
+        if (!meals.length) {
             const empty = document.createElement("p");
             empty.className = "empty-history";
             empty.textContent = "Ten dzień nie zawiera posiłków.";
             list.append(empty);
+        }
+        list.append(renderMealPlanShoppingList(day));
+        if (lockedMealPlanIds.size) {
+            list.append(planElement("p", "meal-plan-locked-count", `Zachowane posiłki: ${lockedMealPlanIds.size}`));
         }
         const action = document.createElement("div");
         action.className = "meal-plan-regenerate-wrap";
@@ -1559,8 +1804,19 @@
         updateMealGenerationAccess();
     }
 
-    function renderMealPlan(plan, preferredDay = null) {
+    function renderMealPlan(plan, preferredDay = null, options = {}) {
+        const previousPlanId = currentMealPlan?.id || null;
         currentMealPlan = plan && Array.isArray(plan.days) ? plan : null;
+        const allMealIds = new Set((currentMealPlan?.days || []).flatMap((day) =>
+            (Array.isArray(day.meals) ? day.meals : []).map((meal) => String(meal.id || "")).filter(Boolean)
+        ));
+        lockedMealPlanIds = new Set([...lockedMealPlanIds].filter((id) => allMealIds.has(id)));
+        expandedMealPlanIds = new Set([...expandedMealPlanIds].filter((id) => allMealIds.has(id)));
+        if (options.resetUi === true || previousPlanId !== currentMealPlan?.id) {
+            lockedMealPlanIds.clear();
+            mealPlanShoppingOpen = false;
+            expandedMealPlanIds = new Set(allMealIds);
+        }
         const tabs = document.getElementById("meal-day-tabs");
         const list = document.getElementById("meal-plan-list");
         if (!tabs || !list) return;
@@ -1570,8 +1826,16 @@
             button.type = "button";
             button.dataset.dayIndex = String(dayIndex);
             button.setAttribute("role", "tab");
-            button.textContent = String(dayIndex + 1);
-            button.addEventListener("click", () => renderMealPlanDay(dayIndex));
+            const generated = Boolean(mealPlanDay(dayIndex));
+            button.textContent = `${dayIndex + 1}${generated ? " ✓" : ""}`;
+            button.addEventListener("click", () => {
+                mealPlanShoppingOpen = false;
+                lockedMealPlanIds.clear();
+                const selectedDay = mealPlanDay(dayIndex);
+                (selectedDay?.meals || []).forEach((meal) => expandedMealPlanIds.add(String(meal.id || "")));
+                renderMealPlanDay(dayIndex);
+                if (!selectedDay && !mealPlanActionBusy()) void generateMealPlanDay(dayIndex);
+            });
             tabs.append(button);
         }
         const firstGeneratedDay = currentMealPlan?.days?.find((day) => Array.isArray(day.meals) && day.meals.length)?.day_index;
@@ -1588,8 +1852,90 @@
         }
     }
 
+    async function refreshMealViews(preferredDay) {
+        const [dashboardResult, todayMealsResult, planResult] = await Promise.all([
+            client.rpc("get_dashboard_snapshot"),
+            client.rpc("get_today_meals"),
+            client.rpc("get_current_meal_plan")
+        ]);
+        if (!dashboardResult.error) renderDashboard(dashboardResult.data);
+        if (!todayMealsResult.error) renderTodayMeals(todayMealsResult.data);
+        if (planResult.error || !planResult.data) return false;
+        renderMealPlan(planResult.data, preferredDay);
+        return true;
+    }
+
+    async function logMealPlanMealToday(mealId) {
+        if (mealPlanActionBusy() || !mealId) return;
+        mealPlanLoggingId = mealId;
+        setToolStatus("meal-plan-action-status", "Dodaję posiłek do dzisiejszego bilansu DEV…");
+        renderMealPlanDay(selectedMealPlanDay);
+        const preferredDay = selectedMealPlanDay;
+        try {
+            const { error } = await client.rpc("log_meal_plan_meal_today", { p_meal_plan_meal_id: mealId });
+            if (error) {
+                setToolStatus("meal-plan-action-status", friendlyDataError(error), "error");
+                return;
+            }
+            const refreshed = await refreshMealViews(preferredDay);
+            setToolStatus(
+                "meal-plan-action-status",
+                refreshed ? "Posiłek dodano do dzisiejszego bilansu." : "Posiłek zapisano, ale odświeżenie widoku nie powiodło się.",
+                refreshed ? "success" : "error"
+            );
+        } catch {
+            setToolStatus("meal-plan-action-status", "Nie udało się dodać posiłku do dzisiejszego bilansu DEV.", "error");
+        } finally {
+            mealPlanLoggingId = null;
+            renderMealPlanDay(selectedMealPlanDay);
+        }
+    }
+
+    async function swapMealPlanMeal(mealId) {
+        if (mealPlanActionBusy() || !mealId) return;
+        const requirement = mealSwapRequirement();
+        if (requirement) {
+            setToolStatus("meal-plan-action-status", requirement, "error");
+            return;
+        }
+        mealPlanSwappingId = mealId;
+        const preferredDay = selectedMealPlanDay;
+        setToolStatus("meal-plan-action-status", "Przemala dobiera nowy posiłek i sprawdza cały dzień. To może potrwać do 90 sekund…");
+        renderMealPlanDay(preferredDay);
+        try {
+            const { data, error } = await client.functions.invoke("swap-meal", { body: { meal_id: mealId } });
+            if (error || data?.error) {
+                const code = await edgeFunctionErrorCode(error, data);
+                setToolStatus("meal-plan-action-status", featureErrorMessage(code, "zamiany posiłku"), "error");
+                return;
+            }
+            let updatedPlan = data?.plan && Array.isArray(data.plan.days) ? data.plan : null;
+            if (!updatedPlan) {
+                const readback = await client.rpc("get_current_meal_plan");
+                if (!readback.error && readback.data && Array.isArray(readback.data.days)) updatedPlan = readback.data;
+            }
+            if (!updatedPlan) {
+                setToolStatus("meal-plan-action-status", "Posiłek został wysłany do zamiany, ale nie udało się potwierdzić nowego planu.", "error");
+                return;
+            }
+            const premiumResult = await client.rpc("get_premium_snapshot");
+            if (!premiumResult.error) {
+                currentPremiumSnapshot = premiumResult.data;
+                premiumSnapshotUnavailable = false;
+            }
+            renderMealPlan(updatedPlan, preferredDay);
+            setToolStatus("meal-plan-action-status", "Posiłek zamieniono i ponownie sprawdzono cały dzień.", "success");
+        } catch {
+            setToolStatus("meal-plan-action-status", "Nie udało się połączyć z funkcją zamiany posiłku DEV.", "error");
+        } finally {
+            mealPlanSwappingId = null;
+            renderMealPlanDay(selectedMealPlanDay);
+            updateMealGenerationAccess();
+        }
+    }
+
     async function generateMealPlanDay(dayIndex) {
-        if (mealPlanGenerating || !Number.isInteger(dayIndex) || dayIndex < 0 || dayIndex > 6) return;
+        if (mealPlanActionBusy() || !Number.isInteger(dayIndex) || dayIndex < 0 || dayIndex > 6) return;
         const requirement = mealPlanGenerationRequirement(dayIndex);
         if (requirement) {
             setToolStatus("meal-plan-action-status", requirement, "error");
@@ -1601,11 +1947,13 @@
         updateMealGenerationAccess();
         try {
             const regenerate = Boolean(mealPlanDay(dayIndex));
+            const dayMealIds = new Set((mealPlanDay(dayIndex)?.meals || []).map((meal) => String(meal.id || "")));
+            const lockedMealIds = [...lockedMealPlanIds].filter((id) => dayMealIds.has(id));
             const { data, error } = await client.functions.invoke("generate-meal-plan", {
                 body: {
                     regenerate,
                     day_index: dayIndex,
-                    locked_meal_ids: [],
+                    locked_meal_ids: lockedMealIds,
                     language: "pl"
                 }
             });
@@ -1631,7 +1979,12 @@
                 currentPremiumSnapshot = premiumResult.data;
                 premiumSnapshotUnavailable = false;
             }
+            lockedMealPlanIds.clear();
+            mealPlanShoppingOpen = false;
             renderMealPlan(generatedPlan, dayIndex);
+            const generatedDay = mealPlanDay(dayIndex);
+            (generatedDay?.meals || []).forEach((meal) => expandedMealPlanIds.add(String(meal.id || "")));
+            renderMealPlanDay(dayIndex);
             setToolStatus("meal-plan-action-status", `Dzień ${dayIndex + 1} jest gotowy i zapisany w DEV.`, "success");
         } catch {
             setToolStatus("meal-plan-action-status", "Nie udało się połączyć z generatorem planu DEV.", "error");
