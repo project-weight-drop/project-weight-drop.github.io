@@ -65,6 +65,13 @@
     const profileResetConfirmation = document.getElementById("profile-reset-confirmation");
     const profileResetStatus = document.getElementById("profile-reset-status");
     const profileResetResult = document.getElementById("profile-reset-result");
+    const deleteAccountModal = document.getElementById("delete-account-modal");
+    const openDeleteAccountButton = document.getElementById("open-delete-account");
+    const cancelDeleteAccountButton = document.getElementById("cancel-delete-account");
+    const confirmDeleteAccountButton = document.getElementById("confirm-delete-account");
+    const deleteAccountConfirmation = document.getElementById("delete-account-confirmation");
+    const deleteAccountUnderstood = document.getElementById("delete-account-understand");
+    const deleteAccountStatus = document.getElementById("delete-account-status");
     const healthConsentPanel = document.getElementById("health-consent-panel");
     const healthConsentCheckbox = document.getElementById("health-consent-checkbox");
     const healthConsentButton = document.getElementById("health-consent-button");
@@ -201,11 +208,14 @@
     let authMode = "sign-in";
     let profileResetBusy = false;
     let profileResetPreviousFocus = null;
+    let deleteAccountBusy = false;
+    let deleteAccountPreviousFocus = null;
     let healthConsentGranted = false;
     let profileReadyForWrites = false;
     let currentMealPreferences = null;
     let currentPreferenceCatalog = [];
     let currentSafetyProfileComplete = false;
+    let currentUserIsAdmin = false;
     let currentPremiumSnapshot = null;
     let premiumSnapshotUnavailable = false;
     let currentNutritionPlan = null;
@@ -434,6 +444,9 @@
         currentMealPreferences = null;
         currentPreferenceCatalog = [];
         currentSafetyProfileComplete = false;
+        currentUserIsAdmin = false;
+        const deleteAccountZone = document.getElementById("profile-delete-account-zone");
+        if (deleteAccountZone) deleteAccountZone.hidden = true;
         currentPremiumSnapshot = null;
         premiumSnapshotUnavailable = false;
         updateFridgeQuota();
@@ -648,6 +661,94 @@
         if (confirmProfileResetButton) {
             confirmProfileResetButton.disabled = busy || profileResetConfirmation?.value !== "RESET";
             confirmProfileResetButton.textContent = busy ? "Resetowanie…" : "Zacznij od nowa";
+        }
+    }
+
+    function setDeleteAccountStatus(message = "", kind = "error") {
+        if (!deleteAccountStatus) return;
+        deleteAccountStatus.textContent = message;
+        deleteAccountStatus.classList.toggle("success", kind === "success");
+    }
+
+    function setDeleteAccountBusy(busy) {
+        deleteAccountBusy = busy;
+        if (deleteAccountConfirmation) deleteAccountConfirmation.disabled = busy;
+        if (deleteAccountUnderstood) deleteAccountUnderstood.disabled = busy;
+        if (cancelDeleteAccountButton) cancelDeleteAccountButton.disabled = busy;
+        if (confirmDeleteAccountButton) {
+            const confirmed = deleteAccountConfirmation?.value === "DELETE" && deleteAccountUnderstood?.checked === true;
+            confirmDeleteAccountButton.disabled = busy || !confirmed;
+            confirmDeleteAccountButton.textContent = busy ? "Usuwanie…" : "Trwale usuń konto i dane";
+        }
+    }
+
+    function openDeleteAccount() {
+        if (!deleteAccountModal || !activeUserId || currentUserIsAdmin) return;
+        deleteAccountPreviousFocus = document.activeElement;
+        deleteAccountConfirmation.value = "";
+        deleteAccountUnderstood.checked = false;
+        setDeleteAccountStatus();
+        setDeleteAccountBusy(false);
+        deleteAccountModal.hidden = false;
+        document.body.classList.add("modal-open");
+        window.setTimeout(() => deleteAccountConfirmation?.focus(), 0);
+    }
+
+    function closeDeleteAccount() {
+        if (!deleteAccountModal || deleteAccountBusy) return;
+        deleteAccountModal.hidden = true;
+        document.body.classList.remove("modal-open");
+        deleteAccountConfirmation.value = "";
+        deleteAccountUnderstood.checked = false;
+        setDeleteAccountStatus();
+        setDeleteAccountBusy(false);
+        if (deleteAccountPreviousFocus instanceof HTMLElement) deleteAccountPreviousFocus.focus();
+        deleteAccountPreviousFocus = null;
+    }
+
+    function deleteAccountErrorMessage(code) {
+        const messages = {
+            authentication_required: "Sesja wygasła. Zaloguj się ponownie.",
+            delete_confirmation_required: "Zaznacz zgodę i wpisz dokładnie DELETE.",
+            cannot_delete_admin_account: "Konto administratora nie może zostać usunięte tą opcją.",
+            account_status_unavailable: "Nie udało się sprawdzić uprawnień konta. Spróbuj ponownie później.",
+            self_account_delete_failed: "Usuwanie nie zostało potwierdzone. Część danych mogła już zostać usunięta; skontaktuj się z pomocą techniczną przed ponowieniem."
+        };
+        return messages[code] || "Nie udało się trwale usunąć konta. Spróbuj ponownie później.";
+    }
+
+    async function deleteOwnAccount() {
+        if (!client || !activeUserId) {
+            setDeleteAccountStatus("Sesja wygasła. Zaloguj się ponownie.");
+            return;
+        }
+        if (deleteAccountConfirmation?.value !== "DELETE" || deleteAccountUnderstood?.checked !== true) {
+            setDeleteAccountStatus("Zaznacz zgodę i wpisz dokładnie DELETE.");
+            deleteAccountConfirmation?.focus();
+            return;
+        }
+
+        setDeleteAccountBusy(true);
+        setDeleteAccountStatus("Trwa trwałe usuwanie konta i powiązanych danych…", "success");
+        try {
+            const { data, error } = await client.functions.invoke("delete-my-account", {
+                body: { confirmation: "DELETE", understands_data_loss: true }
+            });
+            if (error || data?.deleted !== true) {
+                const code = await edgeFunctionErrorCode(error, data);
+                setDeleteAccountBusy(false);
+                setDeleteAccountStatus(deleteAccountErrorMessage(code));
+                return;
+            }
+
+            setDeleteAccountBusy(false);
+            deleteAccountModal.hidden = true;
+            document.body.classList.remove("modal-open");
+            await client.auth.signOut({ scope: "local" }).catch(() => {});
+            showSignedOut("Konto i powiązane dane zostały trwale usunięte.", "success");
+        } catch {
+            setDeleteAccountBusy(false);
+            setDeleteAccountStatus("Nie udało się połączyć z usługą usuwania konta. Spróbuj ponownie później.");
         }
     }
 
@@ -1431,7 +1532,7 @@
     function updateFridgeQuota() {
         if (!fridgeQuota) return;
         const premium = currentPremiumSnapshot;
-        if (premium?.admin_granted) {
+        if (currentUserIsAdmin) {
             fridgeQuota.textContent = "Lodówka dzisiaj: bez limitu";
             fridgeQuota.hidden = false;
             return;
@@ -1480,7 +1581,7 @@
 
     function coachAccessBadge(premium) {
         if (!premium) return "PRO";
-        if (premium.admin_granted) return "ADMIN ∞";
+        if (currentUserIsAdmin) return "ADMIN ∞";
         const remaining = premium.coach_remaining;
         const limit = premium.coach_limit;
         if (premium.coach_trial_active) return `TEST ${formatNumber(remaining ?? 8)} / ${formatNumber(limit ?? 8)}`;
@@ -1499,7 +1600,7 @@
         setText("coach-limit", premiumSnapshotUnavailable
             ? "Limit chwilowo niedostępny"
             : currentPremiumSnapshot?.coach_remaining === null || currentPremiumSnapshot?.coach_remaining === undefined
-            ? `Pakiet: ${currentPremiumSnapshot?.is_pro || currentPremiumSnapshot?.admin_granted ? "PRO" : "DEV"}`
+            ? `Pakiet: ${currentUserIsAdmin ? "ADMIN ∞" : currentPremiumSnapshot?.is_pro ? "PRO" : "DEV"}`
             : `Pozostało odpowiedzi: ${formatNumber(currentPremiumSnapshot.coach_remaining)}`);
         const allowed = !currentPremiumSnapshot || currentPremiumSnapshot.coach_allowed !== false;
         document.querySelectorAll("[data-coach-prompt]").forEach((button) => { button.disabled = !allowed; });
@@ -1939,8 +2040,8 @@
     }
 
     function renderProfileAccess(premium, dashboard, plan) {
-        const admin = premium?.admin_granted === true;
-        const isPro = premium?.is_pro === true || admin;
+        const admin = currentUserIsAdmin;
+        const isPro = premium?.is_pro === true;
         const trialActive = premium?.coach_trial_active === true;
         const heading = document.getElementById("profile-access-heading");
         const detail = document.getElementById("profile-access-detail");
@@ -1964,6 +2065,8 @@
         }
         const adminBadge = document.getElementById("profile-admin-badge");
         if (adminBadge) adminBadge.hidden = !admin;
+        const deleteAccountZone = document.getElementById("profile-delete-account-zone");
+        if (deleteAccountZone) deleteAccountZone.hidden = admin;
         const accessLink = document.getElementById("profile-access-link");
         if (accessLink) accessLink.hidden = isPro || premiumSnapshotUnavailable;
 
@@ -3094,7 +3197,7 @@
             } else {
                 title = `Gotowe do generowania · ${formatDiet(currentNutritionPlan.diet_type)}`;
                 copy = "Każdy dzień powstaje osobno z tych samych ustawień i zabezpieczeń co w Androidzie.";
-                quota = premium.admin_granted
+                quota = currentUserIsAdmin
                     ? "ADMIN · BEZ LIMITU"
                     : `DZIEŃ ${formatNumber(premium.meal_day_regeneration_remaining)}/${formatNumber(premium.meal_day_regeneration_limit)} · POSIŁKI ${formatNumber(premium.meal_swap_remaining)}/${formatNumber(premium.meal_swap_limit)}`;
             }
@@ -4909,6 +5012,16 @@
         await loadCommunityDataForActiveUser();
     }
 
+    async function loadCurrentUserAdminStatus() {
+        if (!client) return false;
+        try {
+            const { data, error } = await client.functions.invoke("admin-account", { body: { action: "status" } });
+            return !error && data?.is_admin === true;
+        } catch {
+            return false;
+        }
+    }
+
     async function loadAccountData(user) {
         const sequence = ++dataLoadSequence;
         resetAccountViews();
@@ -4924,7 +5037,7 @@
         const [
             dashboardResult, profileResult, planResult, firstPlanResult, checkInResult, weeklyResult, weightResult, stepsResult,
             todayMealsResult, mealPlanResult, consentResult, bodyResult, eventResult,
-            safetyResult, preferencesResult, preferenceCatalogResult, premiumResult
+            safetyResult, preferencesResult, preferenceCatalogResult, premiumResult, adminStatus
         ] = await Promise.all([
             client.rpc("get_dashboard_snapshot"),
             client.from("profiles").select(profileColumns).eq("user_id", user.id).maybeSingle(),
@@ -4952,7 +5065,8 @@
                 .eq("user_id", user.id).limit(1).maybeSingle(),
             client.rpc("get_meal_preferences"),
             client.rpc("get_meal_preference_catalog"),
-            client.rpc("get_premium_snapshot")
+            client.rpc("get_premium_snapshot"),
+            loadCurrentUserAdminStatus()
         ]);
 
         if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
@@ -4978,6 +5092,7 @@
 
         currentNutritionPlan = planResult.error ? null : planResult.data;
         currentPremiumSnapshot = premiumResult.error ? null : premiumResult.data;
+        currentUserIsAdmin = adminStatus === true;
         premiumSnapshotUnavailable = Boolean(premiumResult.error);
         updateFridgeQuota();
 
@@ -5096,7 +5211,9 @@
         currentAppRoute = null;
         appRouteHistory = [];
         profileResetBusy = false;
+        deleteAccountBusy = false;
         if (profileResetModal) profileResetModal.hidden = true;
+        if (deleteAccountModal) deleteAccountModal.hidden = true;
         document.body.classList.remove("modal-open");
         if (profileResetResult) profileResetResult.textContent = "";
         activeProgressSection = "hub";
@@ -5713,6 +5830,21 @@
     });
     backHomeButton?.addEventListener("click", goBackOneRoute);
     openProfileResetButton?.addEventListener("click", openProfileReset);
+    openDeleteAccountButton?.addEventListener("click", openDeleteAccount);
+    cancelDeleteAccountButton?.addEventListener("click", closeDeleteAccount);
+    confirmDeleteAccountButton?.addEventListener("click", () => void deleteOwnAccount());
+    deleteAccountConfirmation?.addEventListener("input", () => {
+        deleteAccountConfirmation.value = deleteAccountConfirmation.value.toLocaleUpperCase("en-US");
+        setDeleteAccountStatus();
+        setDeleteAccountBusy(false);
+    });
+    deleteAccountUnderstood?.addEventListener("change", () => {
+        setDeleteAccountStatus();
+        setDeleteAccountBusy(false);
+    });
+    deleteAccountModal?.addEventListener("click", (event) => {
+        if (event.target === deleteAccountModal) closeDeleteAccount();
+    });
     cancelProfileResetButton?.addEventListener("click", closeProfileReset);
     confirmProfileResetButton?.addEventListener("click", () => void resetOwnProfile());
     profileResetConfirmation?.addEventListener("input", () => {
@@ -5733,6 +5865,7 @@
             return;
         }
         if (event.key === "Escape" && !profileResetModal?.hidden) closeProfileReset();
+        if (event.key === "Escape" && !deleteAccountModal?.hidden) closeDeleteAccount();
     });
     window.addEventListener("hashchange", () => {
         if (!appView.hidden) navigateTo(window.location.hash.slice(1), false);

@@ -11,10 +11,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://iqqiizsehdjwenqowsqc.supabase.co; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-mobile-tabs-fit">
+    <link rel="stylesheet" href="./styles.css?v=20261005-delete-account">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./app.js?v=20261005-consent-version-home-return" defer></script>
+    <script src="./app.js?v=20261005-delete-account" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -950,6 +950,15 @@
                     </div>
                     <button id="open-profile-reset" class="danger-button" type="button">Zresetuj profil i postępy</button>
                 </section>
+                <section id="profile-delete-account-zone" class="danger-zone profile-delete-account-zone" aria-labelledby="profile-delete-account-heading" hidden>
+                    <div>
+                        <p class="eyebrow">KONTO</p>
+                        <h3 id="profile-delete-account-heading">Usuń konto na stałe</h3>
+                        <p>Trwale usunie konto logowania i powiązane z nim dane Project Weight Drop DEV. Jeśli używasz tego samego konta w aplikacji Android DEV, utracisz dostęp do tych danych również tam.</p>
+                        <p class="delete-account-retained">Subskrypcję Google Play trzeba anulować osobno w ustawieniach Google Play.</p>
+                    </div>
+                    <button id="open-delete-account" class="delete-account-button" type="button">Trwale usuń konto i dane</button>
+                </section>
                 <div class="capability-list"><div><strong>Sesja internetowa</strong><span class="available-label">Aktywna</span></div><div><strong>Reset profilu i ustawień</strong><span class="available-label">Dostępny</span></div><div><strong>Zakup PRO przez Google Play</strong><span>Tylko Android</span></div></div>
             </section>
         </main>
@@ -1009,6 +1018,31 @@
         <div class="confirm-dialog-actions">
             <button id="cancel-profile-reset" class="dialog-secondary-button" type="button">Anuluj</button>
             <button id="confirm-profile-reset" class="dialog-danger-button" type="button" disabled>Zacznij od nowa</button>
+        </div>
+    </section>
+</div>
+
+<div id="delete-account-modal" class="modal-backdrop" hidden>
+    <section class="confirm-dialog delete-account-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-account-dialog-title" aria-describedby="delete-account-dialog-copy">
+        <p class="eyebrow">NIEODWRACALNA OPERACJA</p>
+        <h2 id="delete-account-dialog-title">Usunąć konto na stałe?</h2>
+        <p id="delete-account-dialog-copy">Usuniemy konto logowania oraz dane przypisane do niego w Project Weight Drop DEV, między innymi profil, plan, posiłki, pomiary, postępy i rozmowy. Jeśli korzystasz z Androida DEV na tym samym koncie, dane znikną również tam. Operacji nie można cofnąć.</p>
+        <div class="delete-account-warning">
+            <strong>Subskrypcja Google Play</strong>
+            <span>Usunięcie konta nie anuluje płatności Google Play. Anuluj subskrypcję osobno w Google Play.</span>
+        </div>
+        <label class="delete-account-understand" for="delete-account-understand">
+            <input id="delete-account-understand" type="checkbox">
+            <span>Rozumiem, że konto i powiązane dane zostaną trwale usunięte.</span>
+        </label>
+        <label class="reset-confirm-field" for="delete-account-confirmation">
+            <span>Aby potwierdzić, wpisz <strong>DELETE</strong></span>
+            <input id="delete-account-confirmation" type="text" maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="DELETE">
+        </label>
+        <p id="delete-account-status" class="delete-account-status" role="status" aria-live="polite"></p>
+        <div class="confirm-dialog-actions">
+            <button id="cancel-delete-account" class="dialog-secondary-button" type="button">Anuluj</button>
+            <button id="confirm-delete-account" class="dialog-danger-button" type="button" disabled>Trwale usuń konto i dane</button>
         </div>
     </section>
 </div>
