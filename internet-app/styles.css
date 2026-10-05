@@ -700,14 +700,18 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .fridge-ingredient span { color: #898989; }
 .fridge-instructions { white-space: pre-line; }
 .coach-panel { overflow: hidden; margin-top: 18px; border: 1px solid var(--line); border-radius: 14px; background: #191919; }
+.coach-panel[hidden] { display: none !important; }
 .coach-topline { display: flex; justify-content: space-between; gap: 18px; padding: 14px 20px; border-bottom: 1px solid var(--line-soft); color: #8a8a8a; font-size: 10px; }
 .coach-topline small { color: var(--orange); }
 .coach-messages { min-height: 320px; max-height: 540px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 22px; }
-.coach-message { max-width: min(760px, 86%); padding: 14px 16px; border-radius: 13px; color: #e8e8e8; font-size: 12px; line-height: 1.65; white-space: pre-wrap; }
+.coach-message { max-width: min(760px, 86%); padding: 14px 16px; border-radius: 13px; color: #e8e8e8; font-size: 12px; line-height: 1.65; white-space: pre-wrap; overflow-wrap: anywhere; }
 .coach-message.user { align-self: flex-end; border: 1px solid rgba(255,106,0,.38); border-bottom-right-radius: 3px; background: #2a1a10; }
-.coach-message.assistant { align-self: flex-start; border: 1px solid #343434; border-bottom-left-radius: 3px; background: #151515; }
+.coach-message.assistant { align-self: stretch; max-width: 100%; border: 1px solid #343434; border-bottom-left-radius: 3px; background: #222; }
+.coach-message-author { display: block; margin-bottom: 9px; color: var(--orange); font-size: 11px; }
 .coach-message small { display: block; margin-top: 7px; color: #6f6f6f; font-size: 8px; }
+.coach-message.assistant p { margin: 0; white-space: pre-wrap; }
 .coach-prompts { display: flex; flex-wrap: wrap; gap: 7px; padding: 0 20px 16px; }
+.coach-prompts[hidden], .coach-messages[hidden] { display: none !important; }
 .coach-prompts button { border: 1px solid #3a3a3a; border-radius: 999px; padding: 8px 12px; background: #151515; color: #aaa; cursor: pointer; font-size: 10px; }
 .coach-prompts button:hover { border-color: var(--orange); color: var(--orange); }
 .coach-form { padding: 18px 20px; border-top: 1px solid var(--line-soft); }
@@ -717,6 +721,16 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .coach-form button:disabled { cursor: wait; opacity: .6; }
 .coach-form button svg { width: 21px; height: 21px; }
 .coach-form > p { margin-bottom: 0; }
+.coach-app-page #coach-ai-panel { overflow: visible; }
+.coach-intro { display: grid; justify-items: center; gap: 9px; min-height: 190px; align-content: center; padding: 18px 24px 26px; background: linear-gradient(180deg, rgba(13,13,13,.16), rgba(13,13,13,.68)), url("./assets/android-home-background.jpg") center 48% / cover; text-align: center; }
+.coach-intro[hidden] { display: none !important; }
+.coach-intro svg { width: 54px; height: 54px; margin-bottom: 2px; color: var(--orange); filter: drop-shadow(0 0 12px rgba(255,106,0,.68)); }
+.coach-intro h3 { margin: 0; font-size: clamp(19px, 3vw, 25px); }
+.coach-intro p { max-width: 480px; margin: 0; color: #c7c7c7; font-size: 13px; line-height: 1.55; }
+.coach-panel.has-conversation { display: flex; flex-direction: column; overflow: visible; }
+.coach-panel.has-conversation .coach-messages { flex: 1 1 auto; min-height: 300px; max-height: min(62vh, 680px); overscroll-behavior: contain; scrollbar-gutter: stable; }
+.coach-panel.has-conversation .coach-form { flex: 0 0 auto; }
+.app-shell.coach-route-active .app-workspace { background: linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.78)), url("./assets/android-home-background.jpg") center top / cover fixed no-repeat; }
 .app-module-page { max-width: 760px; margin-inline: auto; }
 .module-phone-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 10px 4px 14px; }
 .module-phone-header h2, .coach-brand-header h2 { margin: 4px 0 3px; font-size: 31px; line-height: 1; letter-spacing: 0; }
@@ -854,12 +868,19 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .coach-prompts svg { width: 19px; height: 19px; color: var(--orange); }
 .coach-prompts span { min-width: 0; overflow-wrap: anywhere; }
 .coach-messages { min-height: 300px; max-height: 520px; padding: 12px; gap: 10px; }
-.coach-message { max-width: 92%; border-radius: 18px; padding: 12px 13px; font-size: 12px; }
+.coach-message { max-width: 88%; border-radius: 18px; padding: 12px 13px; font-size: 14px; }
+.coach-message.assistant { max-width: 100%; }
+.coach-message-author { font-size: 12px; }
 .coach-message p { margin: 0; white-space: pre-wrap; }
 .coach-report-button { display: block; margin-top: 9px; border: 0; background: transparent; color: var(--orange); cursor: pointer; padding: 0; font-size: 10px; font-weight: 800; }
 .coach-form { padding: 10px 12px 12px; border-top: 1px solid rgba(255,255,255,.12); }
 .coach-form > div { grid-template-columns: minmax(0, 1fr) 44px 50px; align-items: end; gap: 7px; }
 .coach-form button[type="submit"] { display: grid; place-items: center; border: 0; cursor: pointer; }
+.coach-intro { min-height: 170px; padding: 18px 18px 22px; background-position: center 48%; }
+.coach-intro svg { width: 62px; height: 62px; }
+.coach-intro h3 { font-size: 20px; }
+.coach-intro p { font-size: 12px; }
+.coach-panel.has-conversation .coach-messages { height: min(58dvh, calc(100dvh - 460px)); min-height: 190px; max-height: none; }
 .support-chat-form > div { grid-template-columns: minmax(0, 1fr) 50px; }
 .support-inbox { padding: 10px 12px 12px; border-bottom: 1px solid rgba(255,255,255,.12); }
 .support-inbox-intro { margin: 0 0 9px; color: #aaa; font-size: 11px; }
@@ -1084,6 +1105,7 @@ body.modal-open { overflow: hidden; }
     .app-shell.home-route-active .route-content { padding: 6px 12px 22px; }
     .app-shell.meals-route-active .route-content { padding: 10px 10px 22px; }
     .app-shell.fridge-route-active .route-content { padding: 9px 10px 22px; }
+    .coach-app-page #coach-ai-panel .coach-form { position: sticky; bottom: 74px; z-index: 4; background: rgba(18,18,18,.97); backdrop-filter: blur(12px); }
     .home-brand-header { min-height: 86px; padding-top: 4px; }
     .home-brand-lockup img { width: min(230px, 61vw); }
     .home-brand-meta > span { font-size: 8px; }
@@ -1341,6 +1363,7 @@ body.modal-open { overflow: hidden; }
 .progress-section-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 @media (max-width: 640px) {
     .app-shell.progress-route-active .app-workspace { background-attachment: scroll; background-position: center top; }
+    .app-shell.coach-route-active .app-workspace { background-attachment: scroll; background-position: center top; }
     .progress-section-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
     .progress-section-nav button { min-height: 58px; flex-direction: column; justify-content: center; gap: 4px; padding: 5px; font-size: 9px; text-align: center; }
     .progress-hero { min-height: 92px; flex-direction: row; align-items: center; }

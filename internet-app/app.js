@@ -3856,6 +3856,12 @@
     function coachMessageElement(message) {
         const item = document.createElement("article");
         item.className = `coach-message ${message.role === "user" ? "user" : "assistant"}`;
+        if (message.role !== "user") {
+            const author = document.createElement("strong");
+            author.className = "coach-message-author";
+            author.textContent = "✦ AI Coach";
+            item.append(author);
+        }
         const text = document.createElement("p");
         text.textContent = message.message_text || message.message || "";
         item.append(text);
@@ -3880,11 +3886,15 @@
         if (!target) return;
         target.replaceChildren();
         const messages = Array.isArray(rows) ? rows : [];
+        const hasConversation = messages.length > 0;
+        const panel = document.getElementById("coach-ai-panel");
+        const prompts = panel?.querySelector(".coach-prompts");
+        const intro = document.getElementById("coach-intro");
+        panel?.classList.toggle("has-conversation", hasConversation);
+        target.hidden = !hasConversation;
+        if (prompts) prompts.hidden = hasConversation;
+        if (intro) intro.hidden = hasConversation;
         if (!messages.length) {
-            const empty = document.createElement("p");
-            empty.className = "empty-history";
-            empty.textContent = "Nie ma jeszcze rozmowy. Możesz zadać pierwsze pytanie Coachowi DEV.";
-            target.append(empty);
             target.scrollTop = 0;
             return;
         }
@@ -4234,6 +4244,13 @@
         coachInput.disabled = true;
         if (coachHistoryButton) coachHistoryButton.disabled = true;
         if (coachResetButton) coachResetButton.disabled = true;
+        const target = document.getElementById("coach-messages");
+        if (target && !target.hidden) {
+            target.append(coachMessageElement({ role: "user", message_text: message }));
+            target.scrollTop = target.scrollHeight;
+        } else {
+            renderCoachMessages([{ role: "user", message_text: message }], { scrollToBottom: true });
+        }
         setText("coach-status", "Coach DEV przygotowuje odpowiedź…");
         try {
             const { data, error } = await client.functions.invoke("coach-message", {
@@ -4262,8 +4279,6 @@
                 await loadCoachHistory({ id: activeUserId }, { scrollToBottom: true });
             } else {
                 const target = document.getElementById("coach-messages");
-                target?.querySelector(".empty-history")?.remove();
-                target?.append(coachMessageElement({ role: "user", message_text: message }));
                 target?.append(coachMessageElement({ role: "assistant", message_text: data.message }));
                 if (target) target.scrollTop = target.scrollHeight;
                 setText("coach-status", "Odpowiedź odebrana, ale historia nie została zapisana.");
@@ -4945,6 +4960,7 @@
         appShell?.classList.toggle("home-route-active", safeRoute === "home");
         appShell?.classList.toggle("meals-route-active", safeRoute === "meals");
         appShell?.classList.toggle("fridge-route-active", safeRoute === "fridge");
+        appShell?.classList.toggle("coach-route-active", safeRoute === "coach");
         appShell?.classList.toggle("progress-route-active", safeRoute === "progress");
         document.querySelectorAll(".route-page").forEach((page) => {
             page.classList.toggle("active", page.dataset.page === safeRoute);

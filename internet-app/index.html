@@ -11,10 +11,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-coach-new-chat-history">
+    <link rel="stylesheet" href="./styles.css?v=20261005-coach-android-parity">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./app.js?v=20261005-coach-new-chat-history" defer></script>
+    <script src="./app.js?v=20261005-coach-android-parity" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -611,7 +611,12 @@
                         <button type="button" data-coach-prompt="Dlaczego waga stoi?"><svg><use href="#icon-weight"></use></svg><span>Dlaczego waga stoi?</span></button>
                         <button type="button" data-coach-prompt="Co po treningu?"><svg><use href="#icon-event"></use></svg><span>Co po treningu?</span></button>
                     </div>
-                    <div class="coach-messages" id="coach-messages" aria-live="polite"><p class="empty-history">Nie ma jeszcze rozmowy. Możesz zadać pierwsze pytanie Coachowi DEV.</p></div>
+                    <div class="coach-intro" id="coach-intro">
+                        <svg aria-hidden="true"><use href="#icon-coach"></use></svg>
+                        <h3>Twój osobisty Coach jest gotowy</h3>
+                        <p>Im więcej zapisujesz posiłków, wagi i Check In, tym lepiej Coach rozumie Twój trend.</p>
+                    </div>
+                    <div class="coach-messages" id="coach-messages" aria-live="polite" hidden></div>
                     <form class="coach-form" id="coach-form">
                         <label class="visually-hidden" for="coach-input">Wiadomość do Coacha</label>
                         <div><textarea id="coach-input" maxlength="2000" rows="1" placeholder="Napisz wiadomość…" required></textarea><button class="ghost-icon-button" type="button" aria-label="Podyktuj wiadomość" disabled><svg><use href="#icon-mic"></use></svg></button><button id="coach-send-button" type="submit" aria-label="Wyślij wiadomość"><svg><use href="#icon-arrow"></use></svg></button></div>
