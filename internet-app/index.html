@@ -10,10 +10,11 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
-    <link rel="stylesheet" href="./styles.css?v=20261005-progress-profile-parity">
+    <link rel="preload" href="./assets/android-home-background.jpg" as="image">
+    <link rel="stylesheet" href="./styles.css?v=20261005-progress-community-parity">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
-    <script src="./config.js?v=20261005-progress-profile-parity" defer></script>
-    <script src="./app.js?v=20261005-progress-profile-parity" defer></script>
+    <script src="./config.js?v=20261005-progress-community-parity" defer></script>
+    <script src="./app.js?v=20261005-progress-community-parity" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -166,10 +167,7 @@
                 <svg><use href="#icon-coach"></use></svg><span>AI Coach</span><small>AI DEV</small>
             </button>
             <button class="nav-item" type="button" data-route="progress">
-                <svg><use href="#icon-progress"></use></svg><span>Postępy</span><small>Odczyt</small>
-            </button>
-            <button class="nav-item" type="button" data-route="community">
-                <svg><use href="#icon-community"></use></svg><span>Społeczność</span><small>Odczyt</small>
+                <svg><use href="#icon-progress"></use></svg><span>Postępy</span>
             </button>
             <button class="nav-item" type="button" data-route="profile">
                 <svg><use href="#icon-profile"></use></svg><span>Profil</span>
@@ -614,6 +612,13 @@
             </section>
 
             <section class="route-page" data-page="progress" aria-labelledby="progress-heading">
+                <nav id="progress-section-nav" class="progress-section-nav" role="tablist" aria-label="Sekcje postępów">
+                    <button type="button" role="tab" aria-selected="true" class="active" data-progress-section-button="hub"><svg><use href="#icon-progress"></use></svg><span>Mój progres</span></button>
+                    <button type="button" role="tab" aria-selected="false" data-progress-section-button="challenges"><svg><use href="#icon-event"></use></svg><span>Wyzwanie 30 dni</span></button>
+                    <button type="button" role="tab" aria-selected="false" data-progress-section-button="community"><svg><use href="#icon-community"></use></svg><span>Społeczność</span></button>
+                    <button type="button" role="tab" aria-selected="false" data-progress-section-button="przemala"><svg><use href="#icon-event"></use></svg><span>Challenge Przemali</span></button>
+                </nav>
+                <div data-progress-section-view="hub">
                 <div class="progress-hero">
                     <div class="progress-title"><span class="progress-title-icon"><svg><use href="#icon-progress"></use></svg></span><span><p class="eyebrow">WYNIKI I NAWYKI</p><h2 id="progress-heading">Progress</h2><p>Wyniki i nawyki w jednym miejscu</p></span></div>
                     <button class="progress-checkin-button" type="button" data-progress-open="check-in"><svg><use href="#icon-check"></use></svg>Check In</button>
@@ -677,21 +682,40 @@
                         <div><span>Węgle</span><b id="progress-macro-carbs">—</b></div>
                     </div>
                 </section>
-                <p class="feature-note">Kroki z Health Connect i natywny Check In synchronizują się przez aplikację Android. Tutaj pokazujemy zapisane dane DEV; woda, kroki i obwody można dodać przez formularze Home.</p>
-            </section>
+                <p class="feature-note">Postęp pokazuje zapisy konta DEV. Kroki z Health Connect i natywny Check In nadal wymagają Androida; ręczne zapisy wykonasz tutaj bez opuszczania Postępów.</p>
+                </div>
 
-            <section class="route-page" data-page="community" aria-labelledby="community-heading">
+                <div class="progress-tab-view" data-progress-section-view="challenges" hidden>
+                    <div class="community-hero challenge-section-hero">
+                        <div><p class="eyebrow">WYZWANIE SYSTEMOWE</p><h2>Wyzwanie 30 dni</h2><p>Dołącz, zapisuj kolejne dni i śledź swój wynik.</p></div>
+                        <div class="community-stats"><span><small>Punkty</small><b id="system-challenge-points">—</b></span><span><small>Miejsce</small><b id="system-challenge-rank">—</b></span></div>
+                    </div>
+                    <div class="challenge-section-tabs" role="tablist" aria-label="Wyzwanie 30 dni">
+                        <button type="button" class="active" role="tab" aria-selected="true" data-challenge-view="system-active">Aktywne</button>
+                        <button type="button" role="tab" aria-selected="false" data-challenge-view="system-ranking">Ranking</button>
+                        <button type="button" role="tab" aria-selected="false" data-challenge-view="system-achievements">Odznaki</button>
+                    </div>
+                    <div data-challenge-panel="system-active"><div class="challenge-list" id="system-challenge-list"><p class="empty-history">Pobieranie…</p></div></div>
+                    <div data-challenge-panel="system-ranking" hidden><div class="leaderboard-list" id="system-leaderboard-list"><p class="empty-history">Pobieranie…</p></div></div>
+                    <div data-challenge-panel="system-achievements" hidden><div class="achievement-list" id="system-achievements-list"><p class="empty-history">Pobieranie…</p></div></div>
+                </div>
+
+                <div class="progress-tab-view" data-progress-section-view="community" hidden>
                 <div class="community-hero">
-                    <div><p class="eyebrow">RAZEM ŁATWIEJ</p><h2 id="community-heading">Społeczność i wyzwania</h2><p id="community-message" role="status" aria-live="polite">Pobieranie danych DEV…</p></div>
+                    <div><p class="eyebrow">RAZEM ŁATWIEJ</p><h2 id="community-heading">Społeczność</h2><p id="community-message" role="status" aria-live="polite">Pobieranie danych DEV…</p></div>
                     <div class="community-stats"><span><small>Punkty</small><b id="community-points">—</b></span><span><small>Pozycja</small><b id="community-rank">—</b></span></div>
                 </div>
+                <form id="community-rules-form" class="community-rules-form" hidden>
+                    <p class="eyebrow">DOŁĄCZ DO SPOŁECZNOŚCI</p><h3>Ustaw publiczny pseudonim</h3>
+                    <p>Ranking i wyzwania używają pseudonimu, nie adresu e-mail. Dbaj o kulturę rozmowy, nie publikuj cudzych danych ani treści niebezpiecznych.</p>
+                    <label for="community-display-name">Pseudonim publiczny</label><input id="community-display-name" name="display-name" type="text" minlength="2" maxlength="30" autocomplete="nickname" required>
+                    <label class="community-rules-check"><input id="community-rules-accepted" type="checkbox" required><span>Akceptuję zasady Społeczności i rozumiem, że mój pseudonim oraz publikowane treści mogą być widoczne dla innych użytkowników.</span></label>
+                    <button type="submit" class="tool-primary-button">Akceptuję i dołączam</button>
+                    <p id="community-rules-status" class="tool-status" role="status" aria-live="polite"></p>
+                </form>
                 <div class="community-layout">
-                    <section class="community-panel" aria-labelledby="challenges-heading">
-                        <div class="history-heading"><div><p class="eyebrow">WYZWANIA</p><h3 id="challenges-heading">Aktywne wyzwania</h3></div><span id="challenges-count">—</span></div>
-                        <div class="challenge-list" id="challenge-list"><p class="empty-history">Pobieranie…</p></div>
-                    </section>
                     <section class="community-panel" aria-labelledby="leaderboard-heading">
-                        <div class="history-heading"><div><p class="eyebrow">RANKING</p><h3 id="leaderboard-heading">Najlepsze wyniki</h3></div><span id="leaderboard-count">—</span></div>
+                        <div class="history-heading"><div><p class="eyebrow">RANKING SPOŁECZNOŚCI</p><h3 id="leaderboard-heading">Najlepsze wyniki</h3></div><span id="leaderboard-count">—</span></div>
                         <div class="leaderboard-list" id="leaderboard-list"><p class="empty-history">Pobieranie…</p></div>
                     </section>
                 </div>
@@ -699,7 +723,37 @@
                     <div class="history-heading"><div><p class="eyebrow">SPOŁECZNOŚĆ</p><h3 id="posts-heading">Najnowsze posty</h3></div><span id="posts-count">—</span></div>
                     <div class="community-posts" id="community-posts"><p class="empty-history">Pobieranie…</p></div>
                 </section>
-                <div class="capability-list"><div><strong>Posty, wyzwania i ranking</strong><span class="available-label">Aktywny odczyt DEV</span></div><div><strong>Publikowanie, komentarze i udział</strong><span>Następny etap po testach konta</span></div><div><strong>Powiadomienia systemowe</strong><span>Tylko Android</span></div></div>
+                <div class="capability-list"><div><strong>Wyzwania i rankingi</strong><span class="available-label">Zapis konta DEV</span></div><div><strong>Powiadomienia systemowe</strong><span>Tylko Android</span></div></div>
+                </div>
+
+                <div class="progress-tab-view" data-progress-section-view="przemala" hidden>
+                    <div class="community-hero challenge-section-hero">
+                        <div><p class="eyebrow">WYZWANIA PRZEMALI</p><h2>Challenge Przemali</h2><p>Sprawdzaj zadania, swój wynik, ranking i zdobyte odznaki.</p></div>
+                        <div class="community-stats"><span><small>Punkty</small><b id="przemala-challenge-points">—</b></span><span><small>Miejsce</small><b id="przemala-challenge-rank">—</b></span></div>
+                    </div>
+                    <div class="challenge-section-tabs" role="tablist" aria-label="Challenge Przemali">
+                        <button type="button" class="active" role="tab" aria-selected="true" data-challenge-view="przemala-active">Aktywne</button>
+                        <button type="button" role="tab" aria-selected="false" data-challenge-view="przemala-ranking">Ranking</button>
+                        <button type="button" role="tab" aria-selected="false" data-challenge-view="przemala-achievements">Odznaki</button>
+                    </div>
+                    <div data-challenge-panel="przemala-active"><div class="challenge-list" id="przemala-challenge-list"><p class="empty-history">Pobieranie…</p></div></div>
+                    <div data-challenge-panel="przemala-ranking" hidden><div class="leaderboard-list" id="przemala-leaderboard-list"><p class="empty-history">Pobieranie…</p></div></div>
+                    <div data-challenge-panel="przemala-achievements" hidden><div class="achievement-list" id="przemala-achievements-list"><p class="empty-history">Pobieranie…</p></div></div>
+                </div>
+
+                <section id="progress-detail-view" class="progress-detail-view" hidden aria-live="polite">
+                    <div class="progress-detail-header"><button id="progress-detail-back" type="button" class="tool-secondary-button">‹ Mój progres</button><div><p class="eyebrow">ZAPISANE DANE DEV</p><h2 id="progress-detail-title">Postęp</h2><p id="progress-detail-summary">—</p></div></div>
+                    <div id="progress-detail-current" class="progress-detail-current"></div>
+                    <div id="progress-detail-chart" class="progress-detail-chart" aria-label="Historia postępu"></div>
+                    <section id="progress-detail-entry-card" class="progress-entry-card" hidden>
+                        <h3 id="progress-entry-heading">Dodaj zapis</h3>
+                        <form id="progress-detail-entry-form" class="tool-form"></form>
+                        <p id="progress-detail-status" class="tool-status" role="status" aria-live="polite"></p>
+                    </section>
+                </section>
+                <div id="progress-health-consent" class="health-consent-panel progress-health-consent" hidden>
+                    <div><p class="eyebrow">ZGODA NA DANE ZDROWOTNE</p><h3>Zanim zapiszesz dane</h3><p>Woda, kroki i obwody ciała wymagają wyraźnej zgody na przetwarzanie danych.</p><label class="consent-check"><input id="progress-health-consent-checkbox" type="checkbox"><span>Wyrażam zgodę zgodnie z <a href="/privacy.html?from=internet-app" target="_blank" rel="noopener">Polityką prywatności</a>.</span></label><p id="progress-health-consent-status" class="tool-status" role="status" aria-live="polite"></p></div><button id="progress-health-consent-button" class="tool-primary-button" type="button" disabled>Zapisz zgodę</button>
+                </div>
             </section>
 
             <section class="route-page" data-page="profile" aria-labelledby="profile-heading">

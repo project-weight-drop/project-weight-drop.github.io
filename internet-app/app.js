@@ -3,7 +3,8 @@
 
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-progress-profile-parity";
+    const COMMUNITY_RULES_VERSION = "2026-09-09";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-progress-community-parity";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -53,6 +54,11 @@
     const healthConsentPanel = document.getElementById("health-consent-panel");
     const healthConsentCheckbox = document.getElementById("health-consent-checkbox");
     const healthConsentButton = document.getElementById("health-consent-button");
+    const progressHealthConsentPanel = document.getElementById("progress-health-consent");
+    const progressHealthConsentCheckbox = document.getElementById("progress-health-consent-checkbox");
+    const progressHealthConsentButton = document.getElementById("progress-health-consent-button");
+    const progressDetailView = document.getElementById("progress-detail-view");
+    const progressDetailEntryForm = document.getElementById("progress-detail-entry-form");
     const healthToolsContent = document.getElementById("health-tools-content");
     const waterForm = document.getElementById("water-form");
     const waterAmountInput = document.getElementById("water-amount");
@@ -94,7 +100,6 @@
         fridge: "Lodówka",
         coach: "AI Coach",
         progress: "Postępy",
-        community: "Społeczność i wyzwania",
         profile: "Profil"
     });
 
@@ -124,6 +129,11 @@
     let profileSetupBusy = false;
     let currentDashboardSnapshot = null;
     let currentWeeklyProgressReport = null;
+    let activeProgressSection = "hub";
+    let activeProgressDestination = null;
+    let currentProgressData = { profile: null, daily: [], weights: [], measurements: [], event: null };
+    let currentCommunitySnapshots = { community: null, system: null, przemala: null };
+    let challengeDaySelection = new Map();
     let currentCoachMemories = [];
     let coachMemorySavingId = null;
     let weightEntryBusy = false;
@@ -436,15 +446,14 @@
         setText("coach-access-badge", "PRO");
         setText("coach-context-calories", "Pozostało — kcal");
         setText("coach-context-macros", "B — g · T — g · W — g");
-        ["community-points", "community-rank", "challenges-count", "leaderboard-count", "posts-count"]
+        ["community-points", "community-rank", "leaderboard-count", "posts-count", "system-challenge-points", "system-challenge-rank", "przemala-challenge-points", "przemala-challenge-rank"]
             .forEach((id) => setText(id, "—"));
         setText("community-message", "Pobieranie danych DEV…");
-        const challengeList = document.getElementById("challenge-list");
-        const leaderboardList = document.getElementById("leaderboard-list");
-        const communityPosts = document.getElementById("community-posts");
-        if (challengeList) challengeList.innerHTML = '<p class="empty-history">Pobieranie…</p>';
-        if (leaderboardList) leaderboardList.innerHTML = '<p class="empty-history">Pobieranie…</p>';
-        if (communityPosts) communityPosts.innerHTML = '<p class="empty-history">Pobieranie…</p>';
+        ["system-challenge-list", "system-leaderboard-list", "system-achievements-list", "przemala-challenge-list", "przemala-leaderboard-list", "przemala-achievements-list", "leaderboard-list", "community-posts"]
+            .forEach((id) => {
+                const list = document.getElementById(id);
+                if (list) list.innerHTML = '<p class="empty-history">Pobieranie…</p>';
+            });
         waterForm?.reset();
         stepsForm?.reset();
         measurementsForm?.reset();
@@ -460,6 +469,8 @@
         if (preferenceFoodList) preferenceFoodList.innerHTML = '<p class="empty-history">Pobieranie katalogu DEV…</p>';
         if (healthConsentCheckbox) healthConsentCheckbox.checked = false;
         if (healthConsentButton) healthConsentButton.disabled = true;
+        if (progressHealthConsentCheckbox) progressHealthConsentCheckbox.checked = false;
+        if (progressHealthConsentButton) progressHealthConsentButton.disabled = true;
         if (healthConsentPanel) healthConsentPanel.hidden = true;
         setHomeTool(null);
         setText("water-tool-summary", "Dzisiejszy zapis");
@@ -763,7 +774,12 @@
         }
         if (!healthConsentGranted) {
             setToolStatus(statusId, "Najpierw zapisz zgodę na przetwarzanie danych zdrowotnych.", "error");
-            healthConsentPanel?.scrollIntoView({ behavior: "smooth", block: "center" });
+            if (statusId.startsWith("progress-")) {
+                if (progressHealthConsentPanel) progressHealthConsentPanel.hidden = false;
+                progressHealthConsentPanel?.scrollIntoView({ behavior: "smooth", block: "center" });
+            } else {
+                healthConsentPanel?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
             return false;
         }
         if (!profileReadyForWrites) {
@@ -786,6 +802,10 @@
         if (message.includes("invalid_allergen_key") || message.includes("invalid_food_preference")) return "Jedna z wybranych preferencji jest nieprawidłowa.";
         if (message.includes("invalid_max_cook_minutes")) return "Wybierz prawidłowy czas przygotowania.";
         if (message.includes("health_data_consent")) return "Najpierw zapisz zgodę na przetwarzanie danych zdrowotnych.";
+        if (message.includes("invalid_community_display_name")) return "Pseudonim musi mieć od 2 do 30 znaków i nie może zawierać nowych linii.";
+        if (message.includes("community_rules_version_required")) return "Zasady Społeczności uległy zmianie. Odśwież stronę i zaakceptuj aktualną wersję.";
+        if (message.includes("community_rules_required")) return "Najpierw zaakceptuj zasady i ustaw pseudonim w zakładce Społeczność.";
+        if (message.includes("profile_required")) return "Najpierw dokończ profil i konfigurację startową.";
         if (message.includes("failed to fetch") || message.includes("network")) return "Brak połączenia z bazą DEV.";
         return fallback;
     }
@@ -854,6 +874,9 @@
     function renderHealthConsent(consent, error = null) {
         healthConsentGranted = Boolean(consent?.explicit_health_data_consent);
         if (healthConsentPanel) healthConsentPanel.hidden = healthConsentGranted;
+        if (progressHealthConsentPanel) progressHealthConsentPanel.hidden = healthConsentGranted;
+        if (progressHealthConsentCheckbox) progressHealthConsentCheckbox.checked = false;
+        if (progressHealthConsentButton) progressHealthConsentButton.disabled = true;
         if (profileSetupConsent) {
             profileSetupConsent.checked = healthConsentGranted || profileSetupConsent.checked;
             profileSetupConsent.disabled = healthConsentGranted || profileSetupBusy;
@@ -1025,30 +1048,34 @@
         return true;
     }
 
-    async function recordHealthConsent() {
-        if (!client || !activeUserId || !healthConsentCheckbox?.checked) return;
-        healthConsentButton.disabled = true;
-        healthConsentButton.textContent = "Zapisywanie…";
-        setToolStatus("health-consent-status", "Zapisywanie zgody w DEV…");
+    async function recordHealthConsent(checkbox = healthConsentCheckbox, button = healthConsentButton, statusId = "health-consent-status") {
+        if (!client || !activeUserId || !checkbox?.checked || !button) return;
+        button.disabled = true;
+        button.textContent = "Zapisywanie…";
+        setToolStatus(statusId, "Zapisywanie zgody w DEV…");
         const { data, error } = await client.rpc("record_explicit_health_data_consent", {
             p_policy_version: CURRENT_PRIVACY_POLICY_VERSION,
             p_app_version: WEB_APP_VERSION,
             p_locale: "pl-PL"
         });
-        healthConsentButton.textContent = "Zapisz zgodę";
+        button.textContent = "Zapisz zgodę";
         if (error || data?.recorded !== true) {
-            healthConsentButton.disabled = false;
-            setToolStatus("health-consent-status", healthWriteError(error, "Nie udało się zapisać zgody DEV."), "error");
+            button.disabled = false;
+            setToolStatus(statusId, healthWriteError(error, "Nie udało się zapisać zgody DEV."), "error");
             return;
         }
         healthConsentGranted = true;
         if (healthConsentPanel) healthConsentPanel.hidden = true;
+        if (progressHealthConsentPanel) progressHealthConsentPanel.hidden = true;
         if (profileSetupConsent) {
             profileSetupConsent.checked = true;
             profileSetupConsent.disabled = true;
         }
         updateHealthToolsAvailability();
-        setToolStatus("water-form-status", "Zgoda została zapisana. Możesz uzupełniać dane.", "success");
+        setToolStatus(statusId, "Zgoda została zapisana. Możesz uzupełniać dane.", "success");
+        if (statusId === "progress-health-consent-status") {
+            setToolStatus("progress-detail-status", "Zgoda zapisana. Możesz teraz zapisać wpis w Postępach.", "success");
+        }
     }
 
     async function saveWater(amount) {
@@ -2014,35 +2041,334 @@
         setText("progress-macro-carbs", `${formatMacro(dashboard?.carbs_consumed)} / ${formatMacro(dashboard?.carbs_target)} g`);
     }
 
-    function openProgressDestination(destination) {
-        const notice = document.getElementById("progress-action-notice");
-        if (notice) { notice.hidden = true; notice.textContent = ""; }
+    function setProgressSection(section) {
+        const allowed = new Set(["hub", "challenges", "community", "przemala"]);
+        activeProgressSection = allowed.has(section) ? section : "hub";
+        activeProgressDestination = null;
+        if (progressDetailView) progressDetailView.hidden = true;
+        const sectionNav = document.getElementById("progress-section-nav");
+        if (sectionNav) sectionNav.hidden = false;
+        if (activeProgressSection === "challenges") challengeTab("system-active");
+        if (activeProgressSection === "przemala") challengeTab("przemala-active");
+        document.querySelectorAll("[data-progress-section-view]").forEach((view) => {
+            view.hidden = view.dataset.progressSectionView !== activeProgressSection;
+        });
+        document.querySelectorAll("[data-progress-section-button]").forEach((button) => {
+            const selected = button.dataset.progressSectionButton === activeProgressSection;
+            button.classList.toggle("active", selected);
+            button.setAttribute("aria-selected", String(selected));
+        });
+    }
+
+    function detailStat(label, value) {
+        const card = document.createElement("article");
+        card.className = "progress-detail-stat";
+        const caption = document.createElement("small");
+        caption.textContent = label;
+        const content = document.createElement("b");
+        content.textContent = value;
+        card.append(caption, content);
+        return card;
+    }
+
+    function detailChartRow(label, value, maxValue, displayValue) {
+        const row = document.createElement("div");
+        row.className = "progress-chart-row";
+        const name = document.createElement("span");
+        name.textContent = label;
+        const track = document.createElement("span");
+        track.className = "progress-chart-track";
+        const fill = document.createElement("i");
+        fill.style.width = `${maxValue > 0 ? Math.min(100, Math.max(0, (value / maxValue) * 100)) : 0}%`;
+        track.append(fill);
+        const amount = document.createElement("b");
+        amount.textContent = displayValue;
+        row.append(name, track, amount);
+        return row;
+    }
+
+    function appendProgressInput(form, labelText, inputName, options = {}) {
+        const label = document.createElement("label");
+        label.textContent = labelText;
+        const input = document.createElement("input");
+        input.name = inputName;
+        input.type = options.type || "number";
+        if (options.min !== undefined) input.min = String(options.min);
+        if (options.max !== undefined) {
+            if (input.type === "text") input.maxLength = Number(options.max);
+            else input.max = String(options.max);
+        }
+        if (options.step !== undefined) input.step = String(options.step);
+        if (options.placeholder) input.placeholder = options.placeholder;
+        if (options.value !== undefined && options.value !== null) input.value = String(options.value);
+        if (options.required) input.required = true;
+        if (options.inputmode) input.inputMode = options.inputmode;
+        label.append(input);
+        form.append(label);
+        return input;
+    }
+
+    function buildProgressEntry(destination) {
+        const form = progressDetailEntryForm;
+        const card = document.getElementById("progress-detail-entry-card");
+        const heading = document.getElementById("progress-entry-heading");
+        if (!form || !card || !heading) return;
+        form.replaceChildren();
+        form.dataset.destination = destination;
+        const profile = currentProgressData.profile;
+        const event = currentProgressData.event;
+        const addSubmit = (label) => {
+            const button = document.createElement("button");
+            button.className = "tool-primary-button wide";
+            button.type = "submit";
+            button.textContent = label;
+            form.append(button);
+        };
+
         if (destination === "weight") {
-            navigateTo("home");
-            openWeightEntry();
+            heading.textContent = "Zapisz pomiar wagi";
+            appendProgressInput(form, "Waga (kg)", "weight_kg", {
+                min: 35, max: 350, step: 0.1, inputmode: "decimal", required: true,
+                value: currentDashboardSnapshot?.current_weight_kg, placeholder: "np. 82,5"
+            });
+            addSubmit("Zapisz wagę");
+        } else if (destination === "water") {
+            heading.textContent = "Dodaj wodę";
+            appendProgressInput(form, "Ilość wody (ml)", "amount_ml", { min: 50, max: 2000, step: 50, inputmode: "numeric", required: true, placeholder: "np. 300" });
+            addSubmit("Zapisz wodę");
+        } else if (destination === "steps") {
+            heading.textContent = "Zapisz dzisiejsze kroki";
+            appendProgressInput(form, "Liczba kroków", "steps", { min: 0, max: 200000, step: 1, inputmode: "numeric", required: true, placeholder: "np. 7500" });
+            const help = document.createElement("p");
+            help.className = "tool-help";
+            help.textContent = "Ten wpis zapisze ręczną liczbę kroków na dzisiejszy dzień. Kroki z Health Connect są dostępne w Androidzie.";
+            form.append(help);
+            addSubmit("Zapisz kroki");
+        } else if (destination === "measurements") {
+            heading.textContent = "Zapisz obwody ciała";
+            [["Talia (cm)", "waist_cm"], ["Biodra (cm)", "hips_cm"], ["Klatka (cm)", "chest_cm"], ["Ramię (cm)", "arm_cm"], ["Udo (cm)", "thigh_cm"]]
+                .forEach(([label, name]) => appendProgressInput(form, label, name, { min: 10, max: 300, step: 0.1, inputmode: "decimal", placeholder: "—" }));
+            addSubmit("Zapisz obwody");
+        } else if (destination === "event") {
+            heading.textContent = event ? "Zmień cel z datą" : "Dodaj cel z datą";
+            appendProgressInput(form, "Nazwa wydarzenia", "event_name", { type: "text", max: 80, value: event?.event_name || "", required: true, placeholder: "np. Wakacje" });
+            appendProgressInput(form, "Data wydarzenia", "event_date", { type: "date", value: event?.event_date || "", required: true });
+            const goalNote = document.createElement("p");
+            goalNote.className = "tool-help";
+            goalNote.textContent = `Obliczenie korzysta z zapisanego celu profilu: ${formatWeight(profile?.current_weight_kg)} kg → ${formatWeight(profile?.goal_weight_kg)} kg. Nie zmienia kalorii ani makro.`;
+            form.append(goalNote);
+            addSubmit("Zapisz cel i oblicz");
+            if (event) {
+                const remove = document.createElement("button");
+                remove.className = "tool-secondary-button wide";
+                remove.type = "button";
+                remove.dataset.progressEventDelete = "true";
+                remove.textContent = "Usuń cel z datą";
+                form.append(remove);
+            }
+        } else {
+            card.hidden = true;
             return;
         }
-        if (["water", "steps", "measurements", "event"].includes(destination)) {
-            navigateTo("home");
-            setHomeTool(destination);
-            window.setTimeout(() => document.getElementById(`home-${destination}-panel`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 40);
+        card.hidden = false;
+    }
+
+    function renderProgressDestination(destination) {
+        if (!progressDetailView) return;
+        const viewTitles = {
+            weight: "Waga", water: "Nawodnienie", steps: "Kroki", measurements: "Obwody ciała",
+            macros: "Kalorie i makro", report: "Raport tygodniowy", event: "Cel z datą",
+            "check-in": "Check In", "weekly-update": "Aktualizacja tygodnia"
+        };
+        activeProgressDestination = destination;
+        document.querySelectorAll("[data-progress-section-view]").forEach((view) => { view.hidden = true; });
+        document.getElementById("progress-section-nav").hidden = true;
+        progressDetailView.hidden = false;
+        setText("progress-detail-title", viewTitles[destination] || "Postęp");
+        const current = document.getElementById("progress-detail-current");
+        const chart = document.getElementById("progress-detail-chart");
+        if (!current || !chart) return;
+        current.replaceChildren();
+        chart.replaceChildren();
+        const { profile, daily, weights, measurements, event } = currentProgressData;
+        const today = (Array.isArray(daily) ? daily : []).find((entry) => entry.summary_date === localToday()) || null;
+        const recentDays = (Array.isArray(daily) ? daily : []).slice(0, 7).reverse();
+        let summary = "Odczyt zapisanych danych konta DEV.";
+
+        if (destination === "weight") {
+            const value = finiteNumber(currentDashboardSnapshot?.current_weight_kg);
+            const change = finiteNumber(currentDashboardSnapshot?.weight_change_kg);
+            current.append(detailStat("Aktualna waga", value === null ? "Brak pomiaru" : `${formatWeight(value)} kg`));
+            current.append(detailStat("Cel", finiteNumber(profile?.goal_weight_kg) === null ? "—" : `${formatWeight(profile.goal_weight_kg)} kg`));
+            current.append(detailStat("Zmiana", change === null ? "—" : `${change > 0 ? "+" : ""}${formatWeight(change)} kg`));
+            const rows = (Array.isArray(weights) ? weights : []).slice(0, 10).reverse();
+            const max = Math.max(1, ...rows.map((row) => finiteNumber(row.weight_kg) || 0));
+            rows.forEach((row) => chart.append(detailChartRow(formatDate(row.measured_at, true), finiteNumber(row.weight_kg) || 0, max, `${formatWeight(row.weight_kg)} kg`)));
+            if (!rows.length) chart.textContent = "Historia pomiarów pokaże się tutaj po pierwszym zapisie.";
+            summary = `${rows.length} ostatnich pomiarów z historii konta.`;
+        } else if (destination === "water") {
+            const total = finiteNumber(currentDashboardSnapshot?.water_ml) ?? 0;
+            current.append(detailStat("Dzisiaj", `${formatNumber(total)} ml`));
+            current.append(detailStat("Cel dzienny", `${formatNumber(currentDashboardSnapshot?.water_target_ml)} ml`));
+            const max = Math.max(1, ...recentDays.map((row) => finiteNumber(row.water_ml) || 0));
+            recentDays.forEach((row) => chart.append(detailChartRow(formatDate(row.summary_date), finiteNumber(row.water_ml) || 0, max, `${formatNumber(row.water_ml)} ml`)));
+            if (!recentDays.length) chart.textContent = "Historia nawodnienia pokaże się po zapisaniu danych.";
+            summary = "Rzeczywiste dzienne zapisy nawodnienia z ostatnich dni.";
+        } else if (destination === "steps") {
+            const todaySteps = finiteNumber(today?.steps) ?? finiteNumber(currentDashboardSnapshot?.steps);
+            current.append(detailStat("Dzisiaj", todaySteps === null ? "Brak dzisiejszego zapisu" : `${formatNumber(todaySteps)} kroków`));
+            current.append(detailStat("Średnia tygodniowa", formatNumber(currentWeeklyProgressReport?.average_steps)));
+            current.append(detailStat("Dni z zapisem", `${formatNumber(currentWeeklyProgressReport?.steps_days)} / 7`));
+            const max = Math.max(1, ...recentDays.map((row) => finiteNumber(row.steps) || 0));
+            recentDays.forEach((row) => chart.append(detailChartRow(formatDate(row.summary_date), finiteNumber(row.steps) || 0, max, `${formatNumber(row.steps)} kroków`)));
+            if (!recentDays.length) chart.textContent = "Historia kroków pokaże się po zapisaniu danych.";
+            summary = "Rzeczywiste zapisy kroków z konta. Nowy wpis zastępuje dzisiejszą wartość.";
+        } else if (destination === "measurements") {
+            const latest = measurements?.[0] || null;
+            const fields = [["Talia", "waist_cm"], ["Biodra", "hips_cm"], ["Klatka", "chest_cm"], ["Ramię", "arm_cm"], ["Udo", "thigh_cm"]];
+            fields.forEach(([label, key]) => { if (finiteNumber(latest?.[key]) !== null) current.append(detailStat(label, `${formatWeight(latest[key])} cm`)); });
+            if (!current.childElementCount) current.append(detailStat("Obwody", "Brak pomiaru"));
+            (Array.isArray(measurements) ? measurements : []).slice(0, 10).forEach((row) => {
+                const values = fields.filter(([, key]) => finiteNumber(row[key]) !== null).map(([label, key]) => `${label.toLowerCase()} ${formatWeight(row[key])} cm`);
+                chart.append(detailChartRow(formatDate(row.measurement_date), values.length, 5, values.join(" · ") || "—"));
+            });
+            if (!measurements?.length) chart.textContent = "Historia obwodów pokaże się po pierwszym zapisie.";
+            summary = `${formatNumber(measurements?.length)} pomiarów zapisanych na koncie DEV.`;
+        } else if (destination === "event") {
+            if (!event) {
+                current.append(detailStat("Cel z datą", "Nie ustawiono"));
+                summary = "Dodaj wydarzenie, żeby obliczyć orientacyjny zakres postępu.";
+            } else {
+                const projection = eventProjectionResult(event.event_date, finiteNumber(profile?.current_weight_kg), finiteNumber(profile?.goal_weight_kg));
+                current.append(detailStat("Wydarzenie", event.event_name || "Cel z datą"));
+                current.append(detailStat("Termin", formatDate(event.event_date)));
+                if (projection) {
+                    current.append(detailStat("Pozostało", `${projection.days} dni`));
+                    current.append(detailStat("Orientacyjna zmiana", `${formatWeight(projection.minimumLossKg)}–${formatWeight(projection.maximumLossKg)} kg`));
+                }
+                summary = "Cel i termin zapisane na koncie DEV; prognoza nie zmienia planu żywieniowego.";
+            }
+            if (event) chart.textContent = "Postęp wagi i terminu bazuje na Twoich rzeczywistych zapisach. Aktualny pomiar znajdziesz w sekcji Waga.";
+        } else if (destination === "macros") {
+            const dashboard = currentDashboardSnapshot || {};
+            [["Kalorie", dashboard.calories_consumed, dashboard.calories_target, "kcal"], ["Białko", dashboard.protein_consumed, dashboard.protein_target, "g"], ["Tłuszcz", dashboard.fat_consumed, dashboard.fat_target, "g"], ["Węglowodany", dashboard.carbs_consumed, dashboard.carbs_target, "g"]].forEach(([label, actual, target, unit]) => {
+                const amount = finiteNumber(actual) ?? 0;
+                const goal = finiteNumber(target) ?? 0;
+                current.append(detailStat(`${label} · dzisiaj`, `${formatNumber(amount)} / ${formatNumber(goal)} ${unit}`));
+                chart.append(detailChartRow(label, amount, goal || 1, `${formatNumber(amount)} / ${formatNumber(goal)} ${unit}`));
+            });
+            summary = "Bieżące spożycie z dziennika i cele zapisane w aktywnym planie DEV.";
+        } else if (destination === "report") {
+            const report = currentWeeklyProgressReport || {};
+            current.append(detailStat("Dni z danymi", `${formatNumber(report.data_days)} / 7`));
+            current.append(detailStat("Średnie kroki", formatNumber(report.average_steps)));
+            current.append(detailStat("Średnia woda", report.average_water_ml == null ? "—" : `${formatNumber(report.average_water_ml)} ml`));
+            current.append(detailStat("Zmiana wagi", report.weight_change_kg == null ? "—" : `${formatWeight(report.weight_change_kg)} kg`));
+            chart.textContent = `${formatNumber(report.meals_logged)} posiłków · ${formatNumber(report.average_calories)} kcal średnio dziennie · ${formatNumber(report.average_wellbeing_score)} / 5 samopoczucie`;
+            summary = report.period_start && report.period_end ? `${formatDate(report.period_start)} – ${formatDate(report.period_end)} · podsumowanie z backendu DEV.` : "Podsumowanie z ostatnich 7 dni z backendu DEV.";
+        } else {
+            current.append(detailStat(destination === "check-in" ? "Check In" : "Aktualizacja tygodnia", "Dostępne w Androidzie"));
+            chart.textContent = destination === "check-in"
+                ? "Natywny Check In Androida używa dodatkowych danych urządzenia. Zapisy wagi, kroków, wody i obwodów są dostępne w tej aplikacji webowej."
+                : "Ten przepływ aktualizuje plan w Androidzie. Strona pokazuje Twoje zapisane postępy, ale nie zmienia wyliczeń.";
+            summary = "Funkcja natywna Androida; pozostałe dane postępu są dostępne online.";
+        }
+        setText("progress-detail-summary", summary);
+        buildProgressEntry(destination);
+    }
+
+    function openProgressDestination(destination) {
+        if (destination === "weekly-update" || destination === "check-in" || ["weight", "water", "steps", "measurements", "event", "macros", "report"].includes(destination)) {
+            document.getElementById("progress-section-nav").hidden = true;
+            renderProgressDestination(destination);
+        }
+    }
+
+    async function saveProgressEntry(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const destination = form.dataset.destination;
+        const values = new FormData(form);
+        const button = form.querySelector('[type="submit"]');
+        if (!requireHealthWrite("progress-detail-status")) return;
+        if (button) { button.disabled = true; button.textContent = "Zapisywanie…"; }
+        setToolStatus("progress-detail-status", "Zapisywanie w DEV…");
+
+        let result = { error: null };
+        if (destination === "weight") {
+            const weight = Number(String(values.get("weight_kg") || "").replace(",", "."));
+            if (!Number.isFinite(weight) || weight < 35 || weight > 350) {
+                result.error = { message: "Wpisz wagę od 35 do 350 kg." };
+            } else {
+                result = await client.rpc("log_weight", { p_weight_kg: weight, p_measured_at: new Date().toISOString() });
+            }
+        } else if (destination === "water") {
+            const amount = Number(values.get("amount_ml"));
+            if (!Number.isInteger(amount) || amount < 50 || amount > 2000) result.error = { message: "Wpisz od 50 do 2000 ml." };
+            else result = await client.rpc("log_water", { p_amount_ml: amount });
+        } else if (destination === "steps") {
+            const steps = Number(values.get("steps"));
+            if (!Number.isInteger(steps) || steps < 0 || steps > 200000) result.error = { message: "Wpisz liczbę kroków od 0 do 200 000." };
+            else result = await client.rpc("log_steps", { p_steps: steps });
+        } else if (destination === "measurements") {
+            const body = {};
+            [["waist_cm", "p_waist_cm"], ["hips_cm", "p_hips_cm"], ["chest_cm", "p_chest_cm"], ["arm_cm", "p_arm_cm"], ["thigh_cm", "p_thigh_cm"]].forEach(([name, key]) => {
+                const raw = String(values.get(name) || "").trim();
+                if (!raw) body[key] = null;
+                else body[key] = Number(raw.replace(",", "."));
+            });
+            const entries = Object.values(body).filter((value) => value !== null);
+            if (!entries.length) result.error = { message: "Wpisz przynajmniej jeden obwód." };
+            else if (entries.some((value) => !Number.isFinite(value) || value < 10 || value > 300)) result.error = { message: "Każdy obwód musi mieścić się w zakresie 10–300 cm." };
+            else result = await client.rpc("save_body_measurements", body);
+        } else if (destination === "event") {
+            const name = String(values.get("event_name") || "").trim();
+            const date = String(values.get("event_date") || "");
+            const profile = currentProgressData.profile;
+            const projection = eventProjectionResult(date, finiteNumber(profile?.current_weight_kg), finiteNumber(profile?.goal_weight_kg));
+            if (!name || name.length > 80 || !date) result.error = { message: "Podaj nazwę wydarzenia i prawidłową datę." };
+            else if (date <= localToday()) result.error = { message: "Data wydarzenia musi być późniejsza niż dzisiaj." };
+            else if (!projection) result.error = { message: "Uzupełnij prawidłową aktualną i docelową wagę w profilu." };
+            else result = await client.rpc("save_event_goal", { p_event_name: name, p_event_date: date });
+        } else {
+            result.error = { message: "Ten ekran nie przyjmuje nowych zapisów." };
+        }
+
+        if (button) { button.disabled = false; button.textContent = destination === "weight" ? "Zapisz wagę" : destination === "water" ? "Zapisz wodę" : destination === "steps" ? "Zapisz kroki" : destination === "measurements" ? "Zapisz obwody" : "Zapisz cel i oblicz"; }
+        if (result.error) {
+            const message = ["Wpisz wagę od 35 do 350 kg.", "Wpisz od 50 do 2000 ml.", "Wpisz liczbę kroków od 0 do 200 000.", "Wpisz przynajmniej jeden obwód.", "Każdy obwód musi mieścić się w zakresie 10–300 cm.", "Podaj nazwę wydarzenia i prawidłową datę.", "Data wydarzenia musi być późniejsza niż dzisiaj.", "Uzupełnij prawidłową aktualną i docelową wagę w profilu."].includes(result.error.message)
+                ? result.error.message
+                : healthWriteError(result.error, "Nie udało się zapisać danych w DEV.");
+            setToolStatus("progress-detail-status", message, "error");
             return;
         }
-        if (destination === "macros") {
-            document.getElementById("progress-macros-panel")?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+        const savedMessage = destination === "weight" ? "Pomiar wagi zapisany na Twoim koncie DEV."
+            : destination === "water" ? "Woda dopisana do dzisiejszego zapisu DEV."
+                : destination === "steps" ? "Dzisiejsza liczba kroków zapisana w DEV."
+                    : destination === "measurements" ? "Obwody ciała zapisane w DEV."
+                        : "Cel z datą zapisany i obliczony.";
+        await refreshAccountData();
+        setToolStatus("progress-detail-status", savedMessage, "success");
+    }
+
+    async function deleteProgressEvent() {
+        if (!requireHealthWrite("progress-detail-status")) return;
+        const remove = progressDetailEntryForm?.querySelector("[data-progress-event-delete]");
+        if (remove) { remove.disabled = true; remove.textContent = "Usuwanie…"; }
+        const { error } = await client.rpc("delete_event_goal");
+        if (error) {
+            if (remove) { remove.disabled = false; remove.textContent = "Usuń cel z datą"; }
+            setToolStatus("progress-detail-status", healthWriteError(error, "Nie udało się usunąć celu."), "error");
             return;
         }
-        if (destination === "report") {
-            document.getElementById("progress-report-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
-            return;
-        }
-        if (notice) {
-            notice.textContent = destination === "weekly-update"
-                ? "Aktualizacja tygodnia jest dostępna w aplikacji Android. Dane i obliczenia pozostają bez zmian."
-                : "Natywny Check In z aplikacji Android nie jest jeszcze dostępny w przeglądarce.";
-            notice.hidden = false;
-            notice.scrollIntoView({ behavior: "smooth", block: "center" });
-        }
+        await refreshAccountData();
+        setToolStatus("progress-detail-status", "Cel z datą został usunięty z DEV.", "success");
+    }
+
+    async function loadCommunityDataForActiveUser() {
+        const { data, error } = await client?.auth.getUser() || {};
+        if (!error && data?.user && data.user.id === activeUserId) await loadCommunityData(data.user);
     }
 
     function setMealsView(view) {
@@ -3141,27 +3467,29 @@
         return origin === "przemala" ? "Przemala" : "System";
     }
 
-    function renderChallenges(systemSnapshot, przemalaSnapshot) {
-        const target = document.getElementById("challenge-list");
+    function challengeTab(selected) {
+        document.querySelectorAll("[data-challenge-view]").forEach((button) => {
+            const active = button.dataset.challengeView === selected;
+            button.classList.toggle("active", active);
+            button.setAttribute("aria-selected", String(active));
+        });
+        document.querySelectorAll("[data-challenge-panel]").forEach((panel) => {
+            panel.hidden = panel.dataset.challengePanel !== selected;
+        });
+    }
+
+    function renderChallengeList(targetId, snapshot, origin) {
+        const target = document.getElementById(targetId);
         if (!target) return;
         target.replaceChildren();
-        const combined = [
-            ...(Array.isArray(systemSnapshot?.active_challenges) ? systemSnapshot.active_challenges : []),
-            ...(Array.isArray(przemalaSnapshot?.active_challenges) ? przemalaSnapshot.active_challenges : [])
-        ];
-        const challenges = [...new Map(combined.map((challenge) => [
-            `${challenge.origin || "system"}:${challenge.id || challenge.slug || challenge.title_pl}`,
-            challenge
-        ])).values()];
-        setText("challenges-count", String(challenges.length));
+        const challenges = Array.isArray(snapshot?.active_challenges) ? snapshot.active_challenges : [];
         if (!challenges.length) {
             const empty = document.createElement("p");
             empty.className = "empty-history";
-            empty.textContent = "Brak aktywnych wyzwań w DEV.";
+            empty.textContent = origin === "przemala" ? "Wkrótce pojawi się nowy Challenge od Przemali." : "Wyzwanie 30 dni jest teraz niedostępne.";
             target.append(empty);
             return;
         }
-
         challenges.forEach((challenge) => {
             const card = document.createElement("article");
             card.className = "challenge-card";
@@ -3174,62 +3502,109 @@
             description.textContent = challenge.description_pl || "Aktywne wyzwanie Project Weight Drop.";
             copy.append(title, description);
             const points = document.createElement("span");
-            points.textContent = `+${formatNumber(challenge.points)} pkt`;
+            points.textContent = `${formatNumber(challenge.earned_points)} / ${formatNumber(challenge.points)} pkt`;
             heading.append(copy, points);
+            card.append(heading);
+
+            if (challenge.reward_label_pl) {
+                const reward = document.createElement("small");
+                reward.className = "challenge-reward-label";
+                reward.textContent = `Nagroda: ${challenge.reward_label_pl}`;
+                card.append(reward);
+            }
 
             const progressValue = finiteNumber(challenge.progress) ?? 0;
             const progressTarget = finiteNumber(challenge.target) ?? 0;
-            const progressPercent = progressTarget > 0
-                ? Math.max(0, Math.min(100, (progressValue / progressTarget) * 100))
-                : 0;
+            const progressPercent = progressTarget > 0 ? Math.min(100, Math.max(0, (progressValue / progressTarget) * 100)) : 0;
             const progress = document.createElement("div");
             progress.className = "challenge-progress";
             progress.setAttribute("role", "progressbar");
             progress.setAttribute("aria-valuemin", "0");
-            progress.setAttribute("aria-valuemax", "100");
-            progress.setAttribute("aria-valuenow", String(Math.round(progressPercent)));
-            const progressFill = document.createElement("i");
-            progressFill.style.width = `${progressPercent}%`;
-            progress.append(progressFill);
-
+            progress.setAttribute("aria-valuemax", String(progressTarget || 1));
+            progress.setAttribute("aria-valuenow", String(Math.min(progressTarget || 1, progressValue)));
+            const fill = document.createElement("i");
+            fill.style.width = `${progressPercent}%`;
+            progress.append(fill);
             const meta = document.createElement("small");
-            const participation = challenge.joined
-                ? `${formatNumber(progressValue)} / ${formatNumber(progressTarget)} dni`
-                : "Nie dołączono";
-            const dateRange = challenge.starts_at && challenge.ends_at
-                ? ` · ${formatDate(challenge.starts_at)}–${formatDate(challenge.ends_at)}`
-                : "";
-            meta.textContent = `${challengeOriginLabel(challenge.origin)} · ${participation}${dateRange}`;
-            card.append(heading, progress, meta);
+            const dateRange = challenge.starts_at && challenge.ends_at ? ` · ${formatDate(challenge.starts_at)}–${formatDate(challenge.ends_at)}` : "";
+            meta.textContent = challenge.joined
+                ? `Zaliczone dni: ${formatNumber(progressValue)} / ${formatNumber(progressTarget)} · Dzień ${formatNumber(challenge.current_day)} / ${formatNumber(progressTarget)}${dateRange}`
+                : `Jeszcze nie dołączono${dateRange}`;
+            card.append(progress, meta);
+
+            if (!challenge.joined) {
+                const join = document.createElement("button");
+                join.type = "button";
+                join.className = "tool-primary-button wide challenge-join-button";
+                join.dataset.challengeJoin = challenge.id;
+                join.disabled = !snapshot?.profile_ready;
+                join.textContent = snapshot?.profile_ready ? "Dołącz do wyzwania" : "Najpierw zaakceptuj zasady Społeczności";
+                card.append(join);
+            } else if (Array.isArray(challenge.days) && challenge.days.length) {
+                const selectedNumber = challengeDaySelection.get(challenge.id) || challenge.current_day || 1;
+                const selectedDay = challenge.days.find((day) => Number(day.day_number) === Number(selectedNumber)) || challenge.days[0];
+                if (selectedDay) {
+                    const strip = document.createElement("div");
+                    strip.className = "challenge-day-strip";
+                    challenge.days.forEach((day) => {
+                        const dayButton = document.createElement("button");
+                        dayButton.type = "button";
+                        dayButton.dataset.challengeDaySelect = challenge.id;
+                        dayButton.dataset.dayNumber = String(day.day_number);
+                        dayButton.textContent = String(day.day_number);
+                        dayButton.classList.toggle("active", Number(day.day_number) === Number(selectedDay.day_number));
+                        dayButton.classList.toggle("completed", day.status === "completed");
+                        dayButton.disabled = day.status === "locked";
+                        strip.append(dayButton);
+                    });
+                    card.append(strip);
+                    const dayPanel = document.createElement("div");
+                    dayPanel.className = "challenge-day-detail";
+                    const dayTitle = document.createElement("h5");
+                    dayTitle.textContent = `Dzień ${formatNumber(selectedDay.day_number)} · ${selectedDay.title_pl || "Zadanie"}`;
+                    const dayDescription = document.createElement("p");
+                    dayDescription.textContent = selectedDay.description_pl || "";
+                    dayPanel.append(dayTitle, dayDescription);
+                    if (selectedDay.alternative_pl) {
+                        const alternative = document.createElement("small");
+                        alternative.textContent = `Alternatywa: ${selectedDay.alternative_pl}`;
+                        dayPanel.append(alternative);
+                    }
+                    if (selectedDay.safety_pl) {
+                        const safety = document.createElement("small");
+                        safety.textContent = `Bezpieczeństwo: ${selectedDay.safety_pl}`;
+                        dayPanel.append(safety);
+                    }
+                    const complete = document.createElement("button");
+                    complete.type = "button";
+                    complete.dataset.challengeComplete = challenge.id;
+                    complete.dataset.dayId = selectedDay.id;
+                    complete.disabled = selectedDay.status !== "available";
+                    complete.textContent = selectedDay.status === "completed" ? "Dzień zapisany" : selectedDay.status === "available" ? "Zapisz wykonanie dnia" : selectedDay.status === "missed" ? "Termin tego dnia minął" : "Ten dzień nie jest jeszcze dostępny";
+                    dayPanel.append(complete);
+                    card.append(dayPanel);
+                }
+            }
             target.append(card);
         });
     }
 
-    function renderLeaderboard(systemSnapshot, przemalaSnapshot) {
-        const target = document.getElementById("leaderboard-list");
+    function renderLeaderboard(targetId, rows, emptyMessage = "Ranking DEV jest jeszcze pusty.") {
+        const target = document.getElementById(targetId);
         if (!target) return;
         target.replaceChildren();
-        const systemRows = (Array.isArray(systemSnapshot?.leaderboard) ? systemSnapshot.leaderboard : [])
-            .map((entry) => ({ ...entry, origin: "system" }));
-        const przemalaRows = (Array.isArray(przemalaSnapshot?.leaderboard) ? przemalaSnapshot.leaderboard : [])
-            .map((entry) => ({ ...entry, origin: "przemala" }));
-        const rows = [...systemRows.slice(0, 10), ...przemalaRows.slice(0, 10)];
-        setText("leaderboard-count", String(rows.length));
         if (!rows.length) {
             const empty = document.createElement("p");
             empty.className = "empty-history";
-            empty.textContent = "Ranking DEV jest jeszcze pusty.";
+            empty.textContent = emptyMessage;
             target.append(empty);
             return;
         }
-
-        rows.forEach((entry) => {
+        rows.slice(0, 20).forEach((entry) => {
             const row = document.createElement("article");
             row.className = `leaderboard-row${entry.is_current_user ? " current" : ""}`;
             const rank = document.createElement("b");
-            const originPrefix = entry.origin === "przemala" ? "P" : "S";
-            rank.textContent = `${originPrefix}#${formatNumber(entry.rank)}`;
-            rank.title = entry.origin === "przemala" ? "Ranking Przemala" : "Ranking systemowy";
+            rank.textContent = `#${formatNumber(entry.rank)}`;
             const name = document.createElement("strong");
             name.textContent = entry.display_name || "Użytkownik";
             const points = document.createElement("span");
@@ -3239,22 +3614,47 @@
         });
     }
 
-    function renderCommunityPosts(snapshot) {
+    function renderAchievements(targetId, achievements) {
+        const target = document.getElementById(targetId);
+        if (!target) return;
+        target.replaceChildren();
+        const items = Array.isArray(achievements) ? achievements : [];
+        if (!items.length) {
+            const empty = document.createElement("p");
+            empty.className = "empty-history";
+            empty.textContent = "Odznaki pojawią się po udziale w wyzwaniach.";
+            target.append(empty);
+            return;
+        }
+        items.forEach((achievement) => {
+            const row = document.createElement("article");
+            row.className = `achievement-row${achievement.unlocked ? "" : " locked"}`;
+            const icon = document.createElement("span");
+            icon.textContent = achievement.unlocked ? "✦" : "○";
+            const copy = document.createElement("div");
+            const title = document.createElement("b");
+            title.textContent = achievement.title_pl || "Odznaka";
+            const points = document.createElement("small");
+            points.textContent = `${formatNumber(achievement.points)} pkt${achievement.unlocked ? " · zdobyta" : " · zablokowana"}`;
+            copy.append(title, points);
+            row.append(icon, copy);
+            target.append(row);
+        });
+    }
+
+    function renderCommunityPosts(snapshot, profileReady) {
         const target = document.getElementById("community-posts");
         if (!target) return;
         target.replaceChildren();
         const posts = Array.isArray(snapshot?.posts) ? snapshot.posts : [];
-        setText("posts-count", String(posts.length));
+        setText("posts-count", formatNumber(posts.length));
         if (!posts.length) {
             const empty = document.createElement("p");
             empty.className = "empty-history";
-            empty.textContent = snapshot?.profile
-                ? "Nie ma jeszcze postów widocznych dla tego konta DEV."
-                : "Najpierw zaakceptuj zasady społeczności w aplikacji Android DEV.";
+            empty.textContent = profileReady ? "Nie ma jeszcze postów widocznych dla tego konta DEV." : "Zaakceptuj zasady i wybierz pseudonim, aby dołączyć do Społeczności.";
             target.append(empty);
             return;
         }
-
         posts.forEach((post) => {
             const item = document.createElement("article");
             item.className = "community-post";
@@ -3268,15 +3668,42 @@
             heading.append(author, date);
             const caption = document.createElement("p");
             caption.textContent = post.caption || "Post bez opisu.";
-            const comments = Array.isArray(post.comments) ? post.comments.length : 0;
+            const comments = Array.isArray(post.comments) ? post.comments : [];
             const meta = document.createElement("small");
-            meta.textContent = `${comments} ${comments === 1 ? "komentarz" : "komentarzy"}${post.image_path ? " · zawiera zdjęcie" : ""}`;
+            meta.textContent = `${formatNumber(comments.length)} ${comments.length === 1 ? "komentarz" : "komentarzy"}${post.image_path ? " · zawiera zdjęcie" : ""}`;
             item.append(heading, caption, meta);
+            comments.forEach((comment) => {
+                const commentRow = document.createElement("div");
+                commentRow.className = "community-comment";
+                const commentAuthor = document.createElement("b");
+                commentAuthor.textContent = comment.author_name || "Użytkownik";
+                const body = document.createElement("span");
+                body.textContent = comment.body || "";
+                commentRow.append(commentAuthor, body);
+                item.append(commentRow);
+            });
+            if (profileReady) {
+                const form = document.createElement("form");
+                form.className = "community-comment-form";
+                form.dataset.communityCommentForm = post.id;
+                const input = document.createElement("input");
+                input.name = "body";
+                input.type = "text";
+                input.maxLength = 500;
+                input.placeholder = "Dodaj komentarz…";
+                input.required = true;
+                const button = document.createElement("button");
+                button.type = "submit";
+                button.textContent = "Wyślij";
+                form.append(input, button);
+                item.append(form);
+            }
             target.append(item);
         });
     }
 
     function renderCommunity(communitySnapshot, systemSnapshot, przemalaSnapshot, hasError) {
+        currentCommunitySnapshots = { community: communitySnapshot, system: systemSnapshot, przemala: przemalaSnapshot };
         const systemPoints = finiteNumber(systemSnapshot?.total_points) ?? 0;
         const przemalaPoints = finiteNumber(przemalaSnapshot?.total_points) ?? 0;
         setText("community-points", formatNumber(systemPoints + przemalaPoints));
@@ -3284,22 +3711,35 @@
         if (finiteNumber(systemSnapshot?.my_rank) !== null) ranks.push(`S#${formatNumber(systemSnapshot.my_rank)}`);
         if (finiteNumber(przemalaSnapshot?.my_rank) !== null) ranks.push(`P#${formatNumber(przemalaSnapshot.my_rank)}`);
         setText("community-rank", ranks.join(" / ") || "—");
-        renderChallenges(systemSnapshot, przemalaSnapshot);
-        renderLeaderboard(systemSnapshot, przemalaSnapshot);
-        renderCommunityPosts(communitySnapshot);
+        setText("system-challenge-points", formatNumber(systemPoints));
+        setText("system-challenge-rank", finiteNumber(systemSnapshot?.my_rank) === null ? "—" : `#${formatNumber(systemSnapshot.my_rank)}`);
+        setText("przemala-challenge-points", formatNumber(przemalaPoints));
+        setText("przemala-challenge-rank", finiteNumber(przemalaSnapshot?.my_rank) === null ? "—" : `#${formatNumber(przemalaSnapshot.my_rank)}`);
 
-        const profileReady = Boolean(communitySnapshot?.profile) ||
-            Boolean(systemSnapshot?.profile_ready) || Boolean(przemalaSnapshot?.profile_ready);
-        if (hasError) {
-            setText("community-message", "Część danych społeczności DEV jest chwilowo niedostępna.");
-        } else if (!profileReady) {
-            setText("community-message", "Aby korzystać ze społeczności, zaakceptuj jej zasady w aplikacji Android DEV.");
-        } else {
-            setText("community-message", "Prawdziwe dane konta DEV. Publikowanie i udział pozostają na razie w aplikacji Android DEV.");
-        }
+        renderChallengeList("system-challenge-list", systemSnapshot, "system");
+        renderChallengeList("przemala-challenge-list", przemalaSnapshot, "przemala");
+        renderLeaderboard("leaderboard-list", [...(systemSnapshot?.leaderboard || []), ...(przemalaSnapshot?.leaderboard || []).map((entry) => ({ ...entry, rank: entry.rank, display_name: `${entry.display_name || "Użytkownik"} · P` }))]);
+        renderLeaderboard("system-leaderboard-list", systemSnapshot?.leaderboard || []);
+        renderLeaderboard("przemala-leaderboard-list", przemalaSnapshot?.leaderboard || []);
+        renderAchievements("system-achievements-list", systemSnapshot?.achievements);
+        renderAchievements("przemala-achievements-list", przemalaSnapshot?.achievements);
+
+        const communityProfile = communitySnapshot?.profile;
+        const profileReady = communityProfile?.rules_version === COMMUNITY_RULES_VERSION && communityProfile?.status === "active";
+        const rulesForm = document.getElementById("community-rules-form");
+        if (rulesForm) rulesForm.hidden = profileReady || communityProfile?.status === "suspended";
+        const displayName = document.getElementById("community-display-name");
+        if (displayName && !displayName.value && communityProfile?.display_name) displayName.value = communityProfile.display_name;
+        renderCommunityPosts(communitySnapshot, profileReady);
+
+        if (hasError) setText("community-message", "Część danych Społeczności DEV jest chwilowo niedostępna.");
+        else if (communityProfile?.status === "suspended") setText("community-message", "Konto Społeczności jest wstrzymane; możesz przeglądać dostępne treści.");
+        else if (!profileReady) setText("community-message", "Zaakceptuj zasady i ustaw publiczny pseudonim, aby dołączyć do rankingów i wyzwań.");
+        else setText("community-message", "Zalogowano do Społeczności DEV. Wyzwania i postępy zapisują się na tym koncie.");
     }
 
     async function loadCommunityData(user) {
+        if (!client || !user) return;
         const sequence = dataLoadSequence;
         const [communityResult, systemResult, przemalaResult] = await Promise.all([
             client.rpc("get_community_snapshot"),
@@ -3313,6 +3753,73 @@
             przemalaResult.error ? null : przemalaResult.data,
             Boolean(communityResult.error || systemResult.error || przemalaResult.error)
         );
+    }
+
+    async function joinCommunityChallenge(challengeId) {
+        if (!challengeId || !client) return;
+        if (!currentCommunitySnapshots.system?.profile_ready && !currentCommunitySnapshots.przemala?.profile_ready) {
+            setText("community-message", "Najpierw zaakceptuj zasady i ustaw publiczny pseudonim w zakładce Społeczność.");
+            return;
+        }
+        const { error } = await client.rpc("join_community_challenge", { p_challenge_id: challengeId });
+        if (error) {
+            setText("community-message", healthWriteError(error, "Nie udało się dołączyć do wyzwania."));
+            await loadCommunityDataForActiveUser();
+            return;
+        }
+        setText("community-message", "Dołączono do wyzwania. Odświeżam zapisane postępy…");
+        await loadCommunityDataForActiveUser();
+    }
+
+    async function completeCommunityChallengeDay(challengeId, dayId) {
+        if (!challengeId || !dayId || !client) return;
+        const { error } = await client.rpc("complete_community_challenge_day", { p_challenge_id: challengeId, p_day_id: dayId });
+        if (error) {
+            setText("community-message", healthWriteError(error, "Nie udało się zapisać wykonanego dnia."));
+            await loadCommunityDataForActiveUser();
+            return;
+        }
+        setText("community-message", "Wykonany dzień zapisano. Odświeżam progres wyzwania…");
+        await loadCommunityDataForActiveUser();
+    }
+
+    async function acceptCommunityRules(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const name = document.getElementById("community-display-name")?.value.trim() || "";
+        const accepted = document.getElementById("community-rules-accepted")?.checked;
+        const button = form.querySelector('[type="submit"]');
+        if (!name || name.length < 2 || name.length > 30 || !accepted) {
+            setToolStatus("community-rules-status", "Wpisz pseudonim (2–30 znaków) i zaznacz akceptację zasad.", "error");
+            return;
+        }
+        button.disabled = true;
+        setToolStatus("community-rules-status", "Zapisywanie akceptacji w DEV…");
+        const { error } = await client.rpc("accept_community_rules", { p_display_name: name, p_rules_version: COMMUNITY_RULES_VERSION });
+        button.disabled = false;
+        if (error) {
+            setToolStatus("community-rules-status", healthWriteError(error, "Nie udało się zapisać zasad Społeczności."), "error");
+            return;
+        }
+        setToolStatus("community-rules-status", "Zasady zaakceptowane. Wczytuję Twoje wyniki…", "success");
+        await loadCommunityDataForActiveUser();
+    }
+
+    async function addCommunityComment(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const postId = form.dataset.communityCommentForm;
+        const body = String(new FormData(form).get("body") || "").trim();
+        const button = form.querySelector("button");
+        if (!postId || !body || !client) return;
+        button.disabled = true;
+        const { error } = await client.rpc("add_community_comment", { p_post_id: postId, p_body: body });
+        if (error) {
+            button.disabled = false;
+            setText("community-message", healthWriteError(error, "Nie udało się dodać komentarza."));
+            return;
+        }
+        await loadCommunityDataForActiveUser();
     }
 
     async function loadAccountData(user) {
@@ -3365,6 +3872,16 @@
                 ? bodyResult.data
                 : bodyResult.data ? [bodyResult.data] : [];
         const latestBodyMeasurement = bodyMeasurements[0] || null;
+
+        currentProgressData = {
+            profile: profileResult.error ? null : profileResult.data,
+            dashboard: dashboardResult.error ? null : dashboardResult.data,
+            weekly: weeklyResult.error ? null : weeklyResult.data,
+            weights: weightResult.error ? [] : (Array.isArray(weightResult.data) ? weightResult.data : []),
+            daily: stepsResult.error ? [] : (Array.isArray(stepsResult.data) ? stepsResult.data : []),
+            measurements: bodyMeasurements,
+            event: eventResult.error ? null : eventResult.data
+        };
 
         currentNutritionPlan = planResult.error ? null : planResult.data;
         currentPremiumSnapshot = premiumResult.error ? null : premiumResult.data;
@@ -3436,6 +3953,8 @@
             eventResult.error ? null : eventResult.data,
             currentPremiumSnapshot
         );
+        if (activeProgressDestination) renderProgressDestination(activeProgressDestination);
+        else setProgressSection(activeProgressSection);
         renderProfileAccess(
             currentPremiumSnapshot,
             dashboardResult.error ? null : dashboardResult.data,
@@ -3464,6 +3983,7 @@
         updateMealGenerationAccess();
         healthToolsContent?.setAttribute("aria-busy", "false");
         if (needsProfileSetup) navigateTo("profile");
+        void loadCommunityData(user);
     }
 
     function renderUser(user) {
@@ -3484,6 +4004,11 @@
         if (profileResetModal) profileResetModal.hidden = true;
         document.body.classList.remove("modal-open");
         if (profileResetResult) profileResetResult.textContent = "";
+        activeProgressSection = "hub";
+        activeProgressDestination = null;
+        currentProgressData = { profile: null, daily: [], weights: [], measurements: [], event: null };
+        currentCommunitySnapshots = { community: null, system: null, przemala: null };
+        challengeDaySelection.clear();
         appView.hidden = true;
         authView.hidden = false;
         loginForm.reset();
@@ -3505,7 +4030,6 @@
         if (shouldLoadData) {
             void loadAccountData(user);
             void loadCoachHistory(user);
-            void loadCommunityData(user);
         }
     }
 
@@ -3520,10 +4044,13 @@
     }
 
     function navigateTo(route, updateHash = true) {
-        const safeRoute = Object.hasOwn(routeLabels, route) ? route : "home";
+        const requestedRoute = route === "community" ? "progress" : route;
+        if (route === "community") setProgressSection("community");
+        const safeRoute = Object.hasOwn(routeLabels, requestedRoute) ? requestedRoute : "home";
         appShell?.classList.toggle("home-route-active", safeRoute === "home");
         appShell?.classList.toggle("meals-route-active", safeRoute === "meals");
         appShell?.classList.toggle("fridge-route-active", safeRoute === "fridge");
+        appShell?.classList.toggle("progress-route-active", safeRoute === "progress");
         document.querySelectorAll(".route-page").forEach((page) => {
             page.classList.toggle("active", page.dataset.page === safeRoute);
         });
@@ -3782,6 +4309,15 @@
         setToolStatus("health-consent-status", "");
     });
     healthConsentButton?.addEventListener("click", () => void recordHealthConsent());
+    progressHealthConsentCheckbox?.addEventListener("change", () => {
+        progressHealthConsentButton.disabled = !progressHealthConsentCheckbox.checked;
+        setToolStatus("progress-health-consent-status", "");
+    });
+    progressHealthConsentButton?.addEventListener("click", () => void recordHealthConsent(
+        progressHealthConsentCheckbox,
+        progressHealthConsentButton,
+        "progress-health-consent-status"
+    ));
 
     document.querySelectorAll("[data-home-tool]").forEach((button) => {
         button.addEventListener("click", () => openHomeTool(button.dataset.homeTool));
@@ -3795,6 +4331,43 @@
     });
     document.querySelectorAll("[data-progress-open]").forEach((button) => {
         button.addEventListener("click", () => openProgressDestination(button.dataset.progressOpen));
+    });
+    document.querySelectorAll("[data-progress-section-button]").forEach((button) => {
+        button.addEventListener("click", () => setProgressSection(button.dataset.progressSectionButton));
+    });
+    document.getElementById("progress-detail-back")?.addEventListener("click", () => setProgressSection(activeProgressSection));
+    progressDetailEntryForm?.addEventListener("submit", (event) => void saveProgressEntry(event));
+    progressDetailEntryForm?.addEventListener("click", (event) => {
+        if (event.target.closest("[data-progress-event-delete]")) void deleteProgressEvent();
+    });
+    document.querySelectorAll("[data-challenge-view]").forEach((button) => {
+        button.addEventListener("click", () => challengeTab(button.dataset.challengeView));
+    });
+    document.addEventListener("click", (event) => {
+        const join = event.target.closest("[data-challenge-join]");
+        if (join) {
+            join.disabled = true;
+            void joinCommunityChallenge(join.dataset.challengeJoin);
+            return;
+        }
+        const complete = event.target.closest("[data-challenge-complete]");
+        if (complete) {
+            complete.disabled = true;
+            void completeCommunityChallengeDay(complete.dataset.challengeComplete, complete.dataset.dayId);
+            return;
+        }
+        const day = event.target.closest("[data-challenge-day-select]");
+        if (day) {
+            const challengeId = day.dataset.challengeDaySelect;
+            challengeDaySelection.set(challengeId, Number(day.dataset.dayNumber));
+            const origin = day.closest("#przemala-challenge-list") ? "przemala" : "system";
+            renderChallengeList(origin === "przemala" ? "przemala-challenge-list" : "system-challenge-list", currentCommunitySnapshots[origin], origin);
+        }
+    });
+    document.getElementById("community-rules-form")?.addEventListener("submit", (event) => void acceptCommunityRules(event));
+    document.addEventListener("submit", (event) => {
+        const form = event.target.closest("[data-community-comment-form]");
+        if (form) void addCommunityComment(event);
     });
     document.getElementById("progress-share-report")?.addEventListener("click", () => void shareWeeklyProgressReport());
     document.getElementById("profile-memory-list")?.addEventListener("click", (event) => {

@@ -1165,6 +1165,72 @@ body.modal-open { overflow: hidden; }
     .module-grid button { grid-template-columns: 42px 1fr auto; padding: 15px; }
 }
 
+.app-shell.progress-route-active .app-workspace { background: linear-gradient(rgba(0,0,0,.72), rgba(0,0,0,.78)), url("./assets/android-home-background.jpg") center top / cover fixed no-repeat; }
+.progress-section-nav { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0 0 12px; }
+.progress-section-nav button, .challenge-section-tabs button { min-width: 0; min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 7px; border: 1px solid #494949; border-radius: 8px; padding: 8px 10px; background: rgba(36,36,36,.94); color: #ddd; cursor: pointer; font-size: 11px; font-weight: 800; }
+.progress-section-nav button.active, .challenge-section-tabs button.active { border-color: #ff995b; background: var(--orange); color: #fff; }
+.progress-section-nav svg { width: 17px; height: 17px; flex: 0 0 auto; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.progress-tab-view[hidden], .progress-detail-view[hidden] { display: none; }
+.progress-tab-view { animation: page-in .2s ease-out; }
+.progress-detail-view { margin-top: 2px; animation: page-in .2s ease-out; }
+.progress-detail-header { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: rgba(19,19,19,.9); }
+.progress-detail-header > div { min-width: 0; }
+.progress-detail-header .eyebrow { margin: 0 0 4px; color: var(--orange); font-size: 9px; font-weight: 800; letter-spacing: .13em; }
+.progress-detail-header h2 { margin: 0 0 3px; font-size: 20px; }
+.progress-detail-header p:last-child { margin: 0; color: var(--muted); font-size: 11px; }
+.progress-detail-current { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-bottom: 10px; }
+.progress-detail-stat { min-height: 84px; display: grid; align-content: center; gap: 7px; padding: 14px; border: 1px solid var(--line); border-radius: 9px; background: rgba(24,24,24,.94); }
+.progress-detail-stat small { color: #aaa; font-size: 9px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.progress-detail-stat b { color: var(--orange); font-size: 20px; }
+.progress-detail-chart { display: grid; gap: 6px; margin-bottom: 10px; padding: 14px; border: 1px solid var(--line); border-radius: 9px; background: rgba(24,24,24,.94); }
+.progress-chart-row { display: grid; grid-template-columns: minmax(78px, .5fr) minmax(60px, 1fr) minmax(65px, .45fr); align-items: center; gap: 10px; min-height: 28px; color: #aaa; font-size: 10px; }
+.progress-chart-row > b { color: #eee; text-align: right; }
+.progress-chart-track { height: 7px; overflow: hidden; border-radius: 99px; background: #353535; }
+.progress-chart-track i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #ff6a00, #ffad53); }
+.progress-entry-card { margin-bottom: 12px; padding: 16px; border: 1px solid rgba(255,106,0,.45); border-radius: 10px; background: rgba(21,21,21,.95); }
+.progress-entry-card h3 { margin: 0 0 12px; font-size: 15px; }
+.progress-entry-card .tool-form { display: grid; gap: 10px; }
+.progress-entry-card .tool-form label { display: grid; gap: 6px; color: #ccc; font-size: 11px; font-weight: 700; }
+.progress-entry-card .tool-form input { min-height: 42px; border: 1px solid #414141; border-radius: 7px; padding: 0 11px; background: #101010; color: #fff; }
+.progress-entry-card .tool-form input:focus { border-color: var(--orange); outline: 2px solid rgba(255,106,0,.18); }
+.progress-health-consent { margin-top: 12px; background: rgba(22,22,22,.96); }
+.community-rules-form { margin: 12px 0; padding: 16px; border: 1px solid rgba(255,106,0,.42); border-radius: 10px; background: rgba(20,20,20,.95); }
+.community-rules-form h3 { margin: 4px 0 8px; }
+.community-rules-form > p:not(.eyebrow):not(.tool-status) { color: var(--muted); font-size: 11px; line-height: 1.6; }
+.community-rules-form > label:not(.community-rules-check) { display: grid; gap: 6px; margin: 12px 0; color: #ccc; font-size: 11px; font-weight: 700; }
+.community-rules-form input[type="text"] { min-height: 42px; border: 1px solid #414141; border-radius: 7px; padding: 0 11px; background: #101010; color: #fff; }
+.community-rules-check { display: flex; gap: 9px; align-items: flex-start; margin: 12px 0; color: #bbb; font-size: 10px; line-height: 1.5; }
+.community-rules-check input { margin-top: 2px; accent-color: var(--orange); }
+.challenge-section-hero { margin-top: 2px; }
+.challenge-section-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin: 10px 0; }
+.challenge-section-tabs button { min-height: 38px; }
+.challenge-card { background: rgba(23,23,23,.96); }
+.challenge-day-strip { display: flex; gap: 5px; overflow-x: auto; padding: 4px 1px 8px; scrollbar-width: thin; }
+.challenge-day-strip button { min-width: 38px; min-height: 36px; border: 1px solid #555; border-radius: 7px; background: #242424; color: #ddd; cursor: pointer; font-weight: 800; }
+.challenge-day-strip button.active { border-color: var(--orange); color: var(--orange); }
+.challenge-day-strip button.completed { border-color: #63d297; color: #63d297; }
+.challenge-day-detail { margin: 5px 0 2px; padding: 12px; border: 1px solid #414141; border-radius: 8px; background: #141414; }
+.challenge-day-detail h5 { margin: 0 0 6px; font-size: 13px; }
+.challenge-day-detail p, .challenge-day-detail small { color: #aaa; font-size: 10px; line-height: 1.5; }
+.challenge-day-detail button { width: 100%; min-height: 38px; border: 0; border-radius: 7px; background: var(--orange); color: #111; cursor: pointer; font-weight: 900; }
+.challenge-day-detail button:disabled { opacity: .55; cursor: default; }
+.achievement-list { display: grid; gap: 7px; }
+.achievement-row { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: rgba(23,23,23,.96); }
+.achievement-row > span { color: var(--orange); font-size: 20px; }
+.achievement-row div { display: grid; gap: 3px; flex: 1; }
+.achievement-row small { color: #999; font-size: 10px; }
+.achievement-row.locked { opacity: .55; }
+@media (max-width: 640px) {
+    .app-shell.progress-route-active .app-workspace { background-attachment: scroll; background-position: center top; }
+    .progress-section-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+    .progress-section-nav button { justify-content: flex-start; min-height: 42px; font-size: 10px; }
+    .progress-hero { min-height: 92px; flex-direction: row; align-items: center; }
+    .progress-detail-header { align-items: flex-start; flex-direction: column; }
+    .progress-detail-header .tool-secondary-button { width: 100%; }
+    .progress-detail-current { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .challenge-section-hero { min-height: 0; flex-direction: row; align-items: center; }
+}
+
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
