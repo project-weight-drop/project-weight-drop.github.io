@@ -5455,6 +5455,23 @@
         </section>`;
     }
 
+    function bindClientPortalForms() {
+        const pinForm = document.getElementById("client-portal-pin-form");
+        if (pinForm) {
+            pinForm.addEventListener("submit", (event) => {
+                event.preventDefault();
+                void activateClientPortal(pinForm);
+            });
+            pinForm.querySelector("button[type='submit']")?.addEventListener("click", (event) => {
+                event.preventDefault();
+                void activateClientPortal(pinForm);
+            });
+        }
+
+        const reportForm = document.getElementById("client-portal-report-form");
+        reportForm?.addEventListener("submit", (event) => void submitClientPortalReport(event));
+    }
+
     function renderClientPortal() {
         updateClientPortalEntry();
         const heading = document.getElementById("client-portal-heading");
@@ -5499,6 +5516,7 @@
 
         if (clientPortalStatus?.activated !== true) {
             clientPortalContent.innerHTML = clientPortalPinFormHtml();
+            bindClientPortalForms();
             return;
         }
 
@@ -5511,6 +5529,7 @@
                 ? `<div class="client-portal-notice success">Raport za ten tydzień został już wysłany. Możesz go zobaczyć poniżej; nie można go edytować.</div>${thisWeekReport ? clientPortalReportCardHtml(thisWeekReport) : ""}`
                 : clientPortalReportFormHtml()}
             ${previousReports.length ? `<section class="client-portal-history"><h3>Poprzednie raporty</h3>${previousReports.map(clientPortalReportCardHtml).join("")}</section>` : ""}`;
+        bindClientPortalForms();
         updateClientPortalReportButton();
     }
 
@@ -5570,10 +5589,9 @@
         }
     }
 
-    async function activateClientPortal(event) {
-        event.preventDefault();
+    async function activateClientPortal(form) {
         if (clientPortalActivating || !client) return;
-        const pin = String(new FormData(event.currentTarget).get("pin") || "");
+        const pin = String(new FormData(form).get("pin") || "");
         if (!/^[0-9]{6}$/.test(pin)) {
             clientPortalError = "Wpisz prawidłowy, 6-cyfrowy PIN.";
             setClientPortalFeedback();
@@ -5582,7 +5600,7 @@
         clientPortalActivating = true;
         clientPortalPin = pin;
         clientPortalError = null;
-        const button = event.currentTarget.querySelector("button[type='submit']");
+        const button = form.querySelector("button[type='submit']");
         if (button) { button.disabled = true; button.textContent = "SPRAWDZANIE PIN-U…"; }
         try {
             const { data, error } = await client.rpc("activate_client_portal", { p_pin: pin });
@@ -6563,10 +6581,6 @@
     });
     profileClientPortalLink?.addEventListener("click", () => navigateTo("client-portal"));
     clientPortalRefreshButton?.addEventListener("click", () => void loadClientPortalData());
-    clientPortalContent?.addEventListener("submit", (event) => {
-        if (event.target.id === "client-portal-pin-form") void activateClientPortal(event);
-        else if (event.target.id === "client-portal-report-form") void submitClientPortalReport(event);
-    });
     clientPortalContent?.addEventListener("input", (event) => {
         const input = event.target;
         if (input.id === "client-portal-pin") {
