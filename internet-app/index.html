@@ -10,10 +10,10 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
-    <link rel="stylesheet" href="./styles.css?v=20261005-meals-parity">
+    <link rel="stylesheet" href="./styles.css?v=20261005-fridge-coach-parity">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
-    <script src="./config.js?v=20261005-meals-parity" defer></script>
-    <script src="./app.js?v=20261005-meals-parity" defer></script>
+    <script src="./config.js?v=20261005-fridge-coach-parity" defer></script>
+    <script src="./app.js?v=20261005-fridge-coach-parity" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -480,47 +480,110 @@
                 </div>
             </section>
 
-            <section class="route-page" data-page="fridge" aria-labelledby="fridge-heading">
-                <div class="feature-hero">
-                    <svg><use href="#icon-fridge"></use></svg>
-                    <div><p class="eyebrow">POSIŁEK Z TEGO, CO MASZ</p><h2 id="fridge-heading">Lodówka</h2><p>Wpisz produkty i dostępne ilości. Bezpieczna funkcja DEV dopasuje jeden posiłek do pozostałego planu dnia, diety i wykluczeń.</p></div>
+            <section class="route-page app-module-page fridge-app-page" data-page="fridge" aria-labelledby="fridge-heading">
+                <header class="module-phone-header">
+                    <div>
+                        <p class="eyebrow">TWOJE PRODUKTY</p>
+                        <h2 id="fridge-heading">Lodówka</h2>
+                        <p>Twoje produkty · lepsze wybory, łatwiejsze posiłki.</p>
+                    </div>
+                    <button id="fridge-reset-button" class="module-icon-button" type="button" aria-label="Wyczyść Lodówkę"><svg><use href="#icon-refresh"></use></svg></button>
+                </header>
+
+                <div class="module-segmented" role="tablist" aria-label="Tryb Lodówki">
+                    <button class="active" type="button" role="tab" aria-selected="true" data-fridge-mode="remaining">Pozostało dziś</button>
+                    <button type="button" role="tab" aria-selected="false" data-fridge-mode="custom">Własne kcal</button>
                 </div>
-                <div class="fridge-layout">
-                    <form class="ai-form-panel" id="fridge-form">
-                        <label for="fridge-products">Produkty w lodówce</label>
-                        <textarea id="fridge-products" minlength="3" maxlength="2000" rows="7" placeholder="np. pierś z kurczaka 300 g, jajka 4 szt., szpinak 200 g, mozzarella 100 g" required></textarea>
-                        <p>Oddziel produkty przecinkami i podaj przybliżone ilości. Treść zostanie wysłana wyłącznie do funkcji AI projektu DEV i może wykorzystać dzienny limit Lodówki.</p>
-                        <button class="primary-button compact" id="fridge-generate-button" type="submit"><span>Ułóż posiłek</span><svg><use href="#icon-arrow"></use></svg></button>
-                        <div class="feature-status" id="fridge-status" role="status" aria-live="polite">Gotowe do wygenerowania.</div>
-                    </form>
-                    <article class="fridge-result" id="fridge-result" hidden>
-                        <div class="fridge-result-head"><div><p class="eyebrow">PROPOZYCJA DEV</p><h3 id="fridge-result-title">—</h3></div><strong id="fridge-fit">—</strong></div>
-                        <p id="fridge-fit-note">—</p>
-                        <div class="fridge-macros"><span><small>Kalorie</small><b id="fridge-calories">—</b></span><span><small>Białko</small><b id="fridge-protein">—</b></span><span><small>Tłuszcz</small><b id="fridge-fat">—</b></span><span><small>Węgle</small><b id="fridge-carbs">—</b></span></div>
-                        <h4>Składniki</h4><div class="fridge-ingredients" id="fridge-ingredients"></div>
-                        <h4>Przygotowanie</h4><p class="fridge-instructions" id="fridge-instructions">—</p>
-                    </article>
-                </div>
-                <p class="feature-note">Dodanie wygenerowanego posiłku do dziennika pozostaje na razie wyłączone. Najpierw możesz bezpiecznie sprawdzić propozycję bez zapisu posiłku.</p>
+
+                <section class="fridge-target-card" aria-label="Cel posiłku">
+                    <div class="target-main">
+                        <svg><use href="#icon-target"></use></svg>
+                        <div><span id="fridge-target-label">Pozostało dziś</span><strong><i id="fridge-target-remaining">—</i> kcal</strong></div>
+                    </div>
+                    <div class="target-progress">
+                        <span>z <i id="fridge-target-total">—</i> kcal</span>
+                        <div class="progress-track"><i id="fridge-target-bar"></i></div>
+                    </div>
+                </section>
+
+                <section class="fridge-custom-target" id="fridge-custom-panel" hidden>
+                    <label for="fridge-custom-calories">Kalorie posiłku</label>
+                    <div><input id="fridge-custom-calories" type="number" min="100" max="3000" step="10" inputmode="numeric" placeholder="np. 650"><span>kcal</span></div>
+                </section>
+
+                <form class="fridge-composer" id="fridge-form">
+                    <div class="assistant-row">
+                        <span class="assistant-avatar">P</span>
+                        <div>
+                            <strong>Przemala</strong>
+                            <p id="fridge-assistant-copy">Napisz, jakie produkty masz pod ręką. Dobiorę z nich najbliższy posiłek do Twojego dzisiejszego celu.</p>
+                        </div>
+                    </div>
+                    <div class="composer-input-row">
+                        <textarea id="fridge-products" minlength="3" maxlength="2000" rows="1" placeholder="Napisz, co masz w lodówce…" required></textarea>
+                        <button class="ghost-icon-button" type="button" aria-label="Dodaj produkty głosem" disabled><svg><use href="#icon-mic"></use></svg></button>
+                        <button id="fridge-generate-button" class="send-icon-button" type="submit" aria-label="Wyślij do Przemali"><svg><use href="#icon-arrow"></use></svg></button>
+                    </div>
+                    <p>Oddziel produkty przecinkami, np. jajka, pomidor, ser.</p>
+                    <div class="feature-status" id="fridge-status" role="status" aria-live="polite">Gotowe do wygenerowania.</div>
+                </form>
+
+                <article class="fridge-result" id="fridge-result" hidden>
+                    <div class="assistant-row result-row">
+                        <span class="assistant-avatar">P</span>
+                        <div><strong>Przemala</strong><p>Posiłek z Twoich produktów</p></div>
+                    </div>
+                    <div class="fridge-result-card">
+                        <div class="fridge-result-head"><h3 id="fridge-meal-type">Posiłek</h3><strong id="fridge-fit">—</strong></div>
+                        <h4 id="fridge-result-title">—</h4>
+                        <p class="fridge-macro-line"><span id="fridge-calories">—</span> · B <span id="fridge-protein">—</span> · T <span id="fridge-fat">—</span> · W <span id="fridge-carbs">—</span></p>
+                        <div class="fridge-divider"></div>
+                        <h5>Składniki</h5>
+                        <div class="fridge-ingredients" id="fridge-ingredients"></div>
+                        <h5>Przygotowanie</h5>
+                        <p class="fridge-instructions" id="fridge-instructions">—</p>
+                        <p class="fridge-fit-note" id="fridge-fit-note">—</p>
+                    </div>
+                    <button id="fridge-add-today-button" class="module-primary-button" type="button"><svg><use href="#icon-check"></use></svg><span>Dodaj do dzisiaj</span></button>
+                    <div class="fridge-secondary-actions">
+                        <button id="fridge-regenerate-button" type="button"><svg><use href="#icon-refresh"></use></svg><span>Inny posiłek</span></button>
+                        <button id="fridge-change-products-button" type="button"><span>Zmień produkty</span></button>
+                    </div>
+                    <button id="fridge-report-button" class="module-text-button" type="button">Zgłoś odpowiedź</button>
+                </article>
             </section>
 
-            <section class="route-page" data-page="coach" aria-labelledby="coach-heading">
-                <div class="feature-hero coach-hero">
-                    <svg><use href="#icon-coach"></use></svg>
-                    <div><p class="eyebrow">TWOJE DANE · TWOJE CELE</p><h2 id="coach-heading">AI Coach</h2><p>Coach korzysta z bieżącego planu, dziennika i postępów z DEV. Nie zmienia samodzielnie kalorii, makro, leków ani ustawień bezpieczeństwa.</p></div>
+            <section class="route-page app-module-page coach-app-page" data-page="coach" aria-labelledby="coach-heading">
+                <header class="coach-brand-header">
+                    <div class="coach-brand-lockup"><img src="/brand-logo.png" alt="" width="42" height="42"><span><small>Project</small><strong>Weight <em>Drop</em></strong></span></div>
+                    <div class="coach-brand-tagline"><span>LEPSZA TY KAŻDEGO DNIA</span><i></i></div>
+                    <h2 id="coach-heading">AI Coach</h2>
+                </header>
+                <div class="module-segmented coach-tabs" role="tablist" aria-label="Sekcja Coach">
+                    <button class="active" type="button" role="tab" aria-selected="true" data-coach-section="coach"><svg><use href="#icon-coach"></use></svg><span>AI Coach</span></button>
+                    <button type="button" role="tab" aria-selected="false" data-coach-section="support"><span>Czat z Przemalą</span></button>
                 </div>
                 <section class="coach-panel" aria-label="Rozmowa z AI Coach">
-                    <div class="coach-topline"><span id="coach-status">Pobieranie historii DEV…</span><small id="coach-limit">Limit sprawdzany przy wysłaniu</small></div>
-                    <div class="coach-messages" id="coach-messages" aria-live="polite"><p class="empty-history">Pobieranie…</p></div>
-                    <div class="coach-prompts" aria-label="Szybkie pytania">
-                        <button type="button" data-coach-prompt="Co mogę dziś zjeść?">Co mogę dziś zjeść?</button>
-                        <button type="button" data-coach-prompt="Jak wygląda mój postęp?">Jak wygląda mój postęp?</button>
-                        <button type="button" data-coach-prompt="Dlaczego moja waga stoi?">Dlaczego waga stoi?</button>
+                    <div class="coach-context-card">
+                        <span><svg><use href="#icon-coach"></use></svg></span>
+                        <div>
+                            <div class="coach-context-title"><strong>AI Coach</strong><b id="coach-access-badge">PRO</b></div>
+                            <p id="coach-context-calories">Pozostało — kcal</p>
+                            <p id="coach-context-macros">B — g · T — g · W — g</p>
+                        </div>
+                        <button id="coach-history-button" class="module-text-button" type="button">Historia</button>
                     </div>
+                    <div class="coach-topline"><span id="coach-status">Pobieranie historii DEV…</span><small id="coach-limit">Limit sprawdzany przy wysłaniu</small></div>
+                    <div class="coach-prompts" aria-label="Szybkie pytania">
+                        <button type="button" data-coach-prompt="Co mogę dziś zjeść?"><svg><use href="#icon-meals"></use></svg><span>Co mogę dziś zjeść?</span></button>
+                        <button type="button" data-coach-prompt="Jak wygląda mój progres?"><svg><use href="#icon-progress"></use></svg><span>Jak wygląda mój progres?</span></button>
+                        <button type="button" data-coach-prompt="Dlaczego waga stoi?"><svg><use href="#icon-weight"></use></svg><span>Dlaczego waga stoi?</span></button>
+                        <button type="button" data-coach-prompt="Co po treningu?"><svg><use href="#icon-event"></use></svg><span>Co po treningu?</span></button>
+                    </div>
+                    <div class="coach-messages" id="coach-messages" aria-live="polite"><p class="empty-history">Pobieranie…</p></div>
                     <form class="coach-form" id="coach-form">
-                        <label for="coach-input">Wiadomość do Coacha</label>
-                        <div><textarea id="coach-input" maxlength="2000" rows="2" placeholder="Napisz wiadomość…" required></textarea><button id="coach-send-button" type="submit" aria-label="Wyślij wiadomość"><svg><use href="#icon-arrow"></use></svg></button></div>
-                        <p>Wysłanie wiadomości wykorzystuje limit AI Coacha przypisany do Twojego konta DEV i zapisuje rozmowę w historii.</p>
+                        <label class="visually-hidden" for="coach-input">Wiadomość do Coacha</label>
+                        <div><textarea id="coach-input" maxlength="2000" rows="1" placeholder="Napisz wiadomość…" required></textarea><button class="ghost-icon-button" type="button" aria-label="Podyktuj wiadomość" disabled><svg><use href="#icon-mic"></use></svg></button><button id="coach-send-button" type="submit" aria-label="Wyślij wiadomość"><svg><use href="#icon-arrow"></use></svg></button></div>
                     </form>
                 </section>
             </section>

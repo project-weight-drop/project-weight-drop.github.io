@@ -3,7 +3,7 @@
 
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-meals-parity";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-fridge-coach-parity";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -30,9 +30,17 @@
     const fridgeForm = document.getElementById("fridge-form");
     const fridgeProducts = document.getElementById("fridge-products");
     const fridgeGenerateButton = document.getElementById("fridge-generate-button");
+    const fridgeResetButton = document.getElementById("fridge-reset-button");
+    const fridgeCustomCalories = document.getElementById("fridge-custom-calories");
+    const fridgeCustomPanel = document.getElementById("fridge-custom-panel");
+    const fridgeAddTodayButton = document.getElementById("fridge-add-today-button");
+    const fridgeRegenerateButton = document.getElementById("fridge-regenerate-button");
+    const fridgeChangeProductsButton = document.getElementById("fridge-change-products-button");
+    const fridgeReportButton = document.getElementById("fridge-report-button");
     const coachForm = document.getElementById("coach-form");
     const coachInput = document.getElementById("coach-input");
     const coachSendButton = document.getElementById("coach-send-button");
+    const coachHistoryButton = document.getElementById("coach-history-button");
     const profileResetModal = document.getElementById("profile-reset-modal");
     const openProfileResetButton = document.getElementById("open-profile-reset");
     const cancelProfileResetButton = document.getElementById("cancel-profile-reset");
@@ -122,6 +130,11 @@
     let mealDraftBusy = false;
     let mealGramsPreviousFocus = null;
     let currentTodayMeals = [];
+    let activeFridgeMode = "remaining";
+    let currentFridgeProposal = null;
+    let currentFridgeProducts = "";
+    let fridgeActionBusy = false;
+    let fridgeReportBusy = false;
 
     const numberFormatter = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 });
     const weightFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
@@ -348,7 +361,7 @@
         [
             "home-calories-bar", "home-protein-bar", "home-fat-bar", "home-carbs-bar",
             "meals-today-calorie-bar", "meals-today-protein-bar", "meals-today-fat-bar", "meals-today-carbs-bar",
-            "home-weight-progress-bar"
+            "home-weight-progress-bar", "fridge-target-bar"
         ].forEach((id) => setProgress(id, 0, 100));
         document.getElementById("progress-summary")?.setAttribute("aria-busy", "true");
         setText("progress-message", "Pobieranie raportu DEV…");
@@ -375,7 +388,15 @@
         setMealsView("plan");
         renderMealDraft();
         if (fridgeProducts) fridgeProducts.value = "";
+        if (fridgeCustomCalories) fridgeCustomCalories.value = "";
+        currentFridgeProposal = null;
+        currentFridgeProducts = "";
+        setFridgeMode("remaining", { focus: false });
         document.getElementById("fridge-result")?.setAttribute("hidden", "");
+        setText("fridge-target-remaining", "—");
+        setText("fridge-target-total", "—");
+        setText("fridge-target-label", "Pozostało dziś");
+        setText("fridge-assistant-copy", "Napisz, jakie produkty masz pod ręką. Dobiorę z nich najbliższy posiłek do Twojego dzisiejszego celu.");
         setText("fridge-status", "Gotowe do wygenerowania.");
         document.getElementById("fridge-status")?.classList.remove("error");
         if (coachInput) coachInput.value = "";
@@ -383,6 +404,9 @@
         if (coachMessages) coachMessages.innerHTML = '<p class="empty-history">Pobieranie…</p>';
         setText("coach-status", "Pobieranie historii DEV…");
         setText("coach-limit", "Limit sprawdzany przy wysłaniu");
+        setText("coach-access-badge", "PRO");
+        setText("coach-context-calories", "Pozostało — kcal");
+        setText("coach-context-macros", "B — g · T — g · W — g");
         ["community-points", "community-rank", "challenges-count", "leaderboard-count", "posts-count"]
             .forEach((id) => setText(id, "—"));
         setText("community-message", "Pobieranie danych DEV…");
@@ -1201,6 +1225,75 @@
         return labels[String(value || "").toLowerCase()] || "Posiłek";
     }
 
+    function remainingValue(consumed, target) {
+        const targetValue = finiteNumber(target);
+        const consumedValue = finiteNumber(consumed) ?? 0;
+        return targetValue === null ? null : Math.max(0, targetValue - consumedValue);
+    }
+
+    function setFridgeMode(mode, { focus = true } = {}) {
+        activeFridgeMode = mode === "custom" ? "custom" : "remaining";
+        document.querySelectorAll("[data-fridge-mode]").forEach((button) => {
+            const selected = button.dataset.fridgeMode === activeFridgeMode;
+            button.classList.toggle("active", selected);
+            button.setAttribute("aria-selected", String(selected));
+        });
+        if (fridgeCustomPanel) fridgeCustomPanel.hidden = activeFridgeMode !== "custom";
+        setText("fridge-target-label", activeFridgeMode === "custom" ? "Własne kcal" : "Pozostało dziś");
+        setText("fridge-assistant-copy", activeFridgeMode === "custom"
+            ? "Dobiorę posiłek z Twoich produktów pod wskazaną kaloryczność."
+            : "Napisz, jakie produkty masz pod ręką. Dobiorę z nich najbliższy posiłek do Twojego dzisiejszego celu.");
+        updateFridgeTargetCard();
+        if (focus && activeFridgeMode === "custom") fridgeCustomCalories?.focus();
+    }
+
+    function updateFridgeTargetCard() {
+        const caloriesTarget = finiteNumber(currentDashboardSnapshot?.calories_target);
+        const caloriesConsumed = finiteNumber(currentDashboardSnapshot?.calories_consumed) ?? 0;
+        const remaining = remainingValue(caloriesConsumed, caloriesTarget);
+        const customCalories = finiteNumber(fridgeCustomCalories?.value);
+        if (activeFridgeMode === "custom") {
+            setText("fridge-target-remaining", customCalories === null ? "—" : formatNumber(customCalories));
+            setText("fridge-target-total", customCalories === null ? "—" : formatNumber(customCalories));
+            setProgress("fridge-target-bar", customCalories === null ? 0 : customCalories, customCalories || 100);
+            return;
+        }
+        setText("fridge-target-remaining", formatNumber(remaining));
+        setText("fridge-target-total", formatNumber(caloriesTarget));
+        setProgress("fridge-target-bar", caloriesConsumed, caloriesTarget);
+    }
+
+    function coachAccessBadge(premium) {
+        if (!premium) return "PRO";
+        if (premium.admin_granted) return "ADMIN ∞";
+        const remaining = premium.coach_remaining;
+        const limit = premium.coach_limit;
+        if (premium.coach_trial_active) return `TEST ${formatNumber(remaining ?? 8)} / ${formatNumber(limit ?? 8)}`;
+        if (premium.is_pro) return `PRO ${formatNumber(remaining ?? 8)} / ${formatNumber(limit ?? 8)}`;
+        return "PRO";
+    }
+
+    function updateCoachContextCard() {
+        const remainingCalories = remainingValue(currentDashboardSnapshot?.calories_consumed, currentDashboardSnapshot?.calories_target);
+        const proteinRemaining = remainingValue(currentDashboardSnapshot?.protein_consumed, currentDashboardSnapshot?.protein_target);
+        const fatRemaining = remainingValue(currentDashboardSnapshot?.fat_consumed, currentDashboardSnapshot?.fat_target);
+        const carbsRemaining = remainingValue(currentDashboardSnapshot?.carbs_consumed, currentDashboardSnapshot?.carbs_target);
+        setText("coach-context-calories", `Pozostało ${formatNumber(remainingCalories)} kcal`);
+        setText("coach-context-macros", `B ${formatNumber(proteinRemaining)} g · T ${formatNumber(fatRemaining)} g · W ${formatNumber(carbsRemaining)} g`);
+        setText("coach-access-badge", coachAccessBadge(currentPremiumSnapshot));
+        setText("coach-limit", premiumSnapshotUnavailable
+            ? "Limit chwilowo niedostępny"
+            : currentPremiumSnapshot?.coach_remaining === null || currentPremiumSnapshot?.coach_remaining === undefined
+            ? `Pakiet: ${currentPremiumSnapshot?.is_pro || currentPremiumSnapshot?.admin_granted ? "PRO" : "DEV"}`
+            : `Pozostało odpowiedzi: ${formatNumber(currentPremiumSnapshot.coach_remaining)}`);
+        const allowed = !currentPremiumSnapshot || currentPremiumSnapshot.coach_allowed !== false;
+        document.querySelectorAll("[data-coach-prompt]").forEach((button) => { button.disabled = !allowed; });
+        if (coachInput && document.activeElement !== coachInput) {
+            coachInput.placeholder = allowed ? "Napisz wiadomość…" : "AI Coach wymaga PRO";
+        }
+        if (coachSendButton) coachSendButton.disabled = !allowed;
+    }
+
     function renderDashboard(data) {
         currentDashboardSnapshot = data || null;
         const caloriesTarget = finiteNumber(data?.calories_target);
@@ -1266,6 +1359,8 @@
         setText("home-weight-detail", details.join(" · ") || "Brak zapisów wagi z ostatnich 7 dni");
 
         dashboardOverview?.setAttribute("aria-busy", "false");
+        updateFridgeTargetCard();
+        updateCoachContextCard();
         setText("dashboard-message", "Dane obliczone przez tę samą funkcję DEV co w Androidzie.");
         setText("home-data-status", "Połączono");
         setText("home-data-detail", "Aktualne dane własnego konta DEV");
@@ -2410,17 +2505,47 @@
         setText("food-search-status", `Znaleziono: ${formatNumber(data?.length || 0)}.`);
     }
 
+    function setFridgeBusy(busy) {
+        fridgeActionBusy = busy;
+        [fridgeGenerateButton, fridgeAddTodayButton, fridgeRegenerateButton, fridgeChangeProductsButton, fridgeResetButton]
+            .filter(Boolean)
+            .forEach((button) => { button.disabled = busy; });
+        if (fridgeProducts) fridgeProducts.disabled = busy;
+        if (fridgeCustomCalories) fridgeCustomCalories.disabled = busy;
+        document.querySelectorAll("[data-fridge-mode]").forEach((button) => { button.disabled = busy; });
+    }
+
+    function fridgeCustomTarget() {
+        if (activeFridgeMode !== "custom") return null;
+        const calories = finiteNumber(fridgeCustomCalories?.value);
+        if (calories === null || calories < 100 || calories > 3000) return false;
+        return { calories: Math.round(calories), protein_g: null, fat_g: null, carbs_g: null };
+    }
+
+    function fridgeProposalText(proposal) {
+        if (!proposal) return "";
+        const parts = [
+            proposal.title,
+            proposal.fit_note_pl,
+            proposal.instructions_pl,
+            ...(Array.isArray(proposal.ingredients) ? proposal.ingredients.map((item) => `${item.name || item.declared_product || "Składnik"} ${formatNumber(item.grams)} g`) : [])
+        ];
+        return parts.filter(Boolean).join("\n");
+    }
+
     function renderFridgeProposal(proposal) {
         const result = document.getElementById("fridge-result");
         const ingredients = document.getElementById("fridge-ingredients");
         if (!result || !ingredients) return;
+        currentFridgeProposal = proposal || null;
+        setText("fridge-meal-type", formatMealType(proposal?.meal_type));
         setText("fridge-result-title", proposal?.title || "Propozycja posiłku");
-        setText("fridge-fit", finiteNumber(proposal?.fit_percent) === null ? "—" : `${formatNumber(proposal.fit_percent)}% dopasowania`);
+        setText("fridge-fit", finiteNumber(proposal?.fit_percent) === null ? "—" : `Dopasowanie ${formatNumber(proposal.fit_percent)}%`);
         setText("fridge-fit-note", proposal?.fit_note_pl || "Dopasowano do aktualnego planu DEV.");
         setText("fridge-calories", `${formatNumber(proposal?.totals?.calories)} kcal`);
-        setText("fridge-protein", `${formatNumber(proposal?.totals?.protein_g)} g`);
-        setText("fridge-fat", `${formatNumber(proposal?.totals?.fat_g)} g`);
-        setText("fridge-carbs", `${formatNumber(proposal?.totals?.carbs_g)} g`);
+        setText("fridge-protein", `${formatMacro(proposal?.totals?.protein_g)} g`);
+        setText("fridge-fat", `${formatMacro(proposal?.totals?.fat_g)} g`);
+        setText("fridge-carbs", `${formatMacro(proposal?.totals?.carbs_g)} g`);
         setText("fridge-instructions", proposal?.instructions_pl || "—");
         ingredients.replaceChildren();
         (Array.isArray(proposal?.ingredients) ? proposal.ingredients : []).forEach((ingredient) => {
@@ -2436,23 +2561,29 @@
         result.hidden = false;
     }
 
-    async function generateFridgeProposal(products) {
-        fridgeGenerateButton.disabled = true;
-        fridgeGenerateButton.querySelector("span").textContent = "Układanie…";
-        setText("fridge-status", "Lodówka DEV analizuje produkty i aktualny plan…");
+    async function generateFridgeProposal(products, { regenerate = false } = {}) {
+        const customTarget = fridgeCustomTarget();
+        if (customTarget === false) {
+            setText("fridge-status", "Cel posiłku musi mieć od 100 do 3000 kcal.");
+            document.getElementById("fridge-status")?.classList.add("error");
+            fridgeCustomCalories?.focus();
+            return;
+        }
+        currentFridgeProducts = products;
+        setFridgeBusy(true);
+        setText("fridge-status", regenerate ? "Szukam innej propozycji z tych produktów…" : "Lodówka DEV analizuje produkty i aktualny plan…");
         document.getElementById("fridge-status")?.classList.remove("error");
         document.getElementById("fridge-result")?.setAttribute("hidden", "");
         const { data, error } = await client.functions.invoke("fridge-meal", {
             body: {
                 action: "generate",
                 products,
-                avoid_titles: [],
-                custom_target: null,
+                avoid_titles: regenerate && currentFridgeProposal?.title ? [currentFridgeProposal.title] : [],
+                custom_target: customTarget,
                 language: "pl"
             }
         });
-        fridgeGenerateButton.disabled = false;
-        fridgeGenerateButton.querySelector("span").textContent = "Ułóż posiłek";
+        setFridgeBusy(false);
         if (error || data?.error || !data?.proposal) {
             const code = await edgeFunctionErrorCode(error, data);
             setText("fridge-status", featureErrorMessage(code, "Lodówki"));
@@ -2460,17 +2591,75 @@
             return;
         }
         renderFridgeProposal(data.proposal);
-        setText("fridge-status", "Propozycja została wygenerowana w DEV. Nie zapisano jej w dzienniku.");
+        setText("fridge-status", "Propozycja gotowa. Możesz ją dodać do dzisiejszego bilansu DEV.");
+    }
+
+    async function commitFridgeProposal() {
+        if (!currentFridgeProposal || fridgeActionBusy || !client || !activeUserId) return;
+        setFridgeBusy(true);
+        setText("fridge-status", "Dodaję posiłek do dzisiejszego bilansu DEV…");
+        document.getElementById("fridge-status")?.classList.remove("error");
+        const { data, error } = await client.functions.invoke("fridge-meal", {
+            body: {
+                action: "commit",
+                products: currentFridgeProposal.inventory_text || currentFridgeProducts,
+                custom_target: currentFridgeProposal.custom_target || null,
+                proposal: currentFridgeProposal,
+                language: "pl"
+            }
+        });
+        setFridgeBusy(false);
+        if (error || data?.error || !data?.proposal) {
+            const code = await edgeFunctionErrorCode(error, data);
+            setText("fridge-status", featureErrorMessage(code, "zapisu posiłku z Lodówki"));
+            document.getElementById("fridge-status")?.classList.add("error");
+            return;
+        }
+        currentFridgeProposal = data.proposal;
+        renderFridgeProposal(data.proposal);
+        setText("fridge-status", "Dodano do dzisiejszego bilansu DEV.");
+        await refreshMealViews();
+    }
+
+    async function reportFridgeProposal() {
+        if (!currentFridgeProposal || fridgeReportBusy || !client || !activeUserId) return;
+        fridgeReportBusy = true;
+        if (fridgeReportButton) fridgeReportButton.disabled = true;
+        setText("fridge-status", "Zapisuję zgłoszenie odpowiedzi AI…");
+        const { error } = await client.rpc("report_ai_content", {
+            p_source: "fridge",
+            p_source_content_id: currentFridgeProposal.title || null,
+            p_content_text: fridgeProposalText(currentFridgeProposal).slice(0, 5000)
+        });
+        fridgeReportBusy = false;
+        if (fridgeReportButton) fridgeReportButton.disabled = false;
+        if (error) {
+            setText("fridge-status", friendlyDataError(error));
+            document.getElementById("fridge-status")?.classList.add("error");
+            return;
+        }
+        setText("fridge-status", "Zgłoszenie zapisane.");
+        document.getElementById("fridge-status")?.classList.remove("error");
     }
 
     function coachMessageElement(message) {
         const item = document.createElement("article");
         item.className = `coach-message ${message.role === "user" ? "user" : "assistant"}`;
-        item.append(document.createTextNode(message.message_text || message.message || ""));
+        const text = document.createElement("p");
+        text.textContent = message.message_text || message.message || "";
+        item.append(text);
         if (message.created_at) {
             const time = document.createElement("small");
             time.textContent = formatDate(message.created_at, true);
             item.append(time);
+        }
+        if (message.role !== "user" && (message.message_text || message.message)) {
+            const report = document.createElement("button");
+            report.type = "button";
+            report.className = "coach-report-button";
+            report.textContent = "Zgłoś odpowiedź";
+            report.addEventListener("click", () => void reportCoachMessage(message, report));
+            item.append(report);
         }
         return item;
     }
@@ -2529,6 +2718,10 @@
     }
 
     async function sendCoachMessage(message) {
+        if (currentPremiumSnapshot?.coach_allowed === false) {
+            setText("coach-status", "AI Coach wymaga aktywnego dostępu PRO.");
+            return;
+        }
         coachSendButton.disabled = true;
         coachInput.disabled = true;
         setText("coach-status", "Coach DEV przygotowuje odpowiedź…");
@@ -2545,6 +2738,13 @@
         }
         currentCoachConversationId = data.conversation_id || currentCoachConversationId;
         coachInput.value = "";
+        if (currentPremiumSnapshot) {
+            currentPremiumSnapshot = {
+                ...currentPremiumSnapshot,
+                coach_remaining: data.coach_remaining ?? currentPremiumSnapshot.coach_remaining
+            };
+        }
+        updateCoachContextCard();
         setText("coach-limit", data.coach_remaining === null || data.coach_remaining === undefined
             ? `Pakiet: ${data.premium_tier || "DEV"}`
             : `Pozostało odpowiedzi: ${formatNumber(data.coach_remaining)}`);
@@ -2558,6 +2758,28 @@
             if (target) target.scrollTop = target.scrollHeight;
             setText("coach-status", "Odpowiedź odebrana, ale historia nie została zapisana.");
         }
+    }
+
+    async function reportCoachMessage(message, button) {
+        if (!client || !activeUserId) return;
+        const content = String(message?.message_text || message?.message || "").trim();
+        if (!content) return;
+        button.disabled = true;
+        const previous = button.textContent;
+        button.textContent = "Zapisuję…";
+        const { error } = await client.rpc("report_ai_content", {
+            p_source: "coach",
+            p_source_content_id: message.id || null,
+            p_content_text: content.slice(0, 5000)
+        });
+        if (error) {
+            button.disabled = false;
+            button.textContent = previous;
+            setText("coach-status", friendlyDataError(error));
+            return;
+        }
+        button.textContent = "Zgłoszono";
+        setText("coach-status", "Zgłoszenie odpowiedzi AI zapisane.");
     }
 
     function challengeOriginLabel(origin) {
@@ -2929,7 +3151,8 @@
         routeTitle.textContent = routeLabels[safeRoute];
         document.title = `${routeLabels[safeRoute]} — Project Weight Drop DEV`;
         if (updateHash) window.history.replaceState(null, "", `#${safeRoute}`);
-        document.querySelector(".app-workspace")?.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: "auto" });
+        document.querySelector(".app-workspace")?.scrollTo({ top: 0, behavior: "auto" });
     }
 
     async function signOut() {
@@ -3108,6 +3331,31 @@
         }
         void generateFridgeProposal(products);
     });
+    document.querySelectorAll("[data-fridge-mode]").forEach((button) => {
+        button.addEventListener("click", () => setFridgeMode(button.dataset.fridgeMode));
+    });
+    fridgeCustomCalories?.addEventListener("input", () => updateFridgeTargetCard());
+    fridgeResetButton?.addEventListener("click", () => {
+        if (fridgeProducts) fridgeProducts.value = "";
+        if (fridgeCustomCalories) fridgeCustomCalories.value = "";
+        currentFridgeProposal = null;
+        currentFridgeProducts = "";
+        document.getElementById("fridge-result")?.setAttribute("hidden", "");
+        setFridgeMode("remaining", { focus: false });
+        setText("fridge-status", "Gotowe do wygenerowania.");
+        document.getElementById("fridge-status")?.classList.remove("error");
+        fridgeProducts?.focus();
+    });
+    fridgeAddTodayButton?.addEventListener("click", () => void commitFridgeProposal());
+    fridgeRegenerateButton?.addEventListener("click", () => {
+        const products = currentFridgeProducts || fridgeProducts?.value.trim() || "";
+        if (products.length >= 3) void generateFridgeProposal(products, { regenerate: true });
+    });
+    fridgeChangeProductsButton?.addEventListener("click", () => {
+        document.getElementById("fridge-result")?.setAttribute("hidden", "");
+        fridgeProducts?.focus();
+    });
+    fridgeReportButton?.addEventListener("click", () => void reportFridgeProposal());
 
     coachForm?.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -3122,6 +3370,20 @@
             return;
         }
         void sendCoachMessage(message);
+    });
+    coachHistoryButton?.addEventListener("click", () => {
+        if (activeUserId) void loadCoachHistory({ id: activeUserId });
+    });
+    document.querySelectorAll("[data-coach-section]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const isCoach = button.dataset.coachSection === "coach";
+            document.querySelectorAll("[data-coach-section]").forEach((item) => {
+                const selected = item === button;
+                item.classList.toggle("active", selected);
+                item.setAttribute("aria-selected", String(selected));
+            });
+            if (!isCoach) setText("coach-status", "Czat z Przemalą pozostaje w aplikacji Android DEV. AI Coach działa tutaj.");
+        });
     });
 
     healthConsentCheckbox?.addEventListener("change", () => {
@@ -3248,8 +3510,13 @@
     document.querySelectorAll("[data-coach-prompt]").forEach((button) => {
         button.addEventListener("click", () => {
             if (!coachInput) return;
-            coachInput.value = button.dataset.coachPrompt || "";
-            coachInput.focus();
+            const prompt = button.dataset.coachPrompt || "";
+            if (!client || !activeUserId || !prompt) {
+                coachInput.value = prompt;
+                coachInput.focus();
+                return;
+            }
+            void sendCoachMessage(prompt);
         });
     });
 
