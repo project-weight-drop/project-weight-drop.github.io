@@ -11,10 +11,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://iqqiizsehdjwenqowsqc.supabase.co; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-checkin-parity">
+    <link rel="stylesheet" href="./styles.css?v=20261005-profile-bootstrap-gate">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./app.js?v=20261005-checkin-parity" defer></script>
+    <script src="./app.js?v=20261005-profile-bootstrap-gate" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -146,6 +146,14 @@
 </main>
 
 <div id="app-view" class="app-shell" hidden>
+    <div id="profile-bootstrap-gate" class="profile-bootstrap-gate" role="dialog" aria-modal="true" aria-labelledby="profile-bootstrap-heading" aria-describedby="profile-bootstrap-message" hidden>
+        <section class="profile-bootstrap-card">
+            <span class="profile-bootstrap-spinner" aria-hidden="true"></span>
+            <h2 id="profile-bootstrap-heading">Sprawdzamy profil startowy</h2>
+            <p id="profile-bootstrap-message" role="status" aria-live="polite">Chwilka — sprawdzamy, czy konfiguracja i pierwszy plan są już gotowe.</p>
+            <button id="profile-bootstrap-retry" class="tool-primary-button" type="button" hidden>Sprawdź ponownie</button>
+        </section>
+    </div>
     <aside class="sidebar" aria-label="Główna nawigacja aplikacji">
         <div class="sidebar-brand">
             <img src="/brand-logo.png" alt="" width="52" height="52">

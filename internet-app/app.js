@@ -103,6 +103,10 @@
     const saveWeightEntryButton = document.getElementById("save-weight-entry");
     const profileSetupPanel = document.getElementById("profile-setup-panel");
     const profileSetupForm = document.getElementById("profile-setup-form");
+    const profileBootstrapGate = document.getElementById("profile-bootstrap-gate");
+    const profileBootstrapHeading = document.getElementById("profile-bootstrap-heading");
+    const profileBootstrapMessage = document.getElementById("profile-bootstrap-message");
+    const profileBootstrapRetry = document.getElementById("profile-bootstrap-retry");
     const profileSetupSubmit = document.getElementById("profile-setup-submit");
     const profileSetupHeading = document.getElementById("profile-setup-heading");
     const profileSetupDescription = document.getElementById("profile-setup-description");
@@ -212,6 +216,8 @@
     let deleteAccountPreviousFocus = null;
     let healthConsentGranted = false;
     let profileReadyForWrites = false;
+    let profileBootstrapState = "idle";
+    let profileSetupRequired = false;
     let currentMealPreferences = null;
     let currentPreferenceCatalog = [];
     let currentSafetyProfileComplete = false;
@@ -423,6 +429,21 @@
         card.classList.toggle("error", state === "error");
     }
 
+    function setProfileBootstrapState(state, message = "") {
+        profileBootstrapState = state;
+        profileSetupRequired = state === "required" || state === "checking" || state === "error";
+        if (!profileBootstrapGate) return;
+        profileBootstrapGate.dataset.state = state;
+        profileBootstrapGate.hidden = state !== "checking" && state !== "error";
+        if (profileBootstrapHeading) {
+            profileBootstrapHeading.textContent = state === "error"
+                ? "Nie udało się sprawdzić profilu"
+                : "Sprawdzamy profil startowy";
+        }
+        if (profileBootstrapMessage && message) profileBootstrapMessage.textContent = message;
+        if (profileBootstrapRetry) profileBootstrapRetry.hidden = state !== "error";
+    }
+
     function resetAccountViews() {
         currentMealPlan = null;
         selectedMealPlanDay = 0;
@@ -442,6 +463,7 @@
         activeCoachSection = "coach";
         healthConsentGranted = false;
         profileReadyForWrites = false;
+        setProfileBootstrapState("idle");
         currentMealPreferences = null;
         currentPreferenceCatalog = [];
         currentSafetyProfileComplete = false;
@@ -1613,7 +1635,7 @@
 
     function renderDashboard(data) {
         currentDashboardSnapshot = data || null;
-        const caloriesTarget = finiteNumber(data?.calories_target);
+        const caloriesTarget = finiteNumber(data?.calories_target) ?? finiteNumber(currentNutritionPlan?.calories_target);
         const caloriesConsumed = finiteNumber(data?.calories_consumed) ?? 0;
         const remaining = caloriesTarget === null ? null : Math.max(0, caloriesTarget - caloriesConsumed);
         setText("home-calories-remaining", formatNumber(remaining));
@@ -1626,33 +1648,38 @@
         setText("meals-today-target", formatNumber(caloriesTarget));
         setProgress("meals-today-calorie-bar", caloriesConsumed, caloriesTarget);
 
-        setText("home-current-weight", formatWeight(data?.current_weight_kg));
-        setText("home-goal-weight", formatWeight(data?.goal_weight_kg));
-        setText("home-next-milestone", formatWeight(data?.first_milestone_kg ?? data?.goal_weight_kg));
-        setText("home-water", formatNumber(data?.water_ml));
-        setText("home-steps", formatNumber(data?.steps));
-        setText("water-tool-summary", `${formatNumber(data?.water_ml)} ml dzisiaj`);
-        setText("steps-tool-summary", `${formatNumber(data?.steps)} kroków dzisiaj`);
+        const profile = currentProgressData.profile;
+        const water = finiteNumber(data?.water_ml) ?? 0;
+        const steps = finiteNumber(data?.steps) ?? 0;
+        const currentWeight = finiteNumber(data?.current_weight_kg) ?? finiteNumber(profile?.current_weight_kg);
+        const goalWeight = finiteNumber(data?.goal_weight_kg) ?? finiteNumber(profile?.goal_weight_kg);
+        setText("home-current-weight", formatWeight(currentWeight));
+        setText("home-goal-weight", formatWeight(goalWeight));
+        setText("home-next-milestone", formatWeight(data?.first_milestone_kg ?? goalWeight));
+        setText("home-water", formatNumber(water));
+        setText("home-steps", formatNumber(steps));
+        setText("water-tool-summary", `${formatNumber(water)} ml dzisiaj`);
+        setText("steps-tool-summary", `${formatNumber(steps)} kroków dzisiaj`);
         if (stepsAmountInput && document.activeElement !== stepsAmountInput) {
-            stepsAmountInput.value = finiteNumber(data?.steps) === null ? "" : String(data.steps);
+            stepsAmountInput.value = String(steps);
         }
 
         const macroRows = [
-            ["protein", data?.protein_consumed, data?.protein_target],
-            ["fat", data?.fat_consumed, data?.fat_target],
-            ["carbs", data?.carbs_consumed, data?.carbs_target]
+            ["protein", data?.protein_consumed, data?.protein_target, currentNutritionPlan?.protein_g],
+            ["fat", data?.fat_consumed, data?.fat_target, currentNutritionPlan?.fat_g],
+            ["carbs", data?.carbs_consumed, data?.carbs_target, currentNutritionPlan?.carbs_g]
         ];
-        macroRows.forEach(([name, consumed, target]) => {
-            setText(`home-${name}`, `${formatNumber(consumed)} / ${formatNumber(target)} g`);
-            setText(`meals-today-${name}`, `${formatMacro(consumed)} / ${formatMacro(target)} g`);
-            const consumedValue = finiteNumber(consumed);
-            const targetValue = finiteNumber(target);
+        macroRows.forEach(([name, consumed, snapshotTarget, planTarget]) => {
+            const consumedValue = finiteNumber(consumed) ?? 0;
+            const targetValue = finiteNumber(snapshotTarget) ?? finiteNumber(planTarget);
+            setText(`home-${name}`, `${formatNumber(consumedValue)} / ${formatNumber(targetValue)} g`);
+            setText(`meals-today-${name}`, `${formatMacro(consumedValue)} / ${formatMacro(targetValue)} g`);
             const percent = consumedValue === null || targetValue === null || targetValue <= 0
                 ? null
                 : Math.round((consumedValue / targetValue) * 100);
             setText(`home-${name}-percent`, percent === null ? "—" : `${percent}%`);
-            setProgress(`home-${name}-bar`, consumed, target);
-            setProgress(`meals-today-${name}-bar`, consumed, target);
+            setProgress(`home-${name}-bar`, consumedValue, targetValue);
+            setProgress(`meals-today-${name}-bar`, consumedValue, targetValue);
         });
 
         const weightProgress = finiteNumber(data?.goal_progress_percent);
@@ -1820,12 +1847,35 @@
         syncProfileSetupGoal();
     }
 
-    function renderProfileSetup(profile, plan, profileError = null, planError = null) {
+    function profileHasRequiredSetupData(profile) {
+        if (!profile?.onboarding_completed) return false;
+        const requiredNumbers = [
+            profile.start_weight_kg, profile.current_weight_kg, profile.goal_weight_kg,
+            profile.age_years, profile.height_cm, profile.meals_per_day
+        ];
+        const requiredNonnegativeNumbers = [profile.strength_training_days, profile.average_steps];
+        return requiredNumbers.every((value) => finiteNumber(value) !== null && finiteNumber(value) > 0) &&
+            requiredNonnegativeNumbers.every((value) => finiteNumber(value) !== null && finiteNumber(value) >= 0) &&
+            ["male", "female"].includes(profile.sex_for_calculations) &&
+            ["keto", "low_carb", "balanced"].includes(profile.diet_type) &&
+            ["reduction", "maintenance", "gain"].includes(profile.goal_type) &&
+            ["very_low", "low", "light", "moderate", "high", "very_high"].includes(profile.activity_level) &&
+            typeof profile.main_challenge === "string" && profile.main_challenge.trim().length > 0;
+    }
+
+    function planHasRequiredTargets(plan) {
+        if (!plan) return false;
+        return [plan.calories_target, plan.protein_g, plan.fat_g, plan.carbs_g]
+            .every((value) => finiteNumber(value) !== null && finiteNumber(value) > 0);
+    }
+
+    function renderProfileSetup(profile, plan) {
         if (!profileSetupPanel || !profileSetupForm) return false;
-        const needsSetup = !profileError && !planError && (!profile?.onboarding_completed || !plan);
+        const needsSetup = !profileHasRequiredSetupData(profile) || !planHasRequiredTargets(plan);
         profileSetupPanel.hidden = !needsSetup;
         document.querySelector('[data-page="profile"]')?.classList.toggle("profile-setup-required", needsSetup);
         appShell?.classList.toggle("profile-onboarding-active", needsSetup);
+        setProfileBootstrapState(needsSetup ? "required" : "ready");
         if (!needsSetup) return false;
         const profileHeader = document.querySelector(".profile-card");
         if (profileHeader && profileHeader.nextElementSibling !== profileSetupPanel) profileHeader.after(profileSetupPanel);
@@ -1996,10 +2046,16 @@
             setToolStatus("profile-setup-status", "Plan został wysłany do wyliczenia, ale sesja wymaga odświeżenia.", "error");
             return;
         }
+        if (profileBootstrapState !== "ready" || !profileReadyForWrites || !currentNutritionPlan) {
+            setProfileBootstrapState("error", "Profil lub aktywny plan nie pojawił się jeszcze w zapisanych danych DEV. Sprawdź ponownie za chwilę.");
+            setToolStatus("profile-setup-status", "Nie udało się jeszcze potwierdzić zapisanego profilu i aktywnego planu. Sprawdź ponownie za chwilę.", "error");
+            return;
+        }
         const calories = finiteNumber(result.data?.target_kcal ?? result.data?.calories ?? result.data?.calories_target);
         const detail = calories === null ? "Profil i aktywny plan DEV są gotowe." : `Profil i aktywny plan są gotowe: ${formatNumber(calories)} kcal.`;
         setText("profile-data-message", detail);
-        profileDataPanel?.scrollIntoView({ behavior: "smooth", block: "start" });
+        setText("home-profile-detail", detail);
+        navigateTo("home");
     }
 
     function renderProfile(profile, plan) {
@@ -5119,7 +5175,9 @@
 
     async function loadAccountData(user) {
         const sequence = ++dataLoadSequence;
+        const preferredRoute = window.location.hash.slice(1) || "home";
         resetAccountViews();
+        setProfileBootstrapState("checking", "Chwilka — sprawdzamy, czy konfiguracja i pierwszy plan są już gotowe.");
 
         const profileColumns = [
             "user_id", "start_weight_kg", "current_weight_kg", "goal_weight_kg", "diet_type",
@@ -5129,40 +5187,82 @@
         ].join(",");
         const planColumns = "calories_target,protein_g,fat_g,carbs_g,estimated_tdee,estimated_rmr,diet_type,status,version";
 
+        let profileResult;
+        let planResult;
+        try {
+            [profileResult, planResult] = await Promise.all([
+                client.from("profiles").select(profileColumns).eq("user_id", user.id).maybeSingle(),
+                client.from("nutrition_plans").select(planColumns).eq("user_id", user.id)
+                    .eq("status", "active").order("version", { ascending: false }).limit(1).maybeSingle()
+            ]);
+        } catch (error) {
+            if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
+            const message = friendlyDataError(error);
+            document.querySelector('[data-page="profile"]')?.classList.add("profile-setup-required");
+            appShell?.classList.add("profile-onboarding-active");
+            setProfileBootstrapState("error", `${message} Home pozostaje zablokowany, dopóki nie potwierdzimy stanu profilu. Spróbuj ponownie.`);
+            navigateTo("profile");
+            return;
+        }
+
+        if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
+        if (profileResult.error || planResult.error) {
+            const error = profileResult.error || planResult.error;
+            const message = friendlyDataError(error);
+            document.querySelector('[data-page="profile"]')?.classList.add("profile-setup-required");
+            appShell?.classList.add("profile-onboarding-active");
+            setProfileBootstrapState("error", `${message} Home pozostaje zablokowany, dopóki nie potwierdzimy stanu profilu. Spróbuj ponownie.`);
+            setText("profile-data-message", message);
+            navigateTo("profile");
+            return;
+        }
+
+        const needsProfileSetup = renderProfileSetup(profileResult.data, planResult.data);
+        if (needsProfileSetup) navigateTo("profile");
+        else setProfileBootstrapState("checking", "Profil i pierwszy plan są gotowe. Przygotowujemy podsumowanie Home…");
+
+        let accountResults;
+        try {
+            accountResults = await Promise.all([
+                client.rpc("get_dashboard_snapshot"),
+                client.from("nutrition_plans").select("effective_from").eq("user_id", user.id)
+                    .order("effective_from", { ascending: true }).limit(1).maybeSingle(),
+                client.from("weekly_checkins").select("period_end").eq("user_id", user.id)
+                    .order("period_end", { ascending: false }).limit(1).maybeSingle(),
+                client.rpc("get_weekly_progress_report"),
+                client.from("weight_logs").select("id,weight_kg,measured_at,source").eq("user_id", user.id)
+                    .order("measured_at", { ascending: false }).limit(12),
+                client.from("daily_summaries").select("summary_date,steps,steps_recorded_at,water_ml,wellbeing_score")
+                    .eq("user_id", user.id).order("summary_date", { ascending: false }).limit(30),
+                client.rpc("get_today_meals"),
+                client.rpc("get_current_meal_plan"),
+                client.from("user_privacy_consents").select("explicit_health_data_consent,consented_at")
+                    .eq("user_id", user.id).eq("policy_version", CURRENT_PRIVACY_POLICY_VERSION)
+                    .eq("explicit_health_data_consent", true).limit(1).maybeSingle(),
+                client.from("body_measurements").select("measurement_date,waist_cm,hips_cm,chest_cm,arm_cm,thigh_cm,measured_at")
+                    .eq("user_id", user.id).order("measurement_date", { ascending: false }).limit(30),
+                client.from("user_event_goals").select("event_name,event_date,updated_at")
+                    .eq("user_id", user.id).limit(1).maybeSingle(),
+                client.from("safety_profiles").select("pregnant,breastfeeding,eating_disorder_risk,uses_hypoglycemia_medication,uses_sglt2_inhibitor,confirmed_at")
+                    .eq("user_id", user.id).limit(1).maybeSingle(),
+                client.rpc("get_meal_preferences"),
+                client.rpc("get_meal_preference_catalog"),
+                client.rpc("get_premium_snapshot"),
+                loadCurrentUserAdminStatus()
+            ]);
+        } catch (error) {
+            if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
+            const message = friendlyDataError(error);
+            setProfileBootstrapState("error", `${message} Nie udało się przygotować danych aplikacji. Spróbuj ponownie.`);
+            navigateTo("profile");
+            return;
+        }
+
         const [
-            dashboardResult, profileResult, planResult, firstPlanResult, checkInResult, weeklyResult, weightResult, stepsResult,
+            dashboardResult, firstPlanResult, checkInResult, weeklyResult, weightResult, stepsResult,
             todayMealsResult, mealPlanResult, consentResult, bodyResult, eventResult,
             safetyResult, preferencesResult, preferenceCatalogResult, premiumResult, adminStatus
-        ] = await Promise.all([
-            client.rpc("get_dashboard_snapshot"),
-            client.from("profiles").select(profileColumns).eq("user_id", user.id).maybeSingle(),
-            client.from("nutrition_plans").select(planColumns).eq("user_id", user.id)
-                .eq("status", "active").order("version", { ascending: false }).limit(1).maybeSingle(),
-            client.from("nutrition_plans").select("effective_from").eq("user_id", user.id)
-                .order("effective_from", { ascending: true }).limit(1).maybeSingle(),
-            client.from("weekly_checkins").select("period_end").eq("user_id", user.id)
-                .order("period_end", { ascending: false }).limit(1).maybeSingle(),
-            client.rpc("get_weekly_progress_report"),
-            client.from("weight_logs").select("id,weight_kg,measured_at,source").eq("user_id", user.id)
-                .order("measured_at", { ascending: false }).limit(12),
-            client.from("daily_summaries").select("summary_date,steps,steps_recorded_at,water_ml,wellbeing_score")
-                .eq("user_id", user.id).order("summary_date", { ascending: false }).limit(30),
-            client.rpc("get_today_meals"),
-            client.rpc("get_current_meal_plan"),
-            client.from("user_privacy_consents").select("explicit_health_data_consent,consented_at")
-                .eq("user_id", user.id).eq("policy_version", CURRENT_PRIVACY_POLICY_VERSION)
-                .eq("explicit_health_data_consent", true).limit(1).maybeSingle(),
-            client.from("body_measurements").select("measurement_date,waist_cm,hips_cm,chest_cm,arm_cm,thigh_cm,measured_at")
-                .eq("user_id", user.id).order("measurement_date", { ascending: false }).limit(30),
-            client.from("user_event_goals").select("event_name,event_date,updated_at")
-                .eq("user_id", user.id).limit(1).maybeSingle(),
-            client.from("safety_profiles").select("pregnant,breastfeeding,eating_disorder_risk,uses_hypoglycemia_medication,uses_sglt2_inhibitor,confirmed_at")
-                .eq("user_id", user.id).limit(1).maybeSingle(),
-            client.rpc("get_meal_preferences"),
-            client.rpc("get_meal_preference_catalog"),
-            client.rpc("get_premium_snapshot"),
-            loadCurrentUserAdminStatus()
-        ]);
+        ] = accountResults;
 
         if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
 
@@ -5204,6 +5304,7 @@
 
         if (dashboardResult.error) {
             const message = friendlyDataError(dashboardResult.error);
+            renderDashboard(null);
             dashboardOverview?.setAttribute("aria-busy", "false");
             setText("dashboard-message", message);
             setText("home-data-status", "Brak danych");
@@ -5277,15 +5378,10 @@
             preferenceCatalogResult.error ? [] : preferenceCatalogResult.data,
             preferencesResult.error || preferenceCatalogResult.error
         );
-        const needsProfileSetup = renderProfileSetup(
-            profileResult.error ? null : profileResult.data,
-            planResult.error ? null : planResult.data,
-            profileResult.error,
-            planResult.error
-        );
+        const stillNeedsProfileSetup = renderProfileSetup(profileResult.data, planResult.data);
         updateMealGenerationAccess();
         healthToolsContent?.setAttribute("aria-busy", "false");
-        if (needsProfileSetup) navigateTo("profile");
+        if (!stillNeedsProfileSetup) navigateTo(preferredRoute, false);
         void loadCommunityData(user);
     }
 
@@ -5335,10 +5431,10 @@
         renderUser(user);
         authView.hidden = true;
         appView.hidden = false;
-        navigateTo(window.location.hash.slice(1) || "home", false);
         if (shouldLoadData) {
             void loadAccountData(user);
         }
+        navigateTo(window.location.hash.slice(1) || "home", false);
     }
 
     async function verifyCurrentUser() {
@@ -5352,7 +5448,9 @@
     }
 
     function navigateTo(route, updateHash = true) {
-        const requestedRoute = route === "community" ? "progress" : route;
+        let requestedRoute = route === "community" ? "progress" : route;
+        const profileGateActive = profileBootstrapState === "checking" || profileBootstrapState === "error" || profileSetupRequired;
+        if (profileGateActive && requestedRoute !== "profile") requestedRoute = "profile";
         if (route === "community") setProgressSection("community");
         else if (requestedRoute === "progress") setProgressSection("hub");
         const safeRoute = Object.hasOwn(routeLabels, requestedRoute) ? requestedRoute : "home";
@@ -5386,7 +5484,7 @@
             else item.removeAttribute("aria-current");
         });
         if (backHomeButton) {
-            backHomeButton.hidden = safeRoute === "home";
+            backHomeButton.hidden = safeRoute === "home" || profileGateActive;
             updateBackHomeButtonLabel();
         }
         const pageTitle = safeRoute === "coach" && activeCoachSection === "support"
@@ -5406,6 +5504,10 @@
     }
 
     function goBackOneRoute() {
+        if (profileBootstrapState === "checking" || profileBootstrapState === "error" || profileSetupRequired) {
+            navigateTo("profile");
+            return;
+        }
         if (currentAppRoute === "progress" && activeProgressDestination) {
             setProgressSection(activeProgressSection);
             window.history.replaceState(null, "", "#progress");
@@ -5869,6 +5971,17 @@
         event.preventDefault();
         if (activeProfileSetupStep < profileSetupSteps.length - 1) advanceProfileSetup();
         else void submitInitialProfile();
+    });
+    profileBootstrapRetry?.addEventListener("click", async () => {
+        if (profileBootstrapRetry.disabled) return;
+        profileBootstrapRetry.disabled = true;
+        profileBootstrapRetry.textContent = "Sprawdzanie…";
+        const refreshed = await refreshAccountData();
+        if (!refreshed && profileBootstrapState === "checking") {
+            setProfileBootstrapState("error", "Nie udało się odświeżyć sesji i danych profilu DEV. Sprawdź połączenie i spróbuj ponownie.");
+        }
+        profileBootstrapRetry.disabled = false;
+        profileBootstrapRetry.textContent = "Sprawdź ponownie";
     });
 
     document.querySelectorAll("[data-meals-view]").forEach((button) => {

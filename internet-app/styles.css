@@ -1424,6 +1424,15 @@ body.modal-open { overflow: hidden; }
 .route-page[data-page="profile"].profile-setup-required { width: min(100%, 860px); margin: 0 auto; }
 .app-shell.profile-onboarding-active .app-header-copy { display: none; }
 .app-shell.profile-onboarding-active .app-workspace { background-image: linear-gradient(rgba(0,0,0,.8), rgba(0,0,0,.9)), url("./assets/android-home-background.jpg"); background-position: center top; background-size: cover; background-attachment: fixed; }
+.profile-bootstrap-gate { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 20px; background: rgba(5,5,5,.94); backdrop-filter: blur(12px); }
+.profile-bootstrap-gate[hidden] { display: none !important; }
+.profile-bootstrap-card { width: min(100%, 440px); display: grid; justify-items: center; gap: 13px; padding: 28px 24px; border: 1px solid rgba(255,106,0,.55); border-radius: 18px; background: linear-gradient(145deg, rgba(35,29,25,.98), rgba(16,16,16,.98)); box-shadow: 0 18px 70px rgba(0,0,0,.6); text-align: center; }
+.profile-bootstrap-card h2 { margin: 0; font-size: 22px; }
+.profile-bootstrap-card p { margin: 0; color: #c5c5c5; line-height: 1.55; }
+.profile-bootstrap-card .tool-primary-button { margin-top: 5px; }
+.profile-bootstrap-spinner { width: 36px; height: 36px; border: 3px solid rgba(255,106,0,.22); border-top-color: var(--orange); border-radius: 50%; animation: profile-bootstrap-spin .8s linear infinite; }
+.profile-bootstrap-gate[data-state="error"] .profile-bootstrap-spinner { display: none; }
+@keyframes profile-bootstrap-spin { to { transform: rotate(360deg); } }
 
 @media (max-width: 380px) {
     .home-brand-header { gap: 8px; }
