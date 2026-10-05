@@ -11,10 +11,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-coach-android-parity">
+    <link rel="stylesheet" href="./styles.css?v=20261005-coach-android-community-tabs">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./app.js?v=20261005-coach-android-parity" defer></script>
+    <script src="./app.js?v=20261005-coach-android-community-tabs" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -646,7 +646,8 @@
             </section>
 
             <section class="route-page" data-page="progress" aria-labelledby="progress-heading">
-                <nav id="progress-section-nav" class="progress-section-nav" role="group" aria-label="Wyzwania i społeczność">
+                <nav id="progress-section-nav" class="progress-section-nav" role="group" aria-label="Postępy, wyzwania i społeczność">
+                    <button type="button" aria-pressed="false" data-progress-section-button="hub"><svg><use href="#icon-progress"></use></svg><span>Mój progres</span></button>
                     <button type="button" aria-pressed="false" data-progress-section-button="challenges"><svg><use href="#icon-event"></use></svg><span>Wyzwanie 30 dni</span></button>
                     <button type="button" aria-pressed="false" data-progress-section-button="community"><svg><use href="#icon-community"></use></svg><span>Społeczność</span></button>
                     <button type="button" aria-pressed="false" data-progress-section-button="przemala"><svg><use href="#icon-event"></use></svg><span>Challenge Przemali</span></button>

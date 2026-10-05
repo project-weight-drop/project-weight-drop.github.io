@@ -1241,6 +1241,8 @@ body.modal-open { overflow: hidden; }
 .community-rules-form input[type="text"] { min-height: 42px; border: 1px solid #414141; border-radius: 7px; padding: 0 11px; background: #101010; color: #fff; }
 .community-rules-check { display: flex; gap: 9px; align-items: flex-start; margin: 12px 0; color: #bbb; font-size: 10px; line-height: 1.5; }
 .community-rules-check input { margin-top: 2px; accent-color: var(--orange); }
+.progress-tab-view[data-progress-section-view="community"] .community-hero { min-height: 132px; align-items: center; padding: 20px; border-radius: 11px; }
+.progress-tab-view[data-progress-section-view="community"] .community-hero h2 { margin: 5px 0 7px; font-size: clamp(25px, 3.5vw, 34px); letter-spacing: -.03em; }
 .challenge-section-hero { margin-top: 2px; }
 .challenge-section-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin: 10px 0; }
 .challenge-section-tabs button { min-height: 38px; }
@@ -1360,12 +1362,17 @@ body.modal-open { overflow: hidden; }
 .route-page[data-page="profile"].profile-setup-required { width: min(100%, 860px); margin: 0 auto; }
 .app-shell.profile-onboarding-active .app-header-copy { display: none; }
 .app-shell.profile-onboarding-active .app-workspace { background-image: linear-gradient(rgba(0,0,0,.8), rgba(0,0,0,.9)), url("./assets/android-home-background.jpg"); background-position: center top; background-size: cover; background-attachment: fixed; }
-.progress-section-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.progress-section-nav { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 @media (max-width: 640px) {
     .app-shell.progress-route-active .app-workspace { background-attachment: scroll; background-position: center top; }
     .app-shell.coach-route-active .app-workspace { background-attachment: scroll; background-position: center top; }
-    .progress-section-nav { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
-    .progress-section-nav button { min-height: 58px; flex-direction: column; justify-content: center; gap: 4px; padding: 5px; font-size: 9px; text-align: center; }
+    .progress-section-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+    .progress-section-nav button { min-height: 46px; flex-direction: row; justify-content: center; gap: 6px; padding: 7px 5px; font-size: 10px; text-align: center; }
+    .progress-tab-view[data-progress-section-view="community"] .community-hero { min-height: 0; flex-direction: column; align-items: stretch; gap: 11px; padding: 14px; }
+    .progress-tab-view[data-progress-section-view="community"] .community-hero h2 { font-size: 24px; }
+    .progress-tab-view[data-progress-section-view="community"] .community-stats { gap: 6px; }
+    .progress-tab-view[data-progress-section-view="community"] .community-stats span { min-width: 0; flex: 1 1 0; padding: 9px; }
+    .progress-tab-view[data-progress-section-view="community"] .community-stats b { font-size: 17px; }
     .progress-hero { min-height: 92px; flex-direction: row; align-items: center; }
     .progress-detail-header { align-items: flex-start; flex-direction: column; }
     .progress-detail-header .tool-secondary-button { width: 100%; }
