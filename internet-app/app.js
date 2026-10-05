@@ -4,7 +4,7 @@
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
     const COMMUNITY_RULES_VERSION = "2026-09-09";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-progress-community-parity";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-profile-onboarding-progress-nav";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -24,6 +24,7 @@
     const passwordConfirmInput = document.getElementById("password-confirm");
     const passwordToggle = document.getElementById("password-toggle");
     const routeTitle = document.getElementById("route-title");
+    const backHomeButton = document.getElementById("back-home-button");
     const dashboardOverview = document.getElementById("dashboard-overview");
     const profileDataPanel = document.getElementById("profile-data-panel");
     const foodSearchForm = document.getElementById("food-search-form");
@@ -83,6 +84,13 @@
     const profileSetupPanel = document.getElementById("profile-setup-panel");
     const profileSetupForm = document.getElementById("profile-setup-form");
     const profileSetupSubmit = document.getElementById("profile-setup-submit");
+    const profileSetupHeading = document.getElementById("profile-setup-heading");
+    const profileSetupDescription = document.getElementById("profile-setup-description");
+    const profileSetupStepCount = document.getElementById("profile-setup-step-count");
+    const profileSetupProgressFill = document.getElementById("profile-setup-progress-fill");
+    const profileSetupProgressTrack = document.querySelector(".profile-setup-progress-track");
+    const profileSetupPrevious = document.getElementById("profile-setup-previous");
+    const profileSetupNext = document.getElementById("profile-setup-next");
     const profileSetupConsent = document.getElementById("profile-setup-health-consent");
     const profileSetupGoalType = document.getElementById("setup-goal-type");
     const profileSetupAdjustmentField = document.getElementById("setup-adjustment-field");
@@ -102,6 +110,52 @@
         progress: "Postępy",
         profile: "Profil"
     });
+
+    const profileSetupSteps = [
+        { title: "Od czego zaczynamy?", description: "Podaj aktualną masę i wybierz cel energetyczny." },
+        { title: "Podstawowe dane", description: "Służą wyłącznie do obliczenia startowego zapotrzebowania." },
+        { title: "Jak chcesz się odżywiać?", description: "Plan i makro dopasujemy do wybranego stylu." },
+        { title: "Jak wygląda Twój dzień?", description: "Wybierz poziom, który najlepiej opisuje Twoją codzienną aktywność." },
+        { title: "Ruch i trening", description: "Te dane pomagają dobrać startowe białko i aktywność." },
+        { title: "Ile posiłków Ci odpowiada?", description: "Plan ma pasować do Twojego dnia, a nie odwrotnie." },
+        { title: "Dopasujmy plan do życia", description: "Wybierz największą trudność, żeby plan i Coach lepiej pasowały do Twojej codzienności." },
+        { title: "Twój profil startowy", description: "Sprawdź dane. Następnie wygenerujemy pierwszy plan." }
+    ];
+
+    const profileSetupChoiceCatalog = {
+        "setup-goal-type": [
+            { value: "reduction", label: "Redukcja", description: "Deficyt energetyczny" },
+            { value: "maintenance", label: "Utrzymanie", description: "Stabilizacja masy" },
+            { value: "gain", label: "Budowanie", description: "Nadwyżka energetyczna" }
+        ],
+        "setup-energy-adjustment": ["10", "15", "20"].map((value) => ({ value, label: `${value}%` })),
+        "setup-sex": [
+            { value: "male", label: "Mężczyzna" },
+            { value: "female", label: "Kobieta" }
+        ],
+        "setup-diet": [
+            { value: "keto", label: "KETO", description: "Niski cel węglowodanów" },
+            { value: "low_carb", label: "LOW CARB", description: "Mniej węglowodanów bez ścisłego Keto" },
+            { value: "balanced", label: "BALANCE", description: "Zbilansowany rozkład makroskładników" }
+        ],
+        "setup-activity": [
+            { value: "very_low", label: "Bardzo niska", description: "Praca siedząca, bardzo mało ruchu" },
+            { value: "low", label: "Niska", description: "Mało ruchu, krótkie spacery" },
+            { value: "light", label: "Lekka", description: "Regularne spacery lub lekkie treningi" },
+            { value: "moderate", label: "Średnia", description: "Regularna aktywność i treningi kilka razy w tygodniu" },
+            { value: "high", label: "Wysoka", description: "Aktywna praca albo częste treningi" },
+            { value: "very_high", label: "Bardzo wysoka", description: "Ciężka praca lub intensywne treningi prawie codziennie" }
+        ],
+        "setup-strength-days": Array.from({ length: 8 }, (_, value) => ({ value: String(value), label: String(value), description: value === 1 ? "dzień / tydzień" : "dni / tydzień" })),
+        "setup-meals": [2, 3, 4, 5].map((value) => ({ value: String(value), label: String(value), description: value === 1 ? "posiłek dziennie" : "posiłki dziennie" })),
+        "setup-main-challenge": [
+            { value: "weekend", label: "Weekendy" },
+            { value: "evening_hunger", label: "Wieczorny głód" },
+            { value: "sweets", label: "Słodycze" },
+            { value: "time", label: "Brak czasu" },
+            { value: "eating_out", label: "Jedzenie na mieście" }
+        ]
+    };
 
     let client = null;
     let activeUserId = null;
@@ -127,6 +181,7 @@
     let expandedMealPlanIds = new Set();
     let lockedMealPlanIds = new Set();
     let profileSetupBusy = false;
+    let activeProfileSetupStep = 0;
     let currentDashboardSnapshot = null;
     let currentWeeklyProgressReport = null;
     let activeProgressSection = "hub";
@@ -1460,18 +1515,127 @@
         if (element) element.value = value === null || value === undefined || value === "" ? fallback : String(value);
     }
 
+    function syncProfileSetupChoice(selectId) {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+        document.querySelectorAll(`[data-profile-choice-option="${selectId}"]`).forEach((button) => {
+            const selected = button.dataset.value === select.value;
+            button.setAttribute("aria-checked", String(selected));
+            button.classList.toggle("active", selected);
+        });
+    }
+
+    function initializeProfileSetupChoices() {
+        Object.entries(profileSetupChoiceCatalog).forEach(([selectId, choices]) => {
+            const select = document.getElementById(selectId);
+            const label = select?.closest("label");
+            if (!select || !label || label.nextElementSibling?.dataset.profileChoiceFor === selectId) return;
+            const group = document.createElement("div");
+            group.className = "profile-setup-options";
+            group.dataset.profileChoiceFor = selectId;
+            group.setAttribute("role", "radiogroup");
+            group.setAttribute("aria-label", label.childNodes[0]?.textContent?.trim() || label.textContent.trim());
+            select.classList.add("profile-setup-native-select");
+            select.setAttribute("aria-hidden", "true");
+            select.tabIndex = -1;
+            choices.forEach((choice) => {
+                const button = document.createElement("button");
+                button.className = "profile-setup-option";
+                button.type = "button";
+                button.setAttribute("role", "radio");
+                button.setAttribute("aria-checked", String(select.value === choice.value));
+                button.dataset.profileChoiceOption = selectId;
+                button.dataset.value = choice.value;
+                const title = document.createElement("strong");
+                title.textContent = choice.label;
+                button.append(title);
+                if (choice.description) {
+                    const detail = document.createElement("small");
+                    detail.textContent = choice.description;
+                    button.append(detail);
+                }
+                button.addEventListener("click", () => {
+                    select.value = choice.value;
+                    select.dispatchEvent(new Event("change", { bubbles: true }));
+                    syncProfileSetupChoice(selectId);
+                    setToolStatus("profile-setup-status", "");
+                    renderProfileSetupSummary();
+                });
+                group.append(button);
+            });
+            label.after(group);
+            select.addEventListener("change", () => syncProfileSetupChoice(selectId));
+        });
+    }
+
+    function selectedProfileSetupLabel(id) {
+        const select = document.getElementById(id);
+        return select?.selectedOptions?.[0]?.textContent?.trim() || "—";
+    }
+
+    function renderProfileSetupSummary() {
+        const currentWeight = profileSetupValue("setup-current-weight", "—");
+        const goalWeight = profileSetupValue("setup-goal-weight", "—");
+        const goalType = profileSetupValue("setup-goal-type");
+        const adjustment = profileSetupValue("setup-energy-adjustment");
+        const energy = goalType === "maintenance" ? "Utrzymanie" : `${selectedProfileSetupLabel("setup-goal-type")} · ${adjustment}%`;
+        setText("profile-setup-review-weight", `${currentWeight || "—"} kg → ${goalWeight || "—"} kg`);
+        setText("profile-setup-review-energy", energy);
+        setText("profile-setup-review-diet", `${selectedProfileSetupLabel("setup-diet")} · ${profileSetupValue("setup-meals")} posiłki dziennie`);
+        setText("profile-setup-review-activity", selectedProfileSetupLabel("setup-activity"));
+        setText("profile-setup-review-movement", `${profileSetupValue("setup-strength-days")} treningów / tydz. · ${profileSetupValue("setup-average-steps")} kroków · ${selectedProfileSetupLabel("setup-main-challenge")}`);
+    }
+
+    function setProfileSetupStep(step, scrollIntoView = false) {
+        const steps = [...(profileSetupForm?.querySelectorAll("[data-profile-setup-step]") || [])];
+        if (!steps.length) return;
+        activeProfileSetupStep = Math.max(0, Math.min(steps.length - 1, Number(step) || 0));
+        const activeStep = steps[activeProfileSetupStep];
+        steps.forEach((stepElement, index) => { stepElement.hidden = index !== activeProfileSetupStep; });
+        profileSetupForm.querySelectorAll("input, select").forEach((control) => {
+            if (control.required && !control.dataset.setupOriginalRequired) control.dataset.setupOriginalRequired = "true";
+            if (control.dataset.setupOriginalRequired === "true") control.required = activeStep.contains(control);
+        });
+        const stepSpec = profileSetupSteps[activeProfileSetupStep];
+        if (profileSetupStepCount) profileSetupStepCount.textContent = `${activeProfileSetupStep + 1} / ${steps.length}`;
+        if (profileSetupProgressFill) profileSetupProgressFill.style.width = `${((activeProfileSetupStep + 1) / steps.length) * 100}%`;
+        if (profileSetupProgressTrack) profileSetupProgressTrack.setAttribute("aria-valuenow", String(activeProfileSetupStep + 1));
+        if (profileSetupHeading && stepSpec) profileSetupHeading.textContent = stepSpec.title;
+        if (profileSetupDescription && stepSpec) profileSetupDescription.textContent = stepSpec.description;
+        if (profileSetupPrevious) profileSetupPrevious.hidden = activeProfileSetupStep === 0;
+        if (profileSetupNext) profileSetupNext.hidden = activeProfileSetupStep === steps.length - 1;
+        if (profileSetupSubmit) profileSetupSubmit.hidden = activeProfileSetupStep !== steps.length - 1;
+        renderProfileSetupSummary();
+        if (scrollIntoView) profileSetupPanel?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function advanceProfileSetup() {
+        const currentStep = profileSetupForm?.querySelector(`[data-profile-setup-step="${activeProfileSetupStep}"]`);
+        const invalidControl = [...(currentStep?.querySelectorAll("input, select") || [])]
+            .find((control) => control.required && !control.checkValidity());
+        if (invalidControl) {
+            invalidControl.reportValidity();
+            return;
+        }
+        if (activeProfileSetupStep < profileSetupSteps.length - 1) setProfileSetupStep(activeProfileSetupStep + 1, true);
+    }
+
     function syncProfileSetupGoal() {
         const maintenance = profileSetupGoalType?.value === "maintenance";
         if (profileSetupAdjustmentField) profileSetupAdjustmentField.hidden = maintenance;
         if (profileSetupAdjustment) profileSetupAdjustment.disabled = maintenance || profileSetupBusy;
+        const adjustmentOptions = document.querySelector('[data-profile-choice-for="setup-energy-adjustment"]');
+        if (adjustmentOptions) adjustmentOptions.hidden = maintenance;
+        syncProfileSetupChoice("setup-goal-type");
+        syncProfileSetupChoice("setup-energy-adjustment");
     }
 
     function setProfileSetupBusy(busy) {
         profileSetupBusy = busy;
-        profileSetupForm?.querySelectorAll("input, select, button").forEach((control) => {
+        profileSetupForm?.querySelectorAll("input, select, button, .profile-setup-options button").forEach((control) => {
             control.disabled = busy;
         });
-        if (profileSetupSubmit) profileSetupSubmit.textContent = busy ? "Wyliczanie planu…" : "Utwórz profil i wylicz plan";
+        if (profileSetupSubmit) profileSetupSubmit.textContent = busy ? "WYLICZANIE PLANU…" : "GENERUJ MÓJ PLAN";
         if (profileSetupConsent) profileSetupConsent.disabled = busy || healthConsentGranted;
         syncProfileSetupGoal();
     }
@@ -1480,6 +1644,8 @@
         if (!profileSetupPanel || !profileSetupForm) return false;
         const needsSetup = !profileError && !planError && (!profile?.onboarding_completed || !plan);
         profileSetupPanel.hidden = !needsSetup;
+        document.querySelector('[data-page="profile"]')?.classList.toggle("profile-setup-required", needsSetup);
+        appShell?.classList.toggle("profile-onboarding-active", needsSetup);
         if (!needsSetup) return false;
         const profileHeader = document.querySelector(".profile-card");
         if (profileHeader && profileHeader.nextElementSibling !== profileSetupPanel) profileHeader.after(profileSetupPanel);
@@ -1502,9 +1668,12 @@
             setProfileSetupValue("setup-average-steps", profile?.average_steps, "8000");
             setProfileSetupValue("setup-main-challenge", profile?.main_challenge, "weekend");
             profileSetupForm.dataset.prefilledFor = activeUserId || "signed-in";
+            setProfileSetupStep(0);
         }
         if (profileSetupConsent) profileSetupConsent.checked = healthConsentGranted || profileSetupConsent.checked;
+        Object.keys(profileSetupChoiceCatalog).forEach(syncProfileSetupChoice);
         setProfileSetupBusy(false);
+        setProfileSetupStep(activeProfileSetupStep);
         setToolStatus("profile-setup-status", profile
             ? "Uzupełnij brakujące dane i utwórz aktywny plan DEV."
             : "Uzupełnij wszystkie pola. Po zatwierdzeniu utworzymy profil i aktywny plan DEV.");
@@ -2056,7 +2225,7 @@
         document.querySelectorAll("[data-progress-section-button]").forEach((button) => {
             const selected = button.dataset.progressSectionButton === activeProgressSection;
             button.classList.toggle("active", selected);
-            button.setAttribute("aria-selected", String(selected));
+            button.setAttribute("aria-pressed", String(selected));
         });
     }
 
@@ -4006,6 +4175,8 @@
         if (profileResetResult) profileResetResult.textContent = "";
         activeProgressSection = "hub";
         activeProgressDestination = null;
+        activeProfileSetupStep = 0;
+        setProfileSetupStep(0);
         currentProgressData = { profile: null, daily: [], weights: [], measurements: [], event: null };
         currentCommunitySnapshots = { community: null, system: null, przemala: null };
         challengeDaySelection.clear();
@@ -4046,6 +4217,7 @@
     function navigateTo(route, updateHash = true) {
         const requestedRoute = route === "community" ? "progress" : route;
         if (route === "community") setProgressSection("community");
+        else if (requestedRoute === "progress") setProgressSection("hub");
         const safeRoute = Object.hasOwn(routeLabels, requestedRoute) ? requestedRoute : "home";
         appShell?.classList.toggle("home-route-active", safeRoute === "home");
         appShell?.classList.toggle("meals-route-active", safeRoute === "meals");
@@ -4060,6 +4232,7 @@
             if (selected) item.setAttribute("aria-current", "page");
             else item.removeAttribute("aria-current");
         });
+        if (backHomeButton) backHomeButton.hidden = safeRoute === "home";
         routeTitle.textContent = routeLabels[safeRoute];
         document.title = `${routeLabels[safeRoute]} — Project Weight Drop DEV`;
         if (updateHash) window.history.replaceState(null, "", `#${safeRoute}`);
@@ -4439,9 +4612,13 @@
         setToolStatus("profile-setup-status", "");
     });
     profileSetupForm?.addEventListener("input", () => setToolStatus("profile-setup-status", ""));
+    initializeProfileSetupChoices();
+    profileSetupPrevious?.addEventListener("click", () => setProfileSetupStep(activeProfileSetupStep - 1, true));
+    profileSetupNext?.addEventListener("click", advanceProfileSetup);
     profileSetupForm?.addEventListener("submit", (event) => {
         event.preventDefault();
-        void submitInitialProfile();
+        if (activeProfileSetupStep < profileSetupSteps.length - 1) advanceProfileSetup();
+        else void submitInitialProfile();
     });
 
     document.querySelectorAll("[data-meals-view]").forEach((button) => {
@@ -4502,6 +4679,7 @@
     document.querySelectorAll("[data-sign-out]").forEach((button) => {
         button.addEventListener("click", () => void signOut());
     });
+    backHomeButton?.addEventListener("click", () => navigateTo("home"));
     openProfileResetButton?.addEventListener("click", openProfileReset);
     cancelProfileResetButton?.addEventListener("click", closeProfileReset);
     confirmProfileResetButton?.addEventListener("click", () => void resetOwnProfile());

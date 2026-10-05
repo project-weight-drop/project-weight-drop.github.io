@@ -11,10 +11,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-progress-community-parity">
+    <link rel="stylesheet" href="./styles.css?v=20261005-profile-onboarding-progress-nav">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
-    <script src="./config.js?v=20261005-progress-community-parity" defer></script>
-    <script src="./app.js?v=20261005-progress-community-parity" defer></script>
+    <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
+    <script src="./app.js?v=20261005-profile-onboarding-progress-nav" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -187,9 +187,14 @@
 
     <div class="app-workspace">
         <header class="app-header">
-            <div>
+            <div class="app-header-title-row">
+                <button id="back-home-button" class="back-home-button" type="button" aria-label="Wróć do Home" hidden>
+                    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span>Home</span>
+                </button>
+                <div class="app-header-copy">
                 <p class="app-kicker">PROJECT WEIGHT DROP</p>
                 <h1 id="route-title">Home</h1>
+                </div>
             </div>
             <div class="header-actions">
                 <span class="connection-status"><i></i> Supabase DEV</span>
@@ -612,15 +617,14 @@
             </section>
 
             <section class="route-page" data-page="progress" aria-labelledby="progress-heading">
-                <nav id="progress-section-nav" class="progress-section-nav" role="tablist" aria-label="Sekcje postępów">
-                    <button type="button" role="tab" aria-selected="true" class="active" data-progress-section-button="hub"><svg><use href="#icon-progress"></use></svg><span>Mój progres</span></button>
-                    <button type="button" role="tab" aria-selected="false" data-progress-section-button="challenges"><svg><use href="#icon-event"></use></svg><span>Wyzwanie 30 dni</span></button>
-                    <button type="button" role="tab" aria-selected="false" data-progress-section-button="community"><svg><use href="#icon-community"></use></svg><span>Społeczność</span></button>
-                    <button type="button" role="tab" aria-selected="false" data-progress-section-button="przemala"><svg><use href="#icon-event"></use></svg><span>Challenge Przemali</span></button>
+                <nav id="progress-section-nav" class="progress-section-nav" role="group" aria-label="Wyzwania i społeczność">
+                    <button type="button" aria-pressed="false" data-progress-section-button="challenges"><svg><use href="#icon-event"></use></svg><span>Wyzwanie 30 dni</span></button>
+                    <button type="button" aria-pressed="false" data-progress-section-button="community"><svg><use href="#icon-community"></use></svg><span>Społeczność</span></button>
+                    <button type="button" aria-pressed="false" data-progress-section-button="przemala"><svg><use href="#icon-event"></use></svg><span>Challenge Przemali</span></button>
                 </nav>
-                <div data-progress-section-view="hub">
+                <div id="progress-hub-view" data-progress-section-view="hub">
                 <div class="progress-hero">
-                    <div class="progress-title"><span class="progress-title-icon"><svg><use href="#icon-progress"></use></svg></span><span><p class="eyebrow">WYNIKI I NAWYKI</p><h2 id="progress-heading">Progress</h2><p>Wyniki i nawyki w jednym miejscu</p></span></div>
+                    <div class="progress-title"><span class="progress-title-icon"><svg><use href="#icon-progress"></use></svg></span><span><p class="eyebrow">WYNIKI I NAWYKI</p><h2 id="progress-heading">Postępy</h2><p>Wyniki i nawyki w jednym miejscu</p></span></div>
                     <button class="progress-checkin-button" type="button" data-progress-open="check-in"><svg><use href="#icon-check"></use></svg>Check In</button>
                 </div>
                 <p id="progress-action-notice" class="progress-action-notice" role="status" aria-live="polite" hidden></p>
@@ -790,48 +794,75 @@
                     <div><a href="/privacy.html?from=internet-app" target="_blank" rel="noopener">Polityka prywatności</a><a href="/delete-account.html?from=internet-app" target="_blank" rel="noopener">Jak usunąć konto i dane</a></div>
                 </section>
                 <section id="profile-setup-panel" class="profile-setup-panel" aria-labelledby="profile-setup-heading" hidden>
-                    <div class="section-heading">
-                        <div><p class="eyebrow">KONFIGURACJA STARTOWA</p><h2 id="profile-setup-heading">Utwórz profil i plan</h2></div>
-                        <p>Podaj dane tak jak w Androidzie. Plan zostanie policzony przez ten sam silnik DEV.</p>
+                    <div class="profile-setup-progress-top">
+                        <span id="profile-setup-step-count">1 / 8</span>
+                        <div class="profile-setup-progress-track" role="progressbar" aria-label="Postęp uzupełniania profilu" aria-valuemin="1" aria-valuemax="8" aria-valuenow="1"><i id="profile-setup-progress-fill"></i></div>
                     </div>
+                    <header class="profile-setup-intro">
+                        <p class="eyebrow">KONFIGURACJA STARTOWA</p>
+                        <h2 id="profile-setup-heading">Od czego zaczynamy?</h2>
+                        <p id="profile-setup-description">Podaj aktualną masę i wybierz cel energetyczny.</p>
+                    </header>
                     <form id="profile-setup-form" class="profile-setup-form">
-                        <fieldset>
-                            <legend>1. Cel i waga</legend>
-                            <div class="profile-setup-grid">
-                                <label>Aktualna waga (kg)<input id="setup-current-weight" type="number" min="35" max="350" step="0.1" inputmode="decimal" required></label>
-                                <label>Waga docelowa (kg)<input id="setup-goal-weight" type="number" min="35" max="350" step="0.1" inputmode="decimal" required></label>
+                        <div class="profile-setup-step" data-profile-setup-step="0">
+                            <fieldset><legend>Cel i waga</legend><div class="profile-setup-grid">
+                                <label>Aktualna masa (kg)<input id="setup-current-weight" type="number" min="35" max="350" step="0.1" inputmode="decimal" required></label>
+                                <label>Docelowa masa (kg)<input id="setup-goal-weight" type="number" min="35" max="350" step="0.1" inputmode="decimal" required></label>
                                 <label>Cel energetyczny<select id="setup-goal-type" required><option value="reduction">Redukcja</option><option value="maintenance">Utrzymanie</option><option value="gain">Budowanie</option></select></label>
                                 <label id="setup-adjustment-field">Deficyt / nadwyżka<select id="setup-energy-adjustment" required><option value="10">10%</option><option value="15" selected>15%</option><option value="20">20%</option></select></label>
-                            </div>
-                        </fieldset>
-                        <fieldset>
-                            <legend>2. Dane do wyliczeń</legend>
-                            <div class="profile-setup-grid">
+                            </div></fieldset>
+                        </div>
+                        <div class="profile-setup-step" data-profile-setup-step="1" hidden>
+                            <fieldset><legend>Podstawowe dane</legend><div class="profile-setup-grid">
                                 <label>Płeć używana do obliczeń<select id="setup-sex" required><option value="male">Mężczyzna</option><option value="female">Kobieta</option></select></label>
                                 <label>Wiek<input id="setup-age" type="number" min="18" max="99" step="1" inputmode="numeric" required></label>
                                 <label>Wzrost (cm)<input id="setup-height" type="number" min="120" max="230" step="0.1" inputmode="decimal" required></label>
-                            </div>
-                        </fieldset>
-                        <fieldset>
-                            <legend>3. Dieta i posiłki</legend>
-                            <div class="profile-setup-grid">
-                                <label>Styl żywienia<select id="setup-diet" required><option value="keto">KETO</option><option value="low_carb">LOW CARB</option><option value="balanced">BALANCE</option></select></label>
-                                <label>Liczba posiłków dziennie<select id="setup-meals" required><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></label>
-                            </div>
-                        </fieldset>
-                        <fieldset>
-                            <legend>4. Aktywność</legend>
-                            <div class="profile-setup-grid">
-                                <label>Codzienna aktywność<select id="setup-activity" required><option value="very_low">Bardzo niska</option><option value="low">Niska</option><option value="light">Lekka</option><option value="moderate" selected>Średnia</option><option value="high">Wysoka</option><option value="very_high">Bardzo wysoka</option></select></label>
+                            </div></fieldset>
+                        </div>
+                        <div class="profile-setup-step" data-profile-setup-step="2" hidden>
+                            <fieldset><legend>Styl żywienia</legend><div class="profile-setup-grid">
+                                <label>Dieta<select id="setup-diet" required><option value="keto">KETO</option><option value="low_carb">LOW CARB</option><option value="balanced">BALANCE</option></select></label>
+                            </div></fieldset>
+                        </div>
+                        <div class="profile-setup-step" data-profile-setup-step="3" hidden>
+                            <fieldset><legend>Codzienna aktywność</legend><div class="profile-setup-grid">
+                                <label>Poziom aktywności<select id="setup-activity" required><option value="very_low">Bardzo niska</option><option value="low">Niska</option><option value="light">Lekka</option><option value="moderate" selected>Średnia</option><option value="high">Wysoka</option><option value="very_high">Bardzo wysoka</option></select></label>
+                            </div></fieldset>
+                        </div>
+                        <div class="profile-setup-step" data-profile-setup-step="4" hidden>
+                            <fieldset><legend>Ruch i trening</legend><div class="profile-setup-grid">
                                 <label>Trening siłowy w tygodniu<select id="setup-strength-days" required><option value="0">0</option><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option></select></label>
-                                <label>Średnia liczba kroków<input id="setup-average-steps" type="number" min="0" max="100000" step="1" inputmode="numeric" value="8000" required></label>
-                                <label>Największa trudność<select id="setup-main-challenge" required><option value="weekend">Weekendy</option><option value="evening_hunger">Wieczorny głód</option><option value="sweets">Słodycze</option><option value="time">Brak czasu</option><option value="eating_out">Jedzenie na mieście</option></select></label>
-                            </div>
-                        </fieldset>
-                        <label class="profile-setup-consent"><input id="profile-setup-health-consent" type="checkbox" required><span>Wyrażam zgodę na przetwarzanie danych potrzebnych do utworzenia profilu i planu zgodnie z <a href="/privacy.html?from=internet-app" target="_blank" rel="noopener">Polityką prywatności</a>.</span></label>
-                        <div class="profile-setup-submit">
-                            <div><strong>Wyliczymy kalorie, makro i pierwszy cel</strong><span>Ustawimy także wybraną dietę, aktywność i liczbę posiłków.</span></div>
-                            <button id="profile-setup-submit" class="tool-primary-button" type="submit">Utwórz profil i wylicz plan</button>
+                                <label>Średnia liczba kroków dziennie<input id="setup-average-steps" type="number" min="0" max="100000" step="1" inputmode="numeric" value="8000" required></label>
+                            </div></fieldset>
+                        </div>
+                        <div class="profile-setup-step" data-profile-setup-step="5" hidden>
+                            <fieldset><legend>Liczba posiłków</legend><div class="profile-setup-grid">
+                                <label>Posiłki dziennie<select id="setup-meals" required><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></label>
+                            </div></fieldset>
+                        </div>
+                        <div class="profile-setup-step" data-profile-setup-step="6" hidden>
+                            <fieldset><legend>Największa trudność</legend><div class="profile-setup-grid">
+                                <label>Co najtrudniej utrzymać?<select id="setup-main-challenge" required><option value="weekend">Weekendy</option><option value="evening_hunger">Wieczorny głód</option><option value="sweets">Słodycze</option><option value="time">Brak czasu</option><option value="eating_out">Jedzenie na mieście</option></select></label>
+                            </div></fieldset>
+                        </div>
+                        <div class="profile-setup-step" data-profile-setup-step="7" hidden>
+                            <section class="profile-setup-review" aria-labelledby="profile-setup-review-heading">
+                                <p class="eyebrow">PODSUMOWANIE</p><h3 id="profile-setup-review-heading">Twój profil startowy</h3><p>Sprawdź dane przed utworzeniem pierwszego planu.</p>
+                                <dl>
+                                    <div><dt>Masa i cel</dt><dd id="profile-setup-review-weight">—</dd></div>
+                                    <div><dt>Cel energetyczny</dt><dd id="profile-setup-review-energy">—</dd></div>
+                                    <div><dt>Dieta i posiłki</dt><dd id="profile-setup-review-diet">—</dd></div>
+                                    <div><dt>Aktywność</dt><dd id="profile-setup-review-activity">—</dd></div>
+                                    <div><dt>Ruch i trudność</dt><dd id="profile-setup-review-movement">—</dd></div>
+                                </dl>
+                            </section>
+                            <label class="profile-setup-consent"><input id="profile-setup-health-consent" type="checkbox" required><span>Wyrażam zgodę na przetwarzanie danych potrzebnych do utworzenia profilu i planu zgodnie z <a href="/privacy.html?from=internet-app" target="_blank" rel="noopener">Polityką prywatności</a>.</span></label>
+                            <div class="profile-setup-submit"><strong>Na podstawie tych danych utworzymy Twój pierwszy plan w DEV.</strong></div>
+                        </div>
+                        <div class="profile-setup-navigation">
+                            <button id="profile-setup-previous" class="tool-secondary-button" type="button" hidden>WSTECZ</button>
+                            <button id="profile-setup-next" class="tool-primary-button" type="button">DALEJ</button>
+                            <button id="profile-setup-submit" class="tool-primary-button" type="submit" hidden>GENERUJ MÓJ PLAN</button>
                         </div>
                         <p id="profile-setup-status" class="profile-setup-status" role="status" aria-live="polite"></p>
                     </form>
