@@ -2260,13 +2260,16 @@
         const admin = currentUserIsAdmin;
         const isPro = premium?.is_pro === true;
         const trialActive = premium?.coach_trial_active === true;
+        const trialExpiry = trialActive && premium?.coach_trial_expires_at
+            ? formatDate(premium.coach_trial_expires_at, true)
+            : "";
         const heading = document.getElementById("profile-access-heading");
         const detail = document.getElementById("profile-access-detail");
         if (heading) {
             heading.textContent = premiumSnapshotUnavailable
                 ? "Status pakietu niedostępny"
                 : trialActive
-                    ? "Pełny dostęp próbny"
+                    ? "2 dni PRO za darmo — aktywne"
                     : isPro
                         ? admin ? "Dostęp administratora" : "Project Weight Drop PRO"
                         : "Project Weight Drop FREE";
@@ -2275,7 +2278,9 @@
             detail.textContent = premiumSnapshotUnavailable
                 ? "Nie udało się sprawdzić dostępu w DEV. Odśwież dane."
                 : trialActive
-                    ? "Wszystkie funkcje są tymczasowo odblokowane."
+                    ? trialExpiry && trialExpiry !== "—"
+                        ? `Pełny dostęp PRO jest aktywny do ${trialExpiry}. Bez karty i bez automatycznej opłaty.`
+                        : "Pełny dostęp PRO jest aktywny przez pierwsze 2 dni od rejestracji. Bez karty i bez automatycznej opłaty."
                     : isPro
                         ? "Pełny pakiet PRO jest aktywny na tym koncie DEV."
                         : "Nowe konto ma 2 dni PRO bez automatycznej opłaty. Później możesz ręcznie aktywować PRO przez Revolut za 15,99 € miesięcznie.";
