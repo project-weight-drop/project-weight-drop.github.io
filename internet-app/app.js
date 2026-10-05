@@ -154,7 +154,7 @@
             readOnly: "Ansicht",
             routes: { home: "Home", meals: "Mahlzeiten", fridge: "Kühlschrank", coach: "AI Coach", progress: "Fortschritt", profile: "Profil", "client-portal": "Kunden" },
             supportChat: "Chat mit Przemala",
-            clientPanel: "Kundenbereich",
+            clientPanel: "Klientenbereich",
             trialActiveHeading: "2 TAGE PRO KOSTENLOS — TEST AKTIV",
             trialInactiveHeading: "PRO-TEST: 2 TAGE AB REGISTRIERUNG",
             trialActiveCopy: "Dein vollständiger PRO-Test ist in den ersten 2 Tagen nach der Kontoerstellung aktiv — ohne Karte und ohne automatische Abbuchung. Danach kannst du FREE nutzen oder PRO manuell aktivieren.",
@@ -690,6 +690,7 @@
             if (profileCompletionModal && !profileCompletionModal.hidden) renderProfileCompletionOffer();
         }
         renderHomeDate();
+        window.PWD_UI_I18N?.setLanguage(currentLanguage);
         if (announce) setAuthStatus(copy.languageSaved);
     }
 
