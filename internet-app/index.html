@@ -11,10 +11,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://iqqiizsehdjwenqowsqc.supabase.co; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-profile-bootstrap-gate">
+    <link rel="stylesheet" href="./styles.css?v=20261005-client-portal-web">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./app.js?v=20261005-profile-bootstrap-gate" defer></script>
+    <script src="./app.js?v=20261005-client-portal-web" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -827,10 +827,15 @@
                     <div><p class="eyebrow">PROJECT WEIGHT DROP</p><h2 id="profile-heading">Profil</h2><p id="profile-email">—</p></div>
                     <span id="profile-admin-badge" class="profile-admin-badge" hidden>ADMIN</span>
                 </div>
+                <button id="profile-client-portal-link" class="profile-client-portal-link" type="button">
+                    <span class="profile-client-portal-icon"><svg><use href="#icon-community"></use></svg></span>
+                    <span class="profile-client-portal-copy"><strong id="profile-client-portal-title">Panel podopiecznego</strong><small id="profile-client-portal-subtitle">Tygodniowe pomiary i raporty</small></span>
+                    <svg class="profile-client-portal-arrow" aria-hidden="true"><use href="#icon-arrow"></use></svg>
+                </button>
                 <section class="profile-access-card" aria-labelledby="profile-access-heading">
                     <span class="profile-access-icon"><svg><use href="#icon-health"></use></svg></span>
                     <div><p class="eyebrow">DOSTĘP</p><h3 id="profile-access-heading">Project Weight Drop FREE</h3><p id="profile-access-detail">Sprawdzanie pakietu DEV…</p></div>
-                    <a id="profile-access-link" class="profile-access-link" href="https://play.google.com/store/apps/details?id=com.projectweightdrop.app" target="_blank" rel="noopener">Zobacz PRO w Androidzie <span>↗</span></a>
+                    <button id="profile-access-link" class="profile-access-link" type="button" aria-haspopup="dialog">Opcje PRO <span>›</span></button>
                 </section>
                 <section class="profile-plan-panel" aria-labelledby="profile-current-plan-heading">
                     <div class="profile-section-title"><span class="progress-hub-icon orange"><svg><use href="#icon-flame"></use></svg></span><h3 id="profile-current-plan-heading">Aktualny plan</h3><strong><span id="profile-plan-calories">—</span> kcal</strong></div>
@@ -967,7 +972,22 @@
                     </div>
                     <button id="open-delete-account" class="delete-account-button" type="button">Trwale usuń konto i dane</button>
                 </section>
-                <div class="capability-list"><div><strong>Sesja internetowa</strong><span class="available-label">Aktywna</span></div><div><strong>Reset profilu i ustawień</strong><span class="available-label">Dostępny</span></div><div><strong>Zakup PRO przez Google Play</strong><span>Tylko Android</span></div></div>
+                <div class="capability-list"><div><strong>Sesja internetowa</strong><span class="available-label">Aktywna</span></div><div><strong>Reset profilu i ustawień</strong><span class="available-label">Dostępny</span></div><div><strong>PRO przez Revolut</strong><span>Aktywacja ręczna</span></div></div>
+            </section>
+
+            <section class="route-page client-portal-page" data-page="client-portal" aria-labelledby="client-portal-heading">
+                <header class="client-portal-header">
+                    <div>
+                        <p class="eyebrow">PROJECT WEIGHT DROP · DEV</p>
+                        <h2 id="client-portal-heading">Panel podopiecznego</h2>
+                        <p id="client-portal-subheading">Cotygodniowe pomiary i raporty dla Przemali.</p>
+                    </div>
+                    <button id="client-portal-refresh" class="client-portal-refresh" type="button" aria-label="Odśwież panel podopiecznych">
+                        <svg aria-hidden="true"><use href="#icon-refresh"></use></svg><span>Odśwież</span>
+                    </button>
+                </header>
+                <p id="client-portal-status" class="client-portal-status" role="status" aria-live="polite"></p>
+                <div id="client-portal-content" class="client-portal-content" aria-busy="true"></div>
             </section>
         </main>
     </div>
@@ -1036,8 +1056,8 @@
         <h2 id="delete-account-dialog-title">Usunąć konto na stałe?</h2>
         <p id="delete-account-dialog-copy">Usuniemy konto logowania oraz dane przypisane do niego w Project Weight Drop DEV, między innymi profil, plan, posiłki, pomiary, postępy i rozmowy. Jeśli korzystasz z Androida DEV na tym samym koncie, dane znikną również tam. Operacji nie można cofnąć.</p>
         <div class="delete-account-warning">
-            <strong>Subskrypcja Google Play</strong>
-            <span>Usunięcie konta nie anuluje płatności Google Play. Anuluj subskrypcję osobno w Google Play.</span>
+            <strong>Płatności PRO</strong>
+            <span>Usunięcie konta nie anuluje subskrypcji Google Play — tę trzeba anulować osobno. Płatność Revolut na stronie nie odnawia się automatycznie.</span>
         </div>
         <label class="delete-account-understand" for="delete-account-understand">
             <input id="delete-account-understand" type="checkbox">
@@ -1051,6 +1071,90 @@
         <div class="confirm-dialog-actions">
             <button id="cancel-delete-account" class="dialog-secondary-button" type="button">Anuluj</button>
             <button id="confirm-delete-account" class="dialog-danger-button" type="button" disabled>Trwale usuń konto i dane</button>
+        </div>
+    </section>
+</div>
+
+<div id="profile-completion-modal" class="modal-backdrop profile-completion-backdrop" hidden>
+    <section class="profile-completion-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-completion-heading" aria-describedby="profile-completion-copy">
+        <button id="profile-completion-close" class="profile-completion-close" type="button" aria-label="Zamknij">×</button>
+        <p class="eyebrow">TWÓJ PIERWSZY PLAN</p>
+        <h2 id="profile-completion-heading">Twój plan jest gotowy</h2>
+        <p id="profile-completion-copy" class="profile-completion-intro">To punkt startowy. Plan będzie później dopasowywany na podstawie zapisanych postępów.</p>
+
+        <section class="profile-completion-plan" aria-label="Podsumowanie planu">
+            <strong><span id="profile-completion-calories">—</span> kcal</strong>
+            <div><span>Białko</span><b id="profile-completion-protein">—</b></div>
+            <div><span>Tłuszcz</span><b id="profile-completion-fat">—</b></div>
+            <div><span>Węglowodany</span><b id="profile-completion-carbs">—</b></div>
+            <small id="profile-completion-diet">—</small>
+        </section>
+
+        <section class="profile-completion-generation-summary" aria-live="polite" aria-labelledby="profile-completion-generation-heading">
+            <h3 id="profile-completion-generation-heading">Dostępne generowania i zmiany planu</h3>
+            <div><span>Zmiany dnia</span><strong id="profile-completion-generation-days">—</strong></div>
+            <div><span>Zamiany posiłków</span><strong id="profile-completion-generation-swaps">—</strong></div>
+            <p id="profile-completion-generation-note">Limity pobieramy bezpośrednio z Twojego konta.</p>
+        </section>
+
+        <section class="profile-completion-trial" aria-labelledby="profile-completion-trial-heading">
+            <strong id="profile-completion-trial-heading">2 DNI PRO ZA DARMO NA START</strong>
+            <p id="profile-completion-trial-copy">Przez pierwsze 2 dni po utworzeniu konta funkcje PRO są odblokowane. Bez karty i bez automatycznej opłaty.</p>
+        </section>
+
+        <div class="profile-completion-tiers">
+            <section class="profile-completion-tier profile-completion-free" aria-labelledby="profile-completion-free-heading">
+                <p class="eyebrow">BEZ SUBSKRYPCJI</p>
+                <h3 id="profile-completion-free-heading">Twój panel FREE</h3>
+                <ul>
+                    <li>Indywidualny cel kalorii i makro</li>
+                    <li>Dziennik posiłków</li>
+                    <li>Waga, woda, kroki i obwody</li>
+                    <li>Check In, progres i społeczność</li>
+                    <li>Czat z Przemalą</li>
+                </ul>
+            </section>
+            <section class="profile-completion-tier profile-completion-pro" aria-labelledby="profile-completion-pro-heading">
+                <p class="eyebrow">ROZSZERZENIE</p>
+                <h3 id="profile-completion-pro-heading">W PRO dodatkowo</h3>
+                <ul>
+                    <li>Jadłospis 7 dni: KETO, LOW CARB lub BALANCE</li>
+                    <li>Regeneracje dni planu i zamiany posiłków</li>
+                    <li>Lodówka, lista zakupów i AI Coach</li>
+                    <li>Tygodniowa analiza i korekty planu</li>
+                </ul>
+            </section>
+        </div>
+
+        <section class="profile-completion-quotas" aria-labelledby="profile-completion-quotas-heading">
+            <h3 id="profile-completion-quotas-heading">Dostępne generowania i limity</h3>
+            <p class="profile-completion-quota-note">Jadłospis obejmuje 7 dni, a każdy dzień generujesz osobno. Limity poniżej są pobierane z Twojego konta.</p>
+            <dl>
+                <div><dt>Regeneracje dnia planu</dt><dd id="profile-completion-day-quota">—</dd></div>
+                <div><dt>Zamiany posiłków</dt><dd id="profile-completion-swap-quota">—</dd></div>
+                <div><dt>Odpowiedzi AI Coach</dt><dd id="profile-completion-coach-quota">—</dd></div>
+                <div><dt>Generowania w Lodówce</dt><dd id="profile-completion-fridge-quota">—</dd></div>
+            </dl>
+        </section>
+
+        <section id="profile-pro-offer" class="profile-pro-offer" aria-labelledby="profile-pro-offer-heading">
+            <div class="profile-pro-offer-copy">
+                <p class="eyebrow">PŁATNE PRO</p>
+                <div class="profile-pro-offer-title"><h3 id="profile-pro-offer-heading">Aktywacja przez Revolut</h3><strong>15,99 €<small>/ miesiąc</small></strong></div>
+                <p>Po przelewie napisz do mnie przez WhatsApp albo w aplikacji wybierz AI Coach → Czat z Przemalą. Sprawdzę wpłatę i ręcznie aktywuję PRO. Płatność nie odnawia się automatycznie.</p>
+            </div>
+            <div class="profile-pro-payment">
+                <img class="profile-pro-qr" src="./assets/revolut-przemala-qr.jpg" alt="Kod QR Revolut Przemali" loading="lazy" decoding="async">
+                <div class="profile-pro-contact-actions">
+                    <a class="profile-pro-whatsapp" href="https://wa.me/353851383537?text=Cze%C5%9B%C4%87%21%20Wys%C5%82a%C5%82em%2015%2C99%20%E2%82%AC%20przez%20Revolut.%20Prosz%C4%99%20o%20sprawdzenie%20wp%C5%82aty%20i%20aktywacj%C4%99%20PRO." target="_blank" rel="noopener">Napisz przez WhatsApp <span>↗</span></a>
+                    <button id="profile-pro-support-chat" class="profile-pro-chat" type="button">Otwórz Czat z Przemalą</button>
+                    <a class="profile-pro-revolut" href="https://revolut.me/przemala" target="_blank" rel="noopener">Przejdź do płatności Revolut <span>↗</span></a>
+                </div>
+            </div>
+        </section>
+
+        <div class="profile-completion-actions">
+            <button id="profile-completion-continue-free" class="dialog-secondary-button" type="button">PRZEJDŹ DO WERSJI FREE</button>
         </div>
     </section>
 </div>

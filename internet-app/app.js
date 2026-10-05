@@ -59,6 +59,13 @@
     const supportChatSendButton = document.getElementById("support-chat-send");
     const supportChatRefreshButton = document.getElementById("support-chat-refresh");
     const profileResetModal = document.getElementById("profile-reset-modal");
+    const profileCompletionModal = document.getElementById("profile-completion-modal");
+    const profileCompletionCloseButton = document.getElementById("profile-completion-close");
+    const profileCompletionContinueButton = document.getElementById("profile-completion-continue-free");
+    const profileAccessLink = document.getElementById("profile-access-link");
+    const profileClientPortalLink = document.getElementById("profile-client-portal-link");
+    const clientPortalContent = document.getElementById("client-portal-content");
+    const clientPortalRefreshButton = document.getElementById("client-portal-refresh");
     const openProfileResetButton = document.getElementById("open-profile-reset");
     const cancelProfileResetButton = document.getElementById("cancel-profile-reset");
     const confirmProfileResetButton = document.getElementById("confirm-profile-reset");
@@ -140,7 +147,8 @@
         fridge: "Lodówka",
         coach: "AI Coach",
         progress: "Postępy",
-        profile: "Profil"
+        profile: "Profil",
+        "client-portal": "Podopieczni"
     });
 
     const profileSetupSteps = [
@@ -209,9 +217,22 @@
     let supportChatLoadSequence = 0;
     let supportChatBusy = false;
     let supportChatRefreshTimer = null;
+    let clientPortalLoadSequence = 0;
+    let clientPortalLoading = false;
+    let clientPortalStatus = null;
+    let clientPortalMyReports = [];
+    let clientPortalMembers = [];
+    let clientPortalSelectedMember = null;
+    let clientPortalMemberHistory = [];
+    let clientPortalPin = "";
+    let clientPortalError = null;
+    let clientPortalSuccess = null;
+    let clientPortalSubmitting = false;
+    let clientPortalActivating = false;
     let authMode = "sign-in";
     let profileResetBusy = false;
     let profileResetPreviousFocus = null;
+    let profileCompletionPreviousFocus = null;
     let deleteAccountBusy = false;
     let deleteAccountPreviousFocus = null;
     let healthConsentGranted = false;
@@ -445,6 +466,18 @@
     }
 
     function resetAccountViews() {
+        clientPortalLoadSequence += 1;
+        clientPortalLoading = false;
+        clientPortalStatus = null;
+        clientPortalMyReports = [];
+        clientPortalMembers = [];
+        clientPortalSelectedMember = null;
+        clientPortalMemberHistory = [];
+        clientPortalPin = "";
+        clientPortalError = null;
+        clientPortalSuccess = null;
+        clientPortalSubmitting = false;
+        clientPortalActivating = false;
         currentMealPlan = null;
         selectedMealPlanDay = 0;
         currentCoachConversationId = null;
@@ -468,6 +501,8 @@
         currentPreferenceCatalog = [];
         currentSafetyProfileComplete = false;
         currentUserIsAdmin = false;
+        updateClientPortalEntry();
+        clientPortalContent?.replaceChildren();
         const deleteAccountZone = document.getElementById("profile-delete-account-zone");
         if (deleteAccountZone) deleteAccountZone.hidden = true;
         currentPremiumSnapshot = null;
@@ -794,6 +829,128 @@
         setProfileResetStatus();
         if (profileResetPreviousFocus instanceof HTMLElement) profileResetPreviousFocus.focus();
         profileResetPreviousFocus = null;
+    }
+
+    function quotaText(remaining, limit, hasAccess) {
+        if (currentUserIsAdmin) return "Bez limitu (ADMIN)";
+        if (premiumSnapshotUnavailable || !currentPremiumSnapshot) return "Nie udało się pobrać limitu";
+        const numericLimit = finiteNumber(limit);
+        const numericRemaining = finiteNumber(remaining);
+        if (!hasAccess) return "0 — wymaga aktywnego PRO";
+        if (numericLimit === null && numericRemaining === null && currentPremiumSnapshot?.coach_trial_active === true && hasAccess) {
+            return "Bez limitu w 2-dniowym teście";
+        }
+        if (numericLimit === null || numericRemaining === null) return "Nie udało się pobrać limitu";
+        if (numericLimit <= 0) return "0 — wymaga aktywnego PRO";
+        const period = currentPremiumSnapshot?.coach_trial_active === true ? "w teście" : "dziś";
+        return `${formatNumber(Math.max(0, numericRemaining))} z ${formatNumber(numericLimit)} ${period}`;
+    }
+
+    function generationCounterText(remaining, limit, hasAccess) {
+        if (currentUserIsAdmin) return "∞";
+        if (premiumSnapshotUnavailable || !currentPremiumSnapshot) return "—";
+        if (!hasAccess) return "0 / 0";
+        const numericLimit = finiteNumber(limit);
+        const numericRemaining = finiteNumber(remaining);
+        if (numericLimit === null || numericRemaining === null) return "—";
+        return `${formatNumber(Math.max(0, numericRemaining))} / ${formatNumber(Math.max(0, numericLimit))}`;
+    }
+
+    function renderProfileCompletionOffer() {
+        const premium = currentPremiumSnapshot;
+        const trialActive = premium?.coach_trial_active === true;
+        const paidPro = !currentUserIsAdmin && premium?.is_pro === true && !trialActive;
+        const trialHeading = document.getElementById("profile-completion-trial-heading");
+        const trialCopy = document.getElementById("profile-completion-trial-copy");
+
+        if (trialHeading) {
+            trialHeading.textContent = trialActive || currentUserIsAdmin
+                ? "2 DNI PRO ZA DARMO — TEST JEST AKTYWNY"
+                : "OKRES TESTOWY PRO: 2 DNI OD REJESTRACJI";
+        }
+        if (trialCopy) {
+            trialCopy.textContent = trialActive
+                ? "Masz teraz aktywny pełny dostęp próbny. Trwa przez pierwsze 2 dni od utworzenia konta — bez karty i bez automatycznej opłaty. Potem możesz korzystać z FREE albo ręcznie aktywować PRO."
+                : currentUserIsAdmin
+                    ? "Podgląd oferty dla klientów: nowe konto otrzymuje przez pierwsze 2 dni pełny dostęp PRO, bez karty i bez automatycznej opłaty."
+                    : "Dostęp próbny jest liczony od utworzenia konta. Jeśli minęły już 2 dni, konto działa w FREE; nic nie pobiera się automatycznie.";
+        }
+
+        const plan = currentNutritionPlan;
+        setText("profile-completion-calories", plan ? formatNumber(plan.calories_target) : "—");
+        setText("profile-completion-protein", plan ? `${formatNumber(plan.protein_g)} g` : "—");
+        setText("profile-completion-fat", plan ? `${formatNumber(plan.fat_g)} g` : "—");
+        setText("profile-completion-carbs", plan ? `${formatNumber(plan.carbs_g)} g` : "—");
+        setText("profile-completion-diet", plan ? formatDiet(plan.diet_type) : "—");
+
+        setText("profile-completion-generation-days", generationCounterText(
+            premium?.meal_day_regeneration_remaining,
+            premium?.meal_day_regeneration_limit,
+            premium?.is_pro === true
+        ));
+        setText("profile-completion-generation-swaps", generationCounterText(
+            premium?.meal_swap_remaining,
+            premium?.meal_swap_limit,
+            premium?.is_pro === true
+        ));
+        const generationNote = currentUserIsAdmin
+            ? "Konto ADMIN — bez limitu."
+            : premiumSnapshotUnavailable || !premium
+                ? "Nie udało się pobrać aktualnych limitów. Spróbuj odświeżyć stronę."
+                : premium.is_pro !== true
+                    ? "Wersja FREE: generowanie i zmiany planu wymagają aktywnego PRO lub trwającego testu."
+                    : premium.coach_trial_active === true
+                        ? "Pozostały zmiany dnia i zamiany posiłków w Twoim 2-dniowym teście PRO."
+                        : "Pozostałe zmiany dnia i zamiany posiłków w aktywnym PRO — limit odnawia się codziennie.";
+        setText("profile-completion-generation-note", generationNote);
+
+        if (premiumSnapshotUnavailable || !premium) {
+            ["profile-completion-day-quota", "profile-completion-swap-quota", "profile-completion-coach-quota", "profile-completion-fridge-quota"]
+                .forEach((id) => setText(id, "Nie udało się pobrać limitu"));
+        } else {
+            setText("profile-completion-day-quota", quotaText(
+                premium.meal_day_regeneration_remaining,
+                premium.meal_day_regeneration_limit,
+                premium.is_pro === true
+            ));
+            setText("profile-completion-swap-quota", quotaText(
+                premium.meal_swap_remaining,
+                premium.meal_swap_limit,
+                premium.is_pro === true
+            ));
+            setText("profile-completion-coach-quota", quotaText(
+                premium.coach_remaining,
+                premium.coach_limit,
+                premium.is_pro === true
+            ));
+            setText("profile-completion-fridge-quota", quotaText(
+                premium.fridge_generation_remaining,
+                premium.fridge_generation_limit,
+                premium.is_pro === true
+            ));
+        }
+
+        const offer = document.getElementById("profile-pro-offer");
+        if (offer) offer.hidden = paidPro;
+    }
+
+    function openProfileCompletionOffer() {
+        if (!profileCompletionModal || !activeUserId) return;
+        profileCompletionPreviousFocus = document.activeElement;
+        renderProfileCompletionOffer();
+        profileCompletionModal.hidden = false;
+        document.body.classList.add("modal-open");
+        window.setTimeout(() => profileCompletionCloseButton?.focus(), 0);
+    }
+
+    function closeProfileCompletionOffer() {
+        if (!profileCompletionModal) return;
+        profileCompletionModal.hidden = true;
+        document.body.classList.remove("modal-open");
+        if (profileCompletionPreviousFocus instanceof HTMLElement && !profileCompletionPreviousFocus.closest("[hidden]")) {
+            profileCompletionPreviousFocus.focus();
+        }
+        profileCompletionPreviousFocus = null;
     }
 
     function setWeightEntryBusy(busy) {
@@ -2056,6 +2213,9 @@
         setText("profile-data-message", detail);
         setText("home-profile-detail", detail);
         navigateTo("home");
+        if (currentUserIsAdmin || !(currentPremiumSnapshot?.is_pro === true && currentPremiumSnapshot?.coach_trial_active !== true)) {
+            openProfileCompletionOffer();
+        }
     }
 
     function renderProfile(profile, plan) {
@@ -2118,14 +2278,14 @@
                     ? "Wszystkie funkcje są tymczasowo odblokowane."
                     : isPro
                         ? "Pełny pakiet PRO jest aktywny na tym koncie DEV."
-                        : "Woda, kroki, Progress i Czat z Przemalą są dostępne bez PRO. Zakup PRO odbywa się w Google Play na Androidzie.";
+                        : "Nowe konto ma 2 dni PRO bez automatycznej opłaty. Później możesz ręcznie aktywować PRO przez Revolut za 15,99 € miesięcznie.";
         }
         const adminBadge = document.getElementById("profile-admin-badge");
         if (adminBadge) adminBadge.hidden = !admin;
         const deleteAccountZone = document.getElementById("profile-delete-account-zone");
         if (deleteAccountZone) deleteAccountZone.hidden = admin;
-        const accessLink = document.getElementById("profile-access-link");
-        if (accessLink) accessLink.hidden = isPro || premiumSnapshotUnavailable;
+        const accessLink = profileAccessLink;
+        if (accessLink) accessLink.hidden = (!admin && isPro && !trialActive) || premiumSnapshotUnavailable;
 
         setText("profile-plan-calories", plan ? formatNumber(plan.calories_target) : "—");
         setText("profile-plan-protein", plan ? `${formatNumber(plan.protein_g)} g` : "—");
@@ -3350,7 +3510,9 @@
                 copy = "Każdy dzień powstaje osobno z tych samych ustawień i zabezpieczeń co w Androidzie.";
                 quota = currentUserIsAdmin
                     ? "ADMIN · BEZ LIMITU"
-                    : `DZIEŃ ${formatNumber(premium.meal_day_regeneration_remaining)}/${formatNumber(premium.meal_day_regeneration_limit)} · POSIŁKI ${formatNumber(premium.meal_swap_remaining)}/${formatNumber(premium.meal_swap_limit)}`;
+                    : premium.coach_trial_active === true
+                        ? `TEST · DNI ${formatNumber(premium.meal_day_regeneration_remaining)}/${formatNumber(premium.meal_day_regeneration_limit)} · POSIŁKI ${formatNumber(premium.meal_swap_remaining)}/${formatNumber(premium.meal_swap_limit)}`
+                        : `DZIŚ · DNI ${formatNumber(premium.meal_day_regeneration_remaining)}/${formatNumber(premium.meal_day_regeneration_limit)} · POSIŁKI ${formatNumber(premium.meal_swap_remaining)}/${formatNumber(premium.meal_swap_limit)}`;
             }
         }
         setText("meal-plan-access-title", title);
@@ -5173,6 +5335,351 @@
         }
     }
 
+    function updateClientPortalEntry() {
+        setText("profile-client-portal-title", currentUserIsAdmin ? "Podopieczni" : "Panel podopiecznego");
+        setText("profile-client-portal-subtitle", currentUserIsAdmin ? "Raporty i historia tygodniowa" : "Tygodniowe pomiary i raporty");
+        setText("client-portal-heading", currentUserIsAdmin ? "Podopieczni" : "Panel podopiecznego");
+        setText("client-portal-subheading", currentUserIsAdmin
+            ? "Lista osób, status raportów i historia tygodniowa."
+            : "Wpisz PIN od Przemali, aby wysyłać cotygodniowe pomiary i raporty.");
+    }
+
+    function clientPortalEscape(value) {
+        return String(value ?? "").replace(/[&<>"']/g, (character) => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            "\"": "&quot;",
+            "'": "&#39;"
+        })[character]);
+    }
+
+    function clientPortalDietLabel(value) {
+        if (value === "keto") return "KETO";
+        if (value === "low_carb") return "LOW CARB";
+        if (value === "balance" || value === "balanced") return "BALANCE";
+        return "—";
+    }
+
+    function clientPortalErrorMessage(error) {
+        const code = typeof error === "string" ? error : String(error?.message || error?.code || "");
+        const normalized = code.toLowerCase();
+        if (normalized.includes("too_many_attempts")) return "Za dużo prób wpisania PIN-u. Spróbuj ponownie za godzinę.";
+        if (normalized.includes("invalid_pin")) return "PIN jest nieprawidłowy. Sprawdź go i spróbuj ponownie.";
+        if (normalized.includes("already_submitted")) return "Raport za ten tydzień jest już zapisany.";
+        if (normalized.includes("admin_required")) return "Brak uprawnień administratora do raportów podopiecznych.";
+        if (normalized.includes("consent_required")) return "Zaznacz zgodę na przekazanie raportu Przemali.";
+        if (normalized.includes("pgrst202") || normalized.includes("42883") || normalized.includes("function") && normalized.includes("not found")) {
+            return "Funkcje panelu nie są dostępne w tym projekcie DEV. Nie zmieniałem bazy ani PROD.";
+        }
+        if (normalized.includes("failed to fetch") || normalized.includes("network") || normalized.includes("timeout")) {
+            return "Nie udało się połączyć z DEV. Sprawdź internet i spróbuj ponownie.";
+        }
+        return "Nie udało się wczytać lub zapisać danych panelu. Spróbuj ponownie.";
+    }
+
+    function clientPortalReportCardHtml(report) {
+        const measures = [
+            ["Talia", report.waist_cm], ["Biodra", report.hips_cm], ["Klatka", report.chest_cm],
+            ["Ramię", report.arm_cm], ["Udo", report.thigh_cm]
+        ].filter(([, value]) => finiteNumber(value) !== null)
+            .map(([label, value]) => `${label} ${clientPortalEscape(formatWeight(value))} cm`);
+        const note = String(report.notes || "").trim();
+        const sentAt = report.submitted_at ? formatDate(report.submitted_at, true) : "—";
+        return `<article class="client-portal-report-card">
+            <header><strong>Tydzień od ${clientPortalEscape(formatDate(report.week_start))}</strong><span>${clientPortalEscape(clientPortalDietLabel(report.diet_type))}</span></header>
+            <p class="client-portal-report-weight">Waga: ${clientPortalEscape(formatWeight(report.weight_kg))} kg</p>
+            ${measures.length ? `<p class="client-portal-report-measures">${measures.join(" · ")}</p>` : ""}
+            <p class="client-portal-report-ratings">Samopoczucie ${clientPortalEscape(report.wellbeing_score)}/10 · Energia ${clientPortalEscape(report.energy_score)}/10 · Siła ${clientPortalEscape(report.strength_score)}/10</p>
+            ${note ? `<p class="client-portal-report-note">${clientPortalEscape(note)}</p>` : ""}
+            <small>Wysłano: ${clientPortalEscape(sentAt)}</small>
+        </article>`;
+    }
+
+    function clientPortalMemberCardHtml(member) {
+        const latest = member.latest_report;
+        const latestWeight = finiteNumber(latest?.weight_kg);
+        const summary = [
+            `Raporty: ${formatNumber(member.report_count ?? 0)}`,
+            latestWeight === null ? null : `Waga: ${formatWeight(latestWeight)} kg`,
+            `Tydzień od ${formatDate(member.current_week_start)}`
+        ].filter(Boolean).join(" · ");
+        const sent = member.submitted_this_week === true;
+        return `<button class="client-portal-member-card" type="button" data-client-portal-action="open-member" data-user-id="${clientPortalEscape(member.user_id)}">
+            <span class="client-portal-member-main"><strong>${clientPortalEscape(member.display_name || "Podopieczny")}</strong><small>${clientPortalEscape(member.email || "Brak e-maila")}</small><span>${clientPortalEscape(summary)}</span></span>
+            <span class="client-portal-member-state ${sent ? "sent" : "missing"}">${sent ? "WYSŁANO" : "BRAK"}</span>
+            <svg aria-hidden="true"><use href="#icon-arrow"></use></svg>
+        </button>`;
+    }
+
+    function clientPortalPinFormHtml() {
+        return `<section class="client-portal-card client-portal-pin-card">
+            <p class="eyebrow">DOSTĘP DLA PODOPIECZNYCH</p>
+            <h3>Otwórz swój panel</h3>
+            <p>Wpisz 6-cyfrowy PIN otrzymany od Przemali. Panel jest bezpłatny i zostanie przypisany do Twojego konta.</p>
+            <form id="client-portal-pin-form" class="client-portal-pin-form" autocomplete="off">
+                <label for="client-portal-pin">PIN</label>
+                <input id="client-portal-pin" name="pin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" value="${clientPortalEscape(clientPortalPin)}" required aria-describedby="client-portal-pin-help">
+                <small id="client-portal-pin-help">PIN nie jest zapisywany w przeglądarce ani w profilu.</small>
+                <button class="tool-primary-button" type="submit" ${clientPortalPin.length !== 6 || clientPortalActivating ? "disabled" : ""}>${clientPortalActivating ? "SPRAWDZANIE PIN-U…" : "OTWÓRZ PANEL"}</button>
+            </form>
+        </section>`;
+    }
+
+    function clientPortalReportFormHtml() {
+        return `<section class="client-portal-card">
+            <p class="eyebrow">RAPORT TYGODNIOWY</p>
+            <h3>Jak wyglądał Twój tydzień?</h3>
+            <form id="client-portal-report-form" class="client-portal-report-form">
+                <fieldset class="client-portal-diet-field"><legend>Dieta</legend>
+                    <label><input type="radio" name="diet_type" value="keto"><span>KETO</span></label>
+                    <label><input type="radio" name="diet_type" value="low_carb"><span>LOW CARB</span></label>
+                    <label><input type="radio" name="diet_type" value="balance" checked><span>BALANCE</span></label>
+                </fieldset>
+                <label class="client-portal-field">Waga (kg) *<input name="weight_kg" type="text" inputmode="decimal" maxlength="7" placeholder="np. 85,5" required></label>
+                <fieldset class="client-portal-measure-fields"><legend>Pomiary ciała · opcjonalnie</legend>
+                    <label class="client-portal-field">Talia (cm)<input name="waist_cm" type="text" inputmode="decimal" maxlength="7"></label>
+                    <label class="client-portal-field">Biodra (cm)<input name="hips_cm" type="text" inputmode="decimal" maxlength="7"></label>
+                    <label class="client-portal-field">Klatka (cm)<input name="chest_cm" type="text" inputmode="decimal" maxlength="7"></label>
+                    <label class="client-portal-field">Ramię (cm)<input name="arm_cm" type="text" inputmode="decimal" maxlength="7"></label>
+                    <label class="client-portal-field">Udo (cm)<input name="thigh_cm" type="text" inputmode="decimal" maxlength="7"></label>
+                </fieldset>
+                <fieldset class="client-portal-rating-fields"><legend>Jak się czujesz? Oceń od 1 do 10.</legend>
+                    ${[["wellbeing_score", "Samopoczucie"], ["energy_score", "Energia"], ["strength_score", "Siła"]].map(([name, label]) => `<label class="client-portal-rating"><span>${label}</span><output id="client-portal-rating-${name}">7</output><input name="${name}" type="range" min="1" max="10" step="1" value="7" data-rating-output="client-portal-rating-${name}"></label>`).join("")}
+                </fieldset>
+                <label class="client-portal-field">Notatka dla Przemali · opcjonalnie<textarea name="notes" maxlength="1200" rows="3" placeholder="Możesz dopisać ważne informacje z tego tygodnia."></textarea></label>
+                <label class="client-portal-consent"><input name="data_sharing_consent" type="checkbox" required><span>Zgadzam się przekazać Przemali ten raport, w tym dane o wadze, pomiarach i samopoczuciu. Raport zostanie zapisany w aplikacji i będzie widoczny dla administratora programu.</span></label>
+                <button class="tool-primary-button" type="submit" ${clientPortalSubmitting ? "disabled" : ""}>${clientPortalSubmitting ? "ZAPISYWANIE RAPORTU…" : "WYŚLIJ RAPORT DO PRZEMALI"}</button>
+                <small>Po wysłaniu raportu nie można edytować go w tym tygodniu. Poprzednie tygodnie pozostają w historii.</small>
+            </form>
+        </section>`;
+    }
+
+    function renderClientPortal() {
+        updateClientPortalEntry();
+        const heading = document.getElementById("client-portal-heading");
+        const subheading = document.getElementById("client-portal-subheading");
+        if (heading) heading.textContent = currentUserIsAdmin ? "Podopieczni" : "Panel podopiecznego";
+        if (subheading) subheading.textContent = currentUserIsAdmin
+            ? clientPortalSelectedMember ? "Historia raportów tygodniowych." : "Lista osób, status raportów i historia tygodniowa."
+            : "Cotygodniowe pomiary i raporty dla Przemali.";
+        if (!clientPortalContent) return;
+        clientPortalContent.setAttribute("aria-busy", String(clientPortalLoading));
+        if (clientPortalRefreshButton) clientPortalRefreshButton.disabled = clientPortalLoading;
+        const status = document.getElementById("client-portal-status");
+        if (status) {
+            status.textContent = clientPortalError || clientPortalSuccess || "";
+            status.classList.toggle("error", Boolean(clientPortalError));
+            status.classList.toggle("success", Boolean(clientPortalSuccess && !clientPortalError));
+        }
+        if (clientPortalLoading) {
+            clientPortalContent.innerHTML = `<div class="client-portal-loading"><span></span><p>Wczytywanie danych z DEV…</p></div>`;
+            return;
+        }
+        if (clientPortalError && !clientPortalStatus && !clientPortalMembers.length && !clientPortalSelectedMember) {
+            clientPortalContent.innerHTML = `<section class="client-portal-card"><p>${clientPortalEscape(clientPortalError)}</p><button type="button" class="tool-secondary-button" data-client-portal-action="refresh">Spróbuj ponownie</button></section>`;
+            return;
+        }
+
+        if (currentUserIsAdmin) {
+            if (clientPortalSelectedMember) {
+                const reports = clientPortalMemberHistory;
+                clientPortalContent.innerHTML = `<div class="client-portal-admin-detail">
+                    <button class="client-portal-back-list" type="button" data-client-portal-action="back-to-members">← Wróć do podopiecznych</button>
+                    <section class="client-portal-card client-portal-member-profile"><p class="eyebrow">HISTORIA PODOPIECZNEGO</p><h3>${clientPortalEscape(clientPortalSelectedMember.display_name || "Podopieczny")}</h3><p>${clientPortalEscape(clientPortalSelectedMember.email || "")}</p><p>Raporty: ${clientPortalEscape(formatNumber(clientPortalSelectedMember.report_count ?? reports.length))} · Ostatni tydzień: ${clientPortalEscape(formatDate(clientPortalSelectedMember.current_week_start))}</p></section>
+                    ${reports.length ? reports.map(clientPortalReportCardHtml).join("") : `<div class="client-portal-notice">Brak wysłanych raportów.</div>`}
+                </div>`;
+            } else {
+                clientPortalContent.innerHTML = clientPortalMembers.length
+                    ? `<div class="client-portal-member-list">${clientPortalMembers.map(clientPortalMemberCardHtml).join("")}</div>`
+                    : `<div class="client-portal-notice">Jeszcze nikt nie aktywował panelu PIN-em.</div>`;
+            }
+            return;
+        }
+
+        if (clientPortalStatus?.activated !== true) {
+            clientPortalContent.innerHTML = clientPortalPinFormHtml();
+            return;
+        }
+
+        const weekStart = String(clientPortalStatus.current_week_start || "");
+        const submitted = clientPortalStatus.submitted_this_week === true;
+        const thisWeekReport = clientPortalMyReports.find((report) => report.week_start === weekStart) || (submitted ? clientPortalMyReports[0] : null);
+        const previousReports = clientPortalMyReports.filter((report) => report !== thisWeekReport);
+        clientPortalContent.innerHTML = `<section class="client-portal-week-card"><p class="eyebrow">TEN TYDZIEŃ</p><h3>Raport za tydzień od ${clientPortalEscape(formatDate(weekStart))}</h3><p>${submitted ? "Raport zapisany. Historia pozostaje dostępna na tym koncie." : "Uzupełnij pomiary i samopoczucie, a następnie wyślij raport do panelu Przemali."}</p></section>
+            ${submitted
+                ? `<div class="client-portal-notice success">Raport za ten tydzień został już wysłany. Możesz go zobaczyć poniżej; nie można go edytować.</div>${thisWeekReport ? clientPortalReportCardHtml(thisWeekReport) : ""}`
+                : clientPortalReportFormHtml()}
+            ${previousReports.length ? `<section class="client-portal-history"><h3>Poprzednie raporty</h3>${previousReports.map(clientPortalReportCardHtml).join("")}</section>` : ""}`;
+        updateClientPortalReportButton();
+    }
+
+    function setClientPortalFeedback() {
+        const status = document.getElementById("client-portal-status");
+        if (!status) return;
+        status.textContent = clientPortalError || clientPortalSuccess || "";
+        status.classList.toggle("error", Boolean(clientPortalError));
+        status.classList.toggle("success", Boolean(clientPortalSuccess && !clientPortalError));
+    }
+
+    async function loadClientPortalData({ preserveMessages = false } = {}) {
+        if (!client || !activeUserId) return;
+        const sequence = ++clientPortalLoadSequence;
+        const userId = activeUserId;
+        if (!preserveMessages) {
+            clientPortalError = null;
+            clientPortalSuccess = null;
+        }
+        clientPortalLoading = true;
+        renderClientPortal();
+        try {
+            if (currentUserIsAdmin) {
+                if (clientPortalSelectedMember) {
+                    const { data, error } = await client.rpc("get_client_portal_admin_history", { p_user_id: clientPortalSelectedMember.user_id });
+                    if (error) throw error;
+                    if (data?.error) throw new Error(data.error);
+                    clientPortalMemberHistory = Array.isArray(data) ? data : [];
+                } else {
+                    const { data, error } = await client.rpc("get_client_portal_admin_dashboard");
+                    if (error) throw error;
+                    if (data?.error) throw new Error(data.error);
+                    clientPortalMembers = Array.isArray(data) ? data : [];
+                }
+            } else {
+                const { data, error } = await client.rpc("get_client_portal_status");
+                if (error) throw error;
+                if (data?.error) throw new Error(data.error);
+                clientPortalStatus = data || { activated: false };
+                if (clientPortalStatus.activated === true) {
+                    const reportsResult = await client.rpc("get_my_client_weekly_reports");
+                    if (reportsResult.error) throw reportsResult.error;
+                    clientPortalMyReports = Array.isArray(reportsResult.data) ? reportsResult.data : [];
+                } else {
+                    clientPortalMyReports = [];
+                }
+            }
+        } catch (error) {
+            if (sequence === clientPortalLoadSequence && userId === activeUserId) {
+                clientPortalError = clientPortalErrorMessage(error);
+            }
+        } finally {
+            if (sequence === clientPortalLoadSequence && userId === activeUserId) {
+                clientPortalLoading = false;
+                renderClientPortal();
+            }
+        }
+    }
+
+    async function activateClientPortal(event) {
+        event.preventDefault();
+        if (clientPortalActivating || !client) return;
+        const pin = String(new FormData(event.currentTarget).get("pin") || "");
+        if (!/^[0-9]{6}$/.test(pin)) {
+            clientPortalError = "Wpisz prawidłowy, 6-cyfrowy PIN.";
+            setClientPortalFeedback();
+            return;
+        }
+        clientPortalActivating = true;
+        clientPortalPin = pin;
+        clientPortalError = null;
+        const button = event.currentTarget.querySelector("button[type='submit']");
+        if (button) { button.disabled = true; button.textContent = "SPRAWDZANIE PIN-U…"; }
+        try {
+            const { data, error } = await client.rpc("activate_client_portal", { p_pin: pin });
+            if (error) throw error;
+            if (data?.ok !== true || data?.activated !== true) throw new Error(data?.error || "invalid_pin");
+            clientPortalPin = "";
+            clientPortalSuccess = "Panel został aktywowany i przypisany do Twojego konta.";
+            await loadClientPortalData({ preserveMessages: true });
+        } catch (error) {
+            clientPortalError = clientPortalErrorMessage(error);
+        } finally {
+            clientPortalActivating = false;
+            renderClientPortal();
+        }
+    }
+
+    function clientPortalParseDecimal(value) {
+        const normalized = String(value ?? "").trim().replace(",", ".");
+        if (!normalized) return null;
+        const number = Number(normalized);
+        return Number.isFinite(number) ? number : null;
+    }
+
+    function updateClientPortalReportButton() {
+        const form = document.getElementById("client-portal-report-form");
+        if (!form) return;
+        const values = new FormData(form);
+        const weight = clientPortalParseDecimal(values.get("weight_kg"));
+        const measureNames = ["waist_cm", "hips_cm", "chest_cm", "arm_cm", "thigh_cm"];
+        const optionalRaw = measureNames.map((key) => String(values.get(key) || "").trim());
+        const optional = optionalRaw.map(clientPortalParseDecimal);
+        const ranges = [[20, 300], [20, 300], [20, 300], [10, 150], [20, 200]];
+        const validMeasures = optionalRaw.every((raw, index) => !raw || (optional[index] !== null && optional[index] >= ranges[index][0] && optional[index] <= ranges[index][1]));
+        const scores = ["wellbeing_score", "energy_score", "strength_score"].map((key) => Number(values.get(key)));
+        const isValid = weight !== null && weight >= 35 && weight <= 350 && validMeasures && scores.every((score) => Number.isInteger(score) && score >= 1 && score <= 10) && values.get("data_sharing_consent") === "on";
+        const button = form.querySelector("button[type='submit']");
+        if (button) button.disabled = clientPortalSubmitting || !isValid;
+    }
+
+    async function submitClientPortalReport(event) {
+        event.preventDefault();
+        if (clientPortalSubmitting || !client) return;
+        const form = event.currentTarget;
+        const values = new FormData(form);
+        const weight = clientPortalParseDecimal(values.get("weight_kg"));
+        const optionalRaw = ["waist_cm", "hips_cm", "chest_cm", "arm_cm", "thigh_cm"].map((key) => String(values.get(key) || "").trim());
+        const optional = optionalRaw.map(clientPortalParseDecimal);
+        const ranges = [[20, 300], [20, 300], [20, 300], [10, 150], [20, 200]];
+        const validMeasures = optionalRaw.every((raw, index) => !raw || (optional[index] !== null && optional[index] >= ranges[index][0] && optional[index] <= ranges[index][1]));
+        const scores = ["wellbeing_score", "energy_score", "strength_score"].map((key) => Number(values.get(key)));
+        const consent = values.get("data_sharing_consent") === "on";
+        if (weight === null || weight < 35 || weight > 350 || !validMeasures || scores.some((score) => !Number.isInteger(score) || score < 1 || score > 10) || !consent) {
+            clientPortalError = !consent
+                ? "Zaznacz zgodę na przekazanie raportu Przemali."
+                : "Sprawdź wagę (35–350 kg) i pomiary. Wartości obwodów muszą mieścić się w podanych zakresach.";
+            setClientPortalFeedback();
+            return;
+        }
+        clientPortalSubmitting = true;
+        clientPortalError = null;
+        setClientPortalFeedback();
+        const button = form.querySelector("button[type='submit']");
+        if (button) { button.disabled = true; button.textContent = "ZAPISYWANIE RAPORTU…"; }
+        let reportSaved = false;
+        try {
+            const { data, error } = await client.rpc("submit_client_weekly_report", {
+                p_diet_type: String(values.get("diet_type") || "balance"),
+                p_weight_kg: weight,
+                p_waist_cm: optional[0],
+                p_hips_cm: optional[1],
+                p_chest_cm: optional[2],
+                p_arm_cm: optional[3],
+                p_thigh_cm: optional[4],
+                p_wellbeing_score: scores[0],
+                p_energy_score: scores[1],
+                p_strength_score: scores[2],
+                p_notes: String(values.get("notes") || "").trim() || null,
+                p_data_sharing_consent: true
+            });
+            if (error) throw error;
+            if (data?.ok !== true) throw new Error(data?.error || "report_save_failed");
+            reportSaved = true;
+            clientPortalSuccess = "Raport został zapisany w DEV i jest widoczny w panelu Przemali.";
+            await loadClientPortalData({ preserveMessages: true });
+        } catch (error) {
+            clientPortalError = clientPortalErrorMessage(error);
+        } finally {
+            clientPortalSubmitting = false;
+            if (reportSaved) renderClientPortal();
+            else {
+                setClientPortalFeedback();
+                if (button) button.textContent = "WYŚLIJ RAPORT DO PRZEMALI";
+                updateClientPortalReportButton();
+            }
+        }
+    }
+
     async function loadAccountData(user) {
         const sequence = ++dataLoadSequence;
         const preferredRoute = window.location.hash.slice(1) || "home";
@@ -5288,6 +5795,7 @@
         currentNutritionPlan = planResult.error ? null : planResult.data;
         currentPremiumSnapshot = premiumResult.error ? null : premiumResult.data;
         currentUserIsAdmin = adminStatus === true;
+        updateClientPortalEntry();
         premiumSnapshotUnavailable = Boolean(premiumResult.error);
         updateFridgeQuota();
 
@@ -5455,6 +5963,7 @@
         else if (requestedRoute === "progress") setProgressSection("hub");
         const safeRoute = Object.hasOwn(routeLabels, requestedRoute) ? requestedRoute : "home";
         const enteringCoach = safeRoute === "coach" && currentAppRoute !== "coach";
+        const enteringClientPortal = safeRoute === "client-portal" && currentAppRoute !== "client-portal";
         if (enteringCoach) {
             activeCoachSection = "coach";
             beginNewCoachChat();
@@ -5474,6 +5983,7 @@
         appShell?.classList.toggle("fridge-route-active", safeRoute === "fridge");
         appShell?.classList.toggle("coach-route-active", safeRoute === "coach");
         appShell?.classList.toggle("progress-route-active", safeRoute === "progress");
+        appShell?.classList.toggle("client-portal-route-active", safeRoute === "client-portal");
         document.querySelectorAll(".route-page").forEach((page) => {
             page.classList.toggle("active", page.dataset.page === safeRoute);
         });
@@ -5489,6 +5999,8 @@
         }
         const pageTitle = safeRoute === "coach" && activeCoachSection === "support"
             ? "Czat z Przemalą"
+            : safeRoute === "client-portal" && !currentUserIsAdmin
+                ? "Panel podopiecznego"
             : routeLabels[safeRoute];
         routeTitle.textContent = pageTitle;
         document.title = `${pageTitle} — Project Weight Drop DEV`;
@@ -5498,6 +6010,11 @@
             startSupportChatRefresh();
         } else {
             stopSupportChatRefresh();
+        }
+        if (enteringClientPortal) {
+            clientPortalSelectedMember = null;
+            clientPortalSuccess = null;
+            void loadClientPortalData();
         }
         window.scrollTo({ top: 0, behavior: "auto" });
         document.querySelector(".app-workspace")?.scrollTo({ top: 0, behavior: "auto" });
@@ -6039,11 +6556,63 @@
     document.querySelectorAll("[data-route-link]").forEach((button) => {
         button.addEventListener("click", () => navigateTo(button.dataset.routeLink));
     });
+    document.getElementById("profile-pro-support-chat")?.addEventListener("click", () => {
+        closeProfileCompletionOffer();
+        navigateTo("coach");
+        document.getElementById("coach-support-tab")?.click();
+    });
+    profileClientPortalLink?.addEventListener("click", () => navigateTo("client-portal"));
+    clientPortalRefreshButton?.addEventListener("click", () => void loadClientPortalData());
+    clientPortalContent?.addEventListener("submit", (event) => {
+        if (event.target.id === "client-portal-pin-form") void activateClientPortal(event);
+        else if (event.target.id === "client-portal-report-form") void submitClientPortalReport(event);
+    });
+    clientPortalContent?.addEventListener("input", (event) => {
+        const input = event.target;
+        if (input.id === "client-portal-pin") {
+            clientPortalPin = input.value.replace(/\D/g, "").slice(0, 6);
+            input.value = clientPortalPin;
+            const submit = input.form?.querySelector("button[type='submit']");
+            if (submit) submit.disabled = clientPortalPin.length !== 6 || clientPortalActivating;
+            return;
+        }
+        const outputId = input.dataset?.ratingOutput;
+        if (outputId) {
+            const output = document.getElementById(outputId);
+            if (output) output.value = input.value;
+        }
+        updateClientPortalReportButton();
+    });
+    clientPortalContent?.addEventListener("change", updateClientPortalReportButton);
+    clientPortalContent?.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-client-portal-action]");
+        if (!button) return;
+        const action = button.dataset.clientPortalAction;
+        if (action === "refresh") {
+            void loadClientPortalData();
+        } else if (action === "back-to-members") {
+            clientPortalSelectedMember = null;
+            clientPortalMemberHistory = [];
+            void loadClientPortalData();
+        } else if (action === "open-member") {
+            const member = clientPortalMembers.find((item) => item.user_id === button.dataset.userId);
+            if (!member) return;
+            clientPortalSelectedMember = member;
+            clientPortalMemberHistory = [];
+            void loadClientPortalData();
+        }
+    });
     document.querySelectorAll("[data-sign-out]").forEach((button) => {
         button.addEventListener("click", () => void signOut());
     });
     backHomeButton?.addEventListener("click", goBackOneRoute);
     openProfileResetButton?.addEventListener("click", openProfileReset);
+    profileAccessLink?.addEventListener("click", openProfileCompletionOffer);
+    profileCompletionCloseButton?.addEventListener("click", closeProfileCompletionOffer);
+    profileCompletionContinueButton?.addEventListener("click", closeProfileCompletionOffer);
+    profileCompletionModal?.addEventListener("click", (event) => {
+        if (event.target === profileCompletionModal) closeProfileCompletionOffer();
+    });
     openDeleteAccountButton?.addEventListener("click", openDeleteAccount);
     cancelDeleteAccountButton?.addEventListener("click", closeDeleteAccount);
     confirmDeleteAccountButton?.addEventListener("click", () => void deleteOwnAccount());
@@ -6080,6 +6649,7 @@
         }
         if (event.key === "Escape" && !profileResetModal?.hidden) closeProfileReset();
         if (event.key === "Escape" && !deleteAccountModal?.hidden) closeDeleteAccount();
+        if (event.key === "Escape" && !profileCompletionModal?.hidden) closeProfileCompletionOffer();
     });
     window.addEventListener("hashchange", () => {
         if (!appView.hidden) navigateTo(window.location.hash.slice(1), false);
