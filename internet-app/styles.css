@@ -841,6 +841,8 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .coach-context-card { display: grid; grid-template-columns: 50px minmax(0, 1fr) auto; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid rgba(255,255,255,.12); background: #191919; }
 .coach-context-card > span { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 8px; background: var(--orange); color: white; }
 .coach-context-card > span svg { width: 25px; height: 25px; }
+.coach-context-actions { display: flex; align-items: center; gap: 2px; }
+.coach-context-actions .module-text-button { padding: 4px 6px; white-space: nowrap; }
 .coach-context-title { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
 .coach-context-title strong { font-size: 16px; }
 .coach-context-title b { padding: 2px 7px; border: 1px solid rgba(255,106,0,.42); border-radius: 6px; color: var(--orange); font-size: 10px; }

@@ -11,10 +11,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-support-chat-backstack">
+    <link rel="stylesheet" href="./styles.css?v=20261005-coach-new-chat-history">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./app.js?v=20261005-support-chat-backstack" defer></script>
+    <script src="./app.js?v=20261005-coach-new-chat-history" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -599,16 +599,19 @@
                             <p id="coach-context-calories">Pozostało — kcal</p>
                             <p id="coach-context-macros">B — g · T — g · W — g</p>
                         </div>
-                        <button id="coach-history-button" class="module-text-button" type="button">Historia</button>
+                        <div class="coach-context-actions">
+                            <button id="coach-history-button" class="module-text-button" type="button">Historia</button>
+                            <button id="coach-reset-button" class="module-text-button" type="button" aria-label="Resetuj czat bez usuwania zapisanej historii" title="Rozpocznij pusty czat; historia pozostanie zapisana">Resetuj</button>
+                        </div>
                     </div>
-                    <div class="coach-topline"><span id="coach-status">Pobieranie historii DEV…</span><small id="coach-limit">Limit sprawdzany przy wysłaniu</small></div>
+                    <div class="coach-topline"><span id="coach-status">Nowy czat. Historia poprzednich rozmów pozostaje zapisana.</span><small id="coach-limit">Limit sprawdzany przy wysłaniu</small></div>
                     <div class="coach-prompts" aria-label="Szybkie pytania">
                         <button type="button" data-coach-prompt="Co mogę dziś zjeść?"><svg><use href="#icon-meals"></use></svg><span>Co mogę dziś zjeść?</span></button>
                         <button type="button" data-coach-prompt="Jak wygląda mój progres?"><svg><use href="#icon-progress"></use></svg><span>Jak wygląda mój progres?</span></button>
                         <button type="button" data-coach-prompt="Dlaczego waga stoi?"><svg><use href="#icon-weight"></use></svg><span>Dlaczego waga stoi?</span></button>
                         <button type="button" data-coach-prompt="Co po treningu?"><svg><use href="#icon-event"></use></svg><span>Co po treningu?</span></button>
                     </div>
-                    <div class="coach-messages" id="coach-messages" aria-live="polite"><p class="empty-history">Pobieranie…</p></div>
+                    <div class="coach-messages" id="coach-messages" aria-live="polite"><p class="empty-history">Nie ma jeszcze rozmowy. Możesz zadać pierwsze pytanie Coachowi DEV.</p></div>
                     <form class="coach-form" id="coach-form">
                         <label class="visually-hidden" for="coach-input">Wiadomość do Coacha</label>
                         <div><textarea id="coach-input" maxlength="2000" rows="1" placeholder="Napisz wiadomość…" required></textarea><button class="ghost-icon-button" type="button" aria-label="Podyktuj wiadomość" disabled><svg><use href="#icon-mic"></use></svg></button><button id="coach-send-button" type="submit" aria-label="Wyślij wiadomość"><svg><use href="#icon-arrow"></use></svg></button></div>
