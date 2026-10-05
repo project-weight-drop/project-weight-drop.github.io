@@ -8,13 +8,13 @@
     <meta name="robots" content="noindex, nofollow, noarchive">
     <meta name="theme-color" content="#101010">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://iqqiizsehdjwenqowsqc.supabase.co; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-coach-android-community-tabs">
+    <link rel="stylesheet" href="./styles.css?v=20261005-community-publish-responsive">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./app.js?v=20261005-coach-android-community-tabs" defer></script>
+    <script src="./app.js?v=20261005-community-publish-responsive" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -754,7 +754,20 @@
                     </section>
                 </div>
                 <section class="community-panel posts-panel" aria-labelledby="posts-heading">
-                    <div class="history-heading"><div><p class="eyebrow">SPOŁECZNOŚĆ</p><h3 id="posts-heading">Najnowsze posty</h3></div><span id="posts-count">—</span></div>
+                    <div class="history-heading"><div><p class="eyebrow">SPOŁECZNOŚĆ</p><h3 id="posts-heading">Najnowsze posty</h3></div><div class="community-post-toolbar"><span id="posts-count">—</span><button id="community-compose-open" type="button" class="tool-primary-button" hidden>Dodaj post</button></div></div>
+                    <form id="community-compose-form" class="community-compose-form" hidden>
+                        <p class="eyebrow">NOWY POST</p>
+                        <h4>Podziel się swoim progresem</h4>
+                        <p>Opis i zdjęcie będą widoczne dla innych osób w Społeczności.</p>
+                        <label for="community-post-caption">Opis posta</label>
+                        <textarea id="community-post-caption" name="caption" rows="4" minlength="1" maxlength="600" placeholder="Napisz, czym chcesz się podzielić…" required></textarea>
+                        <label for="community-post-image">Zdjęcie (JPG, PNG lub WebP)</label>
+                        <input id="community-post-image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required>
+                        <div id="community-post-preview" class="community-post-preview" hidden><img id="community-post-preview-image" alt="Podgląd wybranego zdjęcia"><button id="community-post-image-remove" type="button" class="tool-secondary-button">Usuń zdjęcie</button></div>
+                        <label class="community-rules-check"><input id="community-post-public-confirm" type="checkbox" required><span>Rozumiem, że opis i zdjęcie zostaną opublikowane w Społeczności.</span></label>
+                        <p id="community-compose-status" class="tool-status" role="status" aria-live="polite"></p>
+                        <div class="community-compose-actions"><button id="community-compose-cancel" type="button" class="tool-secondary-button">Anuluj</button><button id="community-compose-submit" type="submit" class="tool-primary-button">Opublikuj post</button></div>
+                    </form>
                     <div class="community-posts" id="community-posts"><p class="empty-history">Pobieranie…</p></div>
                 </section>
                 <div class="capability-list"><div><strong>Wyzwania i rankingi</strong><span class="available-label">Zapis konta DEV</span></div><div><strong>Powiadomienia systemowe</strong><span>Tylko Android</span></div></div>

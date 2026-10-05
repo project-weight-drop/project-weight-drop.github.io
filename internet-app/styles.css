@@ -903,7 +903,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .community-stats small { margin-bottom: 6px; color: #777; font-size: 9px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .community-stats b { color: var(--orange); font-size: 21px; }
 .community-layout { display: grid; grid-template-columns: 1.15fr .85fr; gap: 14px; margin-top: 18px; }
-.community-panel { overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: #191919; }
+.community-panel { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: #191919; }
 .challenge-list, .leaderboard-list, .community-posts { display: grid; }
 .challenge-card { min-width: 0; padding: 18px 20px; border-bottom: 1px solid var(--line-soft); }
 .challenge-card:last-child { border-bottom: 0; }
@@ -922,12 +922,28 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .leaderboard-row > span { color: var(--orange); font-size: 11px; font-weight: 850; }
 .leaderboard-row.current { background: rgba(255,106,0,.06); }
 .posts-panel { margin-top: 14px; }
-.community-post { padding: 18px 20px; border-bottom: 1px solid var(--line-soft); }
+.community-post-toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+.community-post-toolbar > span { color: #888; font-size: 10px; }
+.community-post-toolbar .tool-primary-button { min-height: 38px; padding-inline: 12px; font-size: 11px; }
+.community-compose-form { display: grid; gap: 10px; padding: 16px 20px; border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); background: rgba(12,12,12,.72); }
+.community-compose-form .eyebrow, .community-compose-form h4, .community-compose-form > p { margin: 0; }
+.community-compose-form h4 { font-size: 16px; }
+.community-compose-form > p:not(.eyebrow):not(.tool-status) { color: #aaa; font-size: 11px; line-height: 1.5; }
+.community-compose-form > label:not(.community-rules-check) { display: grid; gap: 6px; color: #ccc; font-size: 11px; font-weight: 750; }
+.community-compose-form textarea, .community-compose-form input[type="file"] { width: 100%; min-width: 0; border: 1px solid #414141; border-radius: 8px; padding: 11px; background: #101010; color: #eee; }
+.community-compose-form textarea { min-height: 92px; resize: vertical; line-height: 1.55; }
+.community-compose-form textarea:focus, .community-compose-form input[type="file"]:focus { border-color: var(--orange); outline: 2px solid rgba(255,106,0,.16); }
+.community-compose-form input[type="file"]::file-selector-button { margin: 0 10px 0 0; border: 1px solid #555; border-radius: 6px; padding: 7px 9px; background: #242424; color: #eee; cursor: pointer; }
+.community-post-preview { display: grid; justify-items: start; gap: 8px; }
+.community-post-preview img { display: block; width: min(100%, 520px); max-height: 340px; border: 1px solid var(--line); border-radius: 9px; object-fit: contain; background: #080808; }
+.community-compose-actions { display: flex; justify-content: flex-end; gap: 8px; }
+.community-post-image { display: block; width: 100%; max-height: 520px; margin-top: 12px; border: 1px solid var(--line); border-radius: 9px; object-fit: contain; background: #080808; }
+.community-post { min-width: 0; padding: 18px 20px; border-bottom: 1px solid var(--line-soft); }
 .community-post:last-child { border-bottom: 0; }
 .community-post-head { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 9px; }
 .community-post-head strong { font-size: 12px; }
 .community-post-head time { color: #707070; font-size: 9px; }
-.community-post > p { margin: 0; color: #a4a4a4; font-size: 12px; line-height: 1.65; white-space: pre-wrap; }
+.community-post > p { margin: 0; color: #a4a4a4; font-size: 12px; line-height: 1.65; overflow-wrap: anywhere; white-space: pre-wrap; }
 .community-post > small { display: block; margin-top: 10px; color: #777; font-size: 9px; }
 .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 30px; margin-bottom: 20px; }
 .section-heading h2 { margin: 6px 0 0; font-size: 28px; }
@@ -1244,6 +1260,7 @@ body.modal-open { overflow: hidden; }
 .progress-tab-view[data-progress-section-view="community"] .community-hero { min-height: 132px; align-items: center; padding: 20px; border-radius: 11px; }
 .progress-tab-view[data-progress-section-view="community"] .community-hero h2 { margin: 5px 0 7px; font-size: clamp(25px, 3.5vw, 34px); letter-spacing: -.03em; }
 .challenge-section-hero { margin-top: 2px; }
+.progress-tab-view { min-width: 0; }
 .challenge-section-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin: 10px 0; }
 .challenge-section-tabs button { min-height: 38px; }
 .challenge-card { background: rgba(23,23,23,.96); }
@@ -1377,7 +1394,19 @@ body.modal-open { overflow: hidden; }
     .progress-detail-header { align-items: flex-start; flex-direction: column; }
     .progress-detail-header .tool-secondary-button { width: 100%; }
     .progress-detail-current { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .challenge-section-hero { min-height: 0; flex-direction: row; align-items: center; }
+    .progress-tab-view .challenge-section-hero { min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .82fr); align-items: center; gap: 8px; padding: 14px; }
+    .progress-tab-view .challenge-section-hero > div:first-child { min-width: 0; }
+    .progress-tab-view .challenge-section-hero h2 { max-width: 100%; margin: 5px 0 8px; font-size: clamp(22px, 6vw, 31px); line-height: 1.08; letter-spacing: -.04em; overflow-wrap: anywhere; }
+    .progress-tab-view .challenge-section-hero p:last-child { font-size: 12px; line-height: 1.42; overflow-wrap: anywhere; }
+    .progress-tab-view .challenge-section-hero .community-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; min-width: 0; }
+    .progress-tab-view .challenge-section-hero .community-stats span { min-width: 0; padding: 9px 7px; overflow-wrap: anywhere; }
+    .progress-tab-view .challenge-section-hero .community-stats b { font-size: clamp(15px, 4.4vw, 19px); }
+    .community-post-toolbar { gap: 6px; }
+    .community-post-toolbar .tool-primary-button { min-height: 36px; padding-inline: 9px; font-size: 10px; }
+    .community-compose-form { padding: 14px 12px; }
+    .community-compose-actions > button { min-width: 0; flex: 1; padding-inline: 9px; }
+    .community-post { padding: 15px 12px; }
+    .community-post-head { align-items: flex-start; flex-direction: column; gap: 4px; }
     .profile-setup-panel { width: 100%; min-height: calc(100vh - 104px); margin: 0 auto 14px; padding: 18px 15px; border-radius: 12px; background-position: center top; }
     .profile-setup-intro { margin: 22px 0 18px; }
     .profile-setup-step fieldset { padding: 14px 12px; }

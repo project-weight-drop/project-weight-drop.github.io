@@ -4,7 +4,7 @@
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
     const COMMUNITY_RULES_VERSION = "2026-09-09";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-coach-new-chat-history";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-community-publish-responsive";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -112,6 +112,14 @@
     const cancelMealGramsButton = document.getElementById("cancel-meal-grams");
     const saveMealDraftButton = document.getElementById("save-meal-draft");
     const closeFoodDayButton = document.getElementById("close-food-day");
+    const communityComposeOpen = document.getElementById("community-compose-open");
+    const communityComposeForm = document.getElementById("community-compose-form");
+    const communityPostImageInput = document.getElementById("community-post-image");
+    const communityPostPreview = document.getElementById("community-post-preview");
+    const communityPostPreviewImage = document.getElementById("community-post-preview-image");
+    const communityComposeSubmit = document.getElementById("community-compose-submit");
+    const communityComposerCancel = document.getElementById("community-compose-cancel");
+    const communityPostImageRemove = document.getElementById("community-post-image-remove");
 
     const routeLabels = Object.freeze({
         home: "Home",
@@ -213,6 +221,8 @@
     let activeProgressDestination = null;
     let currentProgressData = { profile: null, daily: [], weights: [], measurements: [], event: null, firstPlanDate: null, latestCheckIn: null };
     let currentCommunitySnapshots = { community: null, system: null, przemala: null };
+    let communityImagePreviewUrl = null;
+    let communityPublishBusy = false;
     let challengeDaySelection = new Map();
     let currentCoachMemories = [];
     let coachMemorySavingId = null;
@@ -4527,6 +4537,182 @@
         });
     }
 
+    function clearCommunityImagePreview() {
+        if (communityImagePreviewUrl) URL.revokeObjectURL(communityImagePreviewUrl);
+        communityImagePreviewUrl = null;
+        if (communityPostImageInput) communityPostImageInput.value = "";
+        if (communityPostPreviewImage) communityPostPreviewImage.removeAttribute("src");
+        if (communityPostPreview) communityPostPreview.hidden = true;
+    }
+
+    function closeCommunityComposer(force = false) {
+        if (communityPublishBusy && !force) return;
+        if (communityComposeForm) {
+            communityComposeForm.hidden = true;
+            communityComposeForm.reset();
+        }
+        clearCommunityImagePreview();
+        setToolStatus("community-compose-status", "");
+    }
+
+    async function decodeCommunityImage(file) {
+        if (typeof window.createImageBitmap === "function") {
+            try {
+                return await window.createImageBitmap(file);
+            } catch {
+                // Spróbuj przez element <img>, bo dekodery przeglądarek różnią się obsługą formatów.
+            }
+        }
+        return new Promise((resolve, reject) => {
+            const objectUrl = URL.createObjectURL(file);
+            const image = new Image();
+            image.onload = () => {
+                URL.revokeObjectURL(objectUrl);
+                resolve(image);
+            };
+            image.onerror = () => {
+                URL.revokeObjectURL(objectUrl);
+                reject(new Error("Nie można odczytać wybranego zdjęcia."));
+            };
+            image.src = objectUrl;
+        });
+    }
+
+    function communityCanvasJpeg(canvas, quality) {
+        return new Promise((resolve, reject) => {
+            canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("Nie udało się przygotować zdjęcia.")), "image/jpeg", quality);
+        });
+    }
+
+    async function compressCommunityImage(file) {
+        const supportedTypes = ["image/jpeg", "image/png", "image/webp"];
+        if (!file || !supportedTypes.includes(file.type)) throw new Error("Wybierz zdjęcie JPG, PNG lub WebP.");
+        const source = await decodeCommunityImage(file);
+        try {
+            const sourceWidth = source.width || source.naturalWidth;
+            const sourceHeight = source.height || source.naturalHeight;
+            if (!sourceWidth || !sourceHeight) throw new Error("Nie można odczytać wymiarów zdjęcia.");
+            let scale = Math.min(1, 1600 / Math.max(sourceWidth, sourceHeight));
+            let blob = null;
+            const qualities = [0.84, 0.74, 0.64, 0.56, 0.5];
+            for (const quality of qualities) {
+                const canvas = document.createElement("canvas");
+                canvas.width = Math.max(1, Math.round(sourceWidth * scale));
+                canvas.height = Math.max(1, Math.round(sourceHeight * scale));
+                const context = canvas.getContext("2d", { alpha: false });
+                if (!context) throw new Error("Przeglądarka nie może przygotować zdjęcia.");
+                context.fillStyle = "#fff";
+                context.fillRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(source, 0, 0, canvas.width, canvas.height);
+                blob = await communityCanvasJpeg(canvas, quality);
+                if (blob.size <= 5 * 1024 * 1024) break;
+                scale *= 0.82;
+            }
+            if (!blob || blob.size > 5 * 1024 * 1024) throw new Error("To zdjęcie jest zbyt duże. Wybierz mniejsze.");
+            return new File([blob], `community-${Date.now()}.jpg`, { type: "image/jpeg", lastModified: Date.now() });
+        } finally {
+            if (typeof source.close === "function") source.close();
+        }
+    }
+
+    function communityPostError(error) {
+        const message = String(error?.message || error?.details || "").toLowerCase();
+        if (message.includes("community_post_daily_limit")) return "Osiągnięto limit 10 postów na 24 godziny. Spróbuj później.";
+        if (message.includes("community_rules_required")) return "Najpierw zaakceptuj zasady i ustaw pseudonim w Społeczności.";
+        if (message.includes("invalid_community_caption")) return "Opis posta musi mieć od 1 do 600 znaków.";
+        if (message.includes("invalid_community_image_path") || message.includes("community_image_not_uploaded")) return "Nie udało się powiązać zdjęcia z postem. Spróbuj ponownie.";
+        if (message.includes("community_image_too_large") || message.includes("too large") || message.includes("payload too large")) return "Zdjęcie przekracza limit 5 MB. Wybierz mniejsze.";
+        if (message.includes("row-level security") || message.includes("permission denied")) return "Nie można zapisać zdjęcia. Sprawdź, czy dołączono do Społeczności, i spróbuj ponownie.";
+        if (message.includes("authentication_required") || message.includes("jwt")) return "Sesja wygasła. Zaloguj się ponownie.";
+        if (message.includes("failed to fetch") || message.includes("network")) return "Brak połączenia z bazą DEV. Sprawdź internet i spróbuj ponownie.";
+        return "Nie udało się opublikować posta. Spróbuj ponownie za chwilę.";
+    }
+
+    async function publishCommunityPost(event) {
+        event.preventDefault();
+        if (!client || !activeUserId || !communityComposeForm || communityPublishBusy) return;
+        const caption = document.getElementById("community-post-caption")?.value.trim() || "";
+        const image = communityPostImageInput?.files?.[0];
+        const publicConfirmed = document.getElementById("community-post-public-confirm")?.checked;
+        const profile = currentCommunitySnapshots.community?.profile;
+        if (profile?.status !== "active" || profile?.rules_version !== COMMUNITY_RULES_VERSION) {
+            setToolStatus("community-compose-status", "Najpierw zaakceptuj zasady i ustaw pseudonim w Społeczności.", "error");
+            return;
+        }
+        if (!caption || caption.length > 600 || !image || !publicConfirmed) {
+            setToolStatus("community-compose-status", "Dodaj opis, zdjęcie i potwierdź publikację dla społeczności.", "error");
+            return;
+        }
+
+        communityPublishBusy = true;
+        communityComposeForm.querySelectorAll("button, input, textarea").forEach((control) => { control.disabled = true; });
+        communityComposeSubmit.textContent = "Przygotowuję…";
+        let uploadedPath = "";
+        try {
+            const userId = activeUserId;
+            setToolStatus("community-compose-status", "Zmniejszam zdjęcie i przygotowuję post…");
+            const compressedImage = await compressCommunityImage(image);
+            if (userId !== activeUserId) throw new Error("authentication_required");
+            uploadedPath = `${userId}/${crypto.randomUUID()}.jpg`;
+            setToolStatus("community-compose-status", "Wysyłam zdjęcie do prywatnego magazynu DEV…");
+            const { error: uploadError } = await client.storage.from("community-progress").upload(uploadedPath, compressedImage, {
+                cacheControl: "3600",
+                contentType: "image/jpeg",
+                upsert: false
+            });
+            if (uploadError) throw uploadError;
+            if (userId !== activeUserId) throw new Error("authentication_required");
+            setToolStatus("community-compose-status", "Zapisuję post…");
+            const { error: postError } = await client.rpc("create_community_post", {
+                p_caption: caption,
+                p_image_path: uploadedPath
+            });
+            if (postError) throw postError;
+
+            uploadedPath = "";
+            closeCommunityComposer(true);
+            setText("community-message", "Post został opublikowany. Wczytuję Społeczność…");
+            await loadCommunityDataForActiveUser();
+        } catch (error) {
+            if (uploadedPath) {
+                await client.storage.from("community-progress").remove([uploadedPath]).catch(() => {});
+            }
+            setToolStatus("community-compose-status", communityPostError(error), "error");
+        } finally {
+            communityPublishBusy = false;
+            communityComposeForm.querySelectorAll("button, input, textarea").forEach((control) => { control.disabled = false; });
+            if (communityComposeSubmit) communityComposeSubmit.textContent = "Opublikuj post";
+        }
+    }
+
+    function renderCommunityPostImage(item, imagePath) {
+        if (!client || !imagePath) return;
+        const image = document.createElement("img");
+        image.className = "community-post-image";
+        image.alt = "Zdjęcie opublikowane w Społeczności";
+        image.loading = "lazy";
+        image.decoding = "async";
+        image.referrerPolicy = "no-referrer";
+        item.append(image);
+        void client.storage.from("community-progress").createSignedUrl(imagePath, 60 * 60).then(({ data, error }) => {
+            if (!item.isConnected) return;
+            if (error || !data?.signedUrl) {
+                const status = document.createElement("small");
+                status.className = "community-image-status";
+                status.textContent = "Nie udało się wczytać zdjęcia posta.";
+                image.replaceWith(status);
+                return;
+            }
+            image.src = data.signedUrl;
+        }).catch(() => {
+            if (!item.isConnected) return;
+            const status = document.createElement("small");
+            status.className = "community-image-status";
+            status.textContent = "Nie udało się wczytać zdjęcia posta.";
+            image.replaceWith(status);
+        });
+    }
+
     function renderCommunityPosts(snapshot, profileReady) {
         const target = document.getElementById("community-posts");
         if (!target) return;
@@ -4557,6 +4743,7 @@
             const meta = document.createElement("small");
             meta.textContent = `${formatNumber(comments.length)} ${comments.length === 1 ? "komentarz" : "komentarzy"}${post.image_path ? " · zawiera zdjęcie" : ""}`;
             item.append(heading, caption, meta);
+            if (post.image_path) renderCommunityPostImage(item, post.image_path);
             comments.forEach((comment) => {
                 const commentRow = document.createElement("div");
                 commentRow.className = "community-comment";
@@ -4613,6 +4800,8 @@
         const profileReady = communityProfile?.rules_version === COMMUNITY_RULES_VERSION && communityProfile?.status === "active";
         const rulesForm = document.getElementById("community-rules-form");
         if (rulesForm) rulesForm.hidden = profileReady || communityProfile?.status === "suspended";
+        if (communityComposeOpen) communityComposeOpen.hidden = !profileReady;
+        if (!profileReady && communityComposeForm && !communityComposeForm.hidden) closeCommunityComposer();
         const displayName = document.getElementById("community-display-name");
         if (displayName && !displayName.value && communityProfile?.display_name) displayName.value = communityProfile.display_name;
         renderCommunityPosts(communitySnapshot, profileReady);
@@ -5338,6 +5527,32 @@
         }
     });
     document.getElementById("community-rules-form")?.addEventListener("submit", (event) => void acceptCommunityRules(event));
+    communityComposeOpen?.addEventListener("click", () => {
+        if (!currentCommunitySnapshots.community?.profile || communityComposeOpen.hidden) return;
+        communityComposeForm.hidden = false;
+        communityComposeForm.scrollIntoView({ behavior: "smooth", block: "center" });
+        document.getElementById("community-post-caption")?.focus({ preventScroll: true });
+    });
+    communityComposerCancel?.addEventListener("click", () => closeCommunityComposer());
+    communityPostImageRemove?.addEventListener("click", () => {
+        clearCommunityImagePreview();
+        setToolStatus("community-compose-status", "");
+    });
+    communityPostImageInput?.addEventListener("change", () => {
+        if (communityImagePreviewUrl) URL.revokeObjectURL(communityImagePreviewUrl);
+        communityImagePreviewUrl = null;
+        communityPostPreviewImage?.removeAttribute("src");
+        if (communityPostPreview) communityPostPreview.hidden = true;
+        const file = communityPostImageInput.files?.[0];
+        if (!file) return;
+        communityImagePreviewUrl = URL.createObjectURL(file);
+        communityPostPreviewImage.src = communityImagePreviewUrl;
+        communityPostPreview.hidden = false;
+        setToolStatus("community-compose-status", ["image/jpeg", "image/png", "image/webp"].includes(file.type)
+            ? "Zdjęcie zostanie zmniejszone przed wysłaniem."
+            : "Wybierz zdjęcie JPG, PNG lub WebP.", ["image/jpeg", "image/png", "image/webp"].includes(file.type) ? "neutral" : "error");
+    });
+    communityComposeForm?.addEventListener("submit", (event) => void publishCommunityPost(event));
     document.addEventListener("submit", (event) => {
         const form = event.target.closest("[data-community-comment-form]");
         if (form) void addCommunityComment(event);
