@@ -1272,6 +1272,28 @@ body.modal-open { overflow: hidden; }
 .progress-entry-card .tool-form label { display: grid; gap: 6px; color: #ccc; font-size: 11px; font-weight: 700; }
 .progress-entry-card .tool-form input { min-height: 42px; border: 1px solid #414141; border-radius: 7px; padding: 0 11px; background: #101010; color: #fff; }
 .progress-entry-card .tool-form input:focus { border-color: var(--orange); outline: 2px solid rgba(255,106,0,.18); }
+.checkin-prompt { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.progress-entry-card .tool-form .checkin-options { display: grid; gap: 7px; min-width: 0; margin: 0; padding: 0; border: 0; }
+.progress-entry-card .tool-form .checkin-option { display: flex; align-items: center; gap: 11px; min-height: 48px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: #151515; color: #eee; font-size: 13px; font-weight: 650; letter-spacing: 0; text-transform: none; cursor: pointer; }
+.progress-entry-card .tool-form .checkin-option.checkin-score-5 { --checkin-score-color: #5fbe70; }
+.progress-entry-card .tool-form .checkin-option.checkin-score-4 { --checkin-score-color: #85b94f; }
+.progress-entry-card .tool-form .checkin-option.checkin-score-3 { --checkin-score-color: #e0a229; }
+.progress-entry-card .tool-form .checkin-option.checkin-score-2 { --checkin-score-color: #e07832; }
+.progress-entry-card .tool-form .checkin-option.checkin-score-1 { --checkin-score-color: #e05c5c; }
+.progress-entry-card .tool-form .checkin-option:has(input:checked) { border-color: var(--checkin-score-color); background: rgba(255,106,0,.08); color: var(--checkin-score-color); }
+.progress-entry-card .tool-form .checkin-option input[type="radio"] { width: 18px; height: 18px; min-height: 18px; margin: 0; padding: 0; border: 0; border-radius: 50%; background: transparent; accent-color: var(--checkin-score-color, var(--orange)); flex: 0 0 auto; }
+.checkin-history-heading { margin: 0; font-size: 15px; }
+.checkin-history-filters { display: flex; gap: 8px; }
+.checkin-history-filter { min-height: 36px; padding: 0 16px; border: 1px solid #414141; border-radius: 7px; background: #151515; color: #bbb; font-weight: 700; cursor: pointer; }
+.checkin-history-filter.active { border-color: var(--orange); background: var(--orange); color: #111; }
+.checkin-history-average { margin: 0; color: var(--muted); font-size: 12px; }
+.checkin-history-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 39px; padding: 8px 0; border-top: 1px solid var(--line-soft); color: #aaa; font-size: 12px; }
+.checkin-history-row > b { text-align: right; }
+.checkin-history-score.checkin-score-5 { color: #5fbe70; }
+.checkin-history-score.checkin-score-4 { color: #85b94f; }
+.checkin-history-score.checkin-score-3 { color: #e0a229; }
+.checkin-history-score.checkin-score-2 { color: #e07832; }
+.checkin-history-score.checkin-score-1 { color: #e05c5c; }
 .progress-health-consent { margin-top: 12px; background: rgba(22,22,22,.96); }
 .community-rules-form { margin: 12px 0; padding: 16px; border: 1px solid rgba(255,106,0,.42); border-radius: 10px; background: rgba(20,20,20,.95); }
 .community-rules-form h3 { margin: 4px 0 8px; }

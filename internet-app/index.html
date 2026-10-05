@@ -11,10 +11,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://iqqiizsehdjwenqowsqc.supabase.co; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-delete-account">
+    <link rel="stylesheet" href="./styles.css?v=20261005-checkin-parity">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./app.js?v=20261005-delete-account" defer></script>
+    <script src="./app.js?v=20261005-checkin-parity" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -725,7 +725,7 @@
                         <div><span>Węgle</span><b id="progress-macro-carbs">—</b></div>
                     </div>
                 </section>
-                <p class="feature-note">Postęp pokazuje zapisy konta DEV. Kroki z Health Connect i natywny Check In nadal wymagają Androida; ręczne zapisy wykonasz tutaj bez opuszczania Postępów.</p>
+                <p class="feature-note">Postęp pokazuje zapisy konta DEV. Samopoczucie w Check In, waga, kroki, woda i obwody zapiszesz tutaj. Automatyczne kroki z Health Connect nadal wymagają Androida.</p>
                 </div>
 
                 <div class="progress-tab-view" data-progress-section-view="challenges" hidden>
@@ -809,7 +809,7 @@
                     </section>
                 </section>
                 <div id="progress-health-consent" class="health-consent-panel progress-health-consent" hidden>
-                    <div><p class="eyebrow">ZGODA NA DANE ZDROWOTNE</p><h3>Zanim zapiszesz dane</h3><p>Woda, kroki i obwody ciała wymagają wyraźnej zgody na przetwarzanie danych.</p><label class="consent-check"><input id="progress-health-consent-checkbox" type="checkbox"><span>Wyrażam zgodę zgodnie z <a href="/privacy.html?from=internet-app" target="_blank" rel="noopener">Polityką prywatności</a>.</span></label><p id="progress-health-consent-status" class="tool-status" role="status" aria-live="polite"></p></div><button id="progress-health-consent-button" class="tool-primary-button" type="button" disabled>Zapisz zgodę</button>
+                    <div><p class="eyebrow">ZGODA NA DANE ZDROWOTNE</p><h3>Zanim zapiszesz dane</h3><p>Samopoczucie, woda, kroki i obwody ciała wymagają wyraźnej zgody na przetwarzanie danych.</p><label class="consent-check"><input id="progress-health-consent-checkbox" type="checkbox"><span>Wyrażam zgodę zgodnie z <a href="/privacy.html?from=internet-app" target="_blank" rel="noopener">Polityką prywatności</a>.</span></label><p id="progress-health-consent-status" class="tool-status" role="status" aria-live="polite"></p></div><button id="progress-health-consent-button" class="tool-primary-button" type="button" disabled>Zapisz zgodę</button>
                 </div>
             </section>
 

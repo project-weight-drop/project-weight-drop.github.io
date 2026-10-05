@@ -231,6 +231,7 @@
     let currentWeeklyProgressReport = null;
     let activeProgressSection = "hub";
     let activeProgressDestination = null;
+    let checkInHistoryDays = 7;
     let currentProgressData = { profile: null, daily: [], weights: [], measurements: [], event: null, firstPlanDate: null, latestCheckIn: null };
     let currentCommunitySnapshots = { community: null, system: null, przemala: null };
     let communityImagePreviewUrl = null;
@@ -2755,6 +2756,10 @@
         return input;
     }
 
+    function wellbeingLabel(score) {
+        return ({ 5: "Bardzo dobrze", 4: "Dobrze", 3: "W porządku", 2: "Słabo", 1: "Bardzo słabo" })[score] || "—";
+    }
+
     function buildProgressEntry(destination) {
         const form = progressDetailEntryForm;
         const card = document.getElementById("progress-detail-entry-card");
@@ -2772,7 +2777,35 @@
             form.append(button);
         };
 
-        if (destination === "weight") {
+        if (destination === "check-in") {
+            const today = (Array.isArray(currentProgressData.daily) ? currentProgressData.daily : [])
+                .find((entry) => entry.summary_date === localToday()) || null;
+            const currentScore = finiteNumber(today?.wellbeing_score);
+            heading.textContent = "Jak się dziś czujesz?";
+            const prompt = document.createElement("p");
+            prompt.className = "checkin-prompt";
+            prompt.textContent = "Wybierz jedną odpowiedź. Możesz ją później zmienić.";
+            form.append(prompt);
+            const choices = document.createElement("fieldset");
+            choices.className = "checkin-options";
+            choices.setAttribute("aria-label", "Wybierz samopoczucie");
+            [5, 4, 3, 2, 1].forEach((score) => {
+                const label = document.createElement("label");
+                label.className = `checkin-option checkin-score-${score}`;
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.name = "wellbeing_score";
+                input.value = String(score);
+                input.required = true;
+                input.checked = currentScore === score;
+                const text = document.createElement("span");
+                text.textContent = wellbeingLabel(score);
+                label.append(input, text);
+                choices.append(label);
+            });
+            form.append(choices);
+            addSubmit(currentScore === null ? "Zapisz samopoczucie" : "Zaktualizuj samopoczucie");
+        } else if (destination === "weight") {
             heading.textContent = "Zapisz pomiar wagi";
             appendProgressInput(form, "Waga (kg)", "weight_kg", {
                 min: 35, max: 350, step: 0.1, inputmode: "decimal", required: true,
@@ -2838,7 +2871,7 @@
         if (!current || !chart) return;
         const weeklyContent = document.getElementById("progress-weekly-update-content");
         if (weeklyContent) weeklyContent.hidden = destination !== "weekly-update";
-        current.hidden = destination === "weekly-update";
+        current.hidden = destination === "weekly-update" || destination === "check-in";
         chart.hidden = destination === "weekly-update";
         current.replaceChildren();
         chart.replaceChildren();
@@ -2918,19 +2951,71 @@
             current.append(detailStat("Zmiana wagi", report.weight_change_kg == null ? "—" : `${formatWeight(report.weight_change_kg)} kg`));
             chart.textContent = `${formatNumber(report.meals_logged)} posiłków · ${formatNumber(report.average_calories)} kcal średnio dziennie · ${formatNumber(report.average_wellbeing_score)} / 5 samopoczucie`;
             summary = report.period_start && report.period_end ? `${formatDate(report.period_start)} – ${formatDate(report.period_end)} · podsumowanie z backendu DEV.` : "Podsumowanie z ostatnich 7 dni z backendu DEV.";
+        } else if (destination === "check-in") {
+            const days = checkInHistoryDays === 30 ? 30 : 7;
+            const firstDate = new Date(`${localToday()}T00:00:00Z`);
+            firstDate.setUTCDate(firstDate.getUTCDate() - days + 1);
+            const firstDateText = firstDate.toISOString().slice(0, 10);
+            const entries = (Array.isArray(daily) ? daily : [])
+                .filter((entry) => entry.wellbeing_score !== null && entry.wellbeing_score !== undefined
+                    && entry.summary_date >= firstDateText && entry.summary_date <= localToday())
+                .sort((left, right) => String(right.summary_date).localeCompare(String(left.summary_date)));
+            const average = entries.length
+                ? Math.round(entries.reduce((total, entry) => total + Number(entry.wellbeing_score), 0) / entries.length)
+                : null;
+            const historyHeading = document.createElement("h3");
+            historyHeading.className = "checkin-history-heading";
+            historyHeading.textContent = "Historia samopoczucia";
+            const filters = document.createElement("div");
+            filters.className = "checkin-history-filters";
+            filters.setAttribute("role", "group");
+            filters.setAttribute("aria-label", "Zakres historii samopoczucia");
+            [7, 30].forEach((range) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = `checkin-history-filter${range === days ? " active" : ""}`;
+                button.dataset.checkinHistoryDays = String(range);
+                button.setAttribute("aria-pressed", String(range === days));
+                button.textContent = `${range} dni`;
+                filters.append(button);
+            });
+            chart.append(historyHeading, filters);
+            const averageText = document.createElement("p");
+            averageText.className = "checkin-history-average";
+            averageText.textContent = average === null ? "Brak zapisów w tym okresie." : `Średnia: ${wellbeingLabel(average)}`;
+            chart.append(averageText);
+            if (!entries.length) {
+                const empty = document.createElement("p");
+                empty.className = "empty-history";
+                empty.textContent = "Zapisane Check In pojawią się tutaj.";
+                chart.append(empty);
+            } else {
+                entries.forEach((entry) => {
+                    const score = Number(entry.wellbeing_score);
+                    const row = document.createElement("div");
+                    row.className = "checkin-history-row";
+                    const date = document.createElement("span");
+                    date.textContent = formatDate(entry.summary_date);
+                    const label = document.createElement("b");
+                    label.className = `checkin-history-score checkin-score-${score}`;
+                    label.textContent = `${wellbeingLabel(score)} · ${score}/5`;
+                    row.append(date, label);
+                    chart.append(row);
+                });
+            }
+            summary = "Zapisz dzisiejsze samopoczucie i przeglądaj historię z ostatnich 7 lub 30 dni.";
         } else if (destination === "weekly-update") {
             const dueDate = weeklyRecalibrationDueDate(currentProgressData.firstPlanDate, currentProgressData.latestCheckIn?.period_end);
             summary = dueDate && dueDate <= localToday()
                 ? "Cotygodniowa aktualizacja planu PRO. Wprowadzone dane i zatwierdzenie prześlemy do istniejącego silnika DEV."
                 : `Plan jest aktualny${dueDate ? ` · następna aktualizacja ${formatDate(dueDate)}` : ""}.`;
             renderWeeklyUpdateContent();
-        } else {
-            current.append(detailStat("Check In", "Dostępne w Androidzie"));
-            chart.textContent = "Natywny Check In Androida zapisuje samopoczucie i historię. Ręczne zapisy wagi, kroków, wody i obwodów są dostępne w tej aplikacji webowej.";
-            summary = "Check In samopoczucia pozostaje w Androidzie; dane postępu są dostępne online.";
         }
         setText("progress-detail-summary", summary);
         buildProgressEntry(destination);
+        const entryCard = document.getElementById("progress-detail-entry-card");
+        if (destination === "check-in" && entryCard) chart.before(entryCard);
+        else if (entryCard) current.after(chart);
     }
 
     function openProgressDestination(destination) {
@@ -2951,7 +3036,14 @@
         setToolStatus("progress-detail-status", "Zapisywanie w DEV…");
 
         let result = { error: null };
-        if (destination === "weight") {
+        if (destination === "check-in") {
+            const score = Number(values.get("wellbeing_score"));
+            if (!Number.isInteger(score) || score < 1 || score > 5) {
+                result.error = { message: "Wybierz samopoczucie." };
+            } else {
+                result = await client.rpc("set_daily_wellbeing", { p_score: score });
+            }
+        } else if (destination === "weight") {
             const weight = Number(String(values.get("weight_kg") || "").replace(",", "."));
             if (!Number.isFinite(weight) || weight < 35 || weight > 350) {
                 result.error = { message: "Wpisz wagę od 35 do 350 kg." };
@@ -2990,16 +3082,19 @@
             result.error = { message: "Ten ekran nie przyjmuje nowych zapisów." };
         }
 
-        if (button) { button.disabled = false; button.textContent = destination === "weight" ? "Zapisz wagę" : destination === "water" ? "Zapisz wodę" : destination === "steps" ? "Zapisz kroki" : destination === "measurements" ? "Zapisz obwody" : "Zapisz cel i oblicz"; }
+        if (button) { button.disabled = false; button.textContent = destination === "check-in"
+            ? (currentProgressData.daily.some((entry) => entry.summary_date === localToday() && finiteNumber(entry.wellbeing_score) !== null) ? "Zaktualizuj samopoczucie" : "Zapisz samopoczucie")
+            : destination === "weight" ? "Zapisz wagę" : destination === "water" ? "Zapisz wodę" : destination === "steps" ? "Zapisz kroki" : destination === "measurements" ? "Zapisz obwody" : "Zapisz cel i oblicz"; }
         if (result.error) {
-            const message = ["Wpisz wagę od 35 do 350 kg.", "Wpisz od 50 do 2000 ml.", "Wpisz liczbę kroków od 0 do 200 000.", "Wpisz przynajmniej jeden obwód.", "Każdy obwód musi mieścić się w zakresie 10–300 cm.", "Podaj nazwę wydarzenia i prawidłową datę.", "Data wydarzenia musi być późniejsza niż dzisiaj.", "Uzupełnij prawidłową aktualną i docelową wagę w profilu."].includes(result.error.message)
+            const message = ["Wybierz samopoczucie.", "Wpisz wagę od 35 do 350 kg.", "Wpisz od 50 do 2000 ml.", "Wpisz liczbę kroków od 0 do 200 000.", "Wpisz przynajmniej jeden obwód.", "Każdy obwód musi mieścić się w zakresie 10–300 cm.", "Podaj nazwę wydarzenia i prawidłową datę.", "Data wydarzenia musi być późniejsza niż dzisiaj.", "Uzupełnij prawidłową aktualną i docelową wagę w profilu."].includes(result.error.message)
                 ? result.error.message
                 : healthWriteError(result.error, "Nie udało się zapisać danych w DEV.");
             setToolStatus("progress-detail-status", message, "error");
             return;
         }
 
-        const savedMessage = destination === "weight" ? "Pomiar wagi zapisany na Twoim koncie DEV."
+        const savedMessage = destination === "check-in" ? "Dzisiejsze samopoczucie zapisane na Twoim koncie DEV. Będzie widoczne także w aplikacji na Androida."
+            : destination === "weight" ? "Pomiar wagi zapisany na Twoim koncie DEV."
             : destination === "water" ? "Woda dopisana do dzisiejszego zapisu DEV."
                 : destination === "steps" ? "Dzisiejsza liczba kroków zapisana w DEV."
                     : destination === "measurements" ? "Obwody ciała zapisane w DEV."
@@ -5618,6 +5713,12 @@
     progressDetailEntryForm?.addEventListener("submit", (event) => void saveProgressEntry(event));
     progressDetailEntryForm?.addEventListener("click", (event) => {
         if (event.target.closest("[data-progress-event-delete]")) void deleteProgressEvent();
+    });
+    document.getElementById("progress-detail-chart")?.addEventListener("click", (event) => {
+        const filter = event.target.closest("[data-checkin-history-days]");
+        if (!filter) return;
+        checkInHistoryDays = Number(filter.dataset.checkinHistoryDays) === 30 ? 30 : 7;
+        if (activeProgressDestination === "check-in") renderProgressDestination("check-in");
     });
     document.querySelectorAll("[data-challenge-view]").forEach((button) => {
         button.addEventListener("click", () => challengeTab(button.dataset.challengeView));
