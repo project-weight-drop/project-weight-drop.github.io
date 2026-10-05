@@ -11,10 +11,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://iqqiizsehdjwenqowsqc.supabase.co; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-client-portal-web">
+    <link rel="stylesheet" href="./styles.css?v=20261005-language-flags">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./app.js?v=20261005-trial-payment-confirmation" defer></script>
+    <script src="./app.js?v=20261005-language-flags" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -76,7 +76,20 @@
 
     <section class="auth-panel" aria-labelledby="auth-heading-title">
         <div class="auth-panel-inner">
-            <a class="back-link" href="/"><span aria-hidden="true">←</span> Wróć do strony głównej</a>
+            <div class="auth-top-row">
+                <a class="back-link" href="/"><span aria-hidden="true">←</span> Wróć do strony głównej</a>
+                <div class="language-switcher" role="group" aria-label="Wybierz język">
+                    <button class="language-switch-button" type="button" data-language="pl" title="Polski" aria-label="Polski" aria-pressed="true">
+                        <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#fff" d="M0 0h60v20H0z"/><path fill="#dc143c" d="M0 20h60v20H0z"/></svg>
+                    </button>
+                    <button class="language-switch-button" type="button" data-language="en" title="English" aria-label="English" aria-pressed="false">
+                        <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#012169" d="M0 0h60v40H0z"/><path stroke="#fff" stroke-width="10" d="M0 0l60 40M60 0 0 40"/><path stroke="#c8102e" stroke-width="4" d="M0 0l60 40M60 0 0 40"/><path stroke="#fff" stroke-width="14" d="M30 0v40M0 20h60"/><path stroke="#c8102e" stroke-width="8" d="M30 0v40M0 20h60"/></svg>
+                    </button>
+                    <button class="language-switch-button" type="button" data-language="de" title="Deutsch" aria-label="Deutsch" aria-pressed="false">
+                        <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#000" d="M0 0h60v14H0z"/><path fill="#dd0000" d="M0 14h60v13H0z"/><path fill="#ffce00" d="M0 27h60v13H0z"/></svg>
+                    </button>
+                </div>
+            </div>
             <div class="mobile-brand">
                 <img src="/brand-logo.png" alt="" width="48" height="48">
                 <span>Project <strong>Weight Drop</strong></span>
@@ -205,6 +218,17 @@
                 </div>
             </div>
             <div class="header-actions">
+                <div class="language-switcher language-switcher-header" role="group" aria-label="Wybierz język">
+                    <button class="language-switch-button" type="button" data-language="pl" title="Polski" aria-label="Polski" aria-pressed="true">
+                        <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#fff" d="M0 0h60v20H0z"/><path fill="#dc143c" d="M0 20h60v20H0z"/></svg>
+                    </button>
+                    <button class="language-switch-button" type="button" data-language="en" title="English" aria-label="English" aria-pressed="false">
+                        <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#012169" d="M0 0h60v40H0z"/><path stroke="#fff" stroke-width="10" d="M0 0l60 40M60 0 0 40"/><path stroke="#c8102e" stroke-width="4" d="M0 0l60 40M60 0 0 40"/><path stroke="#fff" stroke-width="14" d="M30 0v40M0 20h60"/><path stroke="#c8102e" stroke-width="8" d="M30 0v40M0 20h60"/></svg>
+                    </button>
+                    <button class="language-switch-button" type="button" data-language="de" title="Deutsch" aria-label="Deutsch" aria-pressed="false">
+                        <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#000" d="M0 0h60v14H0z"/><path fill="#dd0000" d="M0 14h60v13H0z"/><path fill="#ffce00" d="M0 27h60v13H0z"/></svg>
+                    </button>
+                </div>
                 <span class="connection-status"><i></i> Supabase DEV</span>
                 <a class="website-home-link" href="https://www.projectweightdrop.com/" aria-label="Wróć do strony głównej Project Weight Drop" title="Strona główna Project Weight Drop">
                     <svg aria-hidden="true"><use href="#icon-home"></use></svg>
@@ -222,6 +246,17 @@
                         <img src="/brand-lockup-source.jpg" alt="Project Weight Drop — KETO, LOW CARB, BALANCE" width="300" height="169">
                     </div>
                     <div class="home-brand-meta">
+                        <div class="language-switcher home-language-switcher" role="group" aria-label="Wybierz język">
+                            <button class="language-switch-button" type="button" data-language="pl" title="Polski" aria-label="Polski" aria-pressed="true">
+                                <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#fff" d="M0 0h60v20H0z"/><path fill="#dc143c" d="M0 20h60v20H0z"/></svg>
+                            </button>
+                            <button class="language-switch-button" type="button" data-language="en" title="English" aria-label="English" aria-pressed="false">
+                                <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#012169" d="M0 0h60v40H0z"/><path stroke="#fff" stroke-width="10" d="M0 0l60 40M60 0 0 40"/><path stroke="#c8102e" stroke-width="4" d="M0 0l60 40M60 0 0 40"/><path stroke="#fff" stroke-width="14" d="M30 0v40M0 20h60"/><path stroke="#c8102e" stroke-width="8" d="M30 0v40M0 20h60"/></svg>
+                            </button>
+                            <button class="language-switch-button" type="button" data-language="de" title="Deutsch" aria-label="Deutsch" aria-pressed="false">
+                                <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#000" d="M0 0h60v14H0z"/><path fill="#dd0000" d="M0 14h60v13H0z"/><path fill="#ffce00" d="M0 27h60v13H0z"/></svg>
+                            </button>
+                        </div>
                         <span>Lepsza wersja Ciebie<br>każdego dnia</span>
                         <div>
                             <a class="website-home-link" href="https://www.projectweightdrop.com/" aria-label="Wróć do strony głównej Project Weight Drop" title="Strona główna Project Weight Drop">

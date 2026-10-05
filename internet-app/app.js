@@ -8,6 +8,205 @@
     // Consent storage accepts app_version values of at most 40 characters.
     const CONSENT_APP_VERSION = WEB_APP_VERSION.slice(0, 40);
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
+    const LANGUAGE_STORAGE_KEY = "project-weight-drop-web-language";
+    const SUPPORTED_LANGUAGES = new Set(["pl", "en", "de"]);
+    const LANGUAGE_LOCALES = Object.freeze({ pl: "pl-PL", en: "en-GB", de: "de-DE" });
+    const LANGUAGE_COPY = Object.freeze({
+        pl: {
+            chooseLanguage: "Wybierz język",
+            backWebsite: "Wróć do strony głównej",
+            webApp: "Aplikacja internetowa",
+            signIn: "Logowanie",
+            signUp: "Rejestracja",
+            displayName: "Nazwa użytkownika",
+            displayNamePlaceholder: "Jak mamy się do Ciebie zwracać?",
+            password: "Hasło",
+            passwordPlaceholder: "Minimum 8 znaków",
+            repeatPassword: "Powtórz hasło",
+            repeatPasswordPlaceholder: "Powtórz hasło",
+            showPassword: "Pokaż",
+            hidePassword: "Ukryj",
+            signupNote: "Po rejestracji sprawdź pocztę oraz folder Spam i potwierdź adres e-mail.",
+            welcome: "Witaj ponownie",
+            createAccount: "Utwórz konto",
+            signInCopy: "Zaloguj się kontem Project Weight Drop DEV.",
+            signUpCopy: "Zarejestruj konto wspólne z aplikacją Android DEV.",
+            signingIn: "Logowanie…",
+            creatingAccount: "Tworzenie konta…",
+            signingInAction: "Logując się",
+            creatingAction: "Tworząc konto",
+            signInStatus: "Połączenie wyłącznie z projektem DEV",
+            signUpStatus: "Rejestracja wyłącznie w projekcie DEV",
+            back: "Wróć",
+            logout: "Wyloguj",
+            readOnly: "Odczyt",
+            routes: { home: "Home", meals: "Posiłki", fridge: "Lodówka", coach: "AI Coach", progress: "Postępy", profile: "Profil", "client-portal": "Podopieczni" },
+            supportChat: "Czat z Przemalą",
+            clientPanel: "Panel podopiecznego",
+            trialActiveHeading: "2 DNI PRO ZA DARMO — TEST JEST AKTYWNY",
+            trialInactiveHeading: "OKRES TESTOWY PRO: 2 DNI OD REJESTRACJI",
+            trialActiveCopy: "Masz teraz aktywny pełny dostęp próbny. Trwa przez pierwsze 2 dni od utworzenia konta — bez karty i bez automatycznej opłaty. Potem możesz korzystać z FREE albo ręcznie aktywować PRO.",
+            trialAdminCopy: "Podgląd oferty dla klientów: nowe konto otrzymuje przez pierwsze 2 dni pełny dostęp PRO, bez karty i bez automatycznej opłaty.",
+            trialExpiredCopy: "Dostęp próbny jest liczony od utworzenia konta. Jeśli minęły już 2 dni, konto działa w FREE; nic nie pobiera się automatycznie.",
+            profileTrialHeading: "2 dni PRO za darmo — aktywne",
+            profileTrialUntil: "Pełny dostęp PRO jest aktywny do {date}. Bez karty i bez automatycznej opłaty.",
+            profileTrialFallback: "Pełny dostęp PRO jest aktywny przez pierwsze 2 dni od rejestracji. Bez karty i bez automatycznej opłaty.",
+            planReady: "Twój plan jest gotowy",
+            planReadyIntro: "To punkt startowy. Plan będzie później dopasowywany na podstawie zapisanych postępów.",
+            generationSummary: "Dostępne generowania i zmiany planu",
+            dayChanges: "Zmiany dnia",
+            mealSwaps: "Zamiany posiłków",
+            availableLimits: "Dostępne generowania i limity",
+            limitsNote: "Jadłospis obejmuje 7 dni, a każdy dzień generujesz osobno. Limity poniżej są pobierane z Twojego konta.",
+            paidPro: "PŁATNE PRO",
+            activateRevolut: "Aktywacja przez Revolut",
+            perMonth: "/ miesiąc",
+            paymentInstructions: "Po przelewie napisz do mnie przez WhatsApp albo w aplikacji wybierz AI Coach → Czat z Przemalą. Sprawdzę wpłatę i ręcznie aktywuję PRO. Płatność nie odnawia się automatycznie.",
+            whatsapp: "Napisz przez WhatsApp",
+            openSupportChat: "Otwórz Czat z Przemalą",
+            payRevolut: "Przejdź do płatności Revolut",
+            continueFree: "PRZEJDŹ DO WERSJI FREE",
+            languageSaved: "Język aplikacji: polski"
+        },
+        en: {
+            chooseLanguage: "Choose language",
+            backWebsite: "Back to the website",
+            webApp: "Web application",
+            signIn: "Sign in",
+            signUp: "Create account",
+            displayName: "Display name",
+            displayNamePlaceholder: "What should we call you?",
+            password: "Password",
+            passwordPlaceholder: "At least 8 characters",
+            repeatPassword: "Repeat password",
+            repeatPasswordPlaceholder: "Repeat password",
+            showPassword: "Show",
+            hidePassword: "Hide",
+            signupNote: "After registration, check your inbox and Spam folder and confirm your email address.",
+            welcome: "Welcome back",
+            createAccount: "Create account",
+            signInCopy: "Sign in with your Project Weight Drop DEV account.",
+            signUpCopy: "Create an account shared with the Android DEV app.",
+            signingIn: "Signing in…",
+            creatingAccount: "Creating account…",
+            signingInAction: "By signing in",
+            creatingAction: "By creating an account",
+            signInStatus: "Connected only to the DEV project",
+            signUpStatus: "Registration only in the DEV project",
+            back: "Back",
+            logout: "Sign out",
+            readOnly: "View",
+            routes: { home: "Home", meals: "Meals", fridge: "Fridge", coach: "AI Coach", progress: "Progress", profile: "Profile", "client-portal": "Clients" },
+            supportChat: "Chat with Przemala",
+            clientPanel: "Client panel",
+            trialActiveHeading: "2 DAYS OF PRO FREE — TRIAL ACTIVE",
+            trialInactiveHeading: "PRO TRIAL: 2 DAYS FROM REGISTRATION",
+            trialActiveCopy: "Your full PRO trial is active for the first 2 days after account creation — no card and no automatic charge. Afterwards you can use FREE or activate PRO manually.",
+            trialAdminCopy: "Customer offer preview: every new account receives full PRO access for the first 2 days, with no card and no automatic charge.",
+            trialExpiredCopy: "The trial is counted from account creation. If 2 days have already passed, the account runs on FREE; nothing is charged automatically.",
+            profileTrialHeading: "2 days of PRO free — active",
+            profileTrialUntil: "Full PRO access is active until {date}. No card and no automatic charge.",
+            profileTrialFallback: "Full PRO access is active for the first 2 days after registration. No card and no automatic charge.",
+            planReady: "Your plan is ready",
+            planReadyIntro: "This is your starting point. Your plan will be adjusted later using your saved progress.",
+            generationSummary: "Available plan generations and changes",
+            dayChanges: "Day changes",
+            mealSwaps: "Meal swaps",
+            availableLimits: "Available generations and limits",
+            limitsNote: "The meal plan covers 7 days and each day is generated separately. The limits below come directly from your account.",
+            paidPro: "PAID PRO",
+            activateRevolut: "Activate via Revolut",
+            perMonth: "/ month",
+            paymentInstructions: "After the transfer, message me on WhatsApp or choose AI Coach → Chat with Przemala in the app. I will verify the payment and activate PRO manually. The payment does not renew automatically.",
+            whatsapp: "Message on WhatsApp",
+            openSupportChat: "Open Chat with Przemala",
+            payRevolut: "Continue to Revolut payment",
+            continueFree: "CONTINUE WITH FREE",
+            languageSaved: "Application language: English"
+        },
+        de: {
+            chooseLanguage: "Sprache wählen",
+            backWebsite: "Zurück zur Website",
+            webApp: "Web-Anwendung",
+            signIn: "Anmelden",
+            signUp: "Registrieren",
+            displayName: "Benutzername",
+            displayNamePlaceholder: "Wie dürfen wir dich nennen?",
+            password: "Passwort",
+            passwordPlaceholder: "Mindestens 8 Zeichen",
+            repeatPassword: "Passwort wiederholen",
+            repeatPasswordPlaceholder: "Passwort wiederholen",
+            showPassword: "Anzeigen",
+            hidePassword: "Ausblenden",
+            signupNote: "Prüfe nach der Registrierung deinen Posteingang und Spam-Ordner und bestätige deine E-Mail-Adresse.",
+            welcome: "Willkommen zurück",
+            createAccount: "Konto erstellen",
+            signInCopy: "Melde dich mit deinem Project Weight Drop DEV-Konto an.",
+            signUpCopy: "Erstelle ein gemeinsames Konto für die Android-DEV-App.",
+            signingIn: "Anmeldung…",
+            creatingAccount: "Konto wird erstellt…",
+            signingInAction: "Mit der Anmeldung",
+            creatingAction: "Mit der Kontoerstellung",
+            signInStatus: "Nur mit dem DEV-Projekt verbunden",
+            signUpStatus: "Registrierung nur im DEV-Projekt",
+            back: "Zurück",
+            logout: "Abmelden",
+            readOnly: "Ansicht",
+            routes: { home: "Home", meals: "Mahlzeiten", fridge: "Kühlschrank", coach: "AI Coach", progress: "Fortschritt", profile: "Profil", "client-portal": "Kunden" },
+            supportChat: "Chat mit Przemala",
+            clientPanel: "Kundenbereich",
+            trialActiveHeading: "2 TAGE PRO KOSTENLOS — TEST AKTIV",
+            trialInactiveHeading: "PRO-TEST: 2 TAGE AB REGISTRIERUNG",
+            trialActiveCopy: "Dein vollständiger PRO-Test ist in den ersten 2 Tagen nach der Kontoerstellung aktiv — ohne Karte und ohne automatische Abbuchung. Danach kannst du FREE nutzen oder PRO manuell aktivieren.",
+            trialAdminCopy: "Vorschau des Kundenangebots: Jedes neue Konto erhält in den ersten 2 Tagen vollständigen PRO-Zugang, ohne Karte und ohne automatische Abbuchung.",
+            trialExpiredCopy: "Der Testzeitraum beginnt mit der Kontoerstellung. Sind bereits 2 Tage vergangen, läuft das Konto als FREE; es wird nichts automatisch berechnet.",
+            profileTrialHeading: "2 Tage PRO kostenlos — aktiv",
+            profileTrialUntil: "Der vollständige PRO-Zugang ist bis {date} aktiv. Keine Karte und keine automatische Abbuchung.",
+            profileTrialFallback: "Der vollständige PRO-Zugang ist in den ersten 2 Tagen nach der Registrierung aktiv. Keine Karte und keine automatische Abbuchung.",
+            planReady: "Dein Plan ist fertig",
+            planReadyIntro: "Das ist dein Ausgangspunkt. Später wird dein Plan anhand deiner gespeicherten Fortschritte angepasst.",
+            generationSummary: "Verfügbare Generierungen und Planänderungen",
+            dayChanges: "Tagesänderungen",
+            mealSwaps: "Mahlzeiten tauschen",
+            availableLimits: "Verfügbare Generierungen und Limits",
+            limitsNote: "Der Ernährungsplan umfasst 7 Tage; jeder Tag wird einzeln generiert. Die Limits unten werden direkt aus deinem Konto geladen.",
+            paidPro: "KOSTENPFLICHTIGES PRO",
+            activateRevolut: "Aktivierung über Revolut",
+            perMonth: "/ Monat",
+            paymentInstructions: "Schreibe mir nach der Überweisung über WhatsApp oder wähle in der App AI Coach → Chat mit Przemala. Ich prüfe die Zahlung und aktiviere PRO manuell. Die Zahlung verlängert sich nicht automatisch.",
+            whatsapp: "Über WhatsApp schreiben",
+            openSupportChat: "Chat mit Przemala öffnen",
+            payRevolut: "Zur Revolut-Zahlung",
+            continueFree: "MIT FREE FORTFAHREN",
+            languageSaved: "App-Sprache: Deutsch"
+        }
+    });
+
+    function storedLanguage() {
+        try {
+            const value = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+            return SUPPORTED_LANGUAGES.has(value) ? value : "pl";
+        } catch {
+            return "pl";
+        }
+    }
+
+    let currentLanguage = storedLanguage();
+
+    function currentLocale() {
+        return LANGUAGE_LOCALES[currentLanguage] || LANGUAGE_LOCALES.pl;
+    }
+
+    function languageText(key) {
+        return LANGUAGE_COPY[currentLanguage]?.[key] ?? LANGUAGE_COPY.pl[key] ?? key;
+    }
+
+    function languageTemplate(key, values = {}) {
+        return Object.entries(values).reduce(
+            (text, [name, value]) => text.replaceAll(`{${name}}`, String(value)),
+            String(languageText(key))
+        );
+    }
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
     const appShell = document.getElementById("app-view");
@@ -141,7 +340,7 @@
     const communityComposerCancel = document.getElementById("community-compose-cancel");
     const communityPostImageRemove = document.getElementById("community-post-image-remove");
 
-    const routeLabels = Object.freeze({
+    const routeLabels = {
         home: "Home",
         meals: "Posiłki",
         fridge: "Lodówka",
@@ -149,7 +348,7 @@
         progress: "Postępy",
         profile: "Profil",
         "client-portal": "Podopieczni"
-    });
+    };
 
     const profileSetupSteps = [
         { title: "Od czego zaczynamy?", description: "Podaj aktualną masę i wybierz cel energetyczny." },
@@ -281,9 +480,9 @@
     let fridgeActionBusy = false;
     let fridgeReportBusy = false;
 
-    const numberFormatter = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 });
-    const weightFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
-    const macroFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+    let numberFormatter = new Intl.NumberFormat(currentLocale(), { maximumFractionDigits: 0 });
+    let weightFormatter = new Intl.NumberFormat(currentLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+    let macroFormatter = new Intl.NumberFormat(currentLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
     function validConfiguration() {
         if (!config || config.environment !== "DEV" || config.projectRef !== REQUIRED_PROJECT_REF) return false;
@@ -302,8 +501,8 @@
 
     function resetPasswordVisibility() {
         passwordInput.type = "password";
-        passwordToggle.textContent = "Pokaż";
-        passwordToggle.setAttribute("aria-label", "Pokaż hasło");
+        passwordToggle.textContent = languageText("showPassword");
+        passwordToggle.setAttribute("aria-label", languageText("showPassword"));
     }
 
     function setAuthMode(mode, { resetStatus = true } = {}) {
@@ -322,17 +521,17 @@
         passwordConfirmInput.required = signingUp;
         emailInput.autocomplete = signingUp ? "email" : "username";
         passwordInput.autocomplete = signingUp ? "new-password" : "current-password";
-        authHeadingTitle.textContent = signingUp ? "Utwórz konto" : "Witaj ponownie";
+        authHeadingTitle.textContent = signingUp ? languageText("createAccount") : languageText("welcome");
         authHeadingCopy.textContent = signingUp
-            ? "Zarejestruj konto wspólne z aplikacją Android DEV."
-            : "Zaloguj się kontem Project Weight Drop DEV.";
-        privacyAction.textContent = signingUp ? "Tworząc konto" : "Logując się";
-        loginButton.querySelector("span").textContent = signingUp ? "Utwórz konto" : "Zaloguj się";
+            ? languageText("signUpCopy")
+            : languageText("signInCopy");
+        privacyAction.textContent = signingUp ? languageText("creatingAction") : languageText("signingInAction");
+        loginButton.querySelector("span").textContent = signingUp ? languageText("createAccount") : languageText("signIn");
         resetPasswordVisibility();
         if (resetStatus) {
             setAuthStatus(signingUp
-                ? "Rejestracja wyłącznie w projekcie DEV"
-                : "Połączenie wyłącznie z projektem DEV");
+                ? languageText("signUpStatus")
+                : languageText("signInStatus"));
         }
     }
 
@@ -345,8 +544,8 @@
         passwordConfirmInput.disabled = busy || authMode !== "sign-up";
         loginButton.classList.toggle("loading", busy);
         loginButton.querySelector("span").textContent = busy
-            ? (authMode === "sign-up" ? "Tworzenie konta…" : "Logowanie…")
-            : (authMode === "sign-up" ? "Utwórz konto" : "Zaloguj się");
+            ? (authMode === "sign-up" ? languageText("creatingAccount") : languageText("signingIn"))
+            : (authMode === "sign-up" ? languageText("createAccount") : languageText("signIn"));
     }
 
     function friendlyAuthError(error, mode = authMode) {
@@ -385,13 +584,113 @@
     }
 
     function avatarLetter(name) {
-        const letter = name.trim().charAt(0).toLocaleUpperCase("pl-PL");
+        const letter = name.trim().charAt(0).toLocaleUpperCase(currentLocale());
         return letter || "U";
     }
 
     function setText(id, value) {
         const element = document.getElementById(id);
         if (element) element.textContent = value;
+    }
+
+    function applyLanguage(language, { persist = true, announce = false } = {}) {
+        currentLanguage = SUPPORTED_LANGUAGES.has(language) ? language : "pl";
+        const copy = LANGUAGE_COPY[currentLanguage];
+        const locale = currentLocale();
+        document.documentElement.lang = currentLanguage;
+        numberFormatter = new Intl.NumberFormat(locale, { maximumFractionDigits: 0 });
+        weightFormatter = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 2 });
+        macroFormatter = new Intl.NumberFormat(locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        Object.assign(routeLabels, copy.routes);
+
+        if (persist) {
+            try {
+                window.localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLanguage);
+            } catch {
+                // The language still applies for the current session when storage is unavailable.
+            }
+        }
+
+        document.querySelectorAll(".language-switcher").forEach((group) => {
+            group.setAttribute("aria-label", copy.chooseLanguage);
+        });
+        document.querySelectorAll("[data-language]").forEach((button) => {
+            const active = button.dataset.language === currentLanguage;
+            button.classList.toggle("active", active);
+            button.setAttribute("aria-pressed", String(active));
+        });
+
+        const backLink = document.querySelector(".back-link");
+        if (backLink) backLink.innerHTML = `<span aria-hidden="true">←</span> ${copy.backWebsite}`;
+        document.querySelector(".auth-heading .eyebrow")?.replaceChildren(document.createTextNode(copy.webApp.toLocaleUpperCase(locale)));
+        const signInTab = document.querySelector('[data-auth-mode="sign-in"]');
+        const signUpTab = document.querySelector('[data-auth-mode="sign-up"]');
+        if (signInTab) signInTab.textContent = copy.signIn;
+        if (signUpTab) signUpTab.textContent = copy.signUp;
+        const displayNameLabel = document.querySelector('label[for="display-name"]');
+        const passwordLabel = document.querySelector('label[for="password"]');
+        const passwordConfirmLabel = document.querySelector('label[for="password-confirm"]');
+        if (displayNameLabel) displayNameLabel.textContent = copy.displayName;
+        if (passwordLabel) passwordLabel.textContent = copy.password;
+        if (passwordConfirmLabel) passwordConfirmLabel.textContent = copy.repeatPassword;
+        if (displayNameInput) displayNameInput.placeholder = copy.displayNamePlaceholder;
+        if (passwordInput) passwordInput.placeholder = copy.passwordPlaceholder;
+        if (passwordConfirmInput) passwordConfirmInput.placeholder = copy.repeatPasswordPlaceholder;
+        const signupNote = document.querySelector(".signup-note");
+        if (signupNote) signupNote.textContent = copy.signupNote;
+
+        document.querySelectorAll('[data-route="home"] span').forEach((element) => { element.textContent = copy.routes.home; });
+        document.querySelectorAll('[data-route="meals"] span').forEach((element) => { element.textContent = copy.routes.meals; });
+        document.querySelectorAll('[data-route="fridge"] span').forEach((element) => { element.textContent = copy.routes.fridge; });
+        document.querySelectorAll('[data-route="coach"] span').forEach((element) => { element.textContent = copy.routes.coach; });
+        document.querySelectorAll('[data-route="progress"] span').forEach((element) => { element.textContent = copy.routes.progress; });
+        document.querySelectorAll('[data-route="profile"] span').forEach((element) => { element.textContent = copy.routes.profile; });
+        document.querySelectorAll('[data-route="meals"] small').forEach((element) => { element.textContent = copy.readOnly; });
+        const backLabel = backHomeButton?.querySelector("span");
+        if (backLabel) backLabel.textContent = copy.back;
+        document.querySelectorAll(".header-logout span").forEach((element) => { element.textContent = copy.logout; });
+        document.querySelectorAll("[data-sign-out]").forEach((button) => button.setAttribute("aria-label", copy.logout));
+
+        setText("profile-completion-heading", copy.planReady);
+        setText("profile-completion-copy", copy.planReadyIntro);
+        setText("profile-completion-generation-heading", copy.generationSummary);
+        const generationLabels = document.querySelectorAll(".profile-completion-generation-summary > div > span");
+        if (generationLabels[0]) generationLabels[0].textContent = copy.dayChanges;
+        if (generationLabels[1]) generationLabels[1].textContent = copy.mealSwaps;
+        setText("profile-completion-quotas-heading", copy.availableLimits);
+        const quotaNote = document.querySelector(".profile-completion-quota-note");
+        if (quotaNote) quotaNote.textContent = copy.limitsNote;
+        const paidProEyebrow = document.querySelector("#profile-pro-offer .profile-pro-offer-copy > .eyebrow");
+        if (paidProEyebrow) paidProEyebrow.textContent = copy.paidPro;
+        setText("profile-pro-offer-heading", copy.activateRevolut);
+        const perMonth = document.querySelector("#profile-pro-offer .profile-pro-offer-title small");
+        if (perMonth) perMonth.textContent = copy.perMonth;
+        const paymentInstructions = document.querySelector("#profile-pro-offer .profile-pro-offer-copy > p:last-child");
+        if (paymentInstructions) paymentInstructions.textContent = copy.paymentInstructions;
+        const whatsappLink = document.querySelector("#profile-pro-offer .profile-pro-whatsapp");
+        const revolutLink = document.querySelector("#profile-pro-offer .profile-pro-revolut");
+        if (whatsappLink) whatsappLink.innerHTML = `${copy.whatsapp} <span>↗</span>`;
+        setText("profile-pro-support-chat", copy.openSupportChat);
+        if (revolutLink) revolutLink.innerHTML = `${copy.payRevolut} <span>↗</span>`;
+        setText("profile-completion-continue-free", copy.continueFree);
+
+        setAuthMode(authMode, { resetStatus: !appView || appView.hidden });
+        if (currentAppRoute) {
+            const pageTitle = currentAppRoute === "coach" && activeCoachSection === "support"
+                ? copy.supportChat
+                : currentAppRoute === "client-portal" && !currentUserIsAdmin
+                    ? copy.clientPanel
+                    : routeLabels[currentAppRoute] || routeLabels.home;
+            if (routeTitle) routeTitle.textContent = pageTitle;
+            document.title = `${pageTitle} — Project Weight Drop DEV`;
+            updateBackHomeButtonLabel();
+        }
+        if (currentPremiumSnapshot) {
+            renderProfileAccess(currentPremiumSnapshot, currentDashboardSnapshot, currentNutritionPlan);
+            if (profileCompletionModal && !profileCompletionModal.hidden) renderProfileCompletionOffer();
+        }
+        renderHomeDate();
+        if (announce) setAuthStatus(copy.languageSaved);
     }
 
     function finiteNumber(value) {
@@ -425,7 +724,7 @@
             date = new Date(value);
         }
         if (Number.isNaN(date.getTime())) return "—";
-        return new Intl.DateTimeFormat("pl-PL", includesTime
+        return new Intl.DateTimeFormat(currentLocale(), includesTime
             ? { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" }
             : { day: "2-digit", month: "short" }).format(date);
     }
@@ -865,15 +1164,15 @@
 
         if (trialHeading) {
             trialHeading.textContent = trialActive || currentUserIsAdmin
-                ? "2 DNI PRO ZA DARMO — TEST JEST AKTYWNY"
-                : "OKRES TESTOWY PRO: 2 DNI OD REJESTRACJI";
+                ? languageText("trialActiveHeading")
+                : languageText("trialInactiveHeading");
         }
         if (trialCopy) {
             trialCopy.textContent = trialActive
-                ? "Masz teraz aktywny pełny dostęp próbny. Trwa przez pierwsze 2 dni od utworzenia konta — bez karty i bez automatycznej opłaty. Potem możesz korzystać z FREE albo ręcznie aktywować PRO."
+                ? languageText("trialActiveCopy")
                 : currentUserIsAdmin
-                    ? "Podgląd oferty dla klientów: nowe konto otrzymuje przez pierwsze 2 dni pełny dostęp PRO, bez karty i bez automatycznej opłaty."
-                    : "Dostęp próbny jest liczony od utworzenia konta. Jeśli minęły już 2 dni, konto działa w FREE; nic nie pobiera się automatycznie.";
+                    ? languageText("trialAdminCopy")
+                    : languageText("trialExpiredCopy");
         }
 
         const plan = currentNutritionPlan;
@@ -1127,7 +1426,7 @@
         const target = document.getElementById("home-today-date");
         if (!target) return;
         target.dateTime = localToday();
-        target.textContent = new Intl.DateTimeFormat("pl-PL", {
+        target.textContent = new Intl.DateTimeFormat(currentLocale(), {
             weekday: "short", day: "numeric", month: "short"
         }).format(new Date()).replace(/\.$/, "");
     }
@@ -1274,12 +1573,12 @@
         );
         eventProjection.hidden = !projection;
         if (!projection) return null;
-        const oneDecimal = (value) => value.toLocaleString("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+        const oneDecimal = (value) => value.toLocaleString(currentLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 });
         setText("event-days", String(projection.days));
         setText("event-loss-range", `${oneDecimal(projection.minimumLossKg)}–${oneDecimal(projection.maximumLossKg)} kg`);
         setText("event-weight-range", `${oneDecimal(projection.minimumEstimatedWeightKg)}–${oneDecimal(projection.maximumEstimatedWeightKg)} kg`);
         setText("event-target-loss", `${oneDecimal(projection.targetLossKg)} kg`);
-        setText("event-required-pace", `${projection.requiredWeeklyLossKg.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kg/tydzień`);
+        setText("event-required-pace", `${projection.requiredWeeklyLossKg.toLocaleString(currentLocale(), { minimumFractionDigits: 2, maximumFractionDigits: 2 })} kg/tydzień`);
         const warning = document.getElementById("event-pace-warning");
         if (warning) warning.hidden = projection.requiredWeeklyLossKg <= 1;
         return projection;
@@ -1470,7 +1769,7 @@
         const { data, error } = await client.rpc("record_explicit_health_data_consent", {
             p_policy_version: CURRENT_PRIVACY_POLICY_VERSION,
             p_app_version: CONSENT_APP_VERSION,
-            p_locale: "pl-PL"
+            p_locale: currentLocale()
         });
         button.textContent = "Zapisz zgodę";
         if (error || data?.recorded !== true) {
@@ -2178,7 +2477,7 @@
             const consentResult = await client.rpc("record_explicit_health_data_consent", {
                 p_policy_version: CURRENT_PRIVACY_POLICY_VERSION,
                 p_app_version: CONSENT_APP_VERSION,
-                p_locale: "pl-PL"
+                p_locale: currentLocale()
             });
             if (consentResult.error || consentResult.data?.recorded !== true) {
                 setProfileSetupBusy(false);
@@ -2269,7 +2568,7 @@
             heading.textContent = premiumSnapshotUnavailable
                 ? "Status pakietu niedostępny"
                 : trialActive
-                    ? "2 dni PRO za darmo — aktywne"
+                    ? languageText("profileTrialHeading")
                     : isPro
                         ? admin ? "Dostęp administratora" : "Project Weight Drop PRO"
                         : "Project Weight Drop FREE";
@@ -2279,8 +2578,8 @@
                 ? "Nie udało się sprawdzić dostępu w DEV. Odśwież dane."
                 : trialActive
                     ? trialExpiry && trialExpiry !== "—"
-                        ? `Pełny dostęp PRO jest aktywny do ${trialExpiry}. Bez karty i bez automatycznej opłaty.`
-                        : "Pełny dostęp PRO jest aktywny przez pierwsze 2 dni od rejestracji. Bez karty i bez automatycznej opłaty."
+                        ? languageTemplate("profileTrialUntil", { date: trialExpiry })
+                        : languageText("profileTrialFallback")
                     : isPro
                         ? "Pełny pakiet PRO jest aktywny na tym koncie DEV."
                         : "Nowe konto ma 2 dni PRO bez automatycznej opłaty. Później możesz ręcznie aktywować PRO przez Revolut za 15,99 € miesięcznie.";
@@ -2906,7 +3205,7 @@
         const backTarget = currentAppRoute === "progress" && activeProgressDestination
             ? "progress"
             : appRouteHistory.at(-1) || "home";
-        backHomeButton.setAttribute("aria-label", `Wróć do ${routeLabels[backTarget] || routeLabels.home}`);
+        backHomeButton.setAttribute("aria-label", `${languageText("back")}: ${routeLabels[backTarget] || routeLabels.home}`);
     }
 
     function setProgressSection(section) {
@@ -3426,7 +3725,7 @@
 
     function planFoodName(value) {
         const clean = String(value || "").trim().replace(/\s+/g, " ");
-        const lower = clean.toLocaleLowerCase("pl-PL");
+        const lower = clean.toLocaleLowerCase(currentLocale());
         if (lower.startsWith("majonez")) return "Majonez";
         if (lower.startsWith("masło ekstra") || lower.startsWith("maslo ekstra")) return "Masło";
         return clean
@@ -3439,7 +3738,7 @@
         const grams = finiteNumber(value);
         if (grams === null || grams <= 0) return "0 g";
         if (grams >= 1000) {
-            return `${new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 2 }).format(grams / 1000)} kg`;
+            return `${new Intl.NumberFormat(currentLocale(), { maximumFractionDigits: 2 }).format(grams / 1000)} kg`;
         }
         return `${formatNumber(grams)} g`;
     }
@@ -3718,7 +4017,7 @@
         panel.append(planElement("h4", "", `Lista zakupów · Dzień ${Number(day.day_index) + 1}`));
         [...aggregated.values()]
             .filter((item) => item.grams > 0)
-            .sort((left, right) => left.name.localeCompare(right.name, "pl"))
+            .sort((left, right) => left.name.localeCompare(right.name, currentLanguage))
             .forEach((item) => {
                 const row = planElement("div", "meal-plan-shopping-row");
                 row.append(planElement("span", "", item.name), planElement("strong", "", formatShoppingQuantity(item.grams)));
@@ -3927,7 +4226,7 @@
                     regenerate,
                     day_index: dayIndex,
                     locked_meal_ids: lockedMealIds,
-                    language: "pl"
+                    language: currentLanguage
                 }
             });
             if (error || data?.error) {
@@ -4240,7 +4539,7 @@
                 products,
                 avoid_titles: regenerate && currentFridgeProposal?.title ? [currentFridgeProposal.title] : [],
                 custom_target: customTarget,
-                language: "pl"
+                language: currentLanguage
             }
         });
         setFridgeBusy(false);
@@ -4263,7 +4562,7 @@
                 products: currentFridgeProposal.inventory_text || currentFridgeProducts,
                 custom_target: currentFridgeProposal.custom_target || null,
                 proposal: currentFridgeProposal,
-                language: "pl"
+                language: currentLanguage
             }
         });
         setFridgeBusy(false);
@@ -6021,9 +6320,9 @@
             updateBackHomeButtonLabel();
         }
         const pageTitle = safeRoute === "coach" && activeCoachSection === "support"
-            ? "Czat z Przemalą"
+            ? languageText("supportChat")
             : safeRoute === "client-portal" && !currentUserIsAdmin
-                ? "Panel podopiecznego"
+                ? languageText("clientPanel")
             : routeLabels[safeRoute];
         routeTitle.textContent = pageTitle;
         document.title = `${pageTitle} — Project Weight Drop DEV`;
@@ -6195,11 +6494,19 @@
         });
     });
 
+    document.querySelectorAll("[data-language]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const language = button.dataset.language;
+            if (!SUPPORTED_LANGUAGES.has(language) || language === currentLanguage) return;
+            applyLanguage(language, { persist: true, announce: authView && !authView.hidden });
+        });
+    });
+
     passwordToggle.addEventListener("click", () => {
         const showing = passwordInput.type === "text";
         passwordInput.type = showing ? "password" : "text";
-        passwordToggle.textContent = showing ? "Pokaż" : "Ukryj";
-        passwordToggle.setAttribute("aria-label", showing ? "Pokaż hasło" : "Ukryj hasło");
+        passwordToggle.textContent = showing ? languageText("showPassword") : languageText("hidePassword");
+        passwordToggle.setAttribute("aria-label", showing ? languageText("showPassword") : languageText("hidePassword"));
         passwordInput.focus();
     });
 
@@ -6650,7 +6957,7 @@
     cancelProfileResetButton?.addEventListener("click", closeProfileReset);
     confirmProfileResetButton?.addEventListener("click", () => void resetOwnProfile());
     profileResetConfirmation?.addEventListener("input", () => {
-        profileResetConfirmation.value = profileResetConfirmation.value.toLocaleUpperCase("pl-PL");
+        profileResetConfirmation.value = profileResetConfirmation.value.toLocaleUpperCase(currentLocale());
         setProfileResetStatus();
         setProfileResetBusy(false);
     });
@@ -6676,5 +6983,6 @@
 
     renderHomeDate();
     setHomeTool(null);
+    applyLanguage(currentLanguage, { persist: false, announce: false });
     void initializeAuth();
 })();
