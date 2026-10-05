@@ -4,7 +4,7 @@
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
     const COMMUNITY_RULES_VERSION = "2026-09-09";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-community-publish-responsive";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-progress-detail-back";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -2573,6 +2573,14 @@
             : "Check In zapisany. Zmiana strategii nie została zastosowana przez Safety Engine. Wcześniejsza historia progresu została zachowana.", "success");
     }
 
+    function updateBackHomeButtonLabel() {
+        if (!backHomeButton) return;
+        const backTarget = currentAppRoute === "progress" && activeProgressDestination
+            ? "progress"
+            : appRouteHistory.at(-1) || "home";
+        backHomeButton.setAttribute("aria-label", `Wróć do ${routeLabels[backTarget] || routeLabels.home}`);
+    }
+
     function setProgressSection(section) {
         const allowed = new Set(["hub", "challenges", "community", "przemala"]);
         activeProgressSection = allowed.has(section) ? section : "hub";
@@ -2590,6 +2598,7 @@
             button.classList.toggle("active", selected);
             button.setAttribute("aria-pressed", String(selected));
         });
+        updateBackHomeButtonLabel();
     }
 
     function detailStat(label, value) {
@@ -2713,6 +2722,7 @@
             "check-in": "Check In", "weekly-update": "Aktualizacja tygodnia"
         };
         activeProgressDestination = destination;
+        updateBackHomeButtonLabel();
         document.querySelectorAll("[data-progress-section-view]").forEach((view) => { view.hidden = true; });
         document.getElementById("progress-section-nav").hidden = true;
         progressDetailView.hidden = false;
@@ -5162,8 +5172,7 @@
         });
         if (backHomeButton) {
             backHomeButton.hidden = safeRoute === "home";
-            const backTarget = appRouteHistory.at(-1) || "home";
-            backHomeButton.setAttribute("aria-label", `Wróć do ${routeLabels[backTarget] || routeLabels.home}`);
+            updateBackHomeButtonLabel();
         }
         const pageTitle = safeRoute === "coach" && activeCoachSection === "support"
             ? "Czat z Przemalą"
@@ -5182,6 +5191,11 @@
     }
 
     function goBackOneRoute() {
+        if (currentAppRoute === "progress" && activeProgressDestination) {
+            setProgressSection(activeProgressSection);
+            window.history.replaceState(null, "", "#progress");
+            return;
+        }
         const previousRoute = appRouteHistory.pop() || "home";
         navigateTo(previousRoute, false);
         window.history.replaceState(null, "", `#${previousRoute}`);
