@@ -3,7 +3,7 @@
 
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
-    const WEB_APP_VERSION = "web-dev-2026.10.04-home-parity";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-meals-parity";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -71,6 +71,12 @@
     const profileSetupGoalType = document.getElementById("setup-goal-type");
     const profileSetupAdjustmentField = document.getElementById("setup-adjustment-field");
     const profileSetupAdjustment = document.getElementById("setup-energy-adjustment");
+    const mealGramsModal = document.getElementById("meal-grams-modal");
+    const mealGramsForm = document.getElementById("meal-grams-form");
+    const mealGramsValue = document.getElementById("meal-grams-value");
+    const cancelMealGramsButton = document.getElementById("cancel-meal-grams");
+    const saveMealDraftButton = document.getElementById("save-meal-draft");
+    const closeFoodDayButton = document.getElementById("close-food-day");
 
     const routeLabels = Object.freeze({
         home: "Home",
@@ -109,6 +115,13 @@
     let currentDashboardSnapshot = null;
     let weightEntryBusy = false;
     let weightEntryPreviousFocus = null;
+    let activeMealsView = "plan";
+    let selectedManualMealType = "breakfast";
+    let mealDraftItems = [];
+    let selectedFoodForGrams = null;
+    let mealDraftBusy = false;
+    let mealGramsPreviousFocus = null;
+    let currentTodayMeals = [];
 
     const numberFormatter = new Intl.NumberFormat("pl-PL", { maximumFractionDigits: 0 });
     const weightFormatter = new Intl.NumberFormat("pl-PL", { minimumFractionDigits: 1, maximumFractionDigits: 2 });
@@ -300,7 +313,14 @@
         profileSetupBusy = false;
         currentDashboardSnapshot = null;
         weightEntryBusy = false;
+        activeMealsView = "plan";
+        selectedManualMealType = "breakfast";
+        mealDraftItems = [];
+        selectedFoodForGrams = null;
+        mealDraftBusy = false;
+        currentTodayMeals = [];
         if (weightEntryModal) weightEntryModal.hidden = true;
+        if (mealGramsModal) mealGramsModal.hidden = true;
         dashboardOverview?.setAttribute("aria-busy", "true");
         profileDataPanel?.setAttribute("aria-busy", "true");
         setText("dashboard-message", "Pobieranie danych DEV…");
@@ -316,6 +336,7 @@
             "home-water", "home-steps", "home-protein", "home-fat", "home-carbs",
             "home-calories-target", "home-calories-consumed", "home-calories-total",
             "home-protein-percent", "home-fat-percent", "home-carbs-percent",
+            "meals-today-consumed", "meals-today-target", "meals-today-protein", "meals-today-fat", "meals-today-carbs",
             "home-weight-progress", "home-weight-detail", "home-next-milestone",
             "home-start-weight", "home-average-weight", "home-weight-change", "profile-onboarding", "profile-diet",
             "profile-goal", "profile-meals", "profile-start-weight", "profile-current-weight",
@@ -326,6 +347,7 @@
         ].forEach((id) => setText(id, "—"));
         [
             "home-calories-bar", "home-protein-bar", "home-fat-bar", "home-carbs-bar",
+            "meals-today-calorie-bar", "meals-today-protein-bar", "meals-today-fat-bar", "meals-today-carbs-bar",
             "home-weight-progress-bar"
         ].forEach((id) => setProgress(id, 0, 100));
         document.getElementById("progress-summary")?.setAttribute("aria-busy", "true");
@@ -342,14 +364,16 @@
         document.getElementById("food-search-results")?.replaceChildren();
         if (foodSearchInput) foodSearchInput.value = "";
         setText("meals-message", "Pobieranie dziennika DEV…");
-        setText("meals-calories-total", "—");
         setText("today-meals-count", "—");
+        setText("meal-plan-generated-count", "0 z 7");
         setText("meal-plan-message", "Pobieranie aktywnego planu DEV…");
         setText("meal-plan-access-title", "Sprawdzanie dostępu…");
         setText("meal-plan-access-copy", "Plan korzysta z aktywnej diety, kalorii, makro i zabezpieczeń konta DEV.");
         setText("meal-plan-quota", "—");
         setToolStatus("meal-plan-action-status", "");
         setText("food-search-status", "Wpisz co najmniej 2 znaki.");
+        setMealsView("plan");
+        renderMealDraft();
         if (fridgeProducts) fridgeProducts.value = "";
         document.getElementById("fridge-result")?.setAttribute("hidden", "");
         setText("fridge-status", "Gotowe do wygenerowania.");
@@ -1188,6 +1212,9 @@
         setText("home-calories-total", formatNumber(caloriesTarget));
         setText("home-calories-detail", caloriesTarget === null ? "Brak celu" : `/ ${formatNumber(caloriesTarget)} kcal`);
         setProgress("home-calories-bar", caloriesConsumed, caloriesTarget);
+        setText("meals-today-consumed", formatNumber(caloriesConsumed));
+        setText("meals-today-target", formatNumber(caloriesTarget));
+        setProgress("meals-today-calorie-bar", caloriesConsumed, caloriesTarget);
 
         setText("home-current-weight", formatWeight(data?.current_weight_kg));
         setText("home-goal-weight", formatWeight(data?.goal_weight_kg));
@@ -1207,6 +1234,7 @@
         ];
         macroRows.forEach(([name, consumed, target]) => {
             setText(`home-${name}`, `${formatNumber(consumed)} / ${formatNumber(target)} g`);
+            setText(`meals-today-${name}`, `${formatMacro(consumed)} / ${formatMacro(target)} g`);
             const consumedValue = finiteNumber(consumed);
             const targetValue = finiteNumber(target);
             const percent = consumedValue === null || targetValue === null || targetValue <= 0
@@ -1214,6 +1242,7 @@
                 : Math.round((consumedValue / targetValue) * 100);
             setText(`home-${name}-percent`, percent === null ? "—" : `${percent}%`);
             setProgress(`home-${name}-bar`, consumed, target);
+            setProgress(`meals-today-${name}-bar`, consumed, target);
         });
 
         const weightProgress = finiteNumber(data?.goal_progress_percent);
@@ -1563,14 +1592,31 @@
         setText("progress-message", `Raport DEV: ${period}. Wartości wylicza backend aplikacji.`);
     }
 
+    function setMealsView(view) {
+        activeMealsView = view === "diary" ? "diary" : "plan";
+        const planView = document.getElementById("meals-plan-view");
+        const diaryView = document.getElementById("meals-diary-view");
+        if (planView) planView.hidden = activeMealsView !== "plan";
+        if (diaryView) diaryView.hidden = activeMealsView !== "diary";
+        document.querySelectorAll("[data-meals-view]").forEach((button) => {
+            const selected = button.dataset.mealsView === activeMealsView;
+            button.classList.toggle("active", selected);
+            button.setAttribute("aria-selected", String(selected));
+            const check = button.querySelector("span");
+            if (check) check.hidden = !selected;
+        });
+        if (activeMealsView === "diary") {
+            document.getElementById("meals-diary-view")?.scrollIntoView({ block: "start", behavior: "smooth" });
+        }
+    }
+
     function renderTodayMeals(rows) {
         const list = document.getElementById("today-meals-list");
         if (!list) return;
         list.replaceChildren();
         const meals = Array.isArray(rows) ? rows : [];
+        currentTodayMeals = meals;
         setText("today-meals-count", formatNumber(meals.length));
-        const calories = meals.reduce((sum, meal) => sum + (finiteNumber(meal.calories) ?? 0), 0);
-        setText("meals-calories-total", formatNumber(calories));
         if (!meals.length) {
             const empty = document.createElement("p");
             empty.className = "empty-history";
@@ -1587,12 +1633,20 @@
             const copy = document.createElement("div");
             const title = document.createElement("h4");
             const items = document.createElement("p");
+            const actions = document.createElement("div");
             const kcal = document.createElement("strong");
+            const deleteButton = document.createElement("button");
             title.textContent = formatMealType(meal.meal_type);
             items.textContent = (Array.isArray(meal.items) ? meal.items : []).map((item) => item.name).join(", ") || "Bez listy składników";
             kcal.textContent = `${formatNumber(meal.calories)} kcal`;
+            actions.className = "meal-log-actions";
+            deleteButton.type = "button";
+            deleteButton.textContent = "×";
+            deleteButton.setAttribute("aria-label", `Usuń ${formatMealType(meal.meal_type).toLowerCase()}`);
+            deleteButton.addEventListener("click", () => void deleteTodayMeal(String(meal.id || "")));
             copy.append(title, items);
-            top.append(copy, kcal);
+            actions.append(kcal, deleteButton);
+            top.append(copy, actions);
             const macros = document.createElement("div");
             macros.className = "meal-macros";
             [
@@ -1671,6 +1725,8 @@
 
     function updateMealGenerationAccess() {
         const premium = currentPremiumSnapshot;
+        const preferencesStatus = document.getElementById("meal-plan-preferences-status");
+        if (preferencesStatus) preferencesStatus.hidden = currentMealPreferences?.complete !== true;
         let title = "Sprawdzanie dostępu…";
         let copy = "Plan korzysta z aktywnej diety, kalorii, makro i zabezpieczeń konta DEV.";
         let quota = "—";
@@ -1714,6 +1770,10 @@
         setText("meal-plan-access-title", title);
         setText("meal-plan-access-copy", copy);
         setText("meal-plan-quota", quota);
+        document.querySelector(".meal-plan-access")?.classList.toggle(
+            "ready",
+            !premiumSnapshotUnavailable && premium?.meal_plan_allowed === true && !mealPlanGenerationRequirement(selectedMealPlanDay)
+        );
         document.querySelectorAll("[data-generate-meal-day]").forEach((button) => {
             button.disabled = mealPlanActionBusy();
             if (mealPlanGenerating && Number(button.dataset.generateMealDay) === selectedMealPlanDay) {
@@ -1976,6 +2036,10 @@
         const tabs = document.getElementById("meal-day-tabs");
         const list = document.getElementById("meal-plan-list");
         if (!tabs || !list) return;
+        const generatedDays = new Set((currentMealPlan?.days || [])
+            .map((day) => Number(day.day_index))
+            .filter((day) => Number.isInteger(day) && day >= 0 && day <= 6));
+        setText("meal-plan-generated-count", `${generatedDays.size} z 7`);
         tabs.replaceChildren();
         for (let dayIndex = 0; dayIndex < 7; dayIndex += 1) {
             const button = document.createElement("button");
@@ -2151,6 +2215,149 @@
         }
     }
 
+    function mealDraftNutrition(item, field) {
+        const per100 = finiteNumber(item?.food?.[field]) ?? 0;
+        const grams = finiteNumber(item?.grams) ?? 0;
+        return (per100 * grams) / 100;
+    }
+
+    function renderMealDraft() {
+        const panel = document.getElementById("meal-draft-panel");
+        const list = document.getElementById("meal-draft-list");
+        if (!panel || !list) return;
+        panel.hidden = mealDraftItems.length === 0;
+        list.replaceChildren();
+        let calories = 0;
+        let protein = 0;
+        let fat = 0;
+        let carbs = 0;
+        mealDraftItems.forEach((item, index) => {
+            calories += mealDraftNutrition(item, "calories_per_100g");
+            protein += mealDraftNutrition(item, "protein_per_100g");
+            fat += mealDraftNutrition(item, "fat_per_100g");
+            carbs += mealDraftNutrition(item, "carbs_per_100g");
+            const row = document.createElement("div");
+            row.className = "meal-draft-item";
+            const name = document.createElement("strong");
+            const grams = document.createElement("span");
+            const remove = document.createElement("button");
+            name.textContent = item.food.name || "Produkt";
+            grams.textContent = `${formatNumber(item.grams)} g`;
+            remove.type = "button";
+            remove.textContent = "×";
+            remove.setAttribute("aria-label", `Usuń ${name.textContent}`);
+            remove.disabled = mealDraftBusy;
+            remove.addEventListener("click", () => {
+                mealDraftItems = mealDraftItems.filter((_, itemIndex) => itemIndex !== index);
+                renderMealDraft();
+            });
+            row.append(name, grams, remove);
+            list.append(row);
+        });
+        setText("meal-draft-calories", formatNumber(calories));
+        setText("meal-draft-macros", `Białko ${formatMacro(protein)} g · Tłuszcz ${formatMacro(fat)} g · Węgle ${formatMacro(carbs)} g`);
+        if (saveMealDraftButton) {
+            saveMealDraftButton.disabled = mealDraftBusy || mealDraftItems.length === 0;
+            saveMealDraftButton.textContent = mealDraftBusy ? "Zapisywanie…" : "Zapisz";
+        }
+    }
+
+    function openMealGrams(food, trigger) {
+        if (!food?.id || !mealGramsModal || !mealGramsValue) return;
+        selectedFoodForGrams = food;
+        mealGramsPreviousFocus = trigger || document.activeElement;
+        setText("meal-grams-copy", `${food.name || "Produkt"} · ${formatNumber(food.calories_per_100g)} kcal / 100 g`);
+        setText("meal-grams-status", "");
+        mealGramsValue.value = "100";
+        mealGramsModal.hidden = false;
+        document.body.classList.add("modal-open");
+        window.setTimeout(() => {
+            mealGramsValue.focus();
+            mealGramsValue.select();
+        }, 0);
+    }
+
+    function closeMealGrams() {
+        if (!mealGramsModal) return;
+        mealGramsModal.hidden = true;
+        selectedFoodForGrams = null;
+        document.body.classList.remove("modal-open");
+        mealGramsPreviousFocus?.focus?.();
+        mealGramsPreviousFocus = null;
+    }
+
+    async function saveMealDraft() {
+        if (!client || !activeUserId || !mealDraftItems.length || mealDraftBusy) return;
+        mealDraftBusy = true;
+        renderMealDraft();
+        setToolStatus("meal-draft-status", "Zapisuję posiłek w DEV…");
+        try {
+            const { error } = await client.rpc("log_meal", {
+                p_meal_type: selectedManualMealType,
+                p_items: mealDraftItems.map((item) => ({ food_id: item.food.id, grams: item.grams })),
+                p_eaten_at: new Date().toISOString()
+            });
+            if (error) {
+                setToolStatus("meal-draft-status", friendlyDataError(error), "error");
+                return;
+            }
+            mealDraftItems = [];
+            renderMealDraft();
+            await refreshMealViews(selectedMealPlanDay);
+            setMealsView("diary");
+            setText("meals-message", "Posiłek zapisano w dzisiejszym dzienniku DEV.");
+        } catch {
+            setToolStatus("meal-draft-status", "Nie udało się zapisać posiłku DEV.", "error");
+        } finally {
+            mealDraftBusy = false;
+            renderMealDraft();
+        }
+    }
+
+    async function deleteTodayMeal(mealId) {
+        if (!client || !activeUserId || !mealId || mealDraftBusy) return;
+        if (!window.confirm("Usunąć ten posiłek z dzisiejszego dziennika?")) return;
+        mealDraftBusy = true;
+        setText("meals-message", "Usuwam posiłek z dziennika DEV…");
+        try {
+            const { error } = await client.rpc("delete_meal", { p_meal_id: mealId });
+            if (error) {
+                setText("meals-message", friendlyDataError(error));
+                return;
+            }
+            await refreshMealViews(selectedMealPlanDay);
+            setMealsView("diary");
+            setText("meals-message", "Posiłek usunięto z dzisiejszego dziennika DEV.");
+        } catch {
+            setText("meals-message", "Nie udało się usunąć posiłku DEV.");
+        } finally {
+            mealDraftBusy = false;
+        }
+    }
+
+    async function closeTodayFoodDay() {
+        if (!client || !activeUserId || mealDraftBusy) return;
+        if (!currentTodayMeals.length && !window.confirm("Nie zapisano dziś żadnego jedzenia. Czy był to celowy dzień postu?")) return;
+        mealDraftBusy = true;
+        if (closeFoodDayButton) {
+            closeFoodDayButton.disabled = true;
+            closeFoodDayButton.textContent = "Zamykanie…";
+        }
+        setText("meals-message", "Zamykam dzisiejszy dziennik DEV…");
+        try {
+            const { error } = await client.rpc("set_food_day_complete", { p_complete: true });
+            setText("meals-message", error ? friendlyDataError(error) : "Dzisiejszy dziennik został zamknięty w DEV.");
+        } catch {
+            setText("meals-message", "Nie udało się zamknąć dzisiejszego dziennika DEV.");
+        } finally {
+            mealDraftBusy = false;
+            if (closeFoodDayButton) {
+                closeFoodDayButton.disabled = false;
+                closeFoodDayButton.textContent = "Zamknij dzisiejszy dziennik";
+            }
+        }
+    }
+
     function renderFoodResults(rows) {
         const target = document.getElementById("food-search-results");
         if (!target) return;
@@ -2169,12 +2376,21 @@
             const copy = document.createElement("div");
             const name = document.createElement("strong");
             const detail = document.createElement("small");
+            const actions = document.createElement("div");
             const kcal = document.createElement("span");
+            const add = document.createElement("button");
             name.textContent = food.name || "Produkt";
             detail.textContent = `${food.brand || "Bez marki"} · B ${formatNumber(food.protein_per_100g)} · T ${formatNumber(food.fat_per_100g)} · W ${formatNumber(food.carbs_per_100g)} / 100 g`;
             kcal.textContent = `${formatNumber(food.calories_per_100g)} kcal`;
+            actions.className = "food-result-actions";
+            add.type = "button";
+            const remoteOnly = food.source === "open_food_facts_remote" || !food.id;
+            add.textContent = remoteOnly ? "Tylko Android" : "Dodaj";
+            add.disabled = remoteOnly;
+            if (!remoteOnly) add.addEventListener("click", () => openMealGrams(food, add));
             copy.append(name, detail);
-            row.append(copy, kcal);
+            actions.append(kcal, add);
+            row.append(copy, actions);
             target.append(row);
         });
     }
@@ -2700,6 +2916,7 @@
     function navigateTo(route, updateHash = true) {
         const safeRoute = Object.hasOwn(routeLabels, route) ? route : "home";
         appShell?.classList.toggle("home-route-active", safeRoute === "home");
+        appShell?.classList.toggle("meals-route-active", safeRoute === "meals");
         document.querySelectorAll(".route-page").forEach((page) => {
             page.classList.toggle("active", page.dataset.page === safeRoute);
         });
@@ -2992,6 +3209,42 @@
         void submitInitialProfile();
     });
 
+    document.querySelectorAll("[data-meals-view]").forEach((button) => {
+        button.addEventListener("click", () => setMealsView(button.dataset.mealsView));
+    });
+    document.querySelectorAll("[data-open-meals-diary]").forEach((button) => {
+        button.addEventListener("click", () => setMealsView("diary"));
+    });
+    document.querySelectorAll("[data-meal-type]").forEach((button) => {
+        button.addEventListener("click", () => {
+            selectedManualMealType = button.dataset.mealType || "breakfast";
+            document.querySelectorAll("[data-meal-type]").forEach((item) => {
+                const selected = item === button;
+                item.classList.toggle("active", selected);
+                item.setAttribute("aria-checked", String(selected));
+            });
+        });
+    });
+    mealGramsForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const grams = finiteNumber(mealGramsValue?.value);
+        if (!selectedFoodForGrams || grams === null || grams < 1 || grams > 5000) {
+            setText("meal-grams-status", "Podaj ilość od 1 do 5000 g.");
+            mealGramsValue?.focus();
+            return;
+        }
+        mealDraftItems = [...mealDraftItems, { food: selectedFoodForGrams, grams }];
+        closeMealGrams();
+        renderMealDraft();
+        setToolStatus("meal-draft-status", "Produkt dodany. Możesz dodać kolejny lub zapisać posiłek.", "success");
+    });
+    cancelMealGramsButton?.addEventListener("click", closeMealGrams);
+    mealGramsModal?.addEventListener("click", (event) => {
+        if (event.target === mealGramsModal) closeMealGrams();
+    });
+    saveMealDraftButton?.addEventListener("click", () => void saveMealDraft());
+    closeFoodDayButton?.addEventListener("click", () => void closeTodayFoodDay());
+
     document.querySelectorAll("[data-coach-prompt]").forEach((button) => {
         button.addEventListener("click", () => {
             if (!coachInput) return;
@@ -3021,6 +3274,10 @@
         if (event.target === profileResetModal) closeProfileReset();
     });
     document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !mealGramsModal?.hidden) {
+            closeMealGrams();
+            return;
+        }
         if (event.key === "Escape" && !weightEntryModal?.hidden) {
             closeWeightEntry();
             return;

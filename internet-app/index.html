@@ -10,10 +10,10 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
-    <link rel="stylesheet" href="./styles.css?v=20261004-home-parity">
+    <link rel="stylesheet" href="./styles.css?v=20261005-meals-parity">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
-    <script src="./config.js?v=20261004-home-parity" defer></script>
-    <script src="./app.js?v=20261004-home-parity" defer></script>
+    <script src="./config.js?v=20261005-meals-parity" defer></script>
+    <script src="./app.js?v=20261005-meals-parity" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -37,6 +37,9 @@
     <symbol id="icon-event" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></symbol>
     <symbol id="icon-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.6 2.8 8 7 10 4.2-2 7-5.4 7-10V6z"/><path d="m9 12 2 2 4-5"/></symbol>
     <symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+    <symbol id="icon-scan" viewBox="0 0 24 24"><path d="M8 3H4a1 1 0 0 0-1 1v4M16 3h4a1 1 0 0 1 1 1v4M8 21H4a1 1 0 0 1-1-1v-4M16 21h4a1 1 0 0 0 1-1v-4M7 12h10"/></symbol>
+    <symbol id="icon-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3M8 21h8"/></symbol>
+    <symbol id="icon-edit" viewBox="0 0 24 24"><path d="m4 16-.8 4.8L8 20l11-11-4-4zM13.5 6.5l4 4"/></symbol>
 </svg>
 
 <noscript>
@@ -388,40 +391,93 @@
                 </section>
             </section>
 
-            <section class="route-page" data-page="meals" aria-labelledby="meals-heading">
-                <div class="meals-hero">
-                    <div><p class="eyebrow">DZISIAJ</p><h2 id="meals-heading">Posiłki</h2><p id="meals-message" role="status" aria-live="polite">Pobieranie dziennika DEV…</p></div>
-                    <div class="meal-total"><span>Kalorie</span><strong id="meals-calories-total">—</strong><small>kcal zapisane dziś</small></div>
+            <section class="route-page meals-screen" data-page="meals" aria-labelledby="meals-heading">
+                <h2 id="meals-heading" class="visually-hidden">Posiłki</h2>
+
+                <div class="meals-view-selector" role="tablist" aria-label="Widok posiłków">
+                    <button class="active" type="button" role="tab" aria-selected="true" data-meals-view="plan"><span aria-hidden="true">✓</span> Plan 7 dni</button>
+                    <button type="button" role="tab" aria-selected="false" data-meals-view="diary"><span aria-hidden="true" hidden>✓</span> Dziennik</button>
                 </div>
-                <div class="meals-layout">
-                    <section class="meals-panel" aria-labelledby="today-meals-heading">
-                        <div class="history-heading"><div><p class="eyebrow">DZIENNIK</p><h3 id="today-meals-heading">Dzisiejsze posiłki</h3></div><span id="today-meals-count">—</span></div>
-                        <div class="meal-list" id="today-meals-list"><p class="empty-history">Pobieranie…</p></div>
-                    </section>
-                    <section class="meals-panel" aria-labelledby="food-search-heading">
-                        <div class="history-heading"><div><p class="eyebrow">BAZA DEV</p><h3 id="food-search-heading">Wyszukaj produkt</h3></div></div>
-                        <form class="food-search-form" id="food-search-form">
-                            <label for="food-search-input">Nazwa produktu lub marka</label>
-                            <div><input id="food-search-input" type="search" minlength="2" maxlength="80" autocomplete="off" placeholder="np. jajka, awokado"><button type="submit">Szukaj</button></div>
-                        </form>
-                        <p class="food-search-status" id="food-search-status" role="status" aria-live="polite">Wpisz co najmniej 2 znaki.</p>
-                        <div class="food-results" id="food-search-results"></div>
-                    </section>
-                </div>
-                <section class="meal-plan-panel" aria-labelledby="meal-plan-heading">
-                    <div class="section-heading">
-                        <div><p class="eyebrow">POSIŁKI</p><h2 id="meal-plan-heading">Plan 7 dni <span class="plan-pro-badge">PRO</span></h2></div>
-                        <p id="meal-plan-message" role="status" aria-live="polite">Pobieranie aktywnego planu DEV…</p>
+
+                <section class="meals-daily-nutrition" aria-labelledby="meals-today-heading">
+                    <h3 id="meals-today-heading">Dzisiejsze jedzenie</h3>
+                    <div class="meals-daily-calories"><strong id="meals-today-consumed">—</strong><span>/ <b id="meals-today-target">—</b> kcal</span></div>
+                    <div class="meals-daily-calorie-track" role="progressbar" aria-label="Dzisiejsze kalorie"><i id="meals-today-calorie-bar"></i></div>
+                    <div class="meals-daily-macros">
+                        <div><span>Białko</span><b id="meals-today-protein">—</b><div><i id="meals-today-protein-bar"></i></div></div>
+                        <div><span>Tłuszcz</span><b id="meals-today-fat">—</b><div><i id="meals-today-fat-bar"></i></div></div>
+                        <div><span>Węgle</span><b id="meals-today-carbs">—</b><div><i id="meals-today-carbs-bar"></i></div></div>
                     </div>
-                    <div class="meal-plan-access">
-                        <div><strong id="meal-plan-access-title">Sprawdzanie dostępu…</strong><span id="meal-plan-access-copy">Plan korzysta z aktywnej diety, kalorii, makro i zabezpieczeń konta DEV.</span></div>
-                        <span id="meal-plan-quota">—</span>
-                    </div>
-                    <div class="meal-day-tabs" id="meal-day-tabs" role="tablist" aria-label="Dni planu"></div>
-                    <div class="meal-plan-list" id="meal-plan-list"><p class="empty-history">Pobieranie…</p></div>
-                    <p id="meal-plan-action-status" class="meal-plan-action-status" role="status" aria-live="polite"></p>
                 </section>
-                <div class="capability-list"><div><strong>Plan 7 dni</strong><span class="available-label">Pełne szczegóły i przygotowanie</span></div><div><strong>Zjedzone i zamiana posiłku</strong><span class="available-label">Aktywne w DEV</span></div><div><strong>Lista zakupów</strong><span class="available-label">Aktywna dla wybranego dnia</span></div><div><strong>Skaner kodów i dyktowanie</strong><span>Tylko Android — w WWW ukryte</span></div></div>
+
+                <div id="meals-plan-view" class="meals-view-panel" role="tabpanel">
+                    <section class="meal-plan-panel" aria-labelledby="meal-plan-heading">
+                        <div class="meal-plan-heading">
+                            <h3 id="meal-plan-heading">Plan 7 dni</h3>
+                            <span class="plan-pro-badge">PRO</span>
+                        </div>
+                        <p id="meal-plan-message" class="meal-plan-message" role="status" aria-live="polite">Pobieranie aktywnego planu DEV…</p>
+                        <div class="meal-plan-access">
+                            <div><strong id="meal-plan-access-title">Sprawdzanie dostępu…</strong><span id="meal-plan-access-copy">Plan korzysta z aktywnej diety, kalorii, makro i zabezpieczeń konta DEV.</span></div>
+                            <span id="meal-plan-quota">—</span>
+                        </div>
+                        <div class="meal-week-selector">
+                            <div class="meal-week-status"><strong>Wygenerowano <b id="meal-plan-generated-count">0 z 7</b> dni</strong><span id="meal-plan-preferences-status">Preferencje aktywne</span></div>
+                            <div class="meal-day-tabs" id="meal-day-tabs" role="tablist" aria-label="Dni planu"></div>
+                        </div>
+                        <div class="meal-plan-list" id="meal-plan-list"><p class="empty-history">Pobieranie…</p></div>
+                        <p id="meal-plan-action-status" class="meal-plan-action-status" role="status" aria-live="polite"></p>
+                    </section>
+
+                    <section class="meals-quick-entry" aria-labelledby="meals-quick-entry-heading">
+                        <h3 id="meals-quick-entry-heading">Dodaj posiłek</h3>
+                        <div>
+                            <button type="button" disabled title="Skaner jest dostępny w aplikacji Android"><svg><use href="#icon-scan"></use></svg><span>Skaner</span><small>Android</small></button>
+                            <button type="button" disabled title="Dodawanie głosem jest dostępne w aplikacji Android"><svg><use href="#icon-mic"></use></svg><span>Głos</span><small>Android</small></button>
+                            <button type="button" data-open-meals-diary><svg><use href="#icon-edit"></use></svg><span>Ręcznie</span><small>WWW</small></button>
+                        </div>
+                    </section>
+                </div>
+
+                <div id="meals-diary-view" class="meals-view-panel" role="tabpanel" hidden>
+                    <section class="meals-diary-heading" aria-labelledby="today-meals-heading">
+                        <div><h3 id="today-meals-heading">Dzisiejszy dziennik</h3><span id="today-meals-count">—</span></div>
+                        <p>Plan pozostaje bez zmian. Tutaj zapisujesz tylko zjedzone posiłki.</p>
+                    </section>
+
+                    <section class="meals-add-section" aria-labelledby="food-search-heading">
+                        <h3>Dodaj posiłek</h3>
+                        <div class="meal-type-selector" role="radiogroup" aria-label="Rodzaj posiłku">
+                            <button class="active" type="button" role="radio" aria-checked="true" data-meal-type="breakfast">Śniadanie</button>
+                            <button type="button" role="radio" aria-checked="false" data-meal-type="lunch">Obiad</button>
+                            <button type="button" role="radio" aria-checked="false" data-meal-type="dinner">Kolacja</button>
+                            <button type="button" role="radio" aria-checked="false" data-meal-type="snack">Przekąska</button>
+                        </div>
+                        <div class="meals-browser-note"><svg><use href="#icon-scan"></use></svg><span><strong>Skaner i głos</strong><small>Te dwie funkcje sprzętowe pozostają w aplikacji Android. W WWW dodajesz produkt ręcznie.</small></span></div>
+                        <div class="manual-food-search">
+                            <h4 id="food-search-heading">Dodaj ręcznie</h4>
+                            <form class="food-search-form" id="food-search-form">
+                                <label for="food-search-input">Szukaj produktu</label>
+                                <div><input id="food-search-input" type="search" minlength="2" maxlength="80" autocomplete="off" placeholder="np. jajka, awokado"><button type="submit" aria-label="Szukaj produktu">Szukaj</button></div>
+                            </form>
+                            <p class="food-search-status" id="food-search-status" role="status" aria-live="polite">Wpisz co najmniej 2 znaki.</p>
+                            <div class="food-results" id="food-search-results"></div>
+                        </div>
+                        <div id="meal-draft-panel" class="meal-draft-panel" hidden>
+                            <h4>Ten posiłek</h4>
+                            <div id="meal-draft-list" class="meal-draft-list"></div>
+                            <div class="meal-draft-total"><span><strong id="meal-draft-calories">—</strong> kcal<small id="meal-draft-macros">—</small></span><button id="save-meal-draft" type="button">Zapisz</button></div>
+                            <p id="meal-draft-status" class="meal-plan-action-status" role="status" aria-live="polite"></p>
+                        </div>
+                    </section>
+
+                    <section class="meals-saved-today" aria-labelledby="saved-today-heading">
+                        <h3 id="saved-today-heading">Zapisane dzisiaj</h3>
+                        <div class="meal-list" id="today-meals-list"><p class="empty-history">Pobieranie…</p></div>
+                        <button id="close-food-day" class="close-food-day" type="button">Zamknij dzisiejszy dziennik</button>
+                    </section>
+                    <p id="meals-message" class="meals-message" role="status" aria-live="polite">Pobieranie dziennika DEV…</p>
+                </div>
             </section>
 
             <section class="route-page" data-page="fridge" aria-labelledby="fridge-heading">
@@ -618,6 +674,24 @@
             <div class="confirm-dialog-actions">
                 <button id="cancel-weight-entry" class="dialog-secondary-button" type="button">Anuluj</button>
                 <button id="save-weight-entry" class="dialog-danger-button" type="submit">Zapisz</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+<div id="meal-grams-modal" class="modal-backdrop" hidden>
+    <section class="confirm-dialog weight-entry-dialog" role="dialog" aria-modal="true" aria-labelledby="meal-grams-title" aria-describedby="meal-grams-copy">
+        <div class="weight-dialog-icon"><svg><use href="#icon-meals"></use></svg></div>
+        <p class="eyebrow">DODAJ PRODUKT</p>
+        <h2 id="meal-grams-title">Podaj ilość</h2>
+        <p id="meal-grams-copy">—</p>
+        <form id="meal-grams-form" class="weight-entry-form">
+            <label for="meal-grams-value">Ilość produktu</label>
+            <div><input id="meal-grams-value" type="number" min="1" max="5000" step="1" inputmode="decimal" value="100" required><span>g</span></div>
+            <p id="meal-grams-status" class="tool-status" role="status" aria-live="polite"></p>
+            <div class="confirm-dialog-actions">
+                <button id="cancel-meal-grams" class="dialog-secondary-button" type="button">Anuluj</button>
+                <button class="dialog-danger-button" type="submit">Dodaj</button>
             </div>
         </form>
     </section>
