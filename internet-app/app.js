@@ -4,7 +4,7 @@
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
     const COMMUNITY_RULES_VERSION = "2026-09-09";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-coach-history-scope-back";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-support-chat-backstack";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -45,6 +45,16 @@
     const coachInput = document.getElementById("coach-input");
     const coachSendButton = document.getElementById("coach-send-button");
     const coachHistoryButton = document.getElementById("coach-history-button");
+    const coachHeading = document.getElementById("coach-heading");
+    const coachAiPanel = document.getElementById("coach-ai-panel");
+    const supportChatPanel = document.getElementById("support-chat-panel");
+    const supportChatInbox = document.getElementById("support-chat-inbox");
+    const supportChatConversations = document.getElementById("support-chat-conversations");
+    const supportChatMessages = document.getElementById("support-chat-messages");
+    const supportChatForm = document.getElementById("support-chat-form");
+    const supportChatInput = document.getElementById("support-chat-input");
+    const supportChatSendButton = document.getElementById("support-chat-send");
+    const supportChatRefreshButton = document.getElementById("support-chat-refresh");
     const profileResetModal = document.getElementById("profile-reset-modal");
     const openProfileResetButton = document.getElementById("open-profile-reset");
     const cancelProfileResetButton = document.getElementById("cancel-profile-reset");
@@ -164,7 +174,15 @@
     let selectedMealPlanDay = 0;
     let currentCoachConversationId = null;
     let currentAppRoute = null;
-    let previousAppRoute = "home";
+    let appRouteHistory = [];
+    let activeCoachSection = "coach";
+    let supportChatIsAdmin = false;
+    let supportChatConversationId = null;
+    let supportChatSelectedConversation = null;
+    let supportChatConversationList = [];
+    let supportChatLoadSequence = 0;
+    let supportChatBusy = false;
+    let supportChatRefreshTimer = null;
     let authMode = "sign-in";
     let profileResetBusy = false;
     let profileResetPreviousFocus = null;
@@ -381,6 +399,15 @@
         currentMealPlan = null;
         selectedMealPlanDay = 0;
         currentCoachConversationId = null;
+        supportChatLoadSequence += 1;
+        if (supportChatRefreshTimer !== null) window.clearInterval(supportChatRefreshTimer);
+        supportChatRefreshTimer = null;
+        supportChatIsAdmin = false;
+        supportChatConversationId = null;
+        supportChatSelectedConversation = null;
+        supportChatConversationList = [];
+        supportChatBusy = false;
+        activeCoachSection = "coach";
         healthConsentGranted = false;
         profileReadyForWrites = false;
         currentMealPreferences = null;
@@ -499,6 +526,26 @@
         const coachMessages = document.getElementById("coach-messages");
         if (coachMessages) coachMessages.innerHTML = '<p class="empty-history">Pobieranie…</p>';
         setText("coach-status", "Pobieranie historii DEV…");
+        if (supportChatInput) supportChatInput.value = "";
+        if (supportChatInput) supportChatInput.disabled = false;
+        if (supportChatSendButton) supportChatSendButton.disabled = false;
+        if (supportChatRefreshButton) supportChatRefreshButton.disabled = false;
+        if (supportChatMessages) supportChatMessages.innerHTML = '<p class="empty-history">Otwórz czat, aby pobrać historię.</p>';
+        if (supportChatConversations) supportChatConversations.innerHTML = '<p class="empty-history">Pobieranie rozmów…</p>';
+        if (supportChatPanel) supportChatPanel.hidden = true;
+        if (coachAiPanel) coachAiPanel.hidden = false;
+        if (supportChatInbox) supportChatInbox.hidden = true;
+        if (supportChatForm) supportChatForm.hidden = true;
+        document.querySelectorAll("[data-coach-section]").forEach((item) => {
+            const selected = item.dataset.coachSection === "coach";
+            item.classList.toggle("active", selected);
+            item.setAttribute("aria-selected", String(selected));
+        });
+        if (coachHeading) coachHeading.textContent = "AI Coach";
+        setText("support-chat-title", "Czat z Przemalą");
+        setText("support-chat-role", "Kontakt z zespołem");
+        setText("support-chat-subtitle", "Wiadomości zapisują się na Twoim koncie DEV.");
+        setText("support-chat-status", "Otwórz czat, aby pobrać historię.");
         setText("coach-limit", "Limit sprawdzany przy wysłaniu");
         setText("coach-access-badge", "PRO");
         setText("coach-context-calories", "Pozostało — kcal");
@@ -3815,7 +3862,7 @@
         return item;
     }
 
-    function renderCoachMessages(rows) {
+    function renderCoachMessages(rows, { scrollToBottom = false } = {}) {
         const target = document.getElementById("coach-messages");
         if (!target) return;
         target.replaceChildren();
@@ -3828,10 +3875,262 @@
             return;
         }
         messages.forEach((message) => target.append(coachMessageElement(message)));
-        target.scrollTop = target.scrollHeight;
+        target.scrollTop = scrollToBottom ? target.scrollHeight : 0;
     }
 
-    async function loadCoachHistory(user) {
+    function supportChatMessageElement(message) {
+        const item = document.createElement("article");
+        const isMine = String(message.sender_id || "") === String(activeUserId || "");
+        item.className = `coach-message ${isMine ? "user" : "assistant"}`;
+        const text = document.createElement("p");
+        text.textContent = String(message.message_text || "");
+        const meta = document.createElement("small");
+        meta.className = "support-message-meta";
+        const otherName = supportChatIsAdmin
+            ? (supportChatSelectedConversation?.user_display_name || "Użytkownik")
+            : "Przemala";
+        meta.textContent = `${isMine ? "Ty" : otherName} · ${formatDate(message.created_at, true)}`;
+        item.append(text, meta);
+        return item;
+    }
+
+    function renderSupportChatMessages(rows, { scrollToBottom = false, preserveScroll = false } = {}) {
+        const target = supportChatMessages;
+        if (!target) return;
+        const previousScrollTop = target.scrollTop;
+        target.replaceChildren();
+        const messages = Array.isArray(rows) ? [...rows] : [];
+        messages.sort((left, right) => {
+            const time = new Date(left.created_at).getTime() - new Date(right.created_at).getTime();
+            return time || String(left.id || "").localeCompare(String(right.id || ""));
+        });
+        if (!messages.length) {
+            const empty = document.createElement("p");
+            empty.className = "empty-history";
+            empty.textContent = supportChatIsAdmin
+                ? "Wybierz rozmowę z listy, aby zobaczyć jej początek."
+                : "To początek rozmowy. Napisz pierwszą wiadomość do Przemali.";
+            target.append(empty);
+            target.scrollTop = 0;
+            return;
+        }
+        messages.forEach((message) => target.append(supportChatMessageElement(message)));
+        if (scrollToBottom) target.scrollTop = target.scrollHeight;
+        else if (preserveScroll) target.scrollTop = Math.min(previousScrollTop, target.scrollHeight);
+        else target.scrollTop = 0;
+    }
+
+    function renderSupportChatInbox(conversations) {
+        if (!supportChatConversations) return;
+        supportChatConversations.replaceChildren();
+        const list = Array.isArray(conversations) ? [...conversations] : [];
+        list.sort((left, right) => new Date(right.last_message_at || 0) - new Date(left.last_message_at || 0));
+        if (!list.length) {
+            const empty = document.createElement("p");
+            empty.className = "empty-history";
+            empty.textContent = "Nie ma jeszcze rozmów do obsłużenia.";
+            supportChatConversations.append(empty);
+            return;
+        }
+        list.forEach((conversation) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "support-conversation-button";
+            button.classList.toggle("is-active", conversation.id === supportChatConversationId);
+            button.setAttribute("aria-pressed", String(conversation.id === supportChatConversationId));
+            const head = document.createElement("span");
+            head.className = "support-conversation-head";
+            const identity = document.createElement("span");
+            identity.className = "support-conversation-identity";
+            const name = document.createElement("strong");
+            name.textContent = conversation.user_display_name || conversation.user_email || "Użytkownik";
+            const email = document.createElement("small");
+            email.textContent = conversation.user_display_name && conversation.user_email ? conversation.user_email : "";
+            identity.append(name, email);
+            head.append(identity);
+            const unread = Number(conversation.unread_count || 0);
+            if (unread > 0) {
+                const badge = document.createElement("b");
+                badge.className = "support-unread-badge";
+                badge.textContent = String(unread);
+                head.append(badge);
+            }
+            const preview = document.createElement("span");
+            preview.className = "support-conversation-preview";
+            preview.textContent = conversation.last_message_preview || "Brak podglądu wiadomości";
+            const date = document.createElement("small");
+            date.className = "support-conversation-date";
+            date.textContent = formatDate(conversation.last_message_at, true);
+            button.append(head, preview, date);
+            button.addEventListener("click", () => void openSupportConversation(conversation));
+            supportChatConversations.append(button);
+        });
+    }
+
+    function supportChatErrorMessage(error) {
+        const code = String(error?.message || "");
+        if (code === "authentication_required") return "Sesja wygasła. Zaloguj się ponownie.";
+        if (code === "admin_required") return "To konto nie ma dostępu do skrzynki obsługi.";
+        if (code === "invalid_message") return "Wiadomość musi mieć od 1 do 2000 znaków.";
+        return "Nie udało się połączyć z czatem DEV. Spróbuj ponownie za chwilę.";
+    }
+
+    async function requestSupportChat(action, payload = {}) {
+        const { data, error } = await client.functions.invoke("support-chat", {
+            body: { action, ...payload }
+        });
+        if (error || data?.error) {
+            const code = await edgeFunctionErrorCode(error, data);
+            throw new Error(code);
+        }
+        return data || {};
+    }
+
+    async function openSupportConversation(conversation, parentSequence = null, { preserveScroll = false } = {}) {
+        if (!client || !activeUserId || !conversation?.id) return;
+        const sequence = parentSequence ?? ++supportChatLoadSequence;
+        supportChatConversationId = conversation.id;
+        supportChatSelectedConversation = conversation;
+        setText("support-chat-title", conversation.user_display_name || conversation.user_email || "Rozmowa z użytkownikiem");
+        setText("support-chat-role", "Skrzynka obsługi");
+        setText("support-chat-subtitle", conversation.user_email || "Rozmowa z użytkownikiem Project Weight Drop.");
+        renderSupportChatInbox(supportChatConversationList);
+        supportChatForm.hidden = false;
+        setText("support-chat-status", "Pobieranie historii od początku rozmowy…");
+        try {
+            const data = await requestSupportChat("conversation", { conversation_id: conversation.id });
+            if (sequence !== supportChatLoadSequence || !activeUserId) return;
+            supportChatSelectedConversation = data.conversation || conversation;
+            supportChatConversationList = supportChatConversationList.map((item) => item.id === conversation.id
+                ? { ...item, unread_count: 0 }
+                : item);
+            renderSupportChatInbox(supportChatConversationList);
+            renderSupportChatMessages(data.messages, { preserveScroll });
+            setText("support-chat-status", "Historia rozmowy załadowana od pierwszej wiadomości.");
+        } catch (error) {
+            if (sequence !== supportChatLoadSequence) return;
+            console.warn("Support chat conversation load failed", error?.message || "unknown_error");
+            renderSupportChatMessages([]);
+            setText("support-chat-status", supportChatErrorMessage(error));
+        }
+    }
+
+    async function loadSupportChat({ preserveScroll = false, scrollToBottom = false } = {}) {
+        if (!client || !activeUserId) {
+            setText("support-chat-status", "Zaloguj się ponownie, aby otworzyć czat DEV.");
+            return;
+        }
+        const sequence = ++supportChatLoadSequence;
+        const userId = activeUserId;
+        if (supportChatRefreshButton) supportChatRefreshButton.disabled = true;
+        setText("support-chat-status", "Pobieranie historii czatu DEV…");
+        try {
+            const snapshot = await requestSupportChat("snapshot");
+            if (sequence !== supportChatLoadSequence || userId !== activeUserId) return;
+            supportChatIsAdmin = snapshot.is_admin === true;
+            supportChatConversationList = Array.isArray(snapshot.conversations) ? snapshot.conversations : [];
+            supportChatInbox.hidden = !supportChatIsAdmin;
+            if (supportChatIsAdmin) {
+                supportChatConversationId = supportChatConversationList.some((item) => item.id === supportChatConversationId)
+                    ? supportChatConversationId
+                    : null;
+                supportChatSelectedConversation = supportChatConversationList.find((item) => item.id === supportChatConversationId) || null;
+                renderSupportChatInbox(supportChatConversationList);
+                if (supportChatConversationId) {
+                    await openSupportConversation(supportChatSelectedConversation, sequence, { preserveScroll });
+                    if (scrollToBottom) supportChatMessages.scrollTop = supportChatMessages.scrollHeight;
+                } else {
+                    supportChatForm.hidden = true;
+                    setText("support-chat-title", "Skrzynka obsługi");
+                    setText("support-chat-role", "Administrator");
+                    setText("support-chat-subtitle", "Wybierz rozmowę, aby odczytać wiadomości.");
+                    renderSupportChatMessages([]);
+                    setText("support-chat-status", supportChatConversationList.length
+                        ? "Wybierz rozmowę z listy."
+                        : "Nie ma jeszcze rozmów do obsłużenia.");
+                }
+            } else {
+                supportChatConversationId = snapshot.conversation_id || snapshot.conversation?.id || null;
+                supportChatSelectedConversation = snapshot.conversation || null;
+                supportChatInbox.hidden = true;
+                supportChatForm.hidden = false;
+                setText("support-chat-title", "Czat z Przemalą");
+                setText("support-chat-role", "Kontakt z zespołem");
+                setText("support-chat-subtitle", "Wiadomości zapisują się na Twoim koncie DEV.");
+                renderSupportChatMessages(snapshot.messages, { preserveScroll, scrollToBottom });
+                setText("support-chat-status", snapshot.messages?.length
+                    ? "Historia rozmowy załadowana od pierwszej wiadomości."
+                    : "To początek rozmowy — możesz napisać pierwszą wiadomość.");
+            }
+        } catch (error) {
+            if (sequence !== supportChatLoadSequence || userId !== activeUserId) return;
+            console.warn("Support chat load failed", error?.message || "unknown_error");
+            setText("support-chat-status", supportChatErrorMessage(error));
+            renderSupportChatMessages([]);
+            supportChatForm.hidden = supportChatIsAdmin;
+        } finally {
+            if (sequence === supportChatLoadSequence && supportChatRefreshButton) {
+                supportChatRefreshButton.disabled = false;
+            }
+        }
+    }
+
+    async function sendSupportChatMessage(message) {
+        if (!client || !activeUserId || supportChatBusy) return;
+        if (!message || message.length > 2000) {
+            setText("support-chat-status", "Wiadomość musi mieć od 1 do 2000 znaków.");
+            supportChatInput?.focus();
+            return;
+        }
+        if (supportChatIsAdmin && !supportChatConversationId) {
+            setText("support-chat-status", "Najpierw wybierz rozmowę z listy.");
+            return;
+        }
+        supportChatBusy = true;
+        supportChatSendButton.disabled = true;
+        supportChatInput.disabled = true;
+        setText("support-chat-status", "Wysyłanie wiadomości…");
+        try {
+            const payload = supportChatIsAdmin ? { conversation_id: supportChatConversationId } : {};
+            const data = await requestSupportChat("send", { ...payload, message });
+            supportChatConversationId = data.conversation_id || supportChatConversationId;
+            supportChatSelectedConversation = data.conversation || supportChatSelectedConversation;
+            if (supportChatIsAdmin && supportChatConversationId) {
+                const now = new Date().toISOString();
+                supportChatConversationList = supportChatConversationList.map((item) => item.id === supportChatConversationId
+                    ? { ...item, last_message_at: now, last_message_preview: message.slice(0, 180), unread_count: 0 }
+                    : item);
+                renderSupportChatInbox(supportChatConversationList);
+            }
+            renderSupportChatMessages(data.messages, { scrollToBottom: true });
+            supportChatInput.value = "";
+            setText("support-chat-status", "Wiadomość wysłana. Odpowiedź pojawi się w tej rozmowie.");
+        } catch (error) {
+            console.warn("Support chat send failed", error?.message || "unknown_error");
+            setText("support-chat-status", supportChatErrorMessage(error));
+        } finally {
+            supportChatBusy = false;
+            supportChatSendButton.disabled = false;
+            supportChatInput.disabled = false;
+            supportChatInput?.focus();
+        }
+    }
+
+    function startSupportChatRefresh() {
+        stopSupportChatRefresh();
+        supportChatRefreshTimer = window.setInterval(() => {
+            if (document.visibilityState === "visible" && currentAppRoute === "coach" && activeCoachSection === "support") {
+                void loadSupportChat({ preserveScroll: true });
+            }
+        }, 15000);
+    }
+
+    function stopSupportChatRefresh() {
+        if (supportChatRefreshTimer !== null) window.clearInterval(supportChatRefreshTimer);
+        supportChatRefreshTimer = null;
+    }
+
+    async function loadCoachHistory(user, { scrollToBottom = false } = {}) {
         const sequence = dataLoadSequence;
         const conversationResult = await client.from("ai_conversations")
             .select("id,last_message_at,status")
@@ -3854,25 +4153,38 @@
             setText("coach-status", "Gotowy do rozpoczęcia nowej rozmowy DEV.");
             return;
         }
-        const messagesResult = await client.from("ai_messages")
-            .select("id,role,message_text,created_at")
-            .eq("user_id", user.id)
-            .eq("conversation_id", latestConversation.id)
-            .order("created_at", { ascending: false })
-            .limit(40);
-        if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
-        if (messagesResult.error) {
-            setText("coach-status", friendlyDataError(messagesResult.error));
+        const pageSize = 200;
+        const history = [];
+        let historyError = null;
+        for (let from = 0; ; from += pageSize) {
+            const page = await client.from("ai_messages")
+                .select("id,role,message_text,created_at")
+                .eq("user_id", user.id)
+                .eq("conversation_id", latestConversation.id)
+                .order("created_at", { ascending: true })
+                .order("id", { ascending: true })
+                .range(from, from + pageSize - 1);
+            if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
+            if (page.error) {
+                historyError = page.error;
+                break;
+            }
+            const rows = page.data || [];
+            history.push(...rows);
+            if (rows.length < pageSize) break;
+        }
+        if (historyError) {
+            setText("coach-status", friendlyDataError(historyError));
             const placeholder = document.querySelector("#coach-messages .empty-history");
             if (placeholder) placeholder.textContent = "Nie udało się pobrać ostatniej rozmowy. Wybierz Historia, aby spróbować ponownie.";
             return;
         }
-        const orderedMessages = (messagesResult.data || []).sort((left, right) => {
+        const orderedMessages = history.sort((left, right) => {
             const byTime = new Date(left.created_at).getTime() - new Date(right.created_at).getTime();
             if (byTime) return byTime;
             return (left.role === "user" ? 0 : 1) - (right.role === "user" ? 0 : 1);
         });
-        renderCoachMessages(orderedMessages);
+        renderCoachMessages(orderedMessages, { scrollToBottom });
         setText("coach-status", latestConversation.status === "active"
             ? "Ostatnia rozmowa przywrócona z DEV."
             : "Ostatnia rozmowa przywrócona. Nowa wiadomość rozpocznie nowy czat.");
@@ -3910,7 +4222,7 @@
             ? `Pakiet: ${data.premium_tier || "DEV"}`
             : `Pozostało odpowiedzi: ${formatNumber(data.coach_remaining)}`);
         if (data.history_saved) {
-            await loadCoachHistory({ id: activeUserId });
+            await loadCoachHistory({ id: activeUserId }, { scrollToBottom: true });
         } else {
             const target = document.getElementById("coach-messages");
             target?.querySelector(".empty-history")?.remove();
@@ -4514,7 +4826,7 @@
         dataLoadSequence += 1;
         activeUserId = null;
         currentAppRoute = null;
-        previousAppRoute = "home";
+        appRouteHistory = [];
         profileResetBusy = false;
         if (profileResetModal) profileResetModal.hidden = true;
         document.body.classList.remove("modal-open");
@@ -4565,7 +4877,7 @@
         if (route === "community") setProgressSection("community");
         else if (requestedRoute === "progress") setProgressSection("hub");
         const safeRoute = Object.hasOwn(routeLabels, requestedRoute) ? requestedRoute : "home";
-        if (currentAppRoute && safeRoute !== currentAppRoute) previousAppRoute = currentAppRoute;
+        if (currentAppRoute && safeRoute !== currentAppRoute && updateHash) appRouteHistory.push(currentAppRoute);
         currentAppRoute = safeRoute;
         appShell?.classList.toggle("home-route-active", safeRoute === "home");
         appShell?.classList.toggle("meals-route-active", safeRoute === "meals");
@@ -4582,14 +4894,29 @@
         });
         if (backHomeButton) {
             backHomeButton.hidden = safeRoute === "home";
-            const backTarget = previousAppRoute === safeRoute ? "home" : previousAppRoute;
+            const backTarget = appRouteHistory.at(-1) || "home";
             backHomeButton.setAttribute("aria-label", `Wróć do ${routeLabels[backTarget] || routeLabels.home}`);
         }
-        routeTitle.textContent = routeLabels[safeRoute];
-        document.title = `${routeLabels[safeRoute]} — Project Weight Drop DEV`;
+        const pageTitle = safeRoute === "coach" && activeCoachSection === "support"
+            ? "Czat z Przemalą"
+            : routeLabels[safeRoute];
+        routeTitle.textContent = pageTitle;
+        document.title = `${pageTitle} — Project Weight Drop DEV`;
         if (updateHash) window.history.replaceState(null, "", `#${safeRoute}`);
+        if (safeRoute === "coach" && activeCoachSection === "support") {
+            void loadSupportChat({ preserveScroll: true });
+            startSupportChatRefresh();
+        } else {
+            stopSupportChatRefresh();
+        }
         window.scrollTo({ top: 0, behavior: "auto" });
         document.querySelector(".app-workspace")?.scrollTo({ top: 0, behavior: "auto" });
+    }
+
+    function goBackOneRoute() {
+        const previousRoute = appRouteHistory.pop() || "home";
+        navigateTo(previousRoute, false);
+        window.history.replaceState(null, "", `#${previousRoute}`);
     }
 
     async function signOut() {
@@ -4817,15 +5144,39 @@
     coachHistoryButton?.addEventListener("click", () => {
         if (activeUserId) void loadCoachHistory({ id: activeUserId });
     });
+    supportChatRefreshButton?.addEventListener("click", () => void loadSupportChat({ preserveScroll: true }));
+    supportChatForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const message = supportChatInput?.value.trim() || "";
+        if (!client || !activeUserId) {
+            setText("support-chat-status", "Zaloguj się ponownie, aby napisać do Przemali.");
+            return;
+        }
+        void sendSupportChatMessage(message);
+    });
     document.querySelectorAll("[data-coach-section]").forEach((button) => {
         button.addEventListener("click", () => {
             const isCoach = button.dataset.coachSection === "coach";
+            activeCoachSection = isCoach ? "coach" : "support";
             document.querySelectorAll("[data-coach-section]").forEach((item) => {
                 const selected = item === button;
                 item.classList.toggle("active", selected);
                 item.setAttribute("aria-selected", String(selected));
             });
-            if (!isCoach) setText("coach-status", "Czat z Przemalą pozostaje w aplikacji Android DEV. AI Coach działa tutaj.");
+            coachAiPanel.hidden = !isCoach;
+            supportChatPanel.hidden = isCoach;
+            coachHeading.textContent = isCoach ? "AI Coach" : "Czat z Przemalą";
+            if (currentAppRoute === "coach") {
+                routeTitle.textContent = coachHeading.textContent;
+                document.title = `${coachHeading.textContent} — Project Weight Drop DEV`;
+            }
+            if (isCoach) {
+                stopSupportChatRefresh();
+                if (activeUserId) void loadCoachHistory({ id: activeUserId });
+            } else {
+                void loadSupportChat();
+                startSupportChatRefresh();
+            }
         });
     });
 
@@ -5048,7 +5399,7 @@
     document.querySelectorAll("[data-sign-out]").forEach((button) => {
         button.addEventListener("click", () => void signOut());
     });
-    backHomeButton?.addEventListener("click", () => navigateTo(previousAppRoute === currentAppRoute ? "home" : previousAppRoute));
+    backHomeButton?.addEventListener("click", goBackOneRoute);
     openProfileResetButton?.addEventListener("click", openProfileReset);
     cancelProfileResetButton?.addEventListener("click", closeProfileReset);
     confirmProfileResetButton?.addEventListener("click", () => void resetOwnProfile());

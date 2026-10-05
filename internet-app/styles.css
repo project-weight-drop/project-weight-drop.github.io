@@ -858,6 +858,19 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .coach-form { padding: 10px 12px 12px; border-top: 1px solid rgba(255,255,255,.12); }
 .coach-form > div { grid-template-columns: minmax(0, 1fr) 44px 50px; align-items: end; gap: 7px; }
 .coach-form button[type="submit"] { display: grid; place-items: center; border: 0; cursor: pointer; }
+.support-chat-form > div { grid-template-columns: minmax(0, 1fr) 50px; }
+.support-inbox { padding: 10px 12px 12px; border-bottom: 1px solid rgba(255,255,255,.12); }
+.support-inbox-intro { margin: 0 0 9px; color: #aaa; font-size: 11px; }
+.support-conversations { display: grid; gap: 7px; max-height: 320px; overflow-y: auto; }
+.support-conversation-button { display: grid; gap: 5px; width: 100%; min-width: 0; border: 1px solid #393939; border-radius: 9px; padding: 10px; background: #202020; color: #f1f1f1; text-align: left; cursor: pointer; }
+.support-conversation-button.is-active { border-color: var(--orange); background: rgba(255,106,0,.1); }
+.support-conversation-head { display: flex; align-items: center; justify-content: space-between; gap: 9px; }
+.support-conversation-identity { display: grid; min-width: 0; gap: 2px; }
+.support-conversation-identity strong { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.support-conversation-identity small, .support-conversation-date { color: #888; font-size: 9px; }
+.support-conversation-preview { overflow: hidden; color: #aaa; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.support-unread-badge { display: grid; place-items: center; min-width: 19px; height: 19px; border-radius: 99px; background: var(--orange); color: #111; font-size: 10px; }
+.support-message-meta { display: block; margin-top: 8px; color: #898989; font-size: 9px; }
 .community-hero { min-height: 205px; display: flex; align-items: flex-end; justify-content: space-between; gap: 30px; padding: clamp(28px, 5vw, 48px); border: 1px solid var(--line); border-radius: 16px; background: linear-gradient(125deg, #181818, #24170f); }
 .community-hero h2 { max-width: 760px; margin: 8px 0 12px; font-size: clamp(38px, 5vw, 58px); letter-spacing: -.05em; }
 .community-hero p:last-child { margin: 0; color: var(--muted); }

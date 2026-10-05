@@ -11,10 +11,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-challenge-weekly-progress">
+    <link rel="stylesheet" href="./styles.css?v=20261005-support-chat-backstack">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./app.js?v=20261005-coach-history-scope-back" defer></script>
+    <script src="./app.js?v=20261005-support-chat-backstack" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -588,10 +588,10 @@
                     <h2 id="coach-heading">AI Coach</h2>
                 </header>
                 <div class="module-segmented coach-tabs" role="tablist" aria-label="Sekcja Coach">
-                    <button class="active" type="button" role="tab" aria-selected="true" data-coach-section="coach"><svg><use href="#icon-coach"></use></svg><span>AI Coach</span></button>
-                    <button type="button" role="tab" aria-selected="false" data-coach-section="support"><span>Czat z Przemalą</span></button>
+                    <button id="coach-ai-tab" class="active" type="button" role="tab" aria-selected="true" aria-controls="coach-ai-panel" data-coach-section="coach"><svg><use href="#icon-coach"></use></svg><span>AI Coach</span></button>
+                    <button id="coach-support-tab" type="button" role="tab" aria-selected="false" aria-controls="support-chat-panel" data-coach-section="support"><span>Czat z Przemalą</span></button>
                 </div>
-                <section class="coach-panel" aria-label="Rozmowa z AI Coach">
+                <section id="coach-ai-panel" class="coach-panel" role="tabpanel" aria-labelledby="coach-ai-tab" aria-label="Rozmowa z AI Coach">
                     <div class="coach-context-card">
                         <span><svg><use href="#icon-coach"></use></svg></span>
                         <div>
@@ -612,6 +612,27 @@
                     <form class="coach-form" id="coach-form">
                         <label class="visually-hidden" for="coach-input">Wiadomość do Coacha</label>
                         <div><textarea id="coach-input" maxlength="2000" rows="1" placeholder="Napisz wiadomość…" required></textarea><button class="ghost-icon-button" type="button" aria-label="Podyktuj wiadomość" disabled><svg><use href="#icon-mic"></use></svg></button><button id="coach-send-button" type="submit" aria-label="Wyślij wiadomość"><svg><use href="#icon-arrow"></use></svg></button></div>
+                    </form>
+                </section>
+                <section id="support-chat-panel" class="coach-panel support-chat-panel" role="tabpanel" aria-labelledby="coach-support-tab" aria-label="Czat z Przemalą" hidden>
+                    <div class="coach-context-card">
+                        <span><svg><use href="#icon-profile"></use></svg></span>
+                        <div>
+                            <div class="coach-context-title"><strong id="support-chat-title">Czat z Przemalą</strong><b id="support-chat-role">Kontakt z zespołem</b></div>
+                            <p id="support-chat-subtitle">Wiadomości zapisują się na Twoim koncie DEV.</p>
+                        </div>
+                        <button id="support-chat-refresh" class="module-text-button" type="button">Odśwież</button>
+                    </div>
+                    <div class="coach-topline"><span id="support-chat-status" role="status" aria-live="polite">Otwórz czat, aby pobrać historię.</span><small>Wiadomości tekstowe · DEV</small></div>
+                    <div id="support-chat-inbox" class="support-inbox" hidden>
+                        <p class="support-inbox-intro">Wybierz rozmowę, aby odczytać wiadomości lub odpowiedzieć.</p>
+                        <div id="support-chat-conversations" class="support-conversations"><p class="empty-history">Pobieranie rozmów…</p></div>
+                    </div>
+                    <div id="support-chat-messages" class="coach-messages support-chat-messages" aria-live="polite"><p class="empty-history">Pobieranie historii…</p></div>
+                    <form class="coach-form support-chat-form" id="support-chat-form" hidden>
+                        <label class="visually-hidden" for="support-chat-input">Wiadomość do Przemali</label>
+                        <div><textarea id="support-chat-input" maxlength="2000" rows="1" placeholder="Napisz wiadomość do Przemali…" required></textarea><button id="support-chat-send" type="submit" aria-label="Wyślij wiadomość"><svg><use href="#icon-arrow"></use></svg></button></div>
+                        <p>To bezpośredni czat z obsługą, nie odpowiedź AI. Odpowiedź pojawi się tutaj.</p>
                     </form>
                 </section>
             </section>
