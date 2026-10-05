@@ -3,7 +3,7 @@
 
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-fridge-reference";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-progress-profile-parity";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -123,6 +123,9 @@
     let lockedMealPlanIds = new Set();
     let profileSetupBusy = false;
     let currentDashboardSnapshot = null;
+    let currentWeeklyProgressReport = null;
+    let currentCoachMemories = [];
+    let coachMemorySavingId = null;
     let weightEntryBusy = false;
     let weightEntryPreviousFocus = null;
     let activeMealsView = "plan";
@@ -328,6 +331,9 @@
         lockedMealPlanIds = new Set();
         profileSetupBusy = false;
         currentDashboardSnapshot = null;
+        currentWeeklyProgressReport = null;
+        currentCoachMemories = [];
+        coachMemorySavingId = null;
         weightEntryBusy = false;
         activeMealsView = "plan";
         selectedManualMealType = "breakfast";
@@ -359,8 +365,27 @@
             "profile-goal-weight", "profile-activity", "profile-strength", "profile-average-steps",
             "profile-timezone", "profile-plan-status", "progress-data-days", "progress-meals",
             "progress-calories", "progress-steps", "progress-water", "progress-weight-change",
-            "weight-history-count", "steps-history-count"
+            "weight-history-count", "steps-history-count", "measurement-history-count",
+            "progress-hub-weight", "progress-hub-water", "progress-hub-steps", "progress-hub-body",
+            "progress-hub-macros", "progress-hub-report", "progress-hub-event",
+            "progress-macro-calories", "progress-macro-protein", "progress-macro-fat", "progress-macro-carbs",
+            "profile-plan-calories", "profile-plan-protein", "profile-plan-fat", "profile-plan-carbs",
+            "profile-plan-tdee", "profile-plan-rmr", "profile-today-steps",
+            "progress-report-weight", "progress-report-weight-meta", "progress-report-meals",
+            "progress-report-meals-meta", "progress-report-hydration", "progress-report-hydration-meta",
+            "progress-report-steps", "progress-report-steps-meta", "progress-report-wellbeing",
+            "progress-report-wellbeing-meta", "progress-report-calories-adherence",
+            "progress-report-protein-adherence", "progress-report-fat-adherence", "progress-report-carbs-adherence"
         ].forEach((id) => setText(id, "—"));
+        document.getElementById("progress-weekly-update")?.setAttribute("hidden", "");
+        document.getElementById("profile-admin-badge")?.setAttribute("hidden", "");
+        document.getElementById("profile-access-link")?.removeAttribute("hidden");
+        setText("profile-access-heading", "Project Weight Drop FREE");
+        setText("profile-access-detail", "Sprawdzanie pakietu DEV…");
+        setText("profile-memory-status", "Sprawdzanie dostępu DEV…");
+        document.getElementById("profile-memory-list")?.replaceChildren();
+        const progressNotice = document.getElementById("progress-action-notice");
+        if (progressNotice) { progressNotice.hidden = true; progressNotice.textContent = ""; }
         [
             "home-calories-bar", "home-protein-bar", "home-fat-bar", "home-carbs-bar",
             "meals-today-calorie-bar", "meals-today-protein-bar", "meals-today-fat-bar", "meals-today-carbs-bar",
@@ -1429,6 +1454,8 @@
         const needsSetup = !profileError && !planError && (!profile?.onboarding_completed || !plan);
         profileSetupPanel.hidden = !needsSetup;
         if (!needsSetup) return false;
+        const profileHeader = document.querySelector(".profile-card");
+        if (profileHeader && profileHeader.nextElementSibling !== profileSetupPanel) profileHeader.after(profileSetupPanel);
 
         if (profileSetupForm.dataset.prefilledFor !== activeUserId) {
             setProfileSetupValue("setup-current-weight", profile?.current_weight_kg);
@@ -1637,6 +1664,132 @@
         setStatusCard("profile-status-card", profile.onboarding_completed ? "ready" : "error");
     }
 
+    function renderProfileAccess(premium, dashboard, plan) {
+        const admin = premium?.admin_granted === true;
+        const isPro = premium?.is_pro === true || admin;
+        const trialActive = premium?.coach_trial_active === true;
+        const heading = document.getElementById("profile-access-heading");
+        const detail = document.getElementById("profile-access-detail");
+        if (heading) {
+            heading.textContent = premiumSnapshotUnavailable
+                ? "Status pakietu niedostępny"
+                : trialActive
+                    ? "Pełny dostęp próbny"
+                    : isPro
+                        ? admin ? "Dostęp administratora" : "Project Weight Drop PRO"
+                        : "Project Weight Drop FREE";
+        }
+        if (detail) {
+            detail.textContent = premiumSnapshotUnavailable
+                ? "Nie udało się sprawdzić dostępu w DEV. Odśwież dane."
+                : trialActive
+                    ? "Wszystkie funkcje są tymczasowo odblokowane."
+                    : isPro
+                        ? "Pełny pakiet PRO jest aktywny na tym koncie DEV."
+                        : "Woda, kroki, Progress i Czat z Przemalą są dostępne bez PRO. Zakup PRO odbywa się w Google Play na Androidzie.";
+        }
+        const adminBadge = document.getElementById("profile-admin-badge");
+        if (adminBadge) adminBadge.hidden = !admin;
+        const accessLink = document.getElementById("profile-access-link");
+        if (accessLink) accessLink.hidden = isPro || premiumSnapshotUnavailable;
+
+        setText("profile-plan-calories", plan ? formatNumber(plan.calories_target) : "—");
+        setText("profile-plan-protein", plan ? `${formatNumber(plan.protein_g)} g` : "—");
+        setText("profile-plan-fat", plan ? `${formatNumber(plan.fat_g)} g` : "—");
+        setText("profile-plan-carbs", plan ? `${formatNumber(plan.carbs_g)} g` : "—");
+        setText("profile-plan-tdee", formatNumber(plan?.estimated_tdee));
+        setText("profile-plan-rmr", formatNumber(plan?.estimated_rmr));
+        setText("profile-today-steps", formatNumber(dashboard?.steps));
+    }
+
+    function renderCoachMemories(memories, message = "") {
+        const list = document.getElementById("profile-memory-list");
+        if (!list) return;
+        list.replaceChildren();
+        setText("profile-memory-status", message || "Pamięć Coacha DEV");
+        if (!Array.isArray(memories) || memories.length === 0) {
+            const empty = document.createElement("p");
+            empty.className = "empty-history";
+            empty.textContent = message.startsWith("Pobieranie") || message.includes("Android") ||
+                message.includes("niedostęp") || message.startsWith("Nie udało")
+                ? message
+                : "Brak aktywnych pamięci. Pojedyncza obserwacja nie jest traktowana jako stała cecha.";
+            list.append(empty);
+            return;
+        }
+
+        memories.forEach((memory) => {
+            const row = document.createElement("article");
+            row.className = "profile-memory-row";
+            const copy = document.createElement("div");
+            const title = document.createElement("strong");
+            title.textContent = memory.display_text || memory.memory_key || "Obserwacja Coacha";
+            const meta = document.createElement("small");
+            const confidence = finiteNumber(memory.confidence);
+            const confidenceLabel = confidence === null ? "—" : `${Math.round(confidence * 100)}%`;
+            const statusLabel = memory.status === "confirmed" ? "Potwierdzone" : "Do potwierdzenia";
+            meta.textContent = `${statusLabel} · ${formatNumber(memory.evidence_count)} obserwacje · pewność ${confidenceLabel}`;
+            copy.append(title, meta);
+            const actions = document.createElement("div");
+            actions.className = "profile-memory-actions";
+            if (memory.status === "candidate") {
+                const confirm = document.createElement("button");
+                confirm.type = "button";
+                confirm.textContent = "Potwierdź";
+                confirm.dataset.memoryAction = "confirm";
+                confirm.dataset.memoryId = memory.id;
+                confirm.disabled = coachMemorySavingId === memory.id;
+                actions.append(confirm);
+            }
+            const reject = document.createElement("button");
+            reject.type = "button";
+            reject.textContent = "Usuń";
+            reject.dataset.memoryAction = "reject";
+            reject.dataset.memoryId = memory.id;
+            reject.disabled = coachMemorySavingId === memory.id;
+            actions.append(reject);
+            row.append(copy, actions);
+            list.append(row);
+        });
+    }
+
+    async function loadProfileCoachMemories(userId, sequence) {
+        if (!client || !userId || sequence !== dataLoadSequence || userId !== activeUserId) return;
+        renderCoachMemories([], "Pobieranie pamięci Coacha DEV…");
+        const { data, error } = await client.from("coach_memory")
+            .select("id,memory_type,memory_key,display_text,confidence,status,evidence_count,user_confirmed,first_observed_at,last_observed_at,created_at")
+            .eq("user_id", userId)
+            .neq("status", "rejected")
+            .order("status", { ascending: true })
+            .order("confidence", { ascending: false });
+        if (sequence !== dataLoadSequence || userId !== activeUserId) return;
+        if (error) {
+            currentCoachMemories = [];
+            renderCoachMemories([], `Odczyt pamięci Coacha niedostępny: ${friendlyDataError(error)}`);
+            return;
+        }
+        currentCoachMemories = Array.isArray(data) ? data : [];
+        renderCoachMemories(currentCoachMemories, "Tylko wzorce potwierdzone lub oczekujące na potwierdzenie.");
+    }
+
+    async function reviewProfileCoachMemory(memoryId, action) {
+        if (!client || !activeUserId || !memoryId || !["confirm", "reject"].includes(action)) return;
+        coachMemorySavingId = memoryId;
+        renderCoachMemories(currentCoachMemories, "Zapisywanie zmian w DEV…");
+        const { error } = await client.rpc("review_coach_memory", {
+            p_memory_id: memoryId,
+            p_action: action
+        });
+        if (error) {
+            coachMemorySavingId = null;
+            renderCoachMemories(currentCoachMemories, `Nie udało się zmienić pamięci: ${friendlyDataError(error)}`);
+            return;
+        }
+        coachMemorySavingId = null;
+        const { data: userResult } = await client.auth.getUser();
+        if (userResult?.user) await loadAccountData(userResult.user);
+    }
+
     function historyRow(title, subtitle, value) {
         const row = document.createElement("div");
         row.className = "history-row";
@@ -1702,6 +1855,7 @@
     }
 
     function renderWeeklyProgress(report) {
+        currentWeeklyProgressReport = report || null;
         setText("progress-data-days", `${formatNumber(report?.data_days)} / 7`);
         setText("progress-meals", formatNumber(report?.meals_logged));
         setText("progress-calories", formatNumber(report?.average_calories));
@@ -1711,11 +1865,184 @@
         setText("progress-weight-change", change === null
             ? "—"
             : `${change > 0 ? "+" : ""}${weightFormatter.format(change)}`);
+        const weightStart = finiteNumber(report?.weight_start_kg);
+        const weightEnd = finiteNumber(report?.weight_end_kg);
+        setText("progress-report-weight", weightStart === null || weightEnd === null
+            ? "Brak danych"
+            : `${formatWeight(weightStart)} → ${formatWeight(weightEnd)} kg`);
+        setText("progress-report-weight-meta", `${formatNumber(report?.weight_days)} dni z pomiarem${change === null ? "" : ` · zmiana ${change > 0 ? "+" : ""}${formatWeight(change)} kg`}`);
+        setText("progress-report-meals", `${formatNumber(report?.meals_logged)} zapisanych posiłków`);
+        setText("progress-report-meals-meta", `Dziennik: ${formatNumber(report?.nutrition_days)}/7 dni · zamknięte: ${formatNumber(report?.complete_nutrition_days)}/7`);
+        setText("progress-report-hydration", report?.average_water_ml == null ? "—" : `${formatNumber(report.average_water_ml)} ml`);
+        setText("progress-report-hydration-meta", `Średnia z ${formatNumber(report?.hydration_days)} dni`);
+        setText("progress-report-steps", report?.average_steps == null ? "—" : formatNumber(report.average_steps));
+        setText("progress-report-steps-meta", `Średnia z ${formatNumber(report?.steps_days)} dni`);
+        setText("progress-report-wellbeing", report?.average_wellbeing_score == null ? "—" : `${formatMacro(report.average_wellbeing_score)} / 5`);
+        setText("progress-report-wellbeing-meta", `Średnia z ${formatNumber(report?.wellbeing_days)} dni`);
+        const adherenceText = (average, target, percent, unit) =>
+            average == null || target == null
+                ? "—"
+                : `${formatNumber(average)} / ${formatNumber(target)} ${unit} · ${percent == null ? "—" : `${formatNumber(percent)}%`}`;
+        setText("progress-report-calories-adherence", adherenceText(report?.average_calories, report?.average_calories_target, report?.calorie_adherence_percent, "kcal"));
+        setText("progress-report-protein-adherence", adherenceText(report?.average_protein_g, report?.average_protein_target_g, report?.protein_adherence_percent, "g"));
+        setText("progress-report-fat-adherence", adherenceText(report?.average_fat_g, report?.average_fat_target_g, report?.fat_adherence_percent, "g"));
+        setText("progress-report-carbs-adherence", adherenceText(report?.average_carbs_g, report?.average_carbs_target_g, report?.carbs_adherence_percent, "g"));
         document.getElementById("progress-summary")?.setAttribute("aria-busy", "false");
         const period = report?.period_start && report?.period_end
             ? `${formatDate(report.period_start)} – ${formatDate(report.period_end)}`
             : "ostatnie 7 dni";
         setText("progress-message", `Raport DEV: ${period}. Wartości wylicza backend aplikacji.`);
+    }
+
+    async function shareWeeklyProgressReport() {
+        const report = currentWeeklyProgressReport;
+        if (!report) {
+            setText("progress-message", "Raport tygodniowy nie jest jeszcze dostępny.");
+            return;
+        }
+        const lines = [
+            "Project Weight Drop · raport tygodniowy",
+            `${formatDate(report.period_start)} – ${formatDate(report.period_end)}`,
+            `Dni z danymi: ${formatNumber(report.data_days)}/7`,
+            `Waga: ${report.weight_start_kg == null ? "—" : `${formatWeight(report.weight_start_kg)} kg`} → ${report.weight_end_kg == null ? "—" : `${formatWeight(report.weight_end_kg)} kg`}`,
+            `Posiłki: ${formatNumber(report.meals_logged)} · dziennik ${formatNumber(report.nutrition_days)}/7 dni`,
+            `Kalorie: ${formatNumber(report.average_calories)} / ${formatNumber(report.average_calories_target)} kcal`,
+            `Białko: ${formatNumber(report.average_protein_g)} / ${formatNumber(report.average_protein_target_g)} g`,
+            `Tłuszcz: ${formatNumber(report.average_fat_g)} / ${formatNumber(report.average_fat_target_g)} g`,
+            `Węglowodany: ${formatNumber(report.average_carbs_g)} / ${formatNumber(report.average_carbs_target_g)} g`,
+            `Woda: ${report.average_water_ml == null ? "—" : `${formatNumber(report.average_water_ml)} ml`}`,
+            `Kroki: ${report.average_steps == null ? "—" : formatNumber(report.average_steps)}`,
+            `Samopoczucie: ${report.average_wellbeing_score == null ? "—" : `${formatMacro(report.average_wellbeing_score)}/5`}`
+        ];
+        const text = lines.join("\n");
+        try {
+            if (typeof navigator.share === "function") await navigator.share({ title: "Raport tygodniowy · Project Weight Drop", text });
+            else if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text);
+            else throw new Error("share_unavailable");
+            setText("progress-message", "Raport został udostępniony.");
+        } catch (error) {
+            if (error?.name === "AbortError") return;
+            setText("progress-message", "Nie udało się udostępnić raportu na tym urządzeniu.");
+        }
+    }
+
+    function renderBodyMeasurementHistory(entry, error) {
+        const list = document.getElementById("measurement-history-list");
+        if (!list) return;
+        list.replaceChildren();
+        if (error) {
+            setText("measurement-history-count", "—");
+            const unavailable = document.createElement("p");
+            unavailable.className = "empty-history";
+            unavailable.textContent = friendlyDataError(error);
+            list.append(unavailable);
+            return;
+        }
+        const history = Array.isArray(entry) ? entry : entry ? [entry] : [];
+        const latest = history[0] || null;
+        const oldest = history[history.length - 1] || null;
+        const measurements = [
+            ["Talia", "waist_cm"], ["Biodra", "hips_cm"], ["Klatka", "chest_cm"],
+            ["Ramię", "arm_cm"], ["Udo", "thigh_cm"]
+        ];
+        const fields = latest ? measurements.filter(([, key]) => finiteNumber(latest[key]) !== null) : [];
+        setText("measurement-history-count", formatNumber(history.length));
+        if (!latest || !fields.length) {
+            const empty = document.createElement("p");
+            empty.className = "empty-history";
+            empty.textContent = "Brak zapisanych obwodów na koncie DEV.";
+            list.append(empty);
+            return;
+        }
+        const latestHeading = document.createElement("div");
+        latestHeading.className = "measurement-history-date";
+        latestHeading.textContent = `Ostatni pomiar · ${formatDate(latest.measurement_date)}`;
+        list.append(latestHeading);
+        fields.forEach(([label, key]) => {
+            const current = finiteNumber(latest[key]);
+            const baseline = finiteNumber(oldest?.[key]);
+            const change = baseline === null ? null : current - baseline;
+            const changeText = change === null || Math.abs(change) < 0.05
+                ? ""
+                : ` (${change > 0 ? "+" : ""}${formatWeight(change)} cm)`;
+            list.append(historyRow(label, "", `${formatWeight(current)} cm${changeText}`));
+        });
+        if (history.length > 1) {
+            const historyHeading = document.createElement("div");
+            historyHeading.className = "measurement-history-date";
+            historyHeading.textContent = "Historia pomiarów";
+            list.append(historyHeading);
+            history.forEach((day) => {
+                const values = measurements
+                    .filter(([, key]) => finiteNumber(day[key]) !== null)
+                    .map(([label, key]) => `${label}: ${formatWeight(day[key])} cm`);
+                if (!values.length) return;
+                const row = document.createElement("div");
+                row.className = "measurement-history-entry";
+                const date = document.createElement("strong");
+                date.textContent = formatDate(day.measurement_date);
+                const details = document.createElement("small");
+                details.textContent = values.join(" · ");
+                row.append(date, details);
+                list.append(row);
+            });
+        }
+    }
+
+    function renderProgressHub(dashboard, weekly, steps, measurement, event, premium) {
+        const today = localToday();
+        const todaySteps = (Array.isArray(steps) ? steps : []).find((entry) => entry.summary_date === today)?.steps ?? dashboard?.steps;
+        const calories = finiteNumber(dashboard?.calories_consumed);
+        const calorieTarget = finiteNumber(dashboard?.calories_target);
+        const waist = finiteNumber(measurement?.waist_cm);
+        const dataDays = finiteNumber(weekly?.data_days);
+        setText("progress-hub-weight", dashboard?.current_weight_kg == null ? "Brak pomiaru" : `${formatWeight(dashboard.current_weight_kg)} kg`);
+        setText("progress-hub-water", `${formatNumber(dashboard?.water_ml)} ml dzisiaj`);
+        setText("progress-hub-steps", `${formatNumber(todaySteps)} dzisiaj`);
+        setText("progress-hub-body", waist === null ? "Brak pomiaru" : `Talia ${formatWeight(waist)} cm`);
+        setText("progress-hub-macros", `${formatNumber(calories)} / ${formatNumber(calorieTarget)} kcal`);
+        setText("progress-hub-report", dataDays === null ? "Raport niedostępny" : `${formatNumber(dataDays)} / 7 dni danych`);
+        setText("progress-hub-event", event
+            ? `${event.event_name || "Cel z datą"} · ${event.event_date || ""}`.trim()
+            : "Brak wydarzenia");
+        const weeklyUpdate = document.getElementById("progress-weekly-update");
+        if (weeklyUpdate) weeklyUpdate.hidden = premium?.is_pro !== true;
+
+        setText("progress-macro-calories", `${formatNumber(calories)} / ${formatNumber(calorieTarget)} kcal`);
+        setText("progress-macro-protein", `${formatMacro(dashboard?.protein_consumed)} / ${formatMacro(dashboard?.protein_target)} g`);
+        setText("progress-macro-fat", `${formatMacro(dashboard?.fat_consumed)} / ${formatMacro(dashboard?.fat_target)} g`);
+        setText("progress-macro-carbs", `${formatMacro(dashboard?.carbs_consumed)} / ${formatMacro(dashboard?.carbs_target)} g`);
+    }
+
+    function openProgressDestination(destination) {
+        const notice = document.getElementById("progress-action-notice");
+        if (notice) { notice.hidden = true; notice.textContent = ""; }
+        if (destination === "weight") {
+            navigateTo("home");
+            openWeightEntry();
+            return;
+        }
+        if (["water", "steps", "measurements", "event"].includes(destination)) {
+            navigateTo("home");
+            setHomeTool(destination);
+            window.setTimeout(() => document.getElementById(`home-${destination}-panel`)?.scrollIntoView({ behavior: "smooth", block: "center" }), 40);
+            return;
+        }
+        if (destination === "macros") {
+            document.getElementById("progress-macros-panel")?.scrollIntoView({ behavior: "smooth", block: "center" });
+            return;
+        }
+        if (destination === "report") {
+            document.getElementById("progress-report-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        }
+        if (notice) {
+            notice.textContent = destination === "weekly-update"
+                ? "Aktualizacja tygodnia jest dostępna w aplikacji Android. Dane i obliczenia pozostają bez zmian."
+                : "Natywny Check In z aplikacji Android nie jest jeszcze dostępny w przeglądarce.";
+            notice.hidden = false;
+            notice.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
     }
 
     function setMealsView(view) {
@@ -2998,7 +3325,7 @@
             "timezone", "goal_type", "onboarding_completed", "sex_for_calculations", "age_years",
             "height_cm", "main_challenge", "energy_adjustment_percent"
         ].join(",");
-        const planColumns = "calories_target,protein_g,fat_g,carbs_g,diet_type,status,version";
+        const planColumns = "calories_target,protein_g,fat_g,carbs_g,estimated_tdee,estimated_rmr,diet_type,status,version";
 
         const [
             dashboardResult, profileResult, planResult, weeklyResult, weightResult, stepsResult,
@@ -3013,14 +3340,14 @@
             client.from("weight_logs").select("id,weight_kg,measured_at,source").eq("user_id", user.id)
                 .order("measured_at", { ascending: false }).limit(12),
             client.from("daily_summaries").select("summary_date,steps,steps_recorded_at,water_ml,wellbeing_score")
-                .eq("user_id", user.id).order("summary_date", { ascending: false }).limit(7),
+                .eq("user_id", user.id).order("summary_date", { ascending: false }).limit(30),
             client.rpc("get_today_meals"),
             client.rpc("get_current_meal_plan"),
             client.from("user_privacy_consents").select("explicit_health_data_consent,consented_at")
                 .eq("user_id", user.id).eq("policy_version", CURRENT_PRIVACY_POLICY_VERSION)
                 .eq("explicit_health_data_consent", true).limit(1).maybeSingle(),
             client.from("body_measurements").select("measurement_date,waist_cm,hips_cm,chest_cm,arm_cm,thigh_cm,measured_at")
-                .eq("user_id", user.id).order("measurement_date", { ascending: false }).limit(1).maybeSingle(),
+                .eq("user_id", user.id).order("measurement_date", { ascending: false }).limit(30),
             client.from("user_event_goals").select("event_name,event_date,updated_at")
                 .eq("user_id", user.id).limit(1).maybeSingle(),
             client.from("safety_profiles").select("pregnant,breastfeeding,eating_disorder_risk,uses_hypoglycemia_medication,uses_sglt2_inhibitor,confirmed_at")
@@ -3031,6 +3358,13 @@
         ]);
 
         if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
+
+        const bodyMeasurements = bodyResult.error
+            ? []
+            : Array.isArray(bodyResult.data)
+                ? bodyResult.data
+                : bodyResult.data ? [bodyResult.data] : [];
+        const latestBodyMeasurement = bodyMeasurements[0] || null;
 
         currentNutritionPlan = planResult.error ? null : planResult.data;
         currentPremiumSnapshot = premiumResult.error ? null : premiumResult.data;
@@ -3091,8 +3425,30 @@
         }
 
         renderHealthConsent(consentResult.error ? null : consentResult.data, consentResult.error);
-        renderBodyMeasurement(bodyResult.error ? null : bodyResult.data, bodyResult.error);
+        renderBodyMeasurement(latestBodyMeasurement, bodyResult.error);
         renderEventGoal(eventResult.error ? null : eventResult.data, profileResult.error ? null : profileResult.data, eventResult.error);
+        renderBodyMeasurementHistory(bodyMeasurements, bodyResult.error);
+        renderProgressHub(
+            dashboardResult.error ? null : dashboardResult.data,
+            weeklyResult.error ? null : weeklyResult.data,
+            stepsResult.error ? [] : stepsResult.data,
+            latestBodyMeasurement,
+            eventResult.error ? null : eventResult.data,
+            currentPremiumSnapshot
+        );
+        renderProfileAccess(
+            currentPremiumSnapshot,
+            dashboardResult.error ? null : dashboardResult.data,
+            planResult.error ? null : planResult.data
+        );
+        if (currentPremiumSnapshot?.coach_memory_view_allowed === true) {
+            void loadProfileCoachMemories(user.id, sequence);
+        } else {
+            const memoryMessage = premiumSnapshotUnavailable
+                ? "Nie udało się sprawdzić dostępu do pamięci DEV."
+                : "Potwierdzanie pamięci Coacha jest dostępne w pakiecie PRO w aplikacji Android.";
+            renderCoachMemories([], memoryMessage);
+        }
         renderSafetyProfile(safetyResult.error ? null : safetyResult.data, safetyResult.error);
         renderMealPreferences(
             preferencesResult.error ? null : preferencesResult.data,
@@ -3118,7 +3474,6 @@
         document.getElementById("sidebar-user-name").textContent = name;
         document.getElementById("sidebar-user-email").textContent = email;
         document.getElementById("sidebar-avatar").textContent = letter;
-        document.getElementById("profile-avatar").textContent = letter;
         document.getElementById("profile-email").textContent = email;
     }
 
@@ -3437,6 +3792,15 @@
             setHomeTool(tool);
             document.getElementById(`home-${tool}-panel`)?.scrollIntoView({ behavior: "smooth", block: "nearest" });
         });
+    });
+    document.querySelectorAll("[data-progress-open]").forEach((button) => {
+        button.addEventListener("click", () => openProgressDestination(button.dataset.progressOpen));
+    });
+    document.getElementById("progress-share-report")?.addEventListener("click", () => void shareWeeklyProgressReport());
+    document.getElementById("profile-memory-list")?.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-memory-action]");
+        if (!button || button.disabled) return;
+        void reviewProfileCoachMemory(button.dataset.memoryId, button.dataset.memoryAction);
     });
     homeRefreshButton?.addEventListener("click", () => void refreshAccountData());
     openWeightEntryButton?.addEventListener("click", openWeightEntry);

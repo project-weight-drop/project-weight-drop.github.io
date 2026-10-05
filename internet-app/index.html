@@ -10,10 +10,10 @@
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
-    <link rel="stylesheet" href="./styles.css?v=20261005-fridge-reference">
+    <link rel="stylesheet" href="./styles.css?v=20261005-progress-profile-parity">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
-    <script src="./config.js?v=20261005-fridge-reference" defer></script>
-    <script src="./app.js?v=20261005-fridge-reference" defer></script>
+    <script src="./config.js?v=20261005-progress-profile-parity" defer></script>
+    <script src="./app.js?v=20261005-progress-profile-parity" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -615,28 +615,69 @@
 
             <section class="route-page" data-page="progress" aria-labelledby="progress-heading">
                 <div class="progress-hero">
-                    <div><p class="eyebrow">OSTATNIE 7 DNI</p><h2 id="progress-heading">Postępy</h2><p id="progress-message" role="status" aria-live="polite">Pobieranie raportu DEV…</p></div>
-                    <div class="phase-chip"><span>TYLKO ODCZYT</span> Te same dane co w Androidzie</div>
+                    <div class="progress-title"><span class="progress-title-icon"><svg><use href="#icon-progress"></use></svg></span><span><p class="eyebrow">WYNIKI I NAWYKI</p><h2 id="progress-heading">Progress</h2><p>Wyniki i nawyki w jednym miejscu</p></span></div>
+                    <button class="progress-checkin-button" type="button" data-progress-open="check-in"><svg><use href="#icon-check"></use></svg>Check In</button>
                 </div>
-                <div class="progress-summary-grid" id="progress-summary" aria-busy="true">
-                    <article><p>Dni z danymi</p><h3 id="progress-data-days">—</h3><span>z ostatnich 7 dni</span></article>
-                    <article><p>Zapisane posiłki</p><h3 id="progress-meals">—</h3><span>łącznie w tygodniu</span></article>
-                    <article><p>Średnie kalorie</p><h3 id="progress-calories">—</h3><span>kcal dziennie</span></article>
-                    <article><p>Średnie kroki</p><h3 id="progress-steps">—</h3><span>z dni z pomiarem</span></article>
-                    <article><p>Średnia woda</p><h3 id="progress-water">—</h3><span>ml dziennie</span></article>
-                    <article><p>Zmiana wagi</p><h3 id="progress-weight-change">—</h3><span>kg w okresie raportu</span></article>
+                <p id="progress-action-notice" class="progress-action-notice" role="status" aria-live="polite" hidden></p>
+                <div class="progress-hub-grid" aria-label="Podsumowanie postępów">
+                    <button type="button" class="progress-hub-tile" data-progress-open="weight"><span class="progress-hub-icon orange"><svg><use href="#icon-weight"></use></svg></span><span><b>Waga</b><small id="progress-hub-weight">—</small></span><i>›</i></button>
+                    <button type="button" class="progress-hub-tile" data-progress-open="water"><span class="progress-hub-icon blue"><svg><use href="#icon-water"></use></svg></span><span><b>Nawodnienie</b><small id="progress-hub-water">—</small></span><i>›</i></button>
+                    <button type="button" class="progress-hub-tile" data-progress-open="steps"><span class="progress-hub-icon orange"><svg><use href="#icon-steps"></use></svg></span><span><b>Kroki</b><small id="progress-hub-steps">—</small></span><i>›</i></button>
+                    <button type="button" class="progress-hub-tile" data-progress-open="measurements"><span class="progress-hub-icon green"><svg><use href="#icon-measure"></use></svg></span><span><b>Obwody ciała</b><small id="progress-hub-body">—</small></span><i>›</i></button>
+                    <button type="button" class="progress-hub-tile" data-progress-open="macros"><span class="progress-hub-icon green"><svg><use href="#icon-flame"></use></svg></span><span><b>Kalorie i makro</b><small id="progress-hub-macros">—</small></span><i>›</i></button>
+                    <button type="button" class="progress-hub-tile" data-progress-open="report"><span class="progress-hub-icon green"><svg><use href="#icon-progress"></use></svg></span><span><b>Raport tygodniowy</b><small id="progress-hub-report">—</small></span><i>›</i></button>
+                    <button type="button" class="progress-hub-tile" data-progress-open="event"><span class="progress-hub-icon amber"><svg><use href="#icon-event"></use></svg></span><span><b>Cel z datą</b><small id="progress-hub-event">—</small></span><i>›</i></button>
+                    <button id="progress-weekly-update" type="button" class="progress-hub-tile" data-progress-open="weekly-update" hidden><span class="progress-hub-icon orange"><svg><use href="#icon-refresh"></use></svg></span><span><b>Aktualizacja tygodnia</b><small>Otwórz w aplikacji Android</small></span><i>›</i></button>
                 </div>
+                <section class="progress-detail-panel" id="progress-report-panel" aria-labelledby="progress-report-heading">
+                    <div class="history-heading"><div><p class="eyebrow">PODSUMOWANIE</p><h3 id="progress-report-heading">Raport tygodniowy</h3></div><button id="progress-share-report" class="progress-share-button" type="button" aria-label="Udostępnij raport">Udostępnij</button></div>
+                    <p id="progress-message" class="progress-report-message" role="status" aria-live="polite">Pobieranie raportu DEV…</p>
+                    <div class="progress-summary-grid" id="progress-summary" aria-busy="true">
+                        <article><p>Dni z danymi</p><h3 id="progress-data-days">—</h3><span>z ostatnich 7 dni</span></article>
+                        <article><p>Zapisane posiłki</p><h3 id="progress-meals">—</h3><span>łącznie w tygodniu</span></article>
+                        <article><p>Średnie kalorie</p><h3 id="progress-calories">—</h3><span>kcal dziennie</span></article>
+                        <article><p>Średnie kroki</p><h3 id="progress-steps">—</h3><span>z dni z pomiarem</span></article>
+                        <article><p>Średnia woda</p><h3 id="progress-water">—</h3><span>ml dziennie</span></article>
+                        <article><p>Zmiana wagi</p><h3 id="progress-weight-change">—</h3><span>kg w okresie raportu</span></article>
+                    </div>
+                    <div class="progress-report-detail-grid">
+                        <article><small>Waga · dni z pomiarem</small><b id="progress-report-weight">—</b><span id="progress-report-weight-meta">—</span></article>
+                        <article><small>Posiłki i dziennik</small><b id="progress-report-meals">—</b><span id="progress-report-meals-meta">—</span></article>
+                        <article><small>Nawodnienie</small><b id="progress-report-hydration">—</b><span id="progress-report-hydration-meta">—</span></article>
+                        <article><small>Kroki</small><b id="progress-report-steps">—</b><span id="progress-report-steps-meta">—</span></article>
+                        <article><small>Samopoczucie</small><b id="progress-report-wellbeing">—</b><span id="progress-report-wellbeing-meta">—</span></article>
+                    </div>
+                    <div class="progress-adherence-list" aria-label="Średnie makro i realizacja celów">
+                        <div class="progress-adherence-heading"><b>Realizacja celów żywieniowych</b><span>średnia / cel · realizacja</span></div>
+                        <div><b>Kalorie</b><span id="progress-report-calories-adherence">—</span></div>
+                        <div><b>Białko</b><span id="progress-report-protein-adherence">—</span></div>
+                        <div><b>Tłuszcz</b><span id="progress-report-fat-adherence">—</span></div>
+                        <div><b>Węglowodany</b><span id="progress-report-carbs-adherence">—</span></div>
+                    </div>
+                </section>
                 <div class="history-grid">
                     <section class="history-panel" aria-labelledby="weight-history-heading">
                         <div class="history-heading"><div><p class="eyebrow">WAGA</p><h3 id="weight-history-heading">Ostatnie pomiary</h3></div><span id="weight-history-count">—</span></div>
                         <div class="history-list" id="weight-history-list"><p class="empty-history">Pobieranie…</p></div>
                     </section>
                     <section class="history-panel" aria-labelledby="steps-history-heading">
-                        <div class="history-heading"><div><p class="eyebrow">AKTYWNOŚĆ</p><h3 id="steps-history-heading">Ostatnie dni</h3></div><span id="steps-history-count">—</span></div>
+                        <div class="history-heading"><div><p class="eyebrow">AKTYWNOŚĆ I WODA</p><h3 id="steps-history-heading">Ostatnie 30 dni</h3></div><span id="steps-history-count">—</span></div>
                         <div class="history-list" id="steps-history-list"><p class="empty-history">Pobieranie…</p></div>
                     </section>
+                    <section class="history-panel" aria-labelledby="measurement-history-heading">
+                        <div class="history-heading"><div><p class="eyebrow">POMIARY</p><h3 id="measurement-history-heading">Obwody ciała</h3></div><span id="measurement-history-count">—</span></div>
+                        <div class="history-list" id="measurement-history-list"><p class="empty-history">Pobieranie…</p></div>
+                    </section>
                 </div>
-                <p class="feature-note">Kroki z Health Connect nie synchronizują się bezpośrednio z przeglądarką. Widoczne są wyłącznie wartości zapisane wcześniej w DEV.</p>
+                <section class="progress-detail-panel progress-macros-panel" id="progress-macros-panel" aria-labelledby="progress-macros-heading">
+                    <div class="history-heading"><div><p class="eyebrow">DZISIAJ</p><h3 id="progress-macros-heading">Kalorie i makro</h3></div><span id="progress-macro-calories">—</span></div>
+                    <div class="progress-macro-rows">
+                        <div><span>Białko</span><b id="progress-macro-protein">—</b></div>
+                        <div><span>Tłuszcz</span><b id="progress-macro-fat">—</b></div>
+                        <div><span>Węgle</span><b id="progress-macro-carbs">—</b></div>
+                    </div>
+                </section>
+                <p class="feature-note">Kroki z Health Connect i natywny Check In synchronizują się przez aplikację Android. Tutaj pokazujemy zapisane dane DEV; woda, kroki i obwody można dodać przez formularze Home.</p>
             </section>
 
             <section class="route-page" data-page="community" aria-labelledby="community-heading">
@@ -663,9 +704,37 @@
 
             <section class="route-page" data-page="profile" aria-labelledby="profile-heading">
                 <div class="profile-card">
-                    <span id="profile-avatar">U</span>
-                    <div><p class="eyebrow">KONTO DEV</p><h2 id="profile-heading">Profil</h2><p id="profile-email">—</p></div>
+                    <span id="profile-avatar"><svg><use href="#icon-profile"></use></svg></span>
+                    <div><p class="eyebrow">PROJECT WEIGHT DROP</p><h2 id="profile-heading">Profil</h2><p id="profile-email">—</p></div>
+                    <span id="profile-admin-badge" class="profile-admin-badge" hidden>ADMIN</span>
                 </div>
+                <section class="profile-access-card" aria-labelledby="profile-access-heading">
+                    <span class="profile-access-icon"><svg><use href="#icon-health"></use></svg></span>
+                    <div><p class="eyebrow">DOSTĘP</p><h3 id="profile-access-heading">Project Weight Drop FREE</h3><p id="profile-access-detail">Sprawdzanie pakietu DEV…</p></div>
+                    <a id="profile-access-link" class="profile-access-link" href="https://play.google.com/store/apps/details?id=com.projectweightdrop.app" target="_blank" rel="noopener">Zobacz PRO w Androidzie <span>↗</span></a>
+                </section>
+                <section class="profile-plan-panel" aria-labelledby="profile-current-plan-heading">
+                    <div class="profile-section-title"><span class="progress-hub-icon orange"><svg><use href="#icon-flame"></use></svg></span><h3 id="profile-current-plan-heading">Aktualny plan</h3><strong><span id="profile-plan-calories">—</span> kcal</strong></div>
+                    <div class="profile-plan-macros">
+                        <div><span>Białko</span><b id="profile-plan-protein">—</b><i class="protein"></i></div>
+                        <div><span>Tłuszcz</span><b id="profile-plan-fat">—</b><i class="fat"></i></div>
+                        <div><span>Węgle</span><b id="profile-plan-carbs">—</b><i class="carbs"></i></div>
+                    </div>
+                    <div class="profile-plan-estimates"><span>TDEE <b id="profile-plan-tdee">—</b> kcal</span><span>RMR <b id="profile-plan-rmr">—</b> kcal</span></div>
+                </section>
+                <section class="profile-steps-card"><span class="progress-hub-icon orange"><svg><use href="#icon-steps"></use></svg></span><div><b>Dzisiejsze kroki</b><small>Aktualny zapis dzisiejszego dnia</small></div><strong id="profile-today-steps">—</strong></section>
+                <section class="profile-feature-card" aria-labelledby="profile-memory-heading">
+                    <div class="profile-section-title"><span class="progress-hub-icon amber"><svg><use href="#icon-coach"></use></svg></span><div><h3 id="profile-memory-heading">Pamięć Coacha</h3><p id="profile-memory-status">Pobieranie ustawień pamięci DEV…</p></div></div>
+                    <div id="profile-memory-list" class="profile-memory-list"><p class="empty-history">Pobieranie…</p></div>
+                </section>
+                <section class="profile-feature-card profile-native-settings">
+                    <div><p class="eyebrow">USTAWIENIA URZĄDZENIA</p><h3>Przypomnienia i powiadomienia</h3><p>Harmonogram przypomnień o wodzie i wyzwaniach korzysta z powiadomień systemowych Android. W aplikacji internetowej nie włączamy ich po cichu ani bez Twojej zgody.</p></div>
+                    <span>Tylko Android</span>
+                </section>
+                <section class="profile-feature-card profile-privacy-card">
+                    <div><p class="eyebrow">INFORMACJE I PRYWATNOŚĆ</p><h3>Twoje dane są pod Twoją kontrolą</h3><p>Project Weight Drop wspiera organizację żywienia i codziennych nawyków. Nie diagnozuje ani nie leczy i nie zastępuje konsultacji ze specjalistą.</p></div>
+                    <div><a href="/privacy.html?from=internet-app" target="_blank" rel="noopener">Polityka prywatności</a><a href="/delete-account.html?from=internet-app" target="_blank" rel="noopener">Jak usunąć konto i dane</a></div>
+                </section>
                 <section id="profile-setup-panel" class="profile-setup-panel" aria-labelledby="profile-setup-heading" hidden>
                     <div class="section-heading">
                         <div><p class="eyebrow">KONFIGURACJA STARTOWA</p><h2 id="profile-setup-heading">Utwórz profil i plan</h2></div>
