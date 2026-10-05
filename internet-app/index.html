@@ -11,10 +11,10 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-profile-onboarding-progress-nav">
+    <link rel="stylesheet" href="./styles.css?v=20261005-challenge-weekly-progress">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./app.js?v=20261005-profile-onboarding-progress-nav" defer></script>
+    <script src="./app.js?v=20261005-challenge-weekly-progress" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -636,7 +636,7 @@
                     <button type="button" class="progress-hub-tile" data-progress-open="macros"><span class="progress-hub-icon green"><svg><use href="#icon-flame"></use></svg></span><span><b>Kalorie i makro</b><small id="progress-hub-macros">—</small></span><i>›</i></button>
                     <button type="button" class="progress-hub-tile" data-progress-open="report"><span class="progress-hub-icon green"><svg><use href="#icon-progress"></use></svg></span><span><b>Raport tygodniowy</b><small id="progress-hub-report">—</small></span><i>›</i></button>
                     <button type="button" class="progress-hub-tile" data-progress-open="event"><span class="progress-hub-icon amber"><svg><use href="#icon-event"></use></svg></span><span><b>Cel z datą</b><small id="progress-hub-event">—</small></span><i>›</i></button>
-                    <button id="progress-weekly-update" type="button" class="progress-hub-tile" data-progress-open="weekly-update" hidden><span class="progress-hub-icon orange"><svg><use href="#icon-refresh"></use></svg></span><span><b>Aktualizacja tygodnia</b><small>Otwórz w aplikacji Android</small></span><i>›</i></button>
+                    <button id="progress-weekly-update" type="button" class="progress-hub-tile" data-progress-open="weekly-update" hidden><span class="progress-hub-icon orange"><svg><use href="#icon-refresh"></use></svg></span><span><b>Aktualizacja tygodnia</b><small>Sprawdzanie terminu…</small></span><i>›</i></button>
                 </div>
                 <section class="progress-detail-panel" id="progress-report-panel" aria-labelledby="progress-report-heading">
                     <div class="history-heading"><div><p class="eyebrow">PODSUMOWANIE</p><h3 id="progress-report-heading">Raport tygodniowy</h3></div><button id="progress-share-report" class="progress-share-button" type="button" aria-label="Udostępnij raport">Udostępnij</button></div>
@@ -747,6 +747,7 @@
 
                 <section id="progress-detail-view" class="progress-detail-view" hidden aria-live="polite">
                     <div class="progress-detail-header"><button id="progress-detail-back" type="button" class="tool-secondary-button">‹ Mój progres</button><div><p class="eyebrow">ZAPISANE DANE DEV</p><h2 id="progress-detail-title">Postęp</h2><p id="progress-detail-summary">—</p></div></div>
+                    <div id="progress-weekly-update-content" class="weekly-update-content" hidden></div>
                     <div id="progress-detail-current" class="progress-detail-current"></div>
                     <div id="progress-detail-chart" class="progress-detail-chart" aria-label="Historia postępu"></div>
                     <section id="progress-detail-entry-card" class="progress-entry-card" hidden>

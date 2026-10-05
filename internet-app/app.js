@@ -4,7 +4,7 @@
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
     const COMMUNITY_RULES_VERSION = "2026-09-09";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-profile-onboarding-progress-nav";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-challenge-weekly-progress";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -186,7 +186,7 @@
     let currentWeeklyProgressReport = null;
     let activeProgressSection = "hub";
     let activeProgressDestination = null;
-    let currentProgressData = { profile: null, daily: [], weights: [], measurements: [], event: null };
+    let currentProgressData = { profile: null, daily: [], weights: [], measurements: [], event: null, firstPlanDate: null, latestCheckIn: null };
     let currentCommunitySnapshots = { community: null, system: null, przemala: null };
     let challengeDaySelection = new Map();
     let currentCoachMemories = [];
@@ -848,6 +848,9 @@
         const message = String(error?.message || error?.details || error?.hint || "").toLowerCase();
         if (message.includes("authentication_required") || message.includes("jwt")) return "Sesja wygasła. Zaloguj się ponownie.";
         if (message.includes("profile_not_found")) return "Najpierw dokończ profil w aplikacji Android DEV.";
+        if (message.includes("checkin_not_due")) return "Aktualizacja tygodnia nie jest jeszcze dostępna. Odśwież dane i sprawdź termin.";
+        if (message.includes("weekly_recalibration_pro_required")) return "Cotygodniowa aktualizacja wymaga aktywnego PRO.";
+        if (message.includes("health_data_consent_required")) return "Najpierw zapisz zgodę na przetwarzanie danych zdrowotnych.";
         if (message.includes("invalid_water_amount")) return "Wpisz od 50 do 2000 ml.";
         if (message.includes("invalid_steps")) return "Wpisz liczbę kroków od 0 do 200 000.";
         if (message.includes("body_measurement_required")) return "Wpisz przynajmniej jeden obwód.";
@@ -2203,11 +2206,299 @@
             : "Brak wydarzenia");
         const weeklyUpdate = document.getElementById("progress-weekly-update");
         if (weeklyUpdate) weeklyUpdate.hidden = premium?.is_pro !== true;
+        const dueDate = weeklyRecalibrationDueDate(currentProgressData.firstPlanDate, currentProgressData.latestCheckIn?.period_end);
+        const weeklyHint = weeklyUpdate?.querySelector("small");
+        if (weeklyHint) weeklyHint.textContent = dueDate
+            ? dueDate <= localToday() ? "Wymagana aktualizacja" : `Następna: ${formatDate(dueDate)}`
+            : "Sprawdź dane planu";
 
         setText("progress-macro-calories", `${formatNumber(calories)} / ${formatNumber(calorieTarget)} kcal`);
         setText("progress-macro-protein", `${formatMacro(dashboard?.protein_consumed)} / ${formatMacro(dashboard?.protein_target)} g`);
         setText("progress-macro-fat", `${formatMacro(dashboard?.fat_consumed)} / ${formatMacro(dashboard?.fat_target)} g`);
         setText("progress-macro-carbs", `${formatMacro(dashboard?.carbs_consumed)} / ${formatMacro(dashboard?.carbs_target)} g`);
+    }
+
+    function weeklyRecalibrationDueDate(firstPlanDate, lastCheckInPeriodEnd) {
+        const baseDate = String(lastCheckInPeriodEnd || firstPlanDate || "").slice(0, 10);
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(baseDate)) return null;
+        const [year, month, day] = baseDate.split("-").map(Number);
+        const date = new Date(year, month - 1, day + 7);
+        if (Number.isNaN(date.getTime())) return null;
+        return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+    }
+
+    function createWeeklyCard(title, className = "") {
+        const card = document.createElement("section");
+        card.className = `weekly-update-card${className ? ` ${className}` : ""}`;
+        if (title) {
+            const heading = document.createElement("h3");
+            heading.textContent = title;
+            card.append(heading);
+        }
+        return card;
+    }
+
+    function appendWeeklyNumberField(parent, labelText, name, value, options = {}) {
+        const label = document.createElement("label");
+        label.textContent = labelText;
+        const input = document.createElement("input");
+        input.type = "number";
+        input.name = name;
+        input.min = String(options.min);
+        input.max = String(options.max);
+        input.step = String(options.step || 1);
+        input.required = true;
+        input.value = String(value ?? options.min);
+        label.append(input);
+        parent.append(label);
+        return input;
+    }
+
+    function appendWeeklyChoiceField(parent, labelText, name, options, selectedValue, columns = 2) {
+        const group = document.createElement("div");
+        group.className = "weekly-choice-field";
+        group.setAttribute("role", "group");
+        group.setAttribute("aria-label", labelText);
+        const label = document.createElement("span");
+        label.className = "weekly-field-label";
+        label.textContent = labelText;
+        const value = document.createElement("input");
+        value.type = "hidden";
+        value.name = name;
+        value.value = String(selectedValue);
+        const choices = document.createElement("div");
+        choices.className = "weekly-choice-options";
+        choices.dataset.columns = String(columns);
+        const buttons = [];
+        options.forEach(([choiceValue, choiceLabel]) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.textContent = choiceLabel;
+            button.classList.toggle("active", String(choiceValue) === String(selectedValue));
+            button.setAttribute("aria-pressed", String(String(choiceValue) === String(selectedValue)));
+            button.addEventListener("click", () => {
+                value.value = String(choiceValue);
+                buttons.forEach((item) => {
+                    const active = item === button;
+                    item.classList.toggle("active", active);
+                    item.setAttribute("aria-pressed", String(active));
+                });
+                group.dispatchEvent(new CustomEvent("weekly-choice-change", { bubbles: true, detail: { name, value: String(choiceValue) } }));
+            });
+            buttons.push(button);
+            choices.append(button);
+        });
+        group.append(label, value, choices);
+        parent.append(group);
+        return { group, value, buttons };
+    }
+
+    function appendWeeklyScore(parent, labelText, name, initialValue = 5) {
+        const row = document.createElement("label");
+        row.className = "weekly-range-field";
+        const title = document.createElement("span");
+        title.textContent = labelText;
+        const input = document.createElement("input");
+        input.type = "range";
+        input.name = name;
+        input.min = "1";
+        input.max = "10";
+        input.step = "1";
+        input.value = String(initialValue);
+        const output = document.createElement("output");
+        output.value = `${initialValue} / 10`;
+        input.addEventListener("input", () => { output.value = `${input.value} / 10`; });
+        row.append(title, output, input);
+        parent.append(row);
+    }
+
+    function renderWeeklyUpdateContent() {
+        const content = document.getElementById("progress-weekly-update-content");
+        if (!content) return;
+        content.replaceChildren();
+        const profile = currentProgressData.profile;
+        const plan = currentNutritionPlan;
+        const premium = currentPremiumSnapshot;
+        const nextDueDate = weeklyRecalibrationDueDate(currentProgressData.firstPlanDate, currentProgressData.latestCheckIn?.period_end);
+        const due = Boolean(nextDueDate && nextDueDate <= localToday());
+
+        if (premium?.is_pro !== true) {
+            const card = createWeeklyCard("Cotygodniowa aktualizacja planu", "weekly-update-alert");
+            const message = document.createElement("p");
+            message.textContent = "Ta funkcja jest dostępna przez aktywny okres PRO.";
+            card.append(message);
+            content.append(card);
+            appendWeeklyStatus(content);
+            return;
+        }
+        if (!profile || !plan || !nextDueDate) {
+            const card = createWeeklyCard("Nie udało się wczytać danych planu", "weekly-update-alert");
+            const message = document.createElement("p");
+            message.textContent = "Odśwież aplikację internetową. Nie zmieniamy planu, jeśli brakuje danych startowych.";
+            card.append(message);
+            content.append(card);
+            appendWeeklyStatus(content);
+            return;
+        }
+
+        const targetCard = createWeeklyCard("Aktualny cel");
+        const targets = document.createElement("div");
+        targets.className = "weekly-update-current";
+        [
+            ["Kalorie", `${formatNumber(plan.calories_target)} kcal`],
+            ["Białko", `${formatNumber(plan.protein_g)} g`],
+            ["Tłuszcz", `${formatNumber(plan.fat_g)} g`],
+            ["Węglowodany", `${formatNumber(plan.carbs_g)} g`]
+        ].forEach(([label, value]) => {
+            const item = document.createElement("div");
+            const caption = document.createElement("small");
+            const amount = document.createElement("strong");
+            caption.textContent = label;
+            amount.textContent = value;
+            item.append(caption, amount);
+            targets.append(item);
+        });
+        targetCard.append(targets);
+
+        if (!due) {
+            const currentCard = createWeeklyCard("Plan na ten tydzień jest aktualny", "weekly-update-alert");
+            const nextDate = document.createElement("p");
+            nextDate.textContent = `Następna aktualizacja: ${formatDate(nextDueDate)}.`;
+            const retained = document.createElement("p");
+            retained.textContent = "Wszystkie wcześniejsze zapisy i historia progresu pozostają zachowane.";
+            currentCard.append(nextDate, retained);
+            content.append(currentCard, targetCard);
+            appendWeeklyStatus(content);
+            return;
+        }
+
+        const notice = createWeeklyCard("Czas zaktualizować plan", "weekly-update-alert");
+        const noticeText = document.createElement("p");
+        noticeText.textContent = "Po zatwierdzeniu nowy cel będzie używany w Posiłkach, Coachu i Lodówce. Wiek, wzrost, płeć i cała dotychczasowa historia pozostają bez zmian.";
+        notice.append(noticeText);
+
+        const form = document.createElement("form");
+        form.className = "weekly-update-form";
+        const dataCard = createWeeklyCard("Aktualne dane");
+        const dataFields = document.createElement("div");
+        dataFields.className = "weekly-update-fields";
+        appendWeeklyNumberField(dataFields, "Aktualna masa (kg)", "current_weight_kg", profile.current_weight_kg, { min: 35, max: 350, step: 0.1 });
+        appendWeeklyNumberField(dataFields, "Średnie kroki dziennie", "average_steps", profile.average_steps ?? 0, { min: 0, max: 100000 });
+        dataCard.append(dataFields);
+
+        const activityCard = createWeeklyCard("Aktywność na nowy tydzień");
+        appendWeeklyChoiceField(activityCard, "Poziom aktywności", "activity_level", [
+            ["very_low", "Bardzo niska"], ["low", "Niska"], ["light", "Lekka"],
+            ["moderate", "Średnia"], ["high", "Wysoka"], ["very_high", "Bardzo wysoka"]
+        ], profile.activity_level || "moderate", 3);
+        const trainingFields = document.createElement("div");
+        trainingFields.className = "weekly-update-fields";
+        appendWeeklyNumberField(trainingFields, "Planowane treningi tygodniowo", "strength_training_days", profile.strength_training_days ?? 3, { min: 0, max: 7 });
+        appendWeeklyNumberField(trainingFields, "Treningi wykonane w ostatnich 7 dniach", "training_completed", profile.strength_training_days ?? 3, { min: 0, max: 7 });
+        activityCard.append(trainingFields);
+        appendWeeklyChoiceField(activityCard, "Liczba posiłków dziennie", "meals_per_day", [
+            ["2", "2 posiłki"], ["3", "3 posiłki"], ["4", "4 posiłki"], ["5", "5 posiłków"]
+        ], profile.meals_per_day ?? 3, 4);
+
+        const weekCard = createWeeklyCard("Jak minął tydzień?");
+        appendWeeklyScore(weekCard, "Głód", "hunger_score");
+        appendWeeklyScore(weekCard, "Energia", "energy_score");
+        appendWeeklyScore(weekCard, "Sen", "sleep_score");
+
+        const goalCard = createWeeklyCard("Cel energetyczny");
+        const goalOptions = [["reduction", "Redukcja"], ["maintenance", "Utrzymanie"], ["gain", "Budowanie"]];
+        const goalChoice = appendWeeklyChoiceField(goalCard, "Wybierz cel", "goal_type", goalOptions, profile.goal_type || "reduction", 3);
+        const adjustmentOptions = [["10", "10%"], ["15", "15%"], ["20", "20%"]];
+        const initialAdjustment = profile.goal_type === "maintenance" ? "0" : String([10, 15, 20].includes(Number(profile.energy_adjustment_percent)) ? Number(profile.energy_adjustment_percent) : 15);
+        const adjustmentChoice = appendWeeklyChoiceField(goalCard, "Korekta energii", "energy_adjustment_percent", adjustmentOptions, initialAdjustment === "0" ? "15" : initialAdjustment, 3);
+        adjustmentChoice.group.hidden = goalChoice.value.value === "maintenance";
+        goalChoice.group.addEventListener("weekly-choice-change", (event) => {
+            adjustmentChoice.group.hidden = event.detail.value === "maintenance";
+        });
+        const commentLabel = document.createElement("label");
+        commentLabel.textContent = "Krótka notatka (opcjonalnie)";
+        const comment = document.createElement("textarea");
+        comment.name = "user_comment";
+        comment.maxLength = 500;
+        comment.rows = 3;
+        comment.placeholder = "Jak oceniasz swój tydzień?";
+        commentLabel.append(comment);
+        goalCard.append(commentLabel);
+
+        const submit = document.createElement("button");
+        submit.type = "submit";
+        submit.className = "tool-primary-button weekly-update-submit";
+        submit.textContent = "ZATWIERDŹ PLAN NA NOWY TYDZIEŃ";
+        form.append(dataCard, activityCard, weekCard, goalCard, targetCard, submit);
+        form.addEventListener("submit", (event) => void submitWeeklyUpdate(event));
+        content.append(notice, form);
+        appendWeeklyStatus(content);
+    }
+
+    function appendWeeklyStatus(parent) {
+        const status = document.createElement("p");
+        status.id = "weekly-update-submit-status";
+        status.className = "weekly-update-status";
+        status.setAttribute("role", "status");
+        status.setAttribute("aria-live", "polite");
+        parent.append(status);
+    }
+
+    async function submitWeeklyUpdate(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const values = new FormData(form);
+        const button = form.querySelector('[type="submit"]');
+        if (!requireHealthWrite("weekly-update-submit-status")) return;
+        const number = (name) => Number(String(values.get(name) || "").replace(",", "."));
+        const weight = number("current_weight_kg");
+        const steps = number("average_steps");
+        const plannedTraining = number("strength_training_days");
+        const completedTraining = number("training_completed");
+        const meals = number("meals_per_day");
+        const hunger = number("hunger_score");
+        const energy = number("energy_score");
+        const sleep = number("sleep_score");
+        const goal = String(values.get("goal_type") || "");
+        const adjustment = goal === "maintenance" ? 0 : number("energy_adjustment_percent");
+        const activity = String(values.get("activity_level") || "");
+        if (!Number.isFinite(weight) || weight < 35 || weight > 350) return setToolStatus("weekly-update-submit-status", "Wpisz aktualną wagę od 35 do 350 kg.", "error");
+        if (!Number.isInteger(steps) || steps < 0 || steps > 100000) return setToolStatus("weekly-update-submit-status", "Średnia kroków musi mieścić się w zakresie 0–100 000.", "error");
+        if (!Number.isInteger(plannedTraining) || plannedTraining < 0 || plannedTraining > 7 || !Number.isInteger(completedTraining) || completedTraining < 0 || completedTraining > 7) return setToolStatus("weekly-update-submit-status", "Liczba treningów musi mieścić się w zakresie 0–7.", "error");
+        if (!Number.isInteger(meals) || meals < 2 || meals > 5) return setToolStatus("weekly-update-submit-status", "Wybierz od 2 do 5 posiłków dziennie.", "error");
+        if (![hunger, energy, sleep].every((value) => Number.isInteger(value) && value >= 1 && value <= 10)) return setToolStatus("weekly-update-submit-status", "Oceny głodu, energii i snu muszą mieścić się w zakresie 1–10.", "error");
+        if (!["very_low", "low", "light", "moderate", "high", "very_high"].includes(activity) || !["reduction", "maintenance", "gain"].includes(goal)) return setToolStatus("weekly-update-submit-status", "Sprawdź wybrany poziom aktywności i cel energetyczny.", "error");
+        if (goal !== "maintenance" && ![10, 15, 20].includes(adjustment)) return setToolStatus("weekly-update-submit-status", "Wybierz korektę energii 10%, 15% lub 20%.", "error");
+
+        if (button) { button.disabled = true; button.textContent = "Zapisywanie…"; }
+        setToolStatus("weekly-update-submit-status", "Zapisywanie Check In i aktualizacja planu w DEV…");
+        const { data, error } = await client.rpc("submit_weekly_pro_recalibration", {
+            p_hunger_score: hunger,
+            p_energy_score: energy,
+            p_sleep_score: sleep,
+            p_training_completed: completedTraining,
+            p_user_comment: String(values.get("user_comment") || "").trim() || null,
+            p_goal_type: goal,
+            p_energy_adjustment_percent: adjustment,
+            p_current_weight_kg: weight,
+            p_activity_level: activity,
+            p_meals_per_day: meals,
+            p_strength_training_days: plannedTraining,
+            p_average_steps: steps
+        });
+        if (error) {
+            if (button) { button.disabled = false; button.textContent = "ZATWIERDŹ PLAN NA NOWY TYDZIEŃ"; }
+            setToolStatus("weekly-update-submit-status", healthWriteError(error, "Nie udało się zapisać aktualizacji tygodnia."), "error");
+            return;
+        }
+
+        const applied = data?.strategy_applied === true || data?.plan_update?.applied === true;
+        await refreshAccountData();
+        const update = data?.plan_update || {};
+        const newCalories = finiteNumber(update.calories ?? update.calories_target);
+        setToolStatus("weekly-update-submit-status", applied
+            ? `Check In zapisany. Plan na nowy tydzień: ${newCalories === null ? "zaktualizowany" : `${formatNumber(newCalories)} kcal`}. Cała historia progresu została zachowana. Wygeneruj nowy jadłospis.`
+            : "Check In zapisany. Zmiana strategii nie została zastosowana przez Safety Engine. Wcześniejsza historia progresu została zachowana.", "success");
     }
 
     function setProgressSection(section) {
@@ -2357,6 +2648,10 @@
         const current = document.getElementById("progress-detail-current");
         const chart = document.getElementById("progress-detail-chart");
         if (!current || !chart) return;
+        const weeklyContent = document.getElementById("progress-weekly-update-content");
+        if (weeklyContent) weeklyContent.hidden = destination !== "weekly-update";
+        current.hidden = destination === "weekly-update";
+        chart.hidden = destination === "weekly-update";
         current.replaceChildren();
         chart.replaceChildren();
         const { profile, daily, weights, measurements, event } = currentProgressData;
@@ -2435,12 +2730,16 @@
             current.append(detailStat("Zmiana wagi", report.weight_change_kg == null ? "—" : `${formatWeight(report.weight_change_kg)} kg`));
             chart.textContent = `${formatNumber(report.meals_logged)} posiłków · ${formatNumber(report.average_calories)} kcal średnio dziennie · ${formatNumber(report.average_wellbeing_score)} / 5 samopoczucie`;
             summary = report.period_start && report.period_end ? `${formatDate(report.period_start)} – ${formatDate(report.period_end)} · podsumowanie z backendu DEV.` : "Podsumowanie z ostatnich 7 dni z backendu DEV.";
+        } else if (destination === "weekly-update") {
+            const dueDate = weeklyRecalibrationDueDate(currentProgressData.firstPlanDate, currentProgressData.latestCheckIn?.period_end);
+            summary = dueDate && dueDate <= localToday()
+                ? "Cotygodniowa aktualizacja planu PRO. Wprowadzone dane i zatwierdzenie prześlemy do istniejącego silnika DEV."
+                : `Plan jest aktualny${dueDate ? ` · następna aktualizacja ${formatDate(dueDate)}` : ""}.`;
+            renderWeeklyUpdateContent();
         } else {
-            current.append(detailStat(destination === "check-in" ? "Check In" : "Aktualizacja tygodnia", "Dostępne w Androidzie"));
-            chart.textContent = destination === "check-in"
-                ? "Natywny Check In Androida używa dodatkowych danych urządzenia. Zapisy wagi, kroków, wody i obwodów są dostępne w tej aplikacji webowej."
-                : "Ten przepływ aktualizuje plan w Androidzie. Strona pokazuje Twoje zapisane postępy, ale nie zmienia wyliczeń.";
-            summary = "Funkcja natywna Androida; pozostałe dane postępu są dostępne online.";
+            current.append(detailStat("Check In", "Dostępne w Androidzie"));
+            chart.textContent = "Natywny Check In Androida zapisuje samopoczucie i historię. Ręczne zapisy wagi, kroków, wody i obwodów są dostępne w tej aplikacji webowej.";
+            summary = "Check In samopoczucia pozostaje w Androidzie; dane postępu są dostępne online.";
         }
         setText("progress-detail-summary", summary);
         buildProgressEntry(destination);
@@ -3713,9 +4012,36 @@
                 const selectedNumber = challengeDaySelection.get(challenge.id) || challenge.current_day || 1;
                 const selectedDay = challenge.days.find((day) => Number(day.day_number) === Number(selectedNumber)) || challenge.days[0];
                 if (selectedDay) {
+                    const selectedIndex = challenge.days.findIndex((day) => day.id === selectedDay.id);
+                    const pageIndex = Math.floor(Math.max(0, selectedIndex) / 7);
+                    const firstVisibleIndex = pageIndex * 7;
+                    const visibleDays = challenge.days.slice(firstVisibleIndex, firstVisibleIndex + 7);
+                    const pageCount = Math.ceil(challenge.days.length / 7);
+                    const weekNavigation = document.createElement("div");
+                    weekNavigation.className = "challenge-day-navigation";
+                    const previousWeek = document.createElement("button");
+                    previousWeek.type = "button";
+                    previousWeek.dataset.challengeWeekMove = "-1";
+                    previousWeek.dataset.challengeId = challenge.id;
+                    previousWeek.textContent = "‹";
+                    previousWeek.setAttribute("aria-label", "Poprzednie 7 dni");
+                    previousWeek.disabled = pageIndex === 0;
+                    const visibleStart = Number(visibleDays[0]?.day_number) || firstVisibleIndex + 1;
+                    const visibleEnd = Number(visibleDays[visibleDays.length - 1]?.day_number) || visibleStart;
+                    const weekLabel = document.createElement("span");
+                    weekLabel.textContent = `Dni ${visibleStart}–${visibleEnd} · tydzień ${pageIndex + 1}/${pageCount}`;
+                    const nextWeek = document.createElement("button");
+                    nextWeek.type = "button";
+                    nextWeek.dataset.challengeWeekMove = "1";
+                    nextWeek.dataset.challengeId = challenge.id;
+                    nextWeek.textContent = "›";
+                    nextWeek.setAttribute("aria-label", "Następne 7 dni");
+                    nextWeek.disabled = pageIndex >= pageCount - 1;
+                    weekNavigation.append(previousWeek, weekLabel, nextWeek);
+
                     const strip = document.createElement("div");
                     strip.className = "challenge-day-strip";
-                    challenge.days.forEach((day) => {
+                    visibleDays.forEach((day) => {
                         const dayButton = document.createElement("button");
                         dayButton.type = "button";
                         dayButton.dataset.challengeDaySelect = challenge.id;
@@ -3726,7 +4052,7 @@
                         dayButton.disabled = day.status === "locked";
                         strip.append(dayButton);
                     });
-                    card.append(strip);
+                    card.append(weekNavigation, strip);
                     const dayPanel = document.createElement("div");
                     dayPanel.className = "challenge-day-detail";
                     const dayTitle = document.createElement("h5");
@@ -4004,7 +4330,7 @@
         const planColumns = "calories_target,protein_g,fat_g,carbs_g,estimated_tdee,estimated_rmr,diet_type,status,version";
 
         const [
-            dashboardResult, profileResult, planResult, weeklyResult, weightResult, stepsResult,
+            dashboardResult, profileResult, planResult, firstPlanResult, checkInResult, weeklyResult, weightResult, stepsResult,
             todayMealsResult, mealPlanResult, consentResult, bodyResult, eventResult,
             safetyResult, preferencesResult, preferenceCatalogResult, premiumResult
         ] = await Promise.all([
@@ -4012,6 +4338,10 @@
             client.from("profiles").select(profileColumns).eq("user_id", user.id).maybeSingle(),
             client.from("nutrition_plans").select(planColumns).eq("user_id", user.id)
                 .eq("status", "active").order("version", { ascending: false }).limit(1).maybeSingle(),
+            client.from("nutrition_plans").select("effective_from").eq("user_id", user.id)
+                .order("effective_from", { ascending: true }).limit(1).maybeSingle(),
+            client.from("weekly_checkins").select("period_end").eq("user_id", user.id)
+                .order("period_end", { ascending: false }).limit(1).maybeSingle(),
             client.rpc("get_weekly_progress_report"),
             client.from("weight_logs").select("id,weight_kg,measured_at,source").eq("user_id", user.id)
                 .order("measured_at", { ascending: false }).limit(12),
@@ -4049,7 +4379,9 @@
             weights: weightResult.error ? [] : (Array.isArray(weightResult.data) ? weightResult.data : []),
             daily: stepsResult.error ? [] : (Array.isArray(stepsResult.data) ? stepsResult.data : []),
             measurements: bodyMeasurements,
-            event: eventResult.error ? null : eventResult.data
+            event: eventResult.error ? null : eventResult.data,
+            firstPlanDate: firstPlanResult.error ? null : firstPlanResult.data?.effective_from?.slice(0, 10) || null,
+            latestCheckIn: checkInResult.error ? null : checkInResult.data
         };
 
         currentNutritionPlan = planResult.error ? null : planResult.data;
@@ -4177,7 +4509,7 @@
         activeProgressDestination = null;
         activeProfileSetupStep = 0;
         setProfileSetupStep(0);
-        currentProgressData = { profile: null, daily: [], weights: [], measurements: [], event: null };
+        currentProgressData = { profile: null, daily: [], weights: [], measurements: [], event: null, firstPlanDate: null, latestCheckIn: null };
         currentCommunitySnapshots = { community: null, system: null, przemala: null };
         challengeDaySelection.clear();
         appView.hidden = true;
@@ -4527,6 +4859,23 @@
         if (complete) {
             complete.disabled = true;
             void completeCommunityChallengeDay(complete.dataset.challengeComplete, complete.dataset.dayId);
+            return;
+        }
+        const weekMove = event.target.closest("[data-challenge-week-move]");
+        if (weekMove) {
+            const challengeId = weekMove.dataset.challengeId;
+            const origin = weekMove.closest("#przemala-challenge-list") ? "przemala" : "system";
+            const challenge = currentCommunitySnapshots[origin]?.active_challenges?.find((item) => item.id === challengeId);
+            const days = Array.isArray(challenge?.days) ? challenge.days : [];
+            const selectedNumber = challengeDaySelection.get(challengeId) || challenge?.current_day || 1;
+            const selectedIndex = Math.max(0, days.findIndex((day) => Number(day.day_number) === Number(selectedNumber)));
+            const currentPage = Math.floor(selectedIndex / 7);
+            const nextPage = Math.min(Math.ceil(days.length / 7) - 1, Math.max(0, currentPage + Number(weekMove.dataset.challengeWeekMove)));
+            const nextDay = days[nextPage * 7];
+            if (nextDay) {
+                challengeDaySelection.set(challengeId, Number(nextDay.day_number));
+                renderChallengeList(origin === "przemala" ? "przemala-challenge-list" : "system-challenge-list", currentCommunitySnapshots[origin], origin);
+            }
             return;
         }
         const day = event.target.closest("[data-challenge-day-select]");

@@ -869,9 +869,10 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .community-layout { display: grid; grid-template-columns: 1.15fr .85fr; gap: 14px; margin-top: 18px; }
 .community-panel { overflow: hidden; border: 1px solid var(--line); border-radius: 13px; background: #191919; }
 .challenge-list, .leaderboard-list, .community-posts { display: grid; }
-.challenge-card { padding: 18px 20px; border-bottom: 1px solid var(--line-soft); }
+.challenge-card { min-width: 0; padding: 18px 20px; border-bottom: 1px solid var(--line-soft); }
 .challenge-card:last-child { border-bottom: 0; }
-.challenge-card-head { display: flex; justify-content: space-between; gap: 16px; }
+.challenge-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; min-width: 0; }
+.challenge-card-head > div { min-width: 0; flex: 1; }
 .challenge-card h4 { margin: 0 0 7px; font-size: 14px; }
 .challenge-card p { margin: 0; color: #858585; font-size: 10px; line-height: 1.55; }
 .challenge-card-head > span { flex: 0 0 auto; color: var(--orange); font-size: 11px; font-weight: 850; }
@@ -1207,15 +1208,56 @@ body.modal-open { overflow: hidden; }
 .challenge-section-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; margin: 10px 0; }
 .challenge-section-tabs button { min-height: 38px; }
 .challenge-card { background: rgba(23,23,23,.96); }
-.challenge-day-strip { display: flex; gap: 5px; overflow-x: auto; padding: 4px 1px 8px; scrollbar-width: thin; }
-.challenge-day-strip button { min-width: 38px; min-height: 36px; border: 1px solid #555; border-radius: 7px; background: #242424; color: #ddd; cursor: pointer; font-weight: 800; }
+.challenge-day-strip { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; width: 100%; min-width: 0; padding: 4px 1px 8px; }
+.challenge-day-strip button { width: 100%; min-width: 0; min-height: 40px; border: 1px solid #555; border-radius: 7px; background: #242424; color: #ddd; cursor: pointer; font-weight: 800; }
 .challenge-day-strip button.active { border-color: var(--orange); color: var(--orange); }
 .challenge-day-strip button.completed { border-color: #63d297; color: #63d297; }
-.challenge-day-detail { margin: 5px 0 2px; padding: 12px; border: 1px solid #414141; border-radius: 8px; background: #141414; }
+.challenge-day-strip button:disabled { opacity: .55; cursor: default; }
+.challenge-day-navigation { display: grid; grid-template-columns: 42px minmax(0, 1fr) 42px; align-items: center; gap: 8px; margin: 8px 0 2px; text-align: center; }
+.challenge-day-navigation span { color: #aaa; font-size: 10px; font-weight: 800; }
+.challenge-day-navigation button { min-width: 0; min-height: 36px; border: 1px solid #484848; border-radius: 7px; background: #242424; color: var(--orange); cursor: pointer; font-size: 20px; line-height: 1; }
+.challenge-day-navigation button:disabled { color: #666; opacity: .5; cursor: default; }
+.challenge-day-detail { min-width: 0; margin: 5px 0 2px; padding: 12px; border: 1px solid #414141; border-radius: 8px; background: #141414; }
 .challenge-day-detail h5 { margin: 0 0 6px; font-size: 13px; }
-.challenge-day-detail p, .challenge-day-detail small { color: #aaa; font-size: 10px; line-height: 1.5; }
-.challenge-day-detail button { width: 100%; min-height: 38px; border: 0; border-radius: 7px; background: var(--orange); color: #111; cursor: pointer; font-weight: 900; }
+.challenge-day-detail p, .challenge-day-detail small { color: #aaa; font-size: 10px; line-height: 1.5; overflow-wrap: anywhere; }
+.challenge-day-detail button { display: block; width: 100%; min-width: 0; min-height: 44px; margin-top: 8px; padding: 10px 12px; border: 0; border-radius: 7px; background: var(--orange); color: #111; cursor: pointer; font-weight: 900; white-space: normal; }
 .challenge-day-detail button:disabled { opacity: .55; cursor: default; }
+.weekly-update-content { display: grid; gap: 12px; min-width: 0; }
+.weekly-update-content[hidden] { display: none; }
+.weekly-update-card { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: rgba(24,24,24,.95); }
+.weekly-update-card h3 { margin: 0 0 12px; color: var(--orange); font-size: 18px; }
+.weekly-update-card p { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.weekly-update-card p:last-child { margin-bottom: 0; }
+.weekly-update-alert { border-color: rgba(255,106,0,.48); background: rgba(58,36,24,.88); }
+.weekly-update-alert h3 { color: var(--orange-strong); }
+.weekly-update-current { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 10px 0; }
+.weekly-update-current > div { min-width: 0; padding: 12px; border: 1px solid #393939; border-radius: 8px; background: #141414; }
+.weekly-update-current small, .weekly-update-current strong { display: block; }
+.weekly-update-current small { margin-bottom: 5px; color: #aaa; font-size: 9px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.weekly-update-current strong { color: var(--orange); font-size: 18px; overflow-wrap: anywhere; }
+.weekly-update-form { display: grid; gap: 12px; }
+.weekly-update-form fieldset { min-width: 0; margin: 0; border: 1px solid #414141; border-radius: 8px; padding: 14px; background: rgba(14,14,14,.78); }
+.weekly-update-form legend { padding: 0 7px; color: var(--orange); font-size: 14px; font-weight: 850; }
+.weekly-update-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.weekly-update-form label { min-width: 0; display: grid; gap: 6px; color: #ccc; font-size: 11px; font-weight: 700; }
+.weekly-update-form input:not([type="range"]), .weekly-update-form select, .weekly-update-form textarea { width: 100%; min-width: 0; min-height: 44px; border: 1px solid #414141; border-radius: 7px; padding: 9px 11px; background: #101010; color: #fff; color-scheme: dark; }
+.weekly-update-form textarea { min-height: 76px; resize: vertical; }
+.weekly-update-form input[type="range"] { width: 100%; accent-color: var(--orange); }
+.weekly-choice-field { display: grid; gap: 7px; margin-bottom: 12px; }
+.weekly-field-label { color: #ccc; font-size: 11px; font-weight: 700; }
+.weekly-choice-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+.weekly-choice-options[data-columns="3"] { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.weekly-choice-options[data-columns="4"] { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.weekly-choice-options button { min-width: 0; min-height: 42px; border: 1px solid #484848; border-radius: 7px; padding: 6px; background: #222; color: #ddd; cursor: pointer; font-size: 11px; font-weight: 750; overflow-wrap: anywhere; }
+.weekly-choice-options button.active { border-color: var(--orange); background: var(--orange-soft); color: #fff; }
+.weekly-choice-field[hidden] { display: none; }
+.weekly-range-field { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 3px 12px; }
+.weekly-range-field input { grid-column: 1 / -1; }
+.weekly-range-field output { color: var(--orange); font-size: 14px; font-weight: 850; }
+.weekly-update-submit { width: 100%; min-height: 52px; white-space: normal; }
+.weekly-update-status { min-height: 18px; margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.weekly-update-status.success { color: var(--success); }
+.weekly-update-status.error { color: var(--error); }
 .achievement-list { display: grid; gap: 7px; }
 .achievement-row { display: flex; align-items: center; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: rgba(23,23,23,.96); }
 .achievement-row > span { color: var(--orange); font-size: 20px; }
@@ -1300,6 +1342,12 @@ body.modal-open { overflow: hidden; }
     .profile-setup-navigation { margin: 0 -4px; padding: 10px 4px; }
     .profile-setup-navigation button { min-width: 0; flex: 1; }
     .profile-setup-navigation #profile-setup-submit { min-width: 0; }
+    .weekly-update-card { padding: 15px 12px; }
+    .weekly-update-form fieldset { padding: 12px 10px; }
+    .weekly-update-fields { grid-template-columns: 1fr; }
+    .challenge-card { padding-inline: 12px; }
+    .challenge-day-strip { gap: 5px; }
+    .challenge-day-strip button { min-height: 38px; }
     .profile-setup-review dl > div { align-items: flex-start; }
 }
 
