@@ -1104,12 +1104,11 @@ body.modal-open { overflow: hidden; }
     .app-shell { display: block; padding-bottom: 74px; }
     .sidebar { position: fixed; inset: auto 0 0; width: 100%; height: 74px; display: block; padding: 6px max(8px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left)); border-top: 1px solid var(--line); border-right: 0; background: rgba(10,10,10,.97); backdrop-filter: blur(14px); }
     .sidebar-brand, .environment-pill, .sidebar-footer { display: none; }
-    .main-nav { height: 62px; display: flex; gap: 2px; overflow-x: auto; padding: 0; scrollbar-width: none; }
-    .main-nav::-webkit-scrollbar { display: none; }
-    .nav-item { flex: 1 0 74px; min-height: 60px; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 4px; text-align: center; }
+    .main-nav { width: 100%; min-width: 0; height: 62px; display: flex; justify-content: space-between; gap: 0; overflow: hidden; padding: 0; }
+    .nav-item { min-width: 0; flex: 1 1 0; min-height: 60px; display: flex; flex-direction: column; justify-content: center; gap: 4px; padding: 4px 1px; text-align: center; }
     .nav-item.active::before { inset: 0 auto auto 50%; width: 24px; height: 3px; transform: translateX(-50%); border-radius: 0 0 3px 3px; }
     .nav-item svg { width: 20px; height: 20px; }
-    .nav-item span { font-size: 9px; }
+    .nav-item span { max-width: 100%; overflow: hidden; font-size: clamp(7px, 2vw, 9px); white-space: nowrap; }
     .nav-item small { display: none; }
     .app-workspace { height: auto; min-height: calc(100vh - 74px); overflow: visible; }
     .app-header { min-height: 70px; padding: 14px 18px; }
