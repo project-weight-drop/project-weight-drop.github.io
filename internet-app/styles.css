@@ -161,6 +161,9 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .app-kicker { margin: 0 0 3px; color: #656565; font-size: 8px; font-weight: 800; letter-spacing: .22em; }
 .app-header h1 { margin: 0; font-size: 25px; letter-spacing: -.03em; }
 .header-actions { display: flex; align-items: center; gap: 12px; }
+.website-home-link { width: 38px; height: 38px; display: inline-grid; place-items: center; flex: 0 0 auto; border: 1px solid #393939; border-radius: 9px; background: rgba(30,30,30,.88); color: #eee; text-decoration: none; transition: border-color .18s, color .18s, background .18s; }
+.website-home-link:hover, .website-home-link:focus-visible { border-color: var(--orange); background: var(--orange-soft); color: var(--orange); }
+.website-home-link svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 .connection-status { display: inline-flex; align-items: center; gap: 8px; min-height: 35px; padding: 0 12px; border: 1px solid #333; border-radius: 999px; background: #171717; color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .connection-status i { width: 6px; height: 6px; background: var(--success); box-shadow: 0 0 0 4px rgba(114,199,133,.1); }
 .header-logout { display: flex; align-items: center; gap: 7px; min-height: 38px; border: 1px solid rgba(255,106,0,.45); border-radius: 8px; padding: 0 12px; background: rgba(255,106,0,.08); color: var(--orange); cursor: pointer; font-size: 11px; font-weight: 800; transition: border-color .2s, background .2s, color .2s, opacity .2s; }
@@ -236,6 +239,8 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .home-brand-meta > span { font-size: 10px; font-style: italic; line-height: 1.25; }
 .home-brand-meta > div { display: flex; align-items: center; gap: 5px; }
 .home-brand-meta time { color: rgba(255,255,255,.86); font-size: 11px; font-weight: 700; }
+.home-brand-meta .website-home-link { width: 34px; height: 34px; border: 0; border-radius: 7px; background: transparent; color: var(--orange); }
+.home-brand-meta .website-home-link:hover, .home-brand-meta .website-home-link:focus-visible { background: rgba(255,106,0,.12); }
 .home-brand-meta button { width: 34px; height: 34px; display: grid; place-items: center; border: 0; padding: 0; background: transparent; color: var(--orange); cursor: pointer; }
 .home-brand-meta button:disabled { cursor: wait; opacity: .5; }
 .home-brand-meta svg { width: 22px; height: 22px; stroke-width: 2.3; }
@@ -1117,6 +1122,7 @@ body.modal-open { overflow: hidden; }
     .connection-status { display: none; }
     .header-logout { min-height: 36px; padding: 0 10px; font-size: 10px; }
     .header-logout svg { width: 15px; height: 15px; }
+    .website-home-link { width: 36px; height: 36px; }
     .route-content { padding: 20px 14px 28px; }
     .app-shell.home-route-active .route-content { padding: 6px 12px 22px; }
     .app-shell.meals-route-active .route-content { padding: 10px 10px 22px; }
@@ -1127,6 +1133,7 @@ body.modal-open { overflow: hidden; }
     .home-brand-meta > span { font-size: 8px; }
     .home-brand-meta time { font-size: 9px; }
     .home-brand-meta button { width: 29px; height: 29px; }
+    .home-brand-meta .website-home-link { width: 29px; height: 29px; }
     .home-brand-meta svg { width: 20px; height: 20px; }
     .home-today-heading h2 { font-size: 25px; }
     .home-today-heading > p { max-width: 70%; font-size: 7.5px; }
@@ -1379,6 +1386,12 @@ body.modal-open { overflow: hidden; }
 .route-page[data-page="profile"].profile-setup-required { width: min(100%, 860px); margin: 0 auto; }
 .app-shell.profile-onboarding-active .app-header-copy { display: none; }
 .app-shell.profile-onboarding-active .app-workspace { background-image: linear-gradient(rgba(0,0,0,.8), rgba(0,0,0,.9)), url("./assets/android-home-background.jpg"); background-position: center top; background-size: cover; background-attachment: fixed; }
+
+@media (max-width: 380px) {
+    .home-brand-header { gap: 8px; }
+    .home-brand-lockup img { width: min(175px, 55vw); }
+    .home-brand-meta > div { gap: 2px; }
+}
 .progress-section-nav { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 @media (max-width: 640px) {
     .app-shell.progress-route-active .app-workspace { background-attachment: scroll; background-position: center top; }

@@ -4,7 +4,9 @@
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
     const COMMUNITY_RULES_VERSION = "2026-09-09";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-progress-detail-back";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-website-home-return";
+    // Consent storage accepts app_version values of at most 40 characters.
+    const CONSENT_APP_VERSION = WEB_APP_VERSION.slice(0, 40);
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -923,6 +925,7 @@
         if (message.includes("checkin_not_due")) return "Aktualizacja tygodnia nie jest jeszcze dostępna. Odśwież dane i sprawdź termin.";
         if (message.includes("weekly_recalibration_pro_required")) return "Cotygodniowa aktualizacja wymaga aktywnego PRO.";
         if (message.includes("health_data_consent_required")) return "Najpierw zapisz zgodę na przetwarzanie danych zdrowotnych.";
+        if (message.includes("invalid_app_version")) return "Wersja aplikacji DEV jest nieprawidłowa. Odśwież stronę i spróbuj ponownie.";
         if (message.includes("invalid_water_amount")) return "Wpisz od 50 do 2000 ml.";
         if (message.includes("invalid_steps")) return "Wpisz liczbę kroków od 0 do 200 000.";
         if (message.includes("body_measurement_required")) return "Wpisz przynajmniej jeden obwód.";
@@ -1185,7 +1188,7 @@
         setToolStatus(statusId, "Zapisywanie zgody w DEV…");
         const { data, error } = await client.rpc("record_explicit_health_data_consent", {
             p_policy_version: CURRENT_PRIVACY_POLICY_VERSION,
-            p_app_version: WEB_APP_VERSION,
+            p_app_version: CONSENT_APP_VERSION,
             p_locale: "pl-PL"
         });
         button.textContent = "Zapisz zgodę";
@@ -1865,7 +1868,7 @@
         if (!healthConsentGranted) {
             const consentResult = await client.rpc("record_explicit_health_data_consent", {
                 p_policy_version: CURRENT_PRIVACY_POLICY_VERSION,
-                p_app_version: WEB_APP_VERSION,
+                p_app_version: CONSENT_APP_VERSION,
                 p_locale: "pl-PL"
             });
             if (consentResult.error || consentResult.data?.recorded !== true) {
