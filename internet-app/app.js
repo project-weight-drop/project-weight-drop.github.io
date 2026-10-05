@@ -3,7 +3,7 @@
 
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-fridge-coach-parity";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-fridge-reference";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -30,7 +30,9 @@
     const fridgeForm = document.getElementById("fridge-form");
     const fridgeProducts = document.getElementById("fridge-products");
     const fridgeGenerateButton = document.getElementById("fridge-generate-button");
+    const fridgeEmptyState = document.getElementById("fridge-empty-state");
     const fridgeResetButton = document.getElementById("fridge-reset-button");
+    const fridgeQuota = document.getElementById("fridge-quota");
     const fridgeCustomCalories = document.getElementById("fridge-custom-calories");
     const fridgeCustomPanel = document.getElementById("fridge-custom-panel");
     const fridgeAddTodayButton = document.getElementById("fridge-add-today-button");
@@ -316,6 +318,7 @@
         currentSafetyProfileComplete = false;
         currentPremiumSnapshot = null;
         premiumSnapshotUnavailable = false;
+        updateFridgeQuota();
         currentNutritionPlan = null;
         mealPlanGenerating = false;
         mealPlanSwappingId = null;
@@ -397,8 +400,9 @@
         setText("fridge-target-total", "—");
         setText("fridge-target-label", "Pozostało dziś");
         setText("fridge-assistant-copy", "Napisz, jakie produkty masz pod ręką. Dobiorę z nich najbliższy posiłek do Twojego dzisiejszego celu.");
-        setText("fridge-status", "Gotowe do wygenerowania.");
-        document.getElementById("fridge-status")?.classList.remove("error");
+        if (fridgeEmptyState) fridgeEmptyState.hidden = false;
+        setFridgeStatus("Gotowe do wygenerowania.");
+        updateFridgeQuota();
         if (coachInput) coachInput.value = "";
         const coachMessages = document.getElementById("coach-messages");
         if (coachMessages) coachMessages.innerHTML = '<p class="empty-history">Pobieranie…</p>';
@@ -1231,6 +1235,32 @@
         return targetValue === null ? null : Math.max(0, targetValue - consumedValue);
     }
 
+    function setFridgeStatus(message, error = false) {
+        const status = document.getElementById("fridge-status");
+        if (!status) return;
+        status.textContent = message || "";
+        status.classList.toggle("error", error);
+        status.hidden = !message || message === "Gotowe do wygenerowania.";
+    }
+
+    function updateFridgeQuota() {
+        if (!fridgeQuota) return;
+        const premium = currentPremiumSnapshot;
+        if (premium?.admin_granted) {
+            fridgeQuota.textContent = "Lodówka dzisiaj: bez limitu";
+            fridgeQuota.hidden = false;
+            return;
+        }
+        const limit = finiteNumber(premium?.fridge_generation_limit);
+        if (limit !== null) {
+            fridgeQuota.textContent = `Lodówka dzisiaj: ${formatNumber(premium?.fridge_generation_remaining ?? 0)}/${formatNumber(limit)}`;
+            fridgeQuota.hidden = false;
+            return;
+        }
+        fridgeQuota.textContent = "";
+        fridgeQuota.hidden = true;
+    }
+
     function setFridgeMode(mode, { focus = true } = {}) {
         activeFridgeMode = mode === "custom" ? "custom" : "remaining";
         document.querySelectorAll("[data-fridge-mode]").forEach((button) => {
@@ -1360,6 +1390,7 @@
 
         dashboardOverview?.setAttribute("aria-busy", "false");
         updateFridgeTargetCard();
+        updateFridgeQuota();
         updateCoachContextCard();
         setText("dashboard-message", "Dane obliczone przez tę samą funkcję DEV co w Androidzie.");
         setText("home-data-status", "Połączono");
@@ -2509,7 +2540,9 @@
         fridgeActionBusy = busy;
         [fridgeGenerateButton, fridgeAddTodayButton, fridgeRegenerateButton, fridgeChangeProductsButton, fridgeResetButton]
             .filter(Boolean)
-            .forEach((button) => { button.disabled = busy; });
+            .forEach((button) => {
+                button.disabled = busy || (button === fridgeGenerateButton && (fridgeProducts?.value.trim().length || 0) < 3);
+            });
         if (fridgeProducts) fridgeProducts.disabled = busy;
         if (fridgeCustomCalories) fridgeCustomCalories.disabled = busy;
         document.querySelectorAll("[data-fridge-mode]").forEach((button) => { button.disabled = busy; });
@@ -2558,22 +2591,22 @@
             row.append(name, amount);
             ingredients.append(row);
         });
-        result.hidden = false;
+        result.hidden = !proposal;
+        if (fridgeEmptyState) fridgeEmptyState.hidden = Boolean(proposal);
     }
 
     async function generateFridgeProposal(products, { regenerate = false } = {}) {
         const customTarget = fridgeCustomTarget();
         if (customTarget === false) {
-            setText("fridge-status", "Cel posiłku musi mieć od 100 do 3000 kcal.");
-            document.getElementById("fridge-status")?.classList.add("error");
+            setFridgeStatus("Cel posiłku musi mieć od 100 do 3000 kcal.", true);
             fridgeCustomCalories?.focus();
             return;
         }
         currentFridgeProducts = products;
         setFridgeBusy(true);
-        setText("fridge-status", regenerate ? "Szukam innej propozycji z tych produktów…" : "Lodówka DEV analizuje produkty i aktualny plan…");
-        document.getElementById("fridge-status")?.classList.remove("error");
+        setFridgeStatus(regenerate ? "Szukam innej propozycji z tych produktów…" : "Lodówka DEV analizuje produkty i aktualny plan…");
         document.getElementById("fridge-result")?.setAttribute("hidden", "");
+        if (fridgeEmptyState) fridgeEmptyState.hidden = false;
         const { data, error } = await client.functions.invoke("fridge-meal", {
             body: {
                 action: "generate",
@@ -2586,19 +2619,17 @@
         setFridgeBusy(false);
         if (error || data?.error || !data?.proposal) {
             const code = await edgeFunctionErrorCode(error, data);
-            setText("fridge-status", featureErrorMessage(code, "Lodówki"));
-            document.getElementById("fridge-status")?.classList.add("error");
+            setFridgeStatus(featureErrorMessage(code, "Lodówki"), true);
             return;
         }
         renderFridgeProposal(data.proposal);
-        setText("fridge-status", "Propozycja gotowa. Możesz ją dodać do dzisiejszego bilansu DEV.");
+        setFridgeStatus("Propozycja gotowa. Możesz ją dodać do dzisiejszego bilansu DEV.");
     }
 
     async function commitFridgeProposal() {
         if (!currentFridgeProposal || fridgeActionBusy || !client || !activeUserId) return;
         setFridgeBusy(true);
-        setText("fridge-status", "Dodaję posiłek do dzisiejszego bilansu DEV…");
-        document.getElementById("fridge-status")?.classList.remove("error");
+        setFridgeStatus("Dodaję posiłek do dzisiejszego bilansu DEV…");
         const { data, error } = await client.functions.invoke("fridge-meal", {
             body: {
                 action: "commit",
@@ -2611,13 +2642,12 @@
         setFridgeBusy(false);
         if (error || data?.error || !data?.proposal) {
             const code = await edgeFunctionErrorCode(error, data);
-            setText("fridge-status", featureErrorMessage(code, "zapisu posiłku z Lodówki"));
-            document.getElementById("fridge-status")?.classList.add("error");
+            setFridgeStatus(featureErrorMessage(code, "zapisu posiłku z Lodówki"), true);
             return;
         }
         currentFridgeProposal = data.proposal;
         renderFridgeProposal(data.proposal);
-        setText("fridge-status", "Dodano do dzisiejszego bilansu DEV.");
+        setFridgeStatus("Dodano do dzisiejszego bilansu DEV.");
         await refreshMealViews();
     }
 
@@ -2625,7 +2655,7 @@
         if (!currentFridgeProposal || fridgeReportBusy || !client || !activeUserId) return;
         fridgeReportBusy = true;
         if (fridgeReportButton) fridgeReportButton.disabled = true;
-        setText("fridge-status", "Zapisuję zgłoszenie odpowiedzi AI…");
+        setFridgeStatus("Zapisuję zgłoszenie odpowiedzi AI…");
         const { error } = await client.rpc("report_ai_content", {
             p_source: "fridge",
             p_source_content_id: currentFridgeProposal.title || null,
@@ -2634,12 +2664,10 @@
         fridgeReportBusy = false;
         if (fridgeReportButton) fridgeReportButton.disabled = false;
         if (error) {
-            setText("fridge-status", friendlyDataError(error));
-            document.getElementById("fridge-status")?.classList.add("error");
+            setFridgeStatus(friendlyDataError(error), true);
             return;
         }
-        setText("fridge-status", "Zgłoszenie zapisane.");
-        document.getElementById("fridge-status")?.classList.remove("error");
+        setFridgeStatus("Zgłoszenie zapisane.");
     }
 
     function coachMessageElement(message) {
@@ -3007,6 +3035,7 @@
         currentNutritionPlan = planResult.error ? null : planResult.data;
         currentPremiumSnapshot = premiumResult.error ? null : premiumResult.data;
         premiumSnapshotUnavailable = Boolean(premiumResult.error);
+        updateFridgeQuota();
 
         if (profileResult.error) {
             const message = friendlyDataError(profileResult.error);
@@ -3139,6 +3168,7 @@
         const safeRoute = Object.hasOwn(routeLabels, route) ? route : "home";
         appShell?.classList.toggle("home-route-active", safeRoute === "home");
         appShell?.classList.toggle("meals-route-active", safeRoute === "meals");
+        appShell?.classList.toggle("fridge-route-active", safeRoute === "fridge");
         document.querySelectorAll(".route-page").forEach((page) => {
             page.classList.toggle("active", page.dataset.page === safeRoute);
         });
@@ -3319,17 +3349,19 @@
         event.preventDefault();
         const products = fridgeProducts?.value.trim() || "";
         if (!client || !activeUserId) {
-            setText("fridge-status", "Zaloguj się ponownie, aby użyć Lodówki DEV.");
-            document.getElementById("fridge-status")?.classList.add("error");
+            setFridgeStatus("Zaloguj się ponownie, aby użyć Lodówki DEV.", true);
             return;
         }
         if (products.length < 3 || products.length > 2000) {
-            setText("fridge-status", "Podaj produkty i ilości (od 3 do 2000 znaków).");
-            document.getElementById("fridge-status")?.classList.add("error");
+            setFridgeStatus("Podaj produkty i ilości (od 3 do 2000 znaków).", true);
             fridgeProducts?.focus();
             return;
         }
         void generateFridgeProposal(products);
+    });
+    fridgeProducts?.addEventListener("input", () => {
+        if (fridgeGenerateButton) fridgeGenerateButton.disabled = fridgeActionBusy || fridgeProducts.value.trim().length < 3;
+        if (fridgeProducts.value.trim().length >= 3) setFridgeStatus("");
     });
     document.querySelectorAll("[data-fridge-mode]").forEach((button) => {
         button.addEventListener("click", () => setFridgeMode(button.dataset.fridgeMode));
@@ -3337,13 +3369,14 @@
     fridgeCustomCalories?.addEventListener("input", () => updateFridgeTargetCard());
     fridgeResetButton?.addEventListener("click", () => {
         if (fridgeProducts) fridgeProducts.value = "";
+        if (fridgeGenerateButton) fridgeGenerateButton.disabled = true;
         if (fridgeCustomCalories) fridgeCustomCalories.value = "";
         currentFridgeProposal = null;
         currentFridgeProducts = "";
+        if (fridgeEmptyState) fridgeEmptyState.hidden = false;
         document.getElementById("fridge-result")?.setAttribute("hidden", "");
         setFridgeMode("remaining", { focus: false });
-        setText("fridge-status", "Gotowe do wygenerowania.");
-        document.getElementById("fridge-status")?.classList.remove("error");
+        setFridgeStatus("Gotowe do wygenerowania.");
         fridgeProducts?.focus();
     });
     fridgeAddTodayButton?.addEventListener("click", () => void commitFridgeProposal());
@@ -3352,7 +3385,10 @@
         if (products.length >= 3) void generateFridgeProposal(products, { regenerate: true });
     });
     fridgeChangeProductsButton?.addEventListener("click", () => {
+        currentFridgeProposal = null;
+        if (fridgeEmptyState) fridgeEmptyState.hidden = false;
         document.getElementById("fridge-result")?.setAttribute("hidden", "");
+        setFridgeStatus("");
         fridgeProducts?.focus();
     });
     fridgeReportButton?.addEventListener("click", () => void reportFridgeProposal());
