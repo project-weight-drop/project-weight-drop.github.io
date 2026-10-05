@@ -4,7 +4,7 @@
     const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
     const COMMUNITY_RULES_VERSION = "2026-09-09";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-challenge-weekly-progress";
+    const WEB_APP_VERSION = "web-dev-2026.10.05-coach-history-scope-back";
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
@@ -163,6 +163,8 @@
     let currentMealPlan = null;
     let selectedMealPlanDay = 0;
     let currentCoachConversationId = null;
+    let currentAppRoute = null;
+    let previousAppRoute = "home";
     let authMode = "sign-in";
     let profileResetBusy = false;
     let profileResetPreviousFocus = null;
@@ -3832,20 +3834,22 @@
     async function loadCoachHistory(user) {
         const sequence = dataLoadSequence;
         const conversationResult = await client.from("ai_conversations")
-            .select("id,last_message_at")
+            .select("id,last_message_at,status")
             .eq("user_id", user.id)
-            .eq("status", "active")
             .order("last_message_at", { ascending: false })
+            .order("created_at", { ascending: false })
             .limit(1)
             .maybeSingle();
         if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
         if (conversationResult.error) {
-            renderCoachMessages([]);
             setText("coach-status", friendlyDataError(conversationResult.error));
+            const placeholder = document.querySelector("#coach-messages .empty-history");
+            if (placeholder) placeholder.textContent = "Nie udało się pobrać ostatniej rozmowy. Wybierz Historia, aby spróbować ponownie.";
             return;
         }
-        currentCoachConversationId = conversationResult.data?.id || null;
-        if (!currentCoachConversationId) {
+        const latestConversation = conversationResult.data;
+        currentCoachConversationId = latestConversation?.status === "active" ? latestConversation.id : null;
+        if (!latestConversation?.id) {
             renderCoachMessages([]);
             setText("coach-status", "Gotowy do rozpoczęcia nowej rozmowy DEV.");
             return;
@@ -3853,17 +3857,25 @@
         const messagesResult = await client.from("ai_messages")
             .select("id,role,message_text,created_at")
             .eq("user_id", user.id)
-            .eq("conversation_id", currentCoachConversationId)
+            .eq("conversation_id", latestConversation.id)
             .order("created_at", { ascending: false })
             .limit(40);
         if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
         if (messagesResult.error) {
-            renderCoachMessages([]);
             setText("coach-status", friendlyDataError(messagesResult.error));
+            const placeholder = document.querySelector("#coach-messages .empty-history");
+            if (placeholder) placeholder.textContent = "Nie udało się pobrać ostatniej rozmowy. Wybierz Historia, aby spróbować ponownie.";
             return;
         }
-        renderCoachMessages((messagesResult.data || []).reverse());
-        setText("coach-status", "Historia rozmowy pobrana z DEV.");
+        const orderedMessages = (messagesResult.data || []).sort((left, right) => {
+            const byTime = new Date(left.created_at).getTime() - new Date(right.created_at).getTime();
+            if (byTime) return byTime;
+            return (left.role === "user" ? 0 : 1) - (right.role === "user" ? 0 : 1);
+        });
+        renderCoachMessages(orderedMessages);
+        setText("coach-status", latestConversation.status === "active"
+            ? "Ostatnia rozmowa przywrócona z DEV."
+            : "Ostatnia rozmowa przywrócona. Nowa wiadomość rozpocznie nowy czat.");
     }
 
     async function sendCoachMessage(message) {
@@ -3875,7 +3887,7 @@
         coachInput.disabled = true;
         setText("coach-status", "Coach DEV przygotowuje odpowiedź…");
         const { data, error } = await client.functions.invoke("coach-message", {
-            body: { message, conversation_id: currentCoachConversationId }
+            body: { message, conversation_id: currentCoachConversationId, client_surface: "internet-app" }
         });
         coachSendButton.disabled = false;
         coachInput.disabled = false;
@@ -4501,6 +4513,8 @@
     function showSignedOut(message = "Połączenie wyłącznie z projektem DEV", kind = "neutral") {
         dataLoadSequence += 1;
         activeUserId = null;
+        currentAppRoute = null;
+        previousAppRoute = "home";
         profileResetBusy = false;
         if (profileResetModal) profileResetModal.hidden = true;
         document.body.classList.remove("modal-open");
@@ -4551,6 +4565,8 @@
         if (route === "community") setProgressSection("community");
         else if (requestedRoute === "progress") setProgressSection("hub");
         const safeRoute = Object.hasOwn(routeLabels, requestedRoute) ? requestedRoute : "home";
+        if (currentAppRoute && safeRoute !== currentAppRoute) previousAppRoute = currentAppRoute;
+        currentAppRoute = safeRoute;
         appShell?.classList.toggle("home-route-active", safeRoute === "home");
         appShell?.classList.toggle("meals-route-active", safeRoute === "meals");
         appShell?.classList.toggle("fridge-route-active", safeRoute === "fridge");
@@ -4564,7 +4580,11 @@
             if (selected) item.setAttribute("aria-current", "page");
             else item.removeAttribute("aria-current");
         });
-        if (backHomeButton) backHomeButton.hidden = safeRoute === "home";
+        if (backHomeButton) {
+            backHomeButton.hidden = safeRoute === "home";
+            const backTarget = previousAppRoute === safeRoute ? "home" : previousAppRoute;
+            backHomeButton.setAttribute("aria-label", `Wróć do ${routeLabels[backTarget] || routeLabels.home}`);
+        }
         routeTitle.textContent = routeLabels[safeRoute];
         document.title = `${routeLabels[safeRoute]} — Project Weight Drop DEV`;
         if (updateHash) window.history.replaceState(null, "", `#${safeRoute}`);
@@ -5028,7 +5048,7 @@
     document.querySelectorAll("[data-sign-out]").forEach((button) => {
         button.addEventListener("click", () => void signOut());
     });
-    backHomeButton?.addEventListener("click", () => navigateTo("home"));
+    backHomeButton?.addEventListener("click", () => navigateTo(previousAppRoute === currentAppRoute ? "home" : previousAppRoute));
     openProfileResetButton?.addEventListener("click", openProfileReset);
     cancelProfileResetButton?.addEventListener("click", closeProfileReset);
     confirmProfileResetButton?.addEventListener("click", () => void resetOwnProfile());
