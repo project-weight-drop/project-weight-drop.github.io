@@ -207,6 +207,12 @@
             String(languageText(key))
         );
     }
+
+    function localizedField(record, key, fallback = "") {
+        const localized = record?.[`${key}_${currentLanguage}`];
+        if (currentLanguage !== "pl" && typeof localized === "string" && localized.trim()) return localized;
+        return record?.[`${key}_pl`] || fallback;
+    }
     const authView = document.getElementById("auth-view");
     const appView = document.getElementById("app-view");
     const appShell = document.getElementById("app-view");
@@ -691,6 +697,8 @@
         }
         renderHomeDate();
         window.PWD_UI_I18N?.setLanguage(currentLanguage);
+        if (currentCommunitySnapshots.system) renderChallengeList("system-challenge-list", currentCommunitySnapshots.system, "system");
+        if (currentCommunitySnapshots.przemala) renderChallengeList("przemala-challenge-list", currentCommunitySnapshots.przemala, "przemala");
         if (announce) setAuthStatus(copy.languageSaved);
     }
 
@@ -5099,19 +5107,20 @@
             heading.className = "challenge-card-head";
             const copy = document.createElement("div");
             const title = document.createElement("h4");
-            title.textContent = challenge.title_pl || "Wyzwanie";
+            title.textContent = localizedField(challenge, "title", "Wyzwanie");
             const description = document.createElement("p");
-            description.textContent = challenge.description_pl || "Aktywne wyzwanie Project Weight Drop.";
+            description.textContent = localizedField(challenge, "description", "Aktywne wyzwanie Project Weight Drop.");
             copy.append(title, description);
             const points = document.createElement("span");
-            points.textContent = `${formatNumber(challenge.earned_points)} / ${formatNumber(challenge.points)} pkt`;
+            points.textContent = `${formatNumber(challenge.earned_points)} / ${formatNumber(challenge.points)} ${currentLanguage === "pl" ? "pkt" : currentLanguage === "de" ? "Pkt." : "pts"}`;
             heading.append(copy, points);
             card.append(heading);
 
-            if (challenge.reward_label_pl) {
+            const rewardLabel = localizedField(challenge, "reward_label");
+            if (rewardLabel) {
                 const reward = document.createElement("small");
                 reward.className = "challenge-reward-label";
-                reward.textContent = `Nagroda: ${challenge.reward_label_pl}`;
+                reward.textContent = `${currentLanguage === "pl" ? "Nagroda" : currentLanguage === "de" ? "Belohnung" : "Reward"}: ${rewardLabel}`;
                 card.append(reward);
             }
 
@@ -5190,18 +5199,20 @@
                     const dayPanel = document.createElement("div");
                     dayPanel.className = "challenge-day-detail";
                     const dayTitle = document.createElement("h5");
-                    dayTitle.textContent = `Dzień ${formatNumber(selectedDay.day_number)} · ${selectedDay.title_pl || "Zadanie"}`;
+                    dayTitle.textContent = `${currentLanguage === "pl" ? "Dzień" : currentLanguage === "de" ? "Tag" : "Day"} ${formatNumber(selectedDay.day_number)} · ${localizedField(selectedDay, "title", "Zadanie")}`;
                     const dayDescription = document.createElement("p");
-                    dayDescription.textContent = selectedDay.description_pl || "";
+                    dayDescription.textContent = localizedField(selectedDay, "description");
                     dayPanel.append(dayTitle, dayDescription);
-                    if (selectedDay.alternative_pl) {
+                    const alternativeText = localizedField(selectedDay, "alternative");
+                    if (alternativeText) {
                         const alternative = document.createElement("small");
-                        alternative.textContent = `Alternatywa: ${selectedDay.alternative_pl}`;
+                        alternative.textContent = `${currentLanguage === "pl" ? "Alternatywa" : currentLanguage === "de" ? "Alternative" : "Alternative"}: ${alternativeText}`;
                         dayPanel.append(alternative);
                     }
-                    if (selectedDay.safety_pl) {
+                    const safetyText = localizedField(selectedDay, "safety");
+                    if (safetyText) {
                         const safety = document.createElement("small");
-                        safety.textContent = `Bezpieczeństwo: ${selectedDay.safety_pl}`;
+                        safety.textContent = `${currentLanguage === "pl" ? "Bezpieczeństwo" : currentLanguage === "de" ? "Sicherheit" : "Safety"}: ${safetyText}`;
                         dayPanel.append(safety);
                     }
                     const complete = document.createElement("button");
