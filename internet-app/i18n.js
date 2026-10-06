@@ -5,18 +5,20 @@
     // Keep translations exact so account data and messages written by users stay untouched.
     const rows = [
         ["Aplikacja internetowa wymaga włączonego JavaScriptu.", "The web app requires JavaScript to be enabled.", "Die Web-App benötigt aktiviertes JavaScript."],
-        ["Aplikacja internetowa · DEV", "Web app · DEV", "Web-App · DEV"],
-        ["Bezpieczny dostęp do rozwojowej wersji aplikacji Project Weight Drop. Zaloguj się lub utwórz konto wspólne z aplikacją Android DEV.", "Secure access to the Project Weight Drop development app. Sign in or create an account shared with the Android DEV app.", "Sicherer Zugang zur Entwicklungsversion von Project Weight Drop. Melde dich an oder erstelle ein gemeinsames Konto für die Android-DEV-App."],
+        ["Aplikacja internetowa", "Web app", "Web-App"],
+        ["Bezpieczny dostęp do aplikacji Project Weight Drop. Zaloguj się lub utwórz konto.", "Secure access to the Project Weight Drop app. Sign in or create an account.", "Sicherer Zugang zur Project-Weight-Drop-App. Melde dich an oder erstelle ein Konto."],
         ["Twój plan.", "Your plan.", "Dein Plan."],
         ["Także w przeglądarce.", "Also in your browser.", "Auch im Browser."],
-        ["Wspólne konto WWW i Android DEV", "One account for web and Android DEV", "Ein Konto für Web und Android DEV"],
+        ["Jedno konto WWW i aplikacji Android", "One account across web and Android", "Ein Konto für Web und Android"],
         ["Wspólny układ wszystkich modułów", "Consistent layout across all modules", "Einheitliches Layout aller Bereiche"],
-        ["Dane funkcji będą podłączane etapami", "Features will be connected in stages", "Funktionen werden schrittweise angebunden"],
+        ["Funkcje aplikacji", "App features", "App-Funktionen"],
+        ["Twój plan i zapisane postępy w jednym miejscu", "Your plan and saved progress in one place", "Dein Plan und deine gespeicherten Fortschritte an einem Ort"],
         ["LEPSZA TY KAŻDEGO DNIA", "A BETTER YOU EVERY DAY", "JEDEN TAG EIN BESSERES ICH"],
         ["Wróć do strony głównej", "Back to the website", "Zurück zur Website"],
         ["APLIKACJA INTERNETOWA", "WEB APP", "WEB-APP"],
         ["Witaj ponownie", "Welcome back", "Willkommen zurück"],
-        ["Zaloguj się kontem Project Weight Drop DEV.", "Sign in with your Project Weight Drop DEV account.", "Melde dich mit deinem Project Weight Drop DEV-Konto an."],
+        ["Zaloguj się kontem Project Weight Drop.", "Sign in to your Project Weight Drop account.", "Melde dich bei deinem Project-Weight-Drop-Konto an."],
+        ["Utwórz konto Project Weight Drop albo zaloguj się do istniejącego.", "Create a Project Weight Drop account or sign in to an existing one.", "Erstelle ein Project-Weight-Drop-Konto oder melde dich mit einem bestehenden an."],
         ["Logowanie", "Sign in", "Anmelden"],
         ["Rejestracja", "Create account", "Registrieren"],
         ["Nazwa użytkownika", "Display name", "Benutzername"],
@@ -25,11 +27,13 @@
         ["Pokaż", "Show", "Anzeigen"],
         ["Po rejestracji sprawdź pocztę oraz folder Spam i potwierdź adres e-mail.", "After registration, check your inbox and Spam folder and confirm your email address.", "Prüfe nach der Registrierung deinen Posteingang und Spam-Ordner und bestätige deine E-Mail-Adresse."],
         ["Zaloguj się", "Sign in", "Anmelden"],
-        ["Połączenie wyłącznie z projektem DEV", "Connected only to the DEV project", "Nur mit dem DEV-Projekt verbunden"],
+        ["Połączenie z kontem Project Weight Drop", "Connected to your Project Weight Drop account", "Mit deinem Project-Weight-Drop-Konto verbunden"],
+        ["Rejestracja konta Project Weight Drop", "Create a Project Weight Drop account", "Project-Weight-Drop-Konto erstellen"],
         ["Logując się", "By signing in", "Mit der Anmeldung"],
         [", korzystasz z", ", you accept the", ", nutzt du die"],
         ["Polityki prywatności", "Privacy Policy", "Datenschutzerklärung"],
-        [". To środowisko DEV, niezależne od PROD.", ". This DEV environment is separate from PROD.", ". Diese DEV-Umgebung ist von PROD getrennt."],
+        [". To oficjalna aplikacja internetowa Project Weight Drop.", ". This is the official Project Weight Drop web app.", ". Dies ist die offizielle Project-Weight-Drop-Web-App."],
+        ["Bez danych przykładowych.", "No sample data.", "Keine Beispieldaten."],
         ["Sprawdzamy profil startowy", "Checking your starting profile", "Startprofil wird geprüft"],
         ["Chwilka — sprawdzamy, czy konfiguracja i pierwszy plan są już gotowe.", "One moment — we are checking whether your setup and first plan are ready.", "Einen Moment — wir prüfen, ob Einrichtung und erster Plan bereit sind."],
         ["Sprawdź ponownie", "Check again", "Erneut prüfen"],
@@ -40,9 +44,10 @@
         ["Profil", "Profile", "Profil"],
         ["Podopieczni", "Clients", "Klienten"],
         ["Odczyt", "View", "Ansicht"],
-        ["Użytkownik DEV", "DEV user", "DEV-Nutzer"],
+        ["Użytkownik", "User", "Nutzer"],
         ["Wróć", "Back", "Zurück"],
         ["Wyloguj", "Sign out", "Abmelden"],
+        ["Wylogowano. Możesz zalogować się ponownie.", "Signed out. You can sign in again.", "Abgemeldet. Du kannst dich erneut anmelden."],
         ["Lepsza wersja Ciebie", "A better version of you", "Eine bessere Version von dir"],
         ["każdego dnia", "every day", "jeden Tag"],
         ["Ładowanie…", "Loading…", "Laden…"],
@@ -269,7 +274,6 @@
         ["Nie udało się zalogować. Spróbuj ponownie.", "Could not sign in. Try again.", "Anmeldung fehlgeschlagen. Versuche es erneut."],
         ["Nie udało się sprawdzić profilu", "Could not check the profile", "Profil konnte nicht geprüft werden"],
         ["Sprawdzanie własnego rekordu DEV", "Checking your DEV record", "Dein DEV-Datensatz wird geprüft"],
-        ["Bez danych przykładowych i bez PROD", "No sample data and no PROD", "Keine Beispieldaten und kein PROD"],
         ["Sprawdzanie dostępu DEV…", "Checking DEV access…", "DEV-Zugang wird geprüft…"],
         ["Nowy czat. Historia rozmów pozostaje zapisana.", "New chat. Your conversation history remains saved.", "Neuer Chat. Dein Gesprächsverlauf bleibt gespeichert."],
         ["Najpierw dokończ konfigurację profilu DEV.", "Complete your DEV profile setup first.", "Schließe zuerst die Einrichtung deines DEV-Profils ab."],
@@ -344,7 +348,7 @@
         ["Dobiorę posiłek z Twoich produktów pod wskazaną kaloryczność.", "I will suggest a meal using your foods for the selected calorie target.", "Ich schlage aus deinen Lebensmitteln eine Mahlzeit für das gewählte Kalorienziel vor."],
         ["Limit chwilowo niedostępny", "Limit temporarily unavailable", "Limit vorübergehend nicht verfügbar"],
         ["Brak zapisów wagi z ostatnich 7 dni", "No weight entries in the last 7 days", "Keine Gewichtseinträge der letzten 7 Tage"],
-        ["Dane obliczone przez tę samą funkcję DEV co w Androidzie.", "Data calculated by the same DEV function as on Android.", "Daten mit derselben DEV-Funktion wie unter Android berechnet."],
+        ["Dane obliczone przez ten sam silnik Project Weight Drop co w aplikacji Android.", "Data calculated by the same Project Weight Drop engine as in the Android app.", "Daten werden mit derselben Project-Weight-Drop-Engine wie in der Android-App berechnet."],
         ["Połączono", "Connected", "Verbunden"],
         ["Aktualne dane własnego konta DEV", "Current data from your DEV account", "Aktuelle Daten deines DEV-Kontos"],
         ["Uzupełnij brakujące dane i utwórz aktywny plan DEV.", "Complete the missing details and create an active DEV plan.", "Ergänze die fehlenden Angaben und erstelle einen aktiven DEV-Plan."],
@@ -1110,6 +1114,36 @@
     let observer = null;
     const userContentSelector = ".coach-message > p, .community-post > p, .community-post-head > strong, .community-comment > b, .community-comment > span";
 
+    function cleanEnvironmentLabel(value) {
+        let clean = String(value);
+        if (language === "pl") {
+            clean = clean
+                .replace(/\b(?:w|we)\s+DEV\b/gi, "w aplikacji")
+                .replace(/\bdo\s+DEV\b/gi, "w aplikacji")
+                .replace(/\b(?:z|ze|od)\s+DEV\b/gi, "z aplikacji")
+                .replace(/\bna\s+DEV\b/gi, "na koncie");
+        } else if (language === "de") {
+            clean = clean
+                .replace(/\b(?:im|zum|zur|bei)\s+DEV\b/gi, "in der App")
+                .replace(/\b(?:vom|aus|von)\s+DEV\b/gi, "aus der App")
+                .replace(/\bfür\s+DEV\b/gi, "für die App");
+        } else {
+            clean = clean
+                .replace(/\b(?:in|into|at)\s+DEV\b/gi, "in the app")
+                .replace(/\bfrom\s+DEV\b/gi, "from the app")
+                .replace(/\bto\s+DEV\b/gi, "in the app")
+                .replace(/\bwith\s+DEV\b/gi, "with the app");
+        }
+        return clean
+            .replace(/\bDEV\s*-\s*/gi, "")
+            .replace(/\s*[·•]\s*DEV\b/gi, "")
+            .replace(/\bDEV\s*[·•]\s*/gi, "")
+            .replace(/\bDEV\b/gi, "")
+            .replace(/\s+([,.;:!?…])/g, "$1")
+            .replace(/[ \t]{2,}/g, " ")
+            .trim();
+    }
+
     function translateTextNode(node) {
         if (node.parentElement?.closest(`script, style, [contenteditable], ${userContentSelector}`)) return;
         const current = node.nodeValue;
@@ -1128,6 +1162,7 @@
             }
         }
         if (!replacement) replacement = trimmed;
+        replacement = cleanEnvironmentLabel(replacement);
         const leading = source.match(/^\s*/)?.[0] || "";
         const trailing = source.match(/\s*$/)?.[0] || "";
         const rendered = `${leading}${replacement}${trailing}`;
@@ -1141,7 +1176,7 @@
         const state = sourceAttributes.get(element) || {};
         const previous = state[name];
         const original = previous && current === previous.rendered ? previous.original : current;
-        const rendered = dictionaries[language]?.get(original) || original;
+        const rendered = cleanEnvironmentLabel(dictionaries[language]?.get(original) || original);
         state[name] = { original, rendered };
         sourceAttributes.set(element, state);
         if (rendered !== current) element.setAttribute(name, rendered);

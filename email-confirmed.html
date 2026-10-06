@@ -54,10 +54,10 @@
     <section class="status" role="status" aria-live="polite">
       <p class="brand">Project Weight Drop</p>
       <h1 id="status-title">Wróć do aplikacji</h1>
-      <p class="message" id="status-message">Jeśli potwierdziłeś adres e-mail, możesz zalogować się w aplikacji.</p>
+      <p class="message" id="status-message">Jeśli potwierdziłeś adres e-mail, zaloguj się w aplikacji internetowej.</p>
       <div class="actions">
-        <a class="button" href="https://play.google.com/store/apps/details?id=com.projectweightdrop.app">Otwórz w Google Play</a>
-        <p class="hint">Po otwarciu zaloguj się swoim adresem e-mail.</p>
+        <a class="button" href="/internet-app/">Otwórz aplikację internetową</a>
+        <a class="hint" href="https://play.google.com/store/apps/details?id=com.projectweightdrop.app">albo pobierz aplikację Android z Google Play</a>
       </div>
     </section>
     <img class="poster" src="email-confirmed-poster.jpg" alt="Project Weight Drop: plan posiłków, dziennik, lodówka, Coach i postępy" width="720" height="1280">
@@ -74,13 +74,13 @@
 
       if (error) {
         title.textContent = 'Nie udało się potwierdzić adresu';
-        message.textContent = 'Link mógł wygasnąć lub został już użyty. Sprawdź, czy możesz zalogować się w aplikacji.';
+        message.textContent = 'Link mógł wygasnąć lub został już użyty. Sprawdź, czy możesz zalogować się w aplikacji internetowej.';
       } else if (authenticated && (confirmationType === 'signup' || confirmationType === 'email')) {
         title.textContent = 'Adres e-mail potwierdzony';
-        message.textContent = 'Twoje konto jest gotowe. Wróć do aplikacji i zaloguj się.';
+        message.textContent = 'Twoje konto jest gotowe. Otwórz aplikację internetową i zaloguj się.';
       } else if (authenticated) {
         title.textContent = 'Gotowe';
-        message.textContent = 'Wróć do aplikacji, aby kontynuować.';
+        message.textContent = 'Wróć do aplikacji internetowej, aby kontynuować.';
       }
 
       if (location.hash || location.search) {

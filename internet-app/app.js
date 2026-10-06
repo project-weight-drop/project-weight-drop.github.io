@@ -1,10 +1,10 @@
 (() => {
     "use strict";
 
-    const REQUIRED_PROJECT_REF = "iqqiizsehdjwenqowsqc";
+    const REQUIRED_PROJECT_REF = "otffqsoiqbscdvgnrrpb";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
     const COMMUNITY_RULES_VERSION = "2026-09-09";
-    const WEB_APP_VERSION = "web-dev-2026.10.05-website-home-return";
+    const WEB_APP_VERSION = "web-prod-2026.10.06-launch";
     // Consent storage accepts app_version values of at most 40 characters.
     const CONSENT_APP_VERSION = WEB_APP_VERSION.slice(0, 40);
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
@@ -29,14 +29,14 @@
             signupNote: "Po rejestracji sprawdź pocztę oraz folder Spam i potwierdź adres e-mail.",
             welcome: "Witaj ponownie",
             createAccount: "Utwórz konto",
-            signInCopy: "Zaloguj się kontem Project Weight Drop DEV.",
-            signUpCopy: "Zarejestruj konto wspólne z aplikacją Android DEV.",
+            signInCopy: "Zaloguj się kontem Project Weight Drop.",
+            signUpCopy: "Utwórz konto Project Weight Drop albo zaloguj się do istniejącego.",
             signingIn: "Logowanie…",
             creatingAccount: "Tworzenie konta…",
             signingInAction: "Logując się",
             creatingAction: "Tworząc konto",
-            signInStatus: "Połączenie wyłącznie z projektem DEV",
-            signUpStatus: "Rejestracja wyłącznie w projekcie DEV",
+            signInStatus: "Połączenie z kontem Project Weight Drop",
+            signUpStatus: "Rejestracja konta Project Weight Drop",
             back: "Wróć",
             logout: "Wyloguj",
             readOnly: "Odczyt",
@@ -85,14 +85,14 @@
             signupNote: "After registration, check your inbox and Spam folder and confirm your email address.",
             welcome: "Welcome back",
             createAccount: "Create account",
-            signInCopy: "Sign in with your Project Weight Drop DEV account.",
-            signUpCopy: "Create an account shared with the Android DEV app.",
+            signInCopy: "Sign in to your Project Weight Drop account.",
+            signUpCopy: "Create a Project Weight Drop account or sign in to an existing one.",
             signingIn: "Signing in…",
             creatingAccount: "Creating account…",
             signingInAction: "By signing in",
             creatingAction: "By creating an account",
-            signInStatus: "Connected only to the DEV project",
-            signUpStatus: "Registration only in the DEV project",
+            signInStatus: "Connected to your Project Weight Drop account",
+            signUpStatus: "Create a Project Weight Drop account",
             back: "Back",
             logout: "Sign out",
             readOnly: "View",
@@ -141,14 +141,14 @@
             signupNote: "Prüfe nach der Registrierung deinen Posteingang und Spam-Ordner und bestätige deine E-Mail-Adresse.",
             welcome: "Willkommen zurück",
             createAccount: "Konto erstellen",
-            signInCopy: "Melde dich mit deinem Project Weight Drop DEV-Konto an.",
-            signUpCopy: "Erstelle ein gemeinsames Konto für die Android-DEV-App.",
+            signInCopy: "Melde dich bei deinem Project-Weight-Drop-Konto an.",
+            signUpCopy: "Erstelle ein Project-Weight-Drop-Konto oder melde dich mit einem bestehenden an.",
             signingIn: "Anmeldung…",
             creatingAccount: "Konto wird erstellt…",
             signingInAction: "Mit der Anmeldung",
             creatingAction: "Mit der Kontoerstellung",
-            signInStatus: "Nur mit dem DEV-Projekt verbunden",
-            signUpStatus: "Registrierung nur im DEV-Projekt",
+            signInStatus: "Mit deinem Project-Weight-Drop-Konto verbunden",
+            signUpStatus: "Project-Weight-Drop-Konto erstellen",
             back: "Zurück",
             logout: "Abmelden",
             readOnly: "Ansicht",
@@ -491,7 +491,7 @@
     let macroFormatter = new Intl.NumberFormat(currentLocale(), { minimumFractionDigits: 1, maximumFractionDigits: 1 });
 
     function validConfiguration() {
-        if (!config || config.environment !== "DEV" || config.projectRef !== REQUIRED_PROJECT_REF) return false;
+        if (!config || config.environment !== "PROD" || config.projectRef !== REQUIRED_PROJECT_REF) return false;
         if (config.supabaseUrl !== `https://${REQUIRED_PROJECT_REF}.supabase.co`) return false;
         return typeof config.supabasePublishableKey === "string" &&
             config.supabasePublishableKey.startsWith("sb_publishable_");
@@ -562,7 +562,7 @@
         if (message.includes("invalid email") || message.includes("email address is invalid")) return "Podaj poprawny adres e-mail.";
         if (message.includes("password") && (message.includes("weak") || message.includes("at least"))) return "Hasło musi mieć co najmniej 8 znaków.";
         if (message.includes("rate limit") || message.includes("too many")) return "Zbyt wiele prób. Odczekaj chwilę i spróbuj ponownie.";
-        if (message.includes("failed to fetch") || message.includes("network")) return "Brak połączenia z usługą logowania DEV.";
+        if (message.includes("failed to fetch") || message.includes("network")) return "Brak połączenia z usługą logowania Project Weight Drop.";
         return mode === "sign-up"
             ? "Nie udało się utworzyć konta. Spróbuj ponownie."
             : "Nie udało się zalogować. Spróbuj ponownie.";
@@ -688,7 +688,7 @@
                     ? copy.clientPanel
                     : routeLabels[currentAppRoute] || routeLabels.home;
             if (routeTitle) routeTitle.textContent = pageTitle;
-            document.title = `${pageTitle} — Project Weight Drop DEV`;
+            document.title = `${pageTitle} — Project Weight Drop`;
             updateBackHomeButtonLabel();
         }
         if (currentPremiumSnapshot) {
@@ -844,7 +844,7 @@
         setText("home-profile-status", "Ładowanie…");
         setText("home-profile-detail", "Sprawdzanie własnego rekordu DEV");
         setText("home-data-status", "Ładowanie…");
-        setText("home-data-detail", "Bez danych przykładowych i bez PROD");
+        setText("home-data-detail", "Bez danych przykładowych.");
         setStatusCard("profile-status-card", "loading");
         setStatusCard("dashboard-status-card", "loading");
         [
@@ -2088,7 +2088,7 @@
         setText("coach-limit", premiumSnapshotUnavailable
             ? "Limit chwilowo niedostępny"
             : currentPremiumSnapshot?.coach_remaining === null || currentPremiumSnapshot?.coach_remaining === undefined
-            ? `Pakiet: ${currentUserIsAdmin ? "ADMIN ∞" : currentPremiumSnapshot?.is_pro ? "PRO" : "DEV"}`
+            ? `Pakiet: ${currentUserIsAdmin ? "ADMIN ∞" : currentPremiumSnapshot?.is_pro ? "PRO" : "FREE"}`
             : `Pozostało odpowiedzi: ${formatNumber(currentPremiumSnapshot.coach_remaining)}`);
         const allowed = !currentPremiumSnapshot || currentPremiumSnapshot.coach_allowed !== false;
         document.querySelectorAll("[data-coach-prompt]").forEach((button) => { button.disabled = !allowed; });
@@ -2171,7 +2171,7 @@
         updateFridgeTargetCard();
         updateFridgeQuota();
         updateCoachContextCard();
-        setText("dashboard-message", "Dane obliczone przez tę samą funkcję DEV co w Androidzie.");
+        setText("dashboard-message", "Dane obliczone przez ten sam silnik Project Weight Drop co w aplikacji Android.");
         setText("home-data-status", "Połączono");
         setText("home-data-detail", "Aktualne dane własnego konta DEV");
         setStatusCard("dashboard-status-card", "ready");
@@ -5025,7 +5025,7 @@
             }
             updateCoachContextCard();
             setText("coach-limit", data.coach_remaining === null || data.coach_remaining === undefined
-                ? `Pakiet: ${data.premium_tier || "DEV"}`
+                ? `Pakiet: ${data.premium_tier || "FREE"}`
                 : `Pozostało odpowiedzi: ${formatNumber(data.coach_remaining)}`);
             if (data.history_saved) {
                 await loadCoachHistory({ id: activeUserId }, { scrollToBottom: true });
@@ -5686,10 +5686,10 @@
         if (normalized.includes("admin_required")) return "Brak uprawnień administratora do raportów podopiecznych.";
         if (normalized.includes("consent_required")) return "Zaznacz zgodę na przekazanie raportu Przemali.";
         if (normalized.includes("pgrst202") || normalized.includes("42883") || normalized.includes("function") && normalized.includes("not found")) {
-            return "Funkcje panelu nie są dostępne w tym projekcie DEV. Nie zmieniałem bazy ani PROD.";
+            return "Funkcja panelu podopiecznego jest chwilowo niedostępna. Odśwież stronę lub spróbuj ponownie później.";
         }
         if (normalized.includes("failed to fetch") || normalized.includes("network") || normalized.includes("timeout")) {
-            return "Nie udało się połączyć z DEV. Sprawdź internet i spróbuj ponownie.";
+            return "Nie udało się połączyć z serwisem. Sprawdź internet i spróbuj ponownie.";
         }
         return "Nie udało się wczytać lub zapisać danych panelu. Spróbuj ponownie.";
     }
@@ -6238,7 +6238,7 @@
         document.getElementById("profile-email").textContent = email;
     }
 
-    function showSignedOut(message = "Połączenie wyłącznie z projektem DEV", kind = "neutral") {
+    function showSignedOut(message = LANGUAGE_COPY[currentLanguage].signInStatus, kind = "neutral") {
         dataLoadSequence += 1;
         activeUserId = null;
         currentAppRoute = null;
@@ -6337,7 +6337,7 @@
                 ? languageText("clientPanel")
             : routeLabels[safeRoute];
         routeTitle.textContent = pageTitle;
-        document.title = `${pageTitle} — Project Weight Drop DEV`;
+        document.title = `${pageTitle} — Project Weight Drop`;
         if (updateHash) window.history.replaceState(null, "", `#${safeRoute}`);
         if (safeRoute === "coach" && activeCoachSection === "support") {
             void loadSupportChat({ preserveScroll: true });
@@ -6386,15 +6386,15 @@
             window.alert("Nie udało się wylogować. Spróbuj ponownie.");
             return;
         }
-        showSignedOut("Wylogowano. Połączenie wyłącznie z projektem DEV", "success");
+        showSignedOut("Wylogowano. Możesz zalogować się ponownie.", "success");
     }
 
     async function initializeAuth() {
         if (!validConfiguration()) {
             configurationAlert.hidden = false;
-            configurationAlert.textContent = "Konfiguracja została zatrzymana: dozwolony jest wyłącznie projekt Supabase DEV.";
+            configurationAlert.textContent = "Konfiguracja Project Weight Drop jest nieprawidłowa. Odśwież stronę lub skontaktuj się z pomocą.";
             loginForm.hidden = true;
-            setAuthStatus("Błąd konfiguracji DEV", "error");
+            setAuthStatus("Błąd konfiguracji aplikacji", "error");
             return;
         }
         if (!window.supabase?.createClient) {
@@ -6410,7 +6410,7 @@
                 persistSession: true,
                 autoRefreshToken: true,
                 detectSessionInUrl: false,
-                storageKey: "project-weight-drop-web-dev-auth"
+                storageKey: "project-weight-drop-web-prod-auth"
             }
         });
 
@@ -6424,7 +6424,7 @@
             }, 0);
         });
 
-        setAuthStatus("Sprawdzanie bezpiecznej sesji DEV…");
+        setAuthStatus("Sprawdzanie bezpiecznej sesji…");
         const { data, error } = await client.auth.getSession();
         if (error || !data.session) {
             showSignedOut();
@@ -6457,7 +6457,7 @@
             }
 
             setAuthBusy(true);
-            setAuthStatus("Tworzenie konta w projekcie DEV…");
+            setAuthStatus("Tworzenie konta Project Weight Drop…");
             const { data, error } = await client.auth.signUp({
                 email,
                 password,
@@ -6485,7 +6485,7 @@
         }
 
         setAuthBusy(true);
-        setAuthStatus("Bezpieczne logowanie do projektu DEV…");
+        setAuthStatus("Bezpieczne logowanie…");
         const { error } = await client.auth.signInWithPassword({ email, password });
         if (error) {
             setAuthBusy(false);
@@ -6627,7 +6627,7 @@
             coachHeading.textContent = isCoach ? "AI Coach" : "Czat z Przemalą";
             if (currentAppRoute === "coach") {
                 routeTitle.textContent = coachHeading.textContent;
-                document.title = `${coachHeading.textContent} — Project Weight Drop DEV`;
+                document.title = `${coachHeading.textContent} — Project Weight Drop`;
             }
             if (isCoach) {
                 stopSupportChatRefresh();

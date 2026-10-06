@@ -3,19 +3,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Project Weight Drop — aplikacja internetowa DEV</title>
-    <meta name="description" content="Wersja rozwojowa aplikacji internetowej Project Weight Drop.">
+    <title>Project Weight Drop — aplikacja internetowa</title>
+    <meta name="description" content="Zaloguj się do aplikacji internetowej Project Weight Drop i korzystaj ze swojego planu oraz zapisanych postępów.">
     <meta name="robots" content="noindex, nofollow, noarchive">
     <meta name="theme-color" content="#101010">
     <meta name="referrer" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://iqqiizsehdjwenqowsqc.supabase.co; connect-src https://iqqiizsehdjwenqowsqc.supabase.co wss://iqqiizsehdjwenqowsqc.supabase.co">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://otffqsoiqbscdvgnrrpb.supabase.co; connect-src https://otffqsoiqbscdvgnrrpb.supabase.co wss://otffqsoiqbscdvgnrrpb.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261005-language-flags">
+    <link rel="stylesheet" href="./styles.css?v=20261006-prod-cutover">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
-    <script src="./config.js?v=20261005-profile-onboarding-progress-nav" defer></script>
-    <script src="./i18n.js?v=20261006-ui-i18n-b" defer></script>
-    <script src="./app.js?v=20261006-ui-i18n-b" defer></script>
+    <script src="./config.js?v=20261006-prod-cutover" defer></script>
+    <script src="./i18n.js?v=20261006-prod-cutover" defer></script>
+    <script src="./app.js?v=20261006-prod-cutover" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -61,16 +61,16 @@
             <img src="/brand-logo.png" alt="" width="72" height="72">
             <span><strong>PROJECT</strong><b id="auth-brand-title">WEIGHT <em>DROP</em></b></span>
         </a>
-        <div class="dev-badge"><span></span> Aplikacja internetowa · DEV</div>
+        <div class="dev-badge"><span></span> Aplikacja internetowa</div>
         <div class="auth-copy">
             <p class="eyebrow">KETO · LOW CARB · BALANCE</p>
             <h1>Twój plan.<br><span>Także w przeglądarce.</span></h1>
-            <p>Bezpieczny dostęp do rozwojowej wersji aplikacji Project Weight Drop. Zaloguj się lub utwórz konto wspólne z aplikacją Android DEV.</p>
+            <p>Bezpieczny dostęp do aplikacji Project Weight Drop. Zaloguj się lub utwórz konto.</p>
         </div>
-        <ul class="auth-points" aria-label="Zakres wersji rozwojowej">
-            <li><span><svg><use href="#icon-check"></use></svg></span>Wspólne konto WWW i Android DEV</li>
+        <ul class="auth-points" aria-label="Funkcje aplikacji">
+            <li><span><svg><use href="#icon-check"></use></svg></span>Jedno konto WWW i aplikacji Android</li>
             <li><span><svg><use href="#icon-check"></use></svg></span>Wspólny układ wszystkich modułów</li>
-            <li><span class="muted-check">01</span>Dane funkcji będą podłączane etapami</li>
+            <li><span class="muted-check">01</span>Twój plan i zapisane postępy w jednym miejscu</li>
         </ul>
         <p class="auth-visual-foot">LEPSZA TY KAŻDEGO DNIA</p>
     </section>
@@ -98,7 +98,7 @@
             <div class="auth-heading">
                 <p class="eyebrow">APLIKACJA INTERNETOWA</p>
                 <h2 id="auth-heading-title">Witaj ponownie</h2>
-                <p id="auth-heading-copy">Zaloguj się kontem Project Weight Drop DEV.</p>
+                <p id="auth-heading-copy">Zaloguj się kontem Project Weight Drop.</p>
             </div>
 
             <div id="configuration-alert" class="alert alert-error" role="alert" hidden></div>
@@ -152,9 +152,9 @@
 
             <div id="auth-status" class="auth-status" role="status" aria-live="polite">
                 <span class="status-dot"></span>
-                Połączenie wyłącznie z projektem DEV
+                Połączenie z kontem Project Weight Drop
             </div>
-            <p class="privacy-note"><span id="privacy-action">Logując się</span>, korzystasz z <a href="/privacy.html?from=internet-app">Polityki prywatności</a>. To środowisko DEV, niezależne od PROD.</p>
+            <p class="privacy-note"><span id="privacy-action">Logując się</span>, korzystasz z <a href="/privacy.html?from=internet-app">Polityki prywatności</a>. To oficjalna aplikacja internetowa Project Weight Drop.</p>
         </div>
     </section>
 </main>
@@ -173,7 +173,7 @@
             <img src="/brand-logo.png" alt="" width="52" height="52">
             <span><small>PROJECT</small><strong>WEIGHT <em>DROP</em></strong></span>
         </div>
-        <div class="environment-pill"><span></span> WEB · DEV</div>
+        <div class="environment-pill"><span></span> WEB</div>
 
         <nav class="main-nav">
             <button class="nav-item active" type="button" data-route="home" aria-current="page">
@@ -183,10 +183,10 @@
                 <svg><use href="#icon-meals"></use></svg><span>Posiłki</span><small>Odczyt</small>
             </button>
             <button class="nav-item" type="button" data-route="fridge">
-                <svg><use href="#icon-fridge"></use></svg><span>Lodówka</span><small>AI DEV</small>
+                <svg><use href="#icon-fridge"></use></svg><span>Lodówka</span><small>AI</small>
             </button>
             <button class="nav-item" type="button" data-route="coach">
-                <svg><use href="#icon-coach"></use></svg><span>AI Coach</span><small>AI DEV</small>
+                <svg><use href="#icon-coach"></use></svg><span>AI Coach</span><small>AI</small>
             </button>
             <button class="nav-item" type="button" data-route="progress">
                 <svg><use href="#icon-progress"></use></svg><span>Postępy</span>
@@ -199,7 +199,7 @@
         <div class="sidebar-footer">
             <div class="mini-user">
                 <span id="sidebar-avatar">U</span>
-                <div><strong id="sidebar-user-name">Użytkownik DEV</strong><small id="sidebar-user-email">—</small></div>
+                <div><strong id="sidebar-user-name">Użytkownik</strong><small id="sidebar-user-email">—</small></div>
             </div>
             <button class="logout-button" type="button" data-sign-out aria-label="Wyloguj się">
                 <svg><use href="#icon-logout"></use></svg>
@@ -230,7 +230,7 @@
                         <svg viewBox="0 0 60 40" aria-hidden="true"><path fill="#000" d="M0 0h60v14H0z"/><path fill="#dd0000" d="M0 14h60v13H0z"/><path fill="#ffce00" d="M0 27h60v13H0z"/></svg>
                     </button>
                 </div>
-                <span class="connection-status"><i></i> Supabase DEV</span>
+                <span class="connection-status"><i></i> Bezpieczne połączenie</span>
                 <a class="website-home-link" href="https://www.projectweightdrop.com/" aria-label="Wróć do strony głównej Project Weight Drop" title="Strona główna Project Weight Drop">
                     <svg aria-hidden="true"><use href="#icon-home"></use></svg>
                 </a>
