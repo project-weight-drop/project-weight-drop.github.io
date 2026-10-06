@@ -509,79 +509,10 @@
             font-size: 0.95rem;
         }
 
-        /* =========================================
-           5. OPINIE KLIENTÓW
-        ========================================= */
-        #opinie {
-            background-color: var(--bg-dark);
-        }
-
-        .reviews-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .review-card {
-            background-color: var(--bg-card);
-            padding: 25px;
-            border-radius: var(--border-radius);
-            border: 1px solid #222;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            transition: var(--transition);
-        }
-
-        .review-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
-        }
-
-        .review-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .review-author {
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
         .stars {
             color: #FFD700;
             letter-spacing: 1px;
             font-size: 1rem;
-        }
-
-        .review-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .review-tag {
-            background-color: rgba(255, 107, 0, 0.12);
-            color: var(--accent);
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 700;
-        }
-
-        .review-tag.keto {
-            background-color: rgba(0, 180, 216, 0.12);
-            color: #00b4d8;
-        }
-
-        .review-text {
-            color: var(--text-muted);
-            font-style: italic;
-            font-size: 0.9rem;
-            line-height: 1.6;
         }
 
         /* =========================================
@@ -883,7 +814,7 @@
             outline: none;
         }
 
-        .main-button, .pdf-button, .whatsapp-button, .share-button {
+        .main-button, .whatsapp-button {
             background-color: #FF6B00;
             color: #fff;
             border: none;
@@ -901,12 +832,12 @@
             letter-spacing: 0.5px;
         }
 
-        .main-button:hover, .pdf-button:hover, .whatsapp-button:hover, .share-button:hover {
+        .main-button:hover, .whatsapp-button:hover {
             background-color: #e65c00;
             transform: translateY(-2px);
         }
 
-        .result-card, .progress-card, .macro-chart-card, .trans-card, .compare-col {
+        .result-card, .progress-card, .macro-chart-card, .compare-col {
             background-color: rgba(10,10,10,0.5);
             border: 1px solid #333;
             border-radius: 12px;
@@ -993,7 +924,6 @@
 
         @media screen and (min-width: 768px) {
             .features-grid { grid-template-columns: repeat(2, 1fr); }
-            .reviews-grid { grid-template-columns: repeat(2, 1fr); }
             .about-split { grid-template-columns: 1fr 1fr; }
             .meta-grid { grid-template-columns: repeat(2, 1fr); }
             .process-grid { grid-template-columns: repeat(4, 1fr); }
@@ -1002,7 +932,6 @@
 
         @media screen and (min-width: 1024px) {
             .features-grid { grid-template-columns: repeat(4, 1fr); }
-            .reviews-grid { grid-template-columns: repeat(3, 1fr); }
             .meta-grid { grid-template-columns: repeat(4, 1fr); }
         }
 
@@ -1041,7 +970,7 @@
             .stat-number { font-size: 1.25rem; }
             .stat-label { font-size: 0.67rem; letter-spacing: 0.4px; }
             .calculator-box { padding: 24px 16px; }
-            .compare-grid, .trans-grid { grid-template-columns: minmax(0, 1fr) !important; }
+            .compare-grid { grid-template-columns: minmax(0, 1fr) !important; }
         }
     </style>
 </head>
@@ -1071,7 +1000,6 @@
                 <li><a href="#kalkulator-sekcja" data-i18n="navCalc">Kalkulator</a></li>
                 <li><a href="#proces" data-i18n="navCooperation">Współpraca</a></li>
                 <li><a href="#specjalizacje" data-i18n="navCerts">Certyfikaty</a></li>
-                <li><a href="#opinie" data-i18n="navReviews">Opinie</a></li>
                 <li><a href="https://projectweightdrop.blogspot.com/?m=1" target="_blank" data-i18n="navBlog">Blog</a></li>
                 <li><a href="/internet-app/" data-i18n="navWebApp">Aplikacja internetowa</a></li>
                 <li><a href="https://play.google.com/store/apps/details?id=com.projectweightdrop.app" class="btn-outline play-store-link" style="padding: 10px 20px; font-size: 0.8rem;"><img src="/google-play-mark.svg" alt="" width="22" height="22"><span data-i18n="navDownload">Google Play</span></a></li>
@@ -1116,8 +1044,8 @@
                         <span class="stars">★★★★★</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">Ponad 3 lata</span>
-                        <span class="stat-label">Doświadczenia</span>
+                        <span class="stat-number" id="chef-experience-value">Ponad 20 lat</span>
+                        <span class="stat-label">Doświadczenia jako kucharz</span>
                     </div>
                     <div class="stat-item">
                         <span class="stat-number" id="simulated-visitors">70 osób</span>
@@ -1130,7 +1058,7 @@
                 <div class="hero-benefits">
                     <span>🔥 Schudnij nawet 5-10 kg w 8 tygodni</span>
                     <span>🥗 Dieta dopasowana do Ciebie</span>
-                    <span>📱 Stały kontakt WhatsApp</span>
+                    <span>📱 Stały kontakt przez darmową aplikację i WhatsApp</span>
                 </div>
 
                 <a href="#kalkulator-sekcja" class="btn btn-large">Oblicz zapotrzebowanie</a>
@@ -1279,12 +1207,12 @@
                     <article class="process-step">
                         <div class="step-number">4</div>
                         <h4>Miesięczna Opieka</h4>
-                        <p>Jesteśmy w stałym kontakcie przez WhatsApp. Reaguję na zmiany i na bieżąco modyfikuję dietę.</p>
+                        <p>Jesteśmy w stałym kontakcie przez darmową aplikację i WhatsApp. Reaguję na zmiany i na bieżąco modyfikuję dietę.</p>
                     </article>
                 </div>
                 
                 <div style="text-align: center; margin-top: 40px;">
-                    <a href="https://wa.me/353851383537" target="_blank" class="btn btn-large">Zamów plan dietetyczny 99€</a>
+                    <a href="https://wa.me/353851383537" target="_blank" class="btn btn-large">Zamów plan dietetyczny</a>
                     <p style="margin-top: 15px; color: var(--text-muted); font-size: 0.9rem;">Rozpocznij miesiąc pełnej opieki dietetycznej</p>
                 </div>
             </div>
@@ -1476,9 +1404,7 @@
                         <div class="action-buttons" style="margin-top: 40px; text-align: center;">
                             <p style="font-size: 1.1rem; color: #fff; margin-bottom: 25px; line-height: 1.6;">Wiedza to dopiero początek. Bez odpowiedniej strategii wynik z kalkulatora to tylko liczba.<br><strong style="color: var(--accent);">Wybierz swój plan i zrób pierwszy, najważniejszy krok.</strong></p>
 
-                            <button class="pdf-button" onclick="exportToPDF()" id="pdfButton">📄 Eksportuj wyniki</button>
                             <a id="whatsappLink" href="https://wa.me/353851383537" target="_blank" class="whatsapp-button">💎 Zamów plan u Chefa</a>
-                            <button class="share-button" onclick="shareAsImage()" id="shareButton">📸 Generuj podgląd</button>
                         </div>
                     </div>
 
@@ -1516,6 +1442,10 @@
                                 <label style="display:block; margin-bottom:5px;">Temperatura otoczenia: <span id="wlTempVal" style="color:#FF6B00; font-weight:bold;">20°C</span></label>
                                 <input type="range" id="wlTemp" min="0" max="45" value="20" oninput="updateWaterCalc()" style="width:100%;">
                             </div>
+                            <div class="wl-row" style="margin-bottom:15px;">
+                                <label style="display:block; margin-bottom:5px;">Aktywność fizyczna dzisiaj: <span id="wlActivityVal" style="color:#FF6B00; font-weight:bold;">0 min</span></label>
+                                <input type="range" id="wlActivity" min="0" max="180" step="15" value="0" oninput="updateWaterCalc()" style="width:100%;">
+                            </div>
                         </div>
                         <div class="water-result" style="text-align: center;">
                             <div class="wr-val big-number" id="wrVal" style="font-size:2.2rem;">2.45 l</div>
@@ -1538,146 +1468,6 @@
             </div>
         </section>
 
-        <section id="opinie" style="margin-top: 80px;">
-            <div class="container">
-                <div id="tab-clients" class="tab-panel" style="background: transparent; border: none; padding: 0; margin-bottom: 50px;">
-                    <div class="transformations-section">
-                        <h3 style="text-align:center; font-size:2rem; margin-bottom:10px;">⭐ Opinie klientów i efekty</h3>
-                        <p style="text-align:center; color:#a0a0a0; margin-bottom:40px;">Średnia ocena: ⭐⭐⭐⭐⭐ 5.0/5.0 — prawdziwe opinie, prawdziwe rezultaty.</p>
-                        
-                        <div class="trans-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                            <div class="trans-card" style="background-color: var(--bg-card); border: 1px solid #222;">
-                                <div class="trans-avatar" style="font-size:2rem; margin-bottom:10px;">👩</div>
-                                <div class="trans-name" style="font-weight:bold; color:#FF6B00;">Karolina M., 34 lata</div>
-                                <div class="trans-stars" style="color:#f7d36b; margin-bottom:10px;">★★★★★</div>
-                                <div class="trans-stats" style="display:flex; gap:10px; margin-bottom:15px; font-size:0.8rem;">
-                                    <span class="trans-badge lost" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">−18 kg</span>
-                                    <span class="trans-badge time" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">5 miesięcy</span>
-                                    <span class="trans-badge diet" style="background:rgba(0, 180, 216, 0.15); color:#00B4D8; padding:5px 10px; border-radius:15px; font-weight:700;">Keto</span>
-                                </div>
-                                <div class="trans-quote" style="color:#ccc; font-style:italic; line-height:1.5;">„Pan Przemysław zrozumiał mój tryb życia i ułożył plan, który pasował do mojej kuchni. Po 5 miesiącach jestem w miejscu, o którym marzyłam."</div>
-                            </div>
-
-                            <div class="trans-card" style="background-color: var(--bg-card); border: 1px solid #222;">
-                                <div class="trans-avatar" style="font-size:2rem; margin-bottom:10px;">👨</div>
-                                <div class="trans-name" style="font-weight:bold; color:#FF6B00;">Marek M., 41 lat</div>
-                                <div class="trans-stars" style="color:#f7d36b; margin-bottom:10px;">★★★★★</div>
-                                <div class="trans-stats" style="display:flex; gap:10px; margin-bottom:15px; font-size:0.8rem;">
-                                    <span class="trans-badge lost" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">−12 kg</span>
-                                    <span class="trans-badge time" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">3 miesiące</span>
-                                    <span class="trans-badge diet" style="background:rgba(46, 196, 182, 0.15); color:#2EC4B6; padding:5px 10px; border-radius:15px; font-weight:700;">Low Carb</span>
-                                </div>
-                                <div class="trans-quote" style="color:#ccc; font-style:italic; line-height:1.5;">„Proste posiłki, niedrogi tryb. Bez wymyślania za to na ludzko. Pan Przemysław udowodnił, że dieta może być smaczna i skuteczna."</div>
-                            </div>
-
-                            <div class="trans-card" style="background-color: var(--bg-card); border: 1px solid #222;">
-                                <div class="trans-avatar" style="font-size:2rem; margin-bottom:10px;">👩</div>
-                                <div class="trans-name" style="font-weight:bold; color:#FF6B00;">Agnieszka R., 29 lat</div>
-                                <div class="trans-stars" style="color:#f7d36b; margin-bottom:10px;">★★★★★</div>
-                                <div class="trans-stats" style="display:flex; gap:10px; margin-bottom:15px; font-size:0.8rem;">
-                                    <span class="trans-badge lost" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">−9 kg</span>
-                                    <span class="trans-badge time" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">10 tygodni</span>
-                                    <span class="trans-badge diet" style="background:rgba(0, 180, 216, 0.15); color:#00B4D8; padding:5px 10px; border-radius:15px; font-weight:700;">Keto</span>
-                                </div>
-                                <div class="trans-quote" style="color:#ccc; font-style:italic; line-height:1.5;">„Chciałam schudnąć przed ślubem. Pan Przemysław ułożył mi plan na 10 tygodni i osiągnęłam swój cel. Suknia leżała idealnie! 💍"</div>
-                            </div>
-
-                            <div class="trans-card" style="background-color: var(--bg-card); border: 1px solid #222;">
-                                <div class="trans-avatar" style="font-size:2rem; margin-bottom:10px;">👨</div>
-                                <div class="trans-name" style="font-weight:bold; color:#FF6B00;">Kamil W., 37 lat</div>
-                                <div class="trans-stars" style="color:#f7d36b; margin-bottom:10px;">★★★★★</div>
-                                <div class="trans-stats" style="display:flex; gap:10px; margin-bottom:15px; font-size:0.8rem;">
-                                    <span class="trans-badge lost" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">−16 kg</span>
-                                    <span class="trans-badge time" style="background:#0a0a0a; padding:5px 10px; border-radius:15px; border: 1px solid #333;">4 miesiące</span>
-                                    <span class="trans-badge diet" style="background:rgba(0, 180, 216, 0.15); color:#00B4D8; padding:5px 10px; border-radius:15px; font-weight:700;">Keto</span>
-                                </div>
-                                <div class="trans-quote" style="color:#ccc; font-style:italic; line-height:1.5;">„Bałem się, że dieta to jałowe jedzenie i ciągły głód. Przemek, jako szef kuchni, pokazał mi zupełnie inny świat – posiłki smakują rewelacyjnie. Oprócz zrzuconych kilogramów, bardzo pomógł mi z mentalem i wyjściem ze strefy komfortu. Aplikacja robi super robotę przy śledzeniu postępów."</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="reviews-grid">
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Tomasz K., 47 lat</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-14 kg</span>
-                            <span class="review-tag">4 miesiące</span>
-                            <span class="review-tag keto">Keto</span>
-                        </div>
-                        <p class="review-text">"Dieta Keto poprawiła mi wyniki badań – cholesterol, cukier, wszystko wróciło do normy. Lekarz był zaskoczony!"</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Piotr S., 33 lata</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-11 kg</span>
-                            <span class="review-tag">2 miesiące</span>
-                            <span class="review-tag keto">Keto</span>
-                        </div>
-                        <p class="review-text">"Na keto naprawdę szybko leci! W 2 miesiące zrzuciłem 11 kg i czuję się najlepiej od lat."</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Marta D., 38 lat</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-8 kg</span>
-                            <span class="review-tag">6 tygodni</span>
-                            <span class="review-tag">Low Carb</span>
-                        </div>
-                        <p class="review-text">"Idealnie dobrany plan – jem to co lubię! Pan Przemek wziął pod uwagę wszystkie moje ulubione produkty, czym byłam zachwycona. 🥑"</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Kamila S.</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-10 kg</span>
-                            <span class="review-tag">5 miesięcy</span>
-                            <span class="review-tag keto">Keto</span>
-                        </div>
-                        <p class="review-text">"Nigdy nie przypuszczałam, że dieta może być tak prosta. Stałe wsparcie i jasne wskazówki dały świetne efekty."</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Barbara B.</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-13 kg</span>
-                            <span class="review-tag">3 miesiące</span>
-                            <span class="review-tag">Low Carb</span>
-                        </div>
-                        <p class="review-text">"Pełen profesjonalizm. Plan był dopasowany do mojego stylu życia i produktów, które lubię."</p>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-header">
-                            <span class="review-author">Gosia P.</span>
-                            <span class="stars">★★★★★</span>
-                        </div>
-                        <div class="review-tags">
-                            <span class="review-tag">-15 kg</span>
-                            <span class="review-tag">6 miesięcy</span>
-                            <span class="review-tag keto">Keto</span>
-                        </div>
-                        <p class="review-text">"Największą zaletą było codzienne wsparcie i szybkie odpowiedzi na każde pytanie."</p>
-                    </div>
-                </div>
-            </div>
-        </section>
     </main>
 
     <footer>
@@ -1690,7 +1480,6 @@
                 <a href="#kalkulator-sekcja">Kalkulator</a>
                 <a href="#o-mnie">O mnie</a>
                 <a href="#proces">Współpraca</a>
-                <a href="#opinie">Opinie</a>
                 <a href="https://projectweightdrop.blogspot.com/?m=1" target="_blank">Blog</a>
                 <a href="/internet-app/" data-i18n="navWebApp">Aplikacja internetowa</a>
                 <a href="/privacy.html">Polityka Prywatności</a>
@@ -1794,20 +1583,18 @@
         function updateWaterCalc() {
             const w = parseFloat(document.getElementById('wlWeight').value);
             const t = parseInt(document.getElementById('wlTemp').value);
+            const activityMinutes = parseInt(document.getElementById('wlActivity').value);
             
             document.getElementById('wlWeightVal').innerText = w + " kg";
             document.getElementById('wlTempVal').innerText = t + "°C";
+            document.getElementById('wlActivityVal').innerText = activityMinutes + " min";
 
             let baseWater = w * 0.033;
             if (t > 25) baseWater += 0.5;
             if (t > 35) baseWater += 0.5;
+            baseWater += (activityMinutes / 30) * 0.2;
 
             document.getElementById('wrVal').innerText = baseWater.toFixed(2) + " l";
-        }
-
-        // --- POMOCNICZE AKCJE DLA PRZYCISKÓW WYNIKÓW ---
-        function exportToPDF() {
-            window.print();
         }
 
         // --- INICJALIZACJA STRONY ---
@@ -1828,7 +1615,6 @@
                 navCalc: "Kalkulator",
                 navCooperation: "Współpraca",
                 navCerts: "Certyfikaty",
-                navReviews: "Opinie",
                 navBlog: "Blog",
                 navWebApp: "Aplikacja internetowa",
                 navDownload: "Google Play",
@@ -1839,10 +1625,11 @@
                 heroH1: "Odzyskaj kontrolę nad metabolizmem. Przestań się odchudzać, zacznij jeść.",
                 heroBenefit1: "🔥 Schudnij nawet 5-10 kg w 8 tygodni",
                 heroBenefit2: "🥗 Dieta dopasowana do Ciebie",
-                heroBenefit3: "📱 Stały kontakt WhatsApp",
+                heroBenefit3: "📱 Stały kontakt przez darmową aplikację i WhatsApp",
                 heroBtn: "Oblicz zapotrzebowanie",
                 statLabel1: "Zadowolonych klientów",
-                statLabel3: "Doświadczenia",
+                statValue3: "Ponad 20 lat",
+                statLabel3: "Doświadczenia jako kucharz",
                 statLabel4: "Korzysta w tej chwili",
                 // Dlaczego my
                 whyTitle: "Dlaczego <span>Project Weight Drop?</span>",
@@ -1887,8 +1674,8 @@
                 proc3h: "Plan i Aplikacja",
                 proc3p: "Otrzymujesz skrojony pod Ciebie plan żywieniowy oraz dostęp do aplikacji mobilnej.",
                 proc4h: "Miesięczna Opieka",
-                proc4p: "Jesteśmy w stałym kontakcie przez WhatsApp. Reaguję na zmiany i na bieżąco modyfikuję dietę.",
-                procBtn: "Zamów plan dietetyczny 99€",
+                proc4p: "Jesteśmy w stałym kontakcie przez darmową aplikację i WhatsApp. Reaguję na zmiany i na bieżąco modyfikuję dietę.",
+                procBtn: "Zamów plan dietetyczny",
                 procSub: "Rozpocznij miesiąc pełnej opieki dietetycznej",
                 // Kalkulator
                 calcTitle: "Sprawdź, jakiego planu potrzebujesz",
@@ -1918,31 +1705,27 @@
                 totalLossText: "Łączny szacowany spadek w pierwszym miesiącu:",
                 fatLossNote: "Body Fat oraz wartości ubytków są parametrami szacunkowymi. Pierwsze tygodnie adaptacji ketogenicznej wykazują przyspieszony spadek wagi wywołany uszczupleniem zapasów glikogenu i związanej z nim wody.",
                 calcActionText: "Wiedza to dopiero początek. Bez odpowiedniej strategii wynik z kalkulatora to tylko liczba.<br><strong style=\"color: var(--accent);\">Wybierz swój plan i zrób pierwszy, najważniejszy krok.</strong>",
-                pdfButton: "📄 Eksportuj wyniki", whatsappBtn: "💎 Zamów plan u Chefa", shareButton: "📸 Generuj podgląd",
+                whatsappBtn: "💎 Zamów plan u Chefa",
                 compareTitle: "⚖️ Porównanie rzutów makro: Keto vs Low Carb",
                 compareDesc: "Kalkulacja równoległa pod wybrany cel energetyczny.",
                 ketoModelTitle: "🥑 Model Ketogeniczny (75% T / 20% B / 5% W)",
                 lcModelTitle: "🥗 Model Low Carb (50% T / 30% B / 20% W)",
                 cmpKcal: "Kalorie celu", cmpFat: "Tłuszcze", cmpProt: "Białka", cmpCarbs: "Węglowodany",
                 waterSectionTitle: "💧 Korektor poziomu hydratacji",
-                wlWeightLabel: "Bieżąca waga:", wlTempLabel: "Temperatura otoczenia:",
+                wlWeightLabel: "Bieżąca waga:", wlTempLabel: "Temperatura otoczenia:", wlActivityLabel: "Aktywność fizyczna dzisiaj:",
                 wrLbl: "Sugerowany optymalny pobór płynów w ciągu doby",
                 eventSectionTitle: "📅 Strategia redukcji terminowej",
                 eventNamePlaceholder: "Nazwa celu (np. Wesele, Urlop 💍)",
                 eventCurrWPlaceholder: "Aktualna waga (kg)", eventGoalWPlaceholder: "Cel wagowy (kg)",
                 eventBtn: "Analizuj okno czasowe",
-                // Opinie
-                opinionsTitle: "⭐ Opinie klientów i efekty",
-                opinionsSubtitle: "Średnia ocena: ⭐⭐⭐⭐⭐ 5.0/5.0 — prawdziwe opinie, prawdziwe rezultaty.",
                 // Footer
                 footerCopy: "© 2026 Project Weight Drop. Wszystkie prawa zastrzeżone.",
                 footerCalc: "Kalkulator", footerAbout: "O mnie", footerCoop: "Współpraca",
-                footerOpinions: "Opinie", footerBlog: "Blog", footerPrivacy: "Polityka Prywatności", footerTerms: "Regulamin",
+                footerBlog: "Blog", footerPrivacy: "Polityka Prywatności", footerTerms: "Regulamin",
                 // BMI categories
                 bmiUnder: "Niedowaga", bmiNormal: "Norma", bmiOver: "Nadwaga", bmiObese: "Otyłość",
                 // alerts
                 alertFill: "Wprowadź podstawowe dane: wiek, wzrost oraz obecną wagę ciała.",
-                alertShare: "Podgląd wygenerowany pomyślnie. Zrób zrzut ekranu karty analizy, aby udostępnić go na Instagramie za pomocą aplikacji mobilnej Project Weight Drop.",
                 visitorSuffix: " osób",
                 eventFillRequired: "Uzupełnij wymagane pola (data, waga obecna oraz docelowa).",
                 eventPastDate: "Wybrana data już minęła lub przypada na dzień dzisiejszy.",
@@ -1957,7 +1740,6 @@
                 navCalc: "Calculator",
                 navCooperation: "Cooperation",
                 navCerts: "Certificates",
-                navReviews: "Reviews",
                 navBlog: "Blog",
                 navWebApp: "Web app",
                 navDownload: "Google Play",
@@ -1967,10 +1749,11 @@
                 heroH1: "Regain control over your metabolism. Stop dieting, start eating.",
                 heroBenefit1: "🔥 Lose up to 5-10 kg in 8 weeks",
                 heroBenefit2: "🥗 Diet tailored to you",
-                heroBenefit3: "📱 Constant WhatsApp support",
+                heroBenefit3: "📱 Constant contact through the free app and WhatsApp",
                 heroBtn: "Calculate your needs",
                 statLabel1: "Satisfied clients",
-                statLabel3: "Experience",
+                statValue3: "Over 20 years",
+                statLabel3: "Experience as a chef",
                 statLabel4: "Using right now",
                 whyTitle: "Why <span>Project Weight Drop?</span>",
                 f1h: "Blood test foundation",
@@ -2010,8 +1793,8 @@
                 proc3h: "Plan & App",
                 proc3p: "You receive a tailor-made nutrition plan and access to the mobile app.",
                 proc4h: "Monthly Care",
-                proc4p: "We stay in constant contact via WhatsApp. I react to changes and adjust your diet on an ongoing basis.",
-                procBtn: "Order a diet plan 99€",
+                proc4p: "We stay in constant contact through the free app and WhatsApp. I react to changes and adjust your diet on an ongoing basis.",
+                procBtn: "Order a diet plan",
                 procSub: "Start a month of full nutritional support",
                 calcTitle: "Find out what plan you need",
                 calcDesc: "Enter your basic data, choose your goal, deficit and diet. Target weight and waist circumference are optional.",
@@ -2040,27 +1823,24 @@
                 totalLossText: "Total estimated drop in the first month:",
                 fatLossNote: "Body Fat and loss values are estimated parameters. The first weeks of ketogenic adaptation show accelerated weight loss caused by depletion of glycogen stores and associated water.",
                 calcActionText: "Knowledge is just the beginning. Without the right strategy, your calculator result is just a number.<br><strong style=\"color: var(--accent);\">Choose your plan and take the first, most important step.</strong>",
-                pdfButton: "📄 Export results", whatsappBtn: "💎 Order plan from the Chef", shareButton: "📸 Generate preview",
+                whatsappBtn: "💎 Order plan from the Chef",
                 compareTitle: "⚖️ Macro comparison: Keto vs Low Carb",
                 compareDesc: "Parallel calculation for your selected energy goal.",
                 ketoModelTitle: "🥑 Ketogenic model (75% F / 20% P / 5% C)",
                 lcModelTitle: "🥗 Low Carb model (50% F / 30% P / 20% C)",
                 cmpKcal: "Goal calories", cmpFat: "Fats", cmpProt: "Proteins", cmpCarbs: "Carbs",
                 waterSectionTitle: "💧 Hydration level corrector",
-                wlWeightLabel: "Current weight:", wlTempLabel: "Ambient temperature:",
+                wlWeightLabel: "Current weight:", wlTempLabel: "Ambient temperature:", wlActivityLabel: "Physical activity today:",
                 wrLbl: "Suggested optimal daily fluid intake",
                 eventSectionTitle: "📅 Deadline reduction strategy",
                 eventNamePlaceholder: "Goal name (e.g. Wedding, Holiday 💍)",
                 eventCurrWPlaceholder: "Current weight (kg)", eventGoalWPlaceholder: "Target weight (kg)",
                 eventBtn: "Analyse time window",
-                opinionsTitle: "⭐ Client reviews and results",
-                opinionsSubtitle: "Average rating: ⭐⭐⭐⭐⭐ 5.0/5.0 — real reviews, real results.",
                 footerCopy: "© 2026 Project Weight Drop. All rights reserved.",
                 footerCalc: "Calculator", footerAbout: "About me", footerCoop: "Cooperation",
-                footerOpinions: "Reviews", footerBlog: "Blog", footerPrivacy: "Privacy Policy", footerTerms: "Terms",
+                footerBlog: "Blog", footerPrivacy: "Privacy Policy", footerTerms: "Terms",
                 bmiUnder: "Underweight", bmiNormal: "Normal", bmiOver: "Overweight", bmiObese: "Obese",
                 alertFill: "Please enter basic data: age, height and current body weight.",
-                alertShare: "Preview generated successfully. Take a screenshot of the analysis card to share it on Instagram using the Project Weight Drop mobile app.",
                 visitorSuffix: " people",
                 eventFillRequired: "Please fill in the required fields (date, current weight and target weight).",
                 eventPastDate: "The selected date has already passed or falls on today.",
@@ -2075,7 +1855,6 @@
                 navCalc: "Rechner",
                 navCooperation: "Zusammenarbeit",
                 navCerts: "Zertifikate",
-                navReviews: "Bewertungen",
                 navBlog: "Blog",
                 navWebApp: "Web-App",
                 navDownload: "Google Play",
@@ -2085,10 +1864,11 @@
                 heroH1: "Gewinne die Kontrolle über deinen Stoffwechsel zurück. Hör auf zu hungern, fang an zu essen.",
                 heroBenefit1: "🔥 Bis zu 5-10 kg in 8 Wochen abnehmen",
                 heroBenefit2: "🥗 Diät auf dich zugeschnitten",
-                heroBenefit3: "📱 Ständiger WhatsApp-Kontakt",
+                heroBenefit3: "📱 Ständiger Kontakt über die kostenlose App und WhatsApp",
                 heroBtn: "Bedarf berechnen",
                 statLabel1: "Zufriedene Kunden",
-                statLabel3: "Erfahrung",
+                statValue3: "Über 20 Jahre",
+                statLabel3: "Erfahrung als Koch",
                 statLabel4: "Gerade aktiv",
                 whyTitle: "Warum <span>Project Weight Drop?</span>",
                 f1h: "Grundlage in Blutuntersuchungen",
@@ -2128,8 +1908,8 @@
                 proc3h: "Plan & App",
                 proc3p: "Du erhältst einen maßgeschneiderten Ernährungsplan und Zugang zur mobilen App.",
                 proc4h: "Monatliche Betreuung",
-                proc4p: "Wir bleiben in ständigem WhatsApp-Kontakt. Ich reagiere auf Veränderungen und passe die Diät laufend an.",
-                procBtn: "Diätplan bestellen 99€",
+                proc4p: "Wir bleiben über die kostenlose App und WhatsApp in ständigem Kontakt. Ich reagiere auf Veränderungen und passe die Diät laufend an.",
+                procBtn: "Diätplan bestellen",
                 procSub: "Starte einen Monat voller Ernährungsbetreuung",
                 calcTitle: "Finde heraus, welchen Plan du brauchst",
                 calcDesc: "Gib deine Basisdaten ein, wähle dein Ziel, Defizit und Diät. Zielgewicht und Taillenumfang sind optional.",
@@ -2158,27 +1938,24 @@
                 totalLossText: "Gesamtgeschätzter Rückgang im ersten Monat:",
                 fatLossNote: "Körperfett und Verlustwerte sind Schätzparameter. Die ersten Wochen der ketogenen Adaptation zeigen einen beschleunigten Gewichtsverlust durch die Erschöpfung der Glykogenspeicher und des damit verbundenen Wassers.",
                 calcActionText: "Wissen ist erst der Anfang. Ohne die richtige Strategie ist das Ergebnis des Rechners nur eine Zahl.<br><strong style=\"color: var(--accent);\">Wähle deinen Plan und mache den ersten, wichtigsten Schritt.</strong>",
-                pdfButton: "📄 Ergebnisse exportieren", whatsappBtn: "💎 Plan beim Chef bestellen", shareButton: "📸 Vorschau generieren",
+                whatsappBtn: "💎 Plan beim Chef bestellen",
                 compareTitle: "⚖️ Makrovergleich: Keto vs Low Carb",
                 compareDesc: "Parallele Berechnung für dein gewähltes Energieziel.",
                 ketoModelTitle: "🥑 Ketogenes Modell (75% F / 20% E / 5% K)",
                 lcModelTitle: "🥗 Low Carb Modell (50% F / 30% E / 20% K)",
                 cmpKcal: "Zielkalorien", cmpFat: "Fette", cmpProt: "Eiweiße", cmpCarbs: "Kohlenhydrate",
                 waterSectionTitle: "💧 Hydratationskorrektur",
-                wlWeightLabel: "Aktuelles Gewicht:", wlTempLabel: "Umgebungstemperatur:",
+                wlWeightLabel: "Aktuelles Gewicht:", wlTempLabel: "Umgebungstemperatur:", wlActivityLabel: "Körperliche Aktivität heute:",
                 wrLbl: "Empfohlene optimale tägliche Flüssigkeitszufuhr",
                 eventSectionTitle: "📅 Termingebundene Reduktionsstrategie",
                 eventNamePlaceholder: "Zielname (z.B. Hochzeit, Urlaub 💍)",
                 eventCurrWPlaceholder: "Aktuelles Gewicht (kg)", eventGoalWPlaceholder: "Zielgewicht (kg)",
                 eventBtn: "Zeitfenster analysieren",
-                opinionsTitle: "⭐ Kundenbewertungen und Ergebnisse",
-                opinionsSubtitle: "Durchschnittsbewertung: ⭐⭐⭐⭐⭐ 5.0/5.0 — echte Bewertungen, echte Ergebnisse.",
                 footerCopy: "© 2026 Project Weight Drop. Alle Rechte vorbehalten.",
                 footerCalc: "Rechner", footerAbout: "Über mich", footerCoop: "Zusammenarbeit",
-                footerOpinions: "Bewertungen", footerBlog: "Blog", footerPrivacy: "Datenschutz", footerTerms: "AGB",
+                footerBlog: "Blog", footerPrivacy: "Datenschutz", footerTerms: "AGB",
                 bmiUnder: "Untergewicht", bmiNormal: "Normal", bmiOver: "Übergewicht", bmiObese: "Adipositas",
                 alertFill: "Bitte Basisdaten eingeben: Alter, Größe und aktuelles Körpergewicht.",
-                alertShare: "Vorschau erfolgreich generiert. Mache einen Screenshot der Analysekarte, um sie auf Instagram über die mobile App Project Weight Drop zu teilen.",
                 visitorSuffix: " Personen",
                 eventFillRequired: "Bitte fülle die Pflichtfelder aus (Datum, aktuelles Gewicht und Zielgewicht).",
                 eventPastDate: "Das ausgewählte Datum liegt bereits in der Vergangenheit oder ist heute.",
@@ -2251,6 +2028,7 @@
             // Stats bar (statLabels[1] is skipped - the stars item has no .stat-label)
             const statLabels = document.querySelectorAll('.stat-label');
             if (statLabels[0]) statLabels[0].innerHTML = t.statLabel1;
+            setText('chef-experience-value', t.statValue3);
             if (statLabels[1]) statLabels[1].innerHTML = t.statLabel3;
             if (statLabels[2]) statLabels[2].innerHTML = t.statLabel4;
 
@@ -2373,7 +2151,6 @@
             setText('fatLossNote', t.fatLossNote);
             const calcActionEl = document.querySelector('.action-buttons > p');
             if (calcActionEl) calcActionEl.innerHTML = t.calcActionText;
-            setText('pdfButton', t.pdfButton); setText('shareButton', t.shareButton);
             const waLink = document.getElementById('whatsappLink');
             if (waLink) waLink.innerHTML = t.whatsappBtn;
             // Compare section
@@ -2402,6 +2179,10 @@
                     const wt = document.getElementById('wlTempVal');
                     wLabels[1].innerHTML = t.wlTempLabel + ' <span id="wlTempVal" style="color:#FF6B00; font-weight:bold;">' + (wt ? wt.textContent : '20°C') + '</span>';
                 }
+                if (wLabels[2]) {
+                    const wa = document.getElementById('wlActivityVal');
+                    wLabels[2].innerHTML = t.wlActivityLabel + ' <span id="wlActivityVal" style="color:#FF6B00; font-weight:bold;">' + (wa ? wa.textContent : '0 min') + '</span>';
+                }
                 const wrLblEl = waterSection.querySelector('.wr-lbl');
                 if (wrLblEl) wrLblEl.innerHTML = t.wrLbl;
             }
@@ -2415,16 +2196,11 @@
                 const eBtn = eventSection.querySelector('button');
                 if (eBtn) eBtn.innerHTML = t.eventBtn;
             }
-            // Opinie
-            const opinH3 = document.querySelector('.transformations-section h3');
-            if (opinH3) opinH3.innerHTML = t.opinionsTitle;
-            const opinP = document.querySelector('.transformations-section > p');
-            if (opinP) opinP.innerHTML = t.opinionsSubtitle;
             // Footer
             const footerCopy = document.querySelector('.footer-copy');
             if (footerCopy) footerCopy.innerHTML = t.footerCopy;
             const footerLinks = document.querySelectorAll('.footer-links a');
-            const flMap = [t.footerCalc, t.footerAbout, t.footerCoop, t.footerOpinions, t.footerBlog, t.navWebApp, t.footerPrivacy, t.footerTerms];
+            const flMap = [t.footerCalc, t.footerAbout, t.footerCoop, t.footerBlog, t.navWebApp, t.footerPrivacy, t.footerTerms];
             footerLinks.forEach((a, i) => { if (flMap[i]) a.innerHTML = flMap[i]; });
 
             // Preserve the simulated value when switching languages.
@@ -2479,10 +2255,6 @@
                     <p style="color:#a0a0a0;">${evaluationText}</p>
                 </div>
             `;
-        }
-
-        function shareAsImage() {
-            alert(translations[currentLang].alertShare);
         }
 
         const _origCalculateDiet = calculateDiet;
