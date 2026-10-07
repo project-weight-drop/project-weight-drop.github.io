@@ -984,8 +984,10 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .profile-card { min-height: 88px; display: flex; align-items: center; gap: 12px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 12px; background: linear-gradient(135deg, #191919, #20160f); }
 .profile-card > #profile-avatar { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; border: 1px solid rgba(255,106,0,.55); border-radius: 8px; background: var(--orange-soft); color: var(--orange); }
 .profile-card > #profile-avatar svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.profile-card > div { min-width: 0; flex: 1 1 auto; }
 .profile-card h2 { margin: 2px 0 3px; font-size: 23px; }
 .profile-card div > p:last-child { margin: 0; color: var(--muted); }
+.profile-card #profile-email { overflow-wrap: anywhere; }
 .profile-card .eyebrow { margin: 0; }
 .profile-client-portal-link { width: 100%; min-height: 86px; display: flex; align-items: center; gap: 13px; margin-top: 10px; padding: 15px 17px; border: 1px solid rgba(255,106,0,.66); border-radius: 10px; background: #090909; box-shadow: 0 0 18px rgba(255,106,0,.08); color: var(--text); text-align: left; cursor: pointer; }
 .profile-client-portal-link:hover { border-color: var(--orange); box-shadow: 0 0 21px rgba(255,106,0,.16); }
@@ -1405,7 +1407,8 @@ body.modal-open { overflow: hidden; }
     .profile-memory-row { align-items: flex-start; flex-direction: column; }
     .profile-memory-actions { width: 100%; }
     .profile-memory-actions button { flex: 1; }
-    .profile-card > span { width: 76px; height: 76px; flex-basis: 76px; font-size: 28px; }
+    .profile-card > #profile-avatar { width: 76px; height: 76px; flex-basis: 76px; font-size: 28px; }
+    .profile-card > .profile-admin-badge { flex: 0 0 auto; width: auto; height: auto; font-size: 10px; white-space: nowrap; }
     .profile-setup-grid { grid-template-columns: 1fr; }
     .profile-setup-submit { align-items: stretch; flex-direction: column; }
     .profile-setup-submit button { width: 100%; }
