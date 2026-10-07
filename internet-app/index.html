@@ -12,11 +12,11 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://otffqsoiqbscdvgnrrpb.supabase.co; connect-src https://otffqsoiqbscdvgnrrpb.supabase.co wss://otffqsoiqbscdvgnrrpb.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261006-prod-cutover">
+    <link rel="stylesheet" href="./styles.css?v=20261007-individual-coaching">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261006-prod-cutover" defer></script>
-    <script src="./i18n.js?v=20261006-language-guard" defer></script>
-    <script src="./app.js?v=20261006-prod-cutover" defer></script>
+    <script src="./i18n.js?v=20261007-individual-coaching" defer></script>
+    <script src="./app.js?v=20261007-individual-coaching" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -274,6 +274,19 @@
                     <span id="profile-status-card"><b id="home-profile-status">Ładowanie…</b><small id="home-profile-detail">Sprawdzanie profilu DEV</small></span>
                     <span id="dashboard-status-card"><b id="home-data-status">Ładowanie…</b><small id="home-data-detail">Pobieranie danych dnia</small></span>
                 </div>
+
+                <section id="home-managed-plan" class="home-managed-plan" aria-labelledby="home-managed-plan-title" hidden>
+                    <p class="eyebrow" data-i18n="managedPlanTitle">Plan od Przemali</p>
+                    <h2 id="home-managed-plan-title" data-i18n="managedPlanHeading">Podopieczny jest prowadzony przez Przemysława</h2>
+                    <p data-i18n="managedPlanCopy">Indywidualne wyliczenia kalorii i makro są dobierane przez człowieka. Plan jest aktualizowany po pełnym miesiącu współpracy.</p>
+                    <div class="home-managed-plan-values">
+                        <span><small data-i18n="caloriesLabel">Kalorie</small><strong><i id="home-managed-plan-calories">—</i> kcal</strong></span>
+                        <span><small data-i18n="proteinLabel">Białko</small><strong><i id="home-managed-plan-protein">—</i> g</strong></span>
+                        <span><small data-i18n="fatLabel">Tłuszcz</small><strong><i id="home-managed-plan-fat">—</i> g</strong></span>
+                        <span><small data-i18n="carbsLabel">Węglowodany</small><strong><i id="home-managed-plan-carbs">—</i> g</strong></span>
+                    </div>
+                    <p class="home-managed-plan-footnote" data-i18n="managedPlanAuto">Zmiany zapisane przez Przemysława pojawią się tutaj automatycznie.</p>
+                </section>
 
                 <section class="dashboard-overview" aria-labelledby="home-heading" aria-busy="true" id="dashboard-overview">
                     <div class="home-today-heading"><h2 id="home-heading">Dzisiaj</h2><i></i><p id="dashboard-message" role="status" aria-live="polite">Pobieranie danych DEV…</p></div>
@@ -866,7 +879,7 @@
                 </div>
                 <button id="profile-client-portal-link" class="profile-client-portal-link" type="button">
                     <span class="profile-client-portal-icon"><svg><use href="#icon-community"></use></svg></span>
-                    <span class="profile-client-portal-copy"><strong id="profile-client-portal-title">Panel podopiecznego</strong><small id="profile-client-portal-subtitle">Tygodniowe pomiary i raporty</small></span>
+                    <span class="profile-client-portal-copy"><strong id="profile-client-portal-title">Panel podopiecznego</strong><small id="profile-client-portal-subtitle">Tygodniowe pomiary i raporty</small><em id="profile-client-portal-tagline" data-i18n="individualCoaching">Prowadzenie indywidualne</em></span>
                     <svg class="profile-client-portal-arrow" aria-hidden="true"><use href="#icon-arrow"></use></svg>
                 </button>
                 <section class="profile-access-card" aria-labelledby="profile-access-heading">
@@ -1015,7 +1028,7 @@
             <section class="route-page client-portal-page" data-page="client-portal" aria-labelledby="client-portal-heading">
                 <header class="client-portal-header">
                     <div>
-                        <p class="eyebrow">PROJECT WEIGHT DROP · DEV</p>
+                    <p class="eyebrow">PROJECT WEIGHT DROP · PROD</p>
                         <h2 id="client-portal-heading">Panel podopiecznego</h2>
                         <p id="client-portal-subheading">Cotygodniowe pomiary i raporty dla Przemali.</p>
                     </div>
@@ -1028,6 +1041,17 @@
             </section>
         </main>
     </div>
+</div>
+
+<div id="managed-monday-modal" class="modal-backdrop" hidden>
+    <section class="confirm-dialog managed-monday-dialog" role="dialog" aria-modal="true" aria-labelledby="managed-monday-title">
+        <p class="eyebrow" data-i18n="individualCoaching">Prowadzenie indywidualne</p>
+        <h2 id="managed-monday-title" data-i18n="managedMondayTitle">Podopieczny jest prowadzony przez Przemysława</h2>
+        <p data-i18n="managedMondayNoWeekly">Nie musisz ponownie wypełniać cotygodniowej aktualizacji danych.</p>
+        <p data-i18n="managedMondayHuman">Kalorie i makro są wyliczane indywidualnie i dopasowywane przez człowieka.</p>
+        <p data-i18n="managedMondayMonth">Aktualizacja planu następuje po pełnym miesiącu współpracy. Każda zmiana zapisana przez Przemysława pojawi się w aplikacji automatycznie.</p>
+        <div class="confirm-dialog-actions"><button id="managed-monday-close" class="dialog-secondary-button" type="button" data-i18n="close">Zamknij</button></div>
+    </section>
 </div>
 
 <div id="weight-entry-modal" class="modal-backdrop" hidden>

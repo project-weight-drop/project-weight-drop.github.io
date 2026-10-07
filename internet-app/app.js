@@ -4,7 +4,7 @@
     const REQUIRED_PROJECT_REF = "otffqsoiqbscdvgnrrpb";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
     const COMMUNITY_RULES_VERSION = "2026-09-09";
-    const WEB_APP_VERSION = "web-prod-2026.10.06-launch";
+    const WEB_APP_VERSION = "web-prod-2026.10.07-individual-coaching";
     // Consent storage accepts app_version values of at most 40 characters.
     const CONSENT_APP_VERSION = WEB_APP_VERSION.slice(0, 40);
     const config = window.PROJECT_WEIGHT_DROP_WEB_CONFIG;
@@ -43,6 +43,58 @@
             routes: { home: "Home", meals: "Posiłki", fridge: "Lodówka", coach: "AI Coach", progress: "Postępy", profile: "Profil", "client-portal": "Podopieczni" },
             supportChat: "Czat z Przemalą",
             clientPanel: "Panel podopiecznego",
+            individualCoaching: "Prowadzenie indywidualne",
+            clientPanelTitle: "Panel podopiecznego",
+            clientsAdmin: "Podopieczni",
+            clientReportsSubtitle: "Tygodniowe pomiary i raporty",
+            adminReportsSubtitle: "Raporty i historia tygodniowa",
+            adminListSubtitle: "Lista osób, status raportów i historia tygodniowa.",
+            clientPanelIntro: "Wpisz PIN od Przemali, aby wysyłać cotygodniowe pomiary i raporty.",
+            clientPanelLoading: "Wczytywanie danych panelu…",
+            dietLabel: "Rodzaj diety",
+            weightLabel: "Waga (kg)",
+            reportNote: "Notatka",
+            waistLabel: "Talia (cm)",
+            hipsLabel: "Biodra (cm)",
+            chestLabel: "Klatka (cm)",
+            armLabel: "Ramię (cm)",
+            thighLabel: "Udo (cm)",
+            wellbeingLabel: "Samopoczucie (1–10)",
+            energyLabel: "Energia (1–10)",
+            strengthLabel: "Siła (1–10)",
+            managedPlanTitle: "Plan od Przemali",
+            managedPlanHeading: "Podopieczny jest prowadzony przez Przemysława",
+            managedPlanCopy: "Indywidualne wyliczenia kalorii i makro są dobierane przez człowieka. Plan jest aktualizowany po pełnym miesiącu współpracy.",
+            managedPlanAuto: "Zmiany zapisane przez Przemysława pojawią się tutaj automatycznie.",
+            caloriesLabel: "Kalorie",
+            proteinLabel: "Białko",
+            fatLabel: "Tłuszcz",
+            carbsLabel: "Węglowodany",
+            managedMondayTitle: "Podopieczny jest prowadzony przez Przemysława",
+            managedMondayNoWeekly: "Nie musisz ponownie wypełniać cotygodniowej aktualizacji danych.",
+            managedMondayHuman: "Kalorie i makro są wyliczane indywidualnie i dopasowywane przez człowieka.",
+            managedMondayMonth: "Aktualizacja planu następuje po pełnym miesiącu współpracy. Każda zmiana zapisana przez Przemysława pojawi się w aplikacji automatycznie.",
+            close: "Zamknij",
+            adminPlanTitle: "Plan kalorii i makro",
+            adminPlanHint: "Ten plan ustala administrator. Zapisane wartości pojawią się u podopiecznego w aplikacji.",
+            savePlan: "ZATWIERDŹ I WYŚLIJ PLAN",
+            savingPlan: "ZAPISYWANIE PLANU…",
+            planSaved: "Plan został zapisany. Nowe wartości będą synchronizowane z aplikacją podopiecznego.",
+            reportUpdated: "Raport został poprawiony.",
+            reportDeleted: "Raport został usunięty.",
+            memberRemoved: "Dostęp podopiecznego został usunięty.",
+            adminReportEdit: "Edytuj raport",
+            adminReportDelete: "Usuń raport",
+            adminMemberDelete: "Usuń podopiecznego",
+            saveChanges: "ZAPISZ ZMIANY",
+            cancel: "Anuluj",
+            adminReportEditTitle: "Popraw raport tygodniowy",
+            adminReportDeleteConfirm: "Czy na pewno usunąć ten raport? Tej operacji nie można cofnąć.",
+            adminMemberDeleteConfirm: "Czy na pewno usunąć dostęp tego podopiecznego? Historia jego raportów zostanie obsłużona przez system zgodnie z zasadami administratora.",
+            reportSavedProduction: "Raport został zapisany i jest widoczny w panelu administratora.",
+            activationSuccess: "Panel został aktywowany i przypisany do Twojego konta.",
+            invalidPlanValues: "Sprawdź wartości planu. Dozwolone zakresy: 1000–6000 kcal, białko 20–400 g, tłuszcz 10–400 g, węglowodany 0–800 g.",
+            invalidReportValues: "Sprawdź wagę i oceny. Waga musi wynosić 35–350 kg, a każda ocena 1–10.",
             trialActiveHeading: "2 DNI PRO ZA DARMO — TEST JEST AKTYWNY",
             trialInactiveHeading: "OKRES TESTOWY PRO: 2 DNI OD REJESTRACJI",
             trialActiveCopy: "Masz teraz aktywny pełny dostęp próbny. Trwa przez pierwsze 2 dni od utworzenia konta — bez karty i bez automatycznej opłaty. Potem możesz korzystać z FREE albo ręcznie aktywować PRO.",
@@ -99,6 +151,58 @@
             routes: { home: "Home", meals: "Meals", fridge: "Fridge", coach: "AI Coach", progress: "Progress", profile: "Profile", "client-portal": "Clients" },
             supportChat: "Chat with Przemala",
             clientPanel: "Client panel",
+            individualCoaching: "Individual coaching",
+            clientPanelTitle: "Client panel",
+            clientsAdmin: "Clients",
+            clientReportsSubtitle: "Weekly measurements and reports",
+            adminReportsSubtitle: "Reports and weekly history",
+            adminListSubtitle: "People, report status and weekly history.",
+            clientPanelIntro: "Enter the PIN provided by Przemala to submit weekly measurements and reports.",
+            clientPanelLoading: "Loading panel data…",
+            dietLabel: "Diet type",
+            weightLabel: "Weight (kg)",
+            reportNote: "Note",
+            waistLabel: "Waist (cm)",
+            hipsLabel: "Hips (cm)",
+            chestLabel: "Chest (cm)",
+            armLabel: "Arm (cm)",
+            thighLabel: "Thigh (cm)",
+            wellbeingLabel: "Wellbeing (1–10)",
+            energyLabel: "Energy (1–10)",
+            strengthLabel: "Strength (1–10)",
+            managedPlanTitle: "Plan from Przemala",
+            managedPlanHeading: "You are personally coached by Przemysław",
+            managedPlanCopy: "Your calories and macros are individually set by a person. Your plan is updated after a full month of coaching.",
+            managedPlanAuto: "Changes saved by Przemysław will appear here automatically.",
+            caloriesLabel: "Calories",
+            proteinLabel: "Protein",
+            fatLabel: "Fat",
+            carbsLabel: "Carbohydrates",
+            managedMondayTitle: "You are personally coached by Przemysław",
+            managedMondayNoWeekly: "You do not need to complete the weekly data update again.",
+            managedMondayHuman: "Your calories and macros are calculated individually and adjusted by a person.",
+            managedMondayMonth: "Your plan is updated after a full month of coaching. Any change saved by Przemysław will appear in the app automatically.",
+            close: "Close",
+            adminPlanTitle: "Calorie and macro plan",
+            adminPlanHint: "This plan is set by the administrator. Saved values will appear in the client’s app.",
+            savePlan: "APPROVE AND SEND PLAN",
+            savingPlan: "SAVING PLAN…",
+            planSaved: "The plan was saved. New values will sync to the client’s app.",
+            reportUpdated: "The report was updated.",
+            reportDeleted: "The report was deleted.",
+            memberRemoved: "The client’s access was removed.",
+            adminReportEdit: "Edit report",
+            adminReportDelete: "Delete report",
+            adminMemberDelete: "Remove client",
+            saveChanges: "SAVE CHANGES",
+            cancel: "Cancel",
+            adminReportEditTitle: "Edit weekly report",
+            adminReportDeleteConfirm: "Delete this report? This action cannot be undone.",
+            adminMemberDeleteConfirm: "Remove this client’s access? The system will handle their report history according to administrator rules.",
+            reportSavedProduction: "The report was saved and is visible in the administrator panel.",
+            activationSuccess: "The panel is active and linked to your account.",
+            invalidPlanValues: "Check the plan values. Allowed ranges: 1,000–6,000 kcal, protein 20–400 g, fat 10–400 g, carbohydrates 0–800 g.",
+            invalidReportValues: "Check the weight and scores. Weight must be 35–350 kg and each score 1–10.",
             trialActiveHeading: "2 DAYS OF PRO FREE — TRIAL ACTIVE",
             trialInactiveHeading: "PRO TRIAL: 2 DAYS FROM REGISTRATION",
             trialActiveCopy: "Your full PRO trial is active for the first 2 days after account creation — no card and no automatic charge. Afterwards you can use FREE or activate PRO manually.",
@@ -155,6 +259,58 @@
             routes: { home: "Home", meals: "Mahlzeiten", fridge: "Kühlschrank", coach: "AI Coach", progress: "Fortschritt", profile: "Profil", "client-portal": "Kunden" },
             supportChat: "Chat mit Przemala",
             clientPanel: "Klientenbereich",
+            individualCoaching: "Individuelle Betreuung",
+            clientPanelTitle: "Klientenbereich",
+            clientsAdmin: "Klienten",
+            clientReportsSubtitle: "Wöchentliche Messungen und Berichte",
+            adminReportsSubtitle: "Berichte und Wochenverlauf",
+            adminListSubtitle: "Personen, Berichtsstatus und Wochenverlauf.",
+            clientPanelIntro: "Gib die von Przemala erhaltene PIN ein, um wöchentliche Messungen und Berichte zu senden.",
+            clientPanelLoading: "Paneldaten werden geladen…",
+            dietLabel: "Ernährungsform",
+            weightLabel: "Gewicht (kg)",
+            reportNote: "Notiz",
+            waistLabel: "Taille (cm)",
+            hipsLabel: "Hüfte (cm)",
+            chestLabel: "Brust (cm)",
+            armLabel: "Arm (cm)",
+            thighLabel: "Oberschenkel (cm)",
+            wellbeingLabel: "Wohlbefinden (1–10)",
+            energyLabel: "Energie (1–10)",
+            strengthLabel: "Kraft (1–10)",
+            managedPlanTitle: "Plan von Przemala",
+            managedPlanHeading: "Du wirst persönlich von Przemysław betreut",
+            managedPlanCopy: "Kalorien und Makros werden individuell von einem Menschen festgelegt. Der Plan wird nach einem vollen Monat Betreuung aktualisiert.",
+            managedPlanAuto: "Von Przemysław gespeicherte Änderungen erscheinen automatisch hier.",
+            caloriesLabel: "Kalorien",
+            proteinLabel: "Eiweiß",
+            fatLabel: "Fett",
+            carbsLabel: "Kohlenhydrate",
+            managedMondayTitle: "Du wirst persönlich von Przemysław betreut",
+            managedMondayNoWeekly: "Du musst die wöchentliche Datenaktualisierung nicht erneut ausfüllen.",
+            managedMondayHuman: "Kalorien und Makros werden individuell berechnet und von einem Menschen angepasst.",
+            managedMondayMonth: "Dein Plan wird nach einem vollen Monat Betreuung aktualisiert. Jede von Przemysław gespeicherte Änderung erscheint automatisch in der App.",
+            close: "Schließen",
+            adminPlanTitle: "Kalorien- und Makroplan",
+            adminPlanHint: "Dieser Plan wird vom Administrator festgelegt. Gespeicherte Werte erscheinen in der App des Klienten.",
+            savePlan: "PLAN BESTÄTIGEN UND SENDEN",
+            savingPlan: "PLAN WIRD GESPEICHERT…",
+            planSaved: "Der Plan wurde gespeichert. Neue Werte werden mit der App des Klienten synchronisiert.",
+            reportUpdated: "Der Bericht wurde aktualisiert.",
+            reportDeleted: "Der Bericht wurde gelöscht.",
+            memberRemoved: "Der Zugang des Klienten wurde entfernt.",
+            adminReportEdit: "Bericht bearbeiten",
+            adminReportDelete: "Bericht löschen",
+            adminMemberDelete: "Klienten entfernen",
+            saveChanges: "ÄNDERUNGEN SPEICHERN",
+            cancel: "Abbrechen",
+            adminReportEditTitle: "Wochenbericht korrigieren",
+            adminReportDeleteConfirm: "Diesen Bericht wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.",
+            adminMemberDeleteConfirm: "Zugang dieses Klienten wirklich entfernen? Das System behandelt den Berichtsverlauf gemäß den Administratorregeln.",
+            reportSavedProduction: "Der Bericht wurde gespeichert und ist im Administratorbereich sichtbar.",
+            activationSuccess: "Der Bereich ist aktiviert und deinem Konto zugeordnet.",
+            invalidPlanValues: "Prüfe die Planwerte. Zulässige Bereiche: 1.000–6.000 kcal, Eiweiß 20–400 g, Fett 10–400 g, Kohlenhydrate 0–800 g.",
+            invalidReportValues: "Prüfe Gewicht und Bewertungen. Das Gewicht muss 35–350 kg und jede Bewertung 1–10 betragen.",
             trialActiveHeading: "2 TAGE PRO KOSTENLOS — TEST AKTIV",
             trialInactiveHeading: "PRO-TEST: 2 TAGE AB REGISTRIERUNG",
             trialActiveCopy: "Dein vollständiger PRO-Test ist in den ersten 2 Tagen nach der Kontoerstellung aktiv — ohne Karte und ohne automatische Abbuchung. Danach kannst du FREE nutzen oder PRO manuell aktivieren.",
@@ -269,6 +425,8 @@
     const profileCompletionContinueButton = document.getElementById("profile-completion-continue-free");
     const profileAccessLink = document.getElementById("profile-access-link");
     const profileClientPortalLink = document.getElementById("profile-client-portal-link");
+    const managedMondayModal = document.getElementById("managed-monday-modal");
+    const managedMondayCloseButton = document.getElementById("managed-monday-close");
     const clientPortalContent = document.getElementById("client-portal-content");
     const clientPortalRefreshButton = document.getElementById("client-portal-refresh");
     const openProfileResetButton = document.getElementById("open-profile-reset");
@@ -425,6 +583,8 @@
     let clientPortalLoadSequence = 0;
     let clientPortalLoading = false;
     let clientPortalStatus = null;
+    let clientPortalNutritionPlanState = null;
+    let clientPortalAdminNutritionPlanState = null;
     let clientPortalMyReports = [];
     let clientPortalMembers = [];
     let clientPortalSelectedMember = null;
@@ -434,6 +594,12 @@
     let clientPortalSuccess = null;
     let clientPortalSubmitting = false;
     let clientPortalActivating = false;
+    let clientPortalAdminBusy = false;
+    let clientPortalEditingReportId = null;
+    let managedPlanSyncTimer = null;
+    let managedPlanSyncBusy = false;
+    let managedMondayPreviousFocus = null;
+    let managedMondayNoticeSessionKey = null;
     let authMode = "sign-in";
     let profileResetBusy = false;
     let profileResetPreviousFocus = null;
@@ -697,6 +863,9 @@
         }
         renderHomeDate();
         window.PWD_UI_I18N?.setLanguage(currentLanguage);
+        updateClientPortalEntry();
+        renderManagedPlanCard();
+        if (currentAppRoute === "client-portal" && !clientPortalLoading) renderClientPortal();
         if (currentCommunitySnapshots.system) renderChallengeList("system-challenge-list", currentCommunitySnapshots.system, "system");
         if (currentCommunitySnapshots.przemala) renderChallengeList("przemala-challenge-list", currentCommunitySnapshots.przemala, "przemala");
         if (announce) setAuthStatus(copy.languageSaved);
@@ -775,8 +944,15 @@
 
     function resetAccountViews() {
         clientPortalLoadSequence += 1;
+        if (managedPlanSyncTimer !== null) window.clearInterval(managedPlanSyncTimer);
+        managedPlanSyncTimer = null;
+        managedPlanSyncBusy = false;
+        if (managedMondayModal) managedMondayModal.hidden = true;
+        document.body.classList.remove("modal-open");
         clientPortalLoading = false;
         clientPortalStatus = null;
+        clientPortalNutritionPlanState = null;
+        clientPortalAdminNutritionPlanState = null;
         clientPortalMyReports = [];
         clientPortalMembers = [];
         clientPortalSelectedMember = null;
@@ -786,6 +962,8 @@
         clientPortalSuccess = null;
         clientPortalSubmitting = false;
         clientPortalActivating = false;
+        clientPortalAdminBusy = false;
+        clientPortalEditingReportId = null;
         currentMealPlan = null;
         selectedMealPlanDay = 0;
         currentCoachConversationId = null;
@@ -2098,6 +2276,18 @@
         if (coachSendButton) coachSendButton.disabled = !allowed;
     }
 
+    function renderManagedPlanCard() {
+        const card = document.getElementById("home-managed-plan");
+        const active = clientPortalStatus?.activated === true;
+        if (!card) return;
+        card.hidden = !active;
+        if (!active) return;
+        setText("home-managed-plan-calories", formatNumber(currentNutritionPlan?.calories_target));
+        setText("home-managed-plan-protein", formatNumber(currentNutritionPlan?.protein_g));
+        setText("home-managed-plan-fat", formatNumber(currentNutritionPlan?.fat_g));
+        setText("home-managed-plan-carbs", formatNumber(currentNutritionPlan?.carbs_g));
+    }
+
     function renderDashboard(data) {
         currentDashboardSnapshot = data || null;
         const caloriesTarget = finiteNumber(data?.calories_target) ?? finiteNumber(currentNutritionPlan?.calories_target);
@@ -2175,6 +2365,7 @@
         setText("home-data-status", "Połączono");
         setText("home-data-detail", "Aktualne dane własnego konta DEV");
         setStatusCard("dashboard-status-card", "ready");
+        renderManagedPlanCard();
     }
 
     function profileSetupValue(id, fallback = "") {
@@ -2913,7 +3104,7 @@
             ? `${event.event_name || "Cel z datą"} · ${event.event_date || ""}`.trim()
             : "Brak wydarzenia");
         const weeklyUpdate = document.getElementById("progress-weekly-update");
-        if (weeklyUpdate) weeklyUpdate.hidden = premium?.is_pro !== true;
+        if (weeklyUpdate) weeklyUpdate.hidden = premium?.is_pro !== true || clientPortalStatus?.activated === true;
         const dueDate = weeklyRecalibrationDueDate(currentProgressData.firstPlanDate, currentProgressData.latestCheckIn?.period_end);
         const weeklyHint = weeklyUpdate?.querySelector("small");
         if (weeklyHint) weeklyHint.textContent = dueDate
@@ -3027,6 +3218,15 @@
         const profile = currentProgressData.profile;
         const plan = currentNutritionPlan;
         const premium = currentPremiumSnapshot;
+        if (clientPortalStatus?.activated === true) {
+            const card = createWeeklyCard(languageText("individualCoaching"), "weekly-update-alert");
+            const message = document.createElement("p");
+            message.textContent = languageText("managedMondayNoWeekly");
+            card.append(message);
+            content.append(card);
+            appendWeeklyStatus(content);
+            return;
+        }
         const nextDueDate = weeklyRecalibrationDueDate(currentProgressData.firstPlanDate, currentProgressData.latestCheckIn?.period_end);
         const due = Boolean(nextDueDate && nextDueDate <= localToday());
 
@@ -3154,6 +3354,10 @@
 
     async function submitWeeklyUpdate(event) {
         event.preventDefault();
+        if (clientPortalStatus?.activated === true) {
+            setToolStatus("weekly-update-submit-status", languageText("managedMondayNoWeekly"), "error");
+            return;
+        }
         const form = event.currentTarget;
         const values = new FormData(form);
         const button = form.querySelector('[type="submit"]');
@@ -5652,12 +5856,13 @@
     }
 
     function updateClientPortalEntry() {
-        setText("profile-client-portal-title", currentUserIsAdmin ? "Podopieczni" : "Panel podopiecznego");
-        setText("profile-client-portal-subtitle", currentUserIsAdmin ? "Raporty i historia tygodniowa" : "Tygodniowe pomiary i raporty");
-        setText("client-portal-heading", currentUserIsAdmin ? "Podopieczni" : "Panel podopiecznego");
-        setText("client-portal-subheading", currentUserIsAdmin
-            ? "Lista osób, status raportów i historia tygodniowa."
-            : "Wpisz PIN od Przemali, aby wysyłać cotygodniowe pomiary i raporty.");
+        setText("profile-client-portal-title", currentUserIsAdmin ? languageText("clientsAdmin") : languageText("clientPanelTitle"));
+        setText("profile-client-portal-subtitle", currentUserIsAdmin ? languageText("adminReportsSubtitle") : languageText("clientReportsSubtitle"));
+        setText("profile-client-portal-tagline", languageText("individualCoaching"));
+        const tagline = document.getElementById("profile-client-portal-tagline");
+        if (tagline) tagline.hidden = currentUserIsAdmin;
+        setText("client-portal-heading", currentUserIsAdmin ? languageText("clientsAdmin") : languageText("clientPanelTitle"));
+        setText("client-portal-subheading", currentUserIsAdmin ? languageText("adminListSubtitle") : languageText("clientPanelIntro"));
     }
 
     function clientPortalEscape(value) {
@@ -5680,6 +5885,8 @@
     function clientPortalErrorMessage(error) {
         const code = typeof error === "string" ? error : String(error?.message || error?.code || "");
         const normalized = code.toLowerCase();
+        if (normalized.includes("plan_values_out_of_range") || normalized.includes("invalid_plan_values")) return languageText("invalidPlanValues");
+        if (normalized.includes("report_values_out_of_range") || normalized.includes("invalid_report_data")) return languageText("invalidReportValues");
         if (normalized.includes("too_many_attempts")) return "Za dużo prób wpisania PIN-u. Spróbuj ponownie za godzinę.";
         if (normalized.includes("invalid_pin")) return "PIN jest nieprawidłowy. Sprawdź go i spróbuj ponownie.";
         if (normalized.includes("already_submitted")) return "Raport za ten tydzień jest już zapisany.";
@@ -5702,14 +5909,160 @@
             .map(([label, value]) => `${label} ${clientPortalEscape(formatWeight(value))} cm`);
         const note = String(report.notes || "").trim();
         const sentAt = report.submitted_at ? formatDate(report.submitted_at, true) : "—";
+        const adminActions = currentUserIsAdmin && report.id
+            ? `<div class="client-portal-admin-actions"><button type="button" data-client-portal-action="edit-report" data-report-id="${clientPortalEscape(report.id)}">${languageText("adminReportEdit")}</button><button type="button" data-client-portal-action="delete-report" data-report-id="${clientPortalEscape(report.id)}">${languageText("adminReportDelete")}</button></div>${clientPortalEditingReportId === report.id ? clientPortalReportEditFormHtml(report) : ""}`
+            : "";
         return `<article class="client-portal-report-card">
             <header><strong>Tydzień od ${clientPortalEscape(formatDate(report.week_start))}</strong><span>${clientPortalEscape(clientPortalDietLabel(report.diet_type))}</span></header>
             <p class="client-portal-report-weight">Waga: ${clientPortalEscape(formatWeight(report.weight_kg))} kg</p>
             ${measures.length ? `<p class="client-portal-report-measures">${measures.join(" · ")}</p>` : ""}
             <p class="client-portal-report-ratings">Samopoczucie ${clientPortalEscape(report.wellbeing_score)}/10 · Energia ${clientPortalEscape(report.energy_score)}/10 · Siła ${clientPortalEscape(report.strength_score)}/10</p>
             ${note ? `<p class="client-portal-report-note">${clientPortalEscape(note)}</p>` : ""}
-            <small>Wysłano: ${clientPortalEscape(sentAt)}</small>
+            <small><span class="client-portal-member-state sent">WYSŁANO</span> · ${clientPortalEscape(sentAt)}</small>
+            ${adminActions}
         </article>`;
+    }
+
+    function clientPortalReportEditFormHtml(report) {
+        const field = (label, name, value, min, max, step = "0.1") => `<label class="client-portal-field">${languageText(label)}<input name="${name}" type="number" min="${min}" max="${max}" step="${step}" value="${value == null ? "" : clientPortalEscape(value)}" ${name === "weight_kg" ? "required" : ""}></label>`;
+        return `<form class="client-portal-admin-form client-portal-admin-report-edit" data-client-portal-admin-form="edit-report" data-report-id="${clientPortalEscape(report.id)}">
+            <h3>${languageText("adminReportEditTitle")}</h3>
+            <label class="client-portal-field">${languageText("dietLabel")}<select name="diet_type"><option value="keto" ${report.diet_type === "keto" ? "selected" : ""}>KETO</option><option value="low_carb" ${report.diet_type === "low_carb" ? "selected" : ""}>LOW CARB</option><option value="balance" ${["balance", "balanced"].includes(report.diet_type) ? "selected" : ""}>BALANCE</option></select></label>
+            ${field("weightLabel", "weight_kg", report.weight_kg, 35, 350)}
+            <div class="client-portal-admin-plan-fields">${field("waistLabel", "waist_cm", report.waist_cm, 20, 300)}${field("hipsLabel", "hips_cm", report.hips_cm, 20, 300)}${field("chestLabel", "chest_cm", report.chest_cm, 20, 300)}${field("armLabel", "arm_cm", report.arm_cm, 10, 150)}${field("thighLabel", "thigh_cm", report.thigh_cm, 20, 200)}</div>
+            <div class="client-portal-admin-plan-fields">${field("wellbeingLabel", "wellbeing_score", report.wellbeing_score, 1, 10, "1")}${field("energyLabel", "energy_score", report.energy_score, 1, 10, "1")}${field("strengthLabel", "strength_score", report.strength_score, 1, 10, "1")}</div>
+            <label class="client-portal-field">${languageText("reportNote")}<textarea name="notes" maxlength="1200" rows="3">${clientPortalEscape(report.notes || "")}</textarea></label>
+            <div class="client-portal-admin-actions"><button class="tool-primary-button" type="submit">${languageText("saveChanges")}</button><button type="button" data-client-portal-action="cancel-edit-report">${languageText("cancel")}</button></div>
+        </form>`;
+    }
+
+    function clientPortalAdminPlanFormHtml() {
+        const plan = clientPortalAdminNutritionPlanState?.active_plan || {};
+        const field = (label, name, value, min, max) => `<label class="client-portal-field">${label}<input name="${name}" type="number" min="${min}" max="${max}" step="1" value="${value == null ? "" : clientPortalEscape(value)}" required></label>`;
+        return `<section class="client-portal-card client-portal-admin-tools">
+            <p class="eyebrow">${languageText("individualCoaching")}</p>
+            <h3>${languageText("adminPlanTitle")}</h3>
+            <p>${languageText("adminPlanHint")}</p>
+            <form class="client-portal-admin-form" data-client-portal-admin-form="plan">
+                <div class="client-portal-admin-plan-fields">
+                    ${field(languageText("caloriesLabel"), "calories_target", plan.calories_target, 1000, 6000)}
+                    ${field(languageText("proteinLabel"), "protein_g", plan.protein_g, 20, 400)}
+                    ${field(languageText("fatLabel"), "fat_g", plan.fat_g, 10, 400)}
+                    ${field(languageText("carbsLabel"), "carbs_g", plan.carbs_g, 0, 800)}
+                </div>
+                <button class="tool-primary-button" type="submit" ${clientPortalAdminBusy ? "disabled" : ""}>${clientPortalAdminBusy ? languageText("savingPlan") : languageText("savePlan")}</button>
+            </form>
+            <button class="client-portal-back-list" type="button" data-client-portal-action="remove-member" ${clientPortalAdminBusy ? "disabled" : ""}>${languageText("adminMemberDelete")}</button>
+        </section>`;
+    }
+
+    function showManagedMondayNotice() {
+        if (!managedMondayModal || clientPortalStatus?.activated !== true || !activeUserId) return;
+        const today = localToday();
+        const weekday = new Date(`${today}T12:00:00`).getDay();
+        if (weekday !== 1) return;
+        const storageKey = `project-weight-drop-managed-monday:${activeUserId}`;
+        try {
+            if (window.localStorage.getItem(storageKey) === today) return;
+            window.localStorage.setItem(storageKey, today);
+        } catch {
+            // Keep the once-per-session fallback scoped to this account below.
+            if (managedMondayNoticeSessionKey === `${activeUserId}:${today}`) return;
+            managedMondayNoticeSessionKey = `${activeUserId}:${today}`;
+        }
+        managedMondayPreviousFocus = document.activeElement;
+        managedMondayModal.hidden = false;
+        document.body.classList.add("modal-open");
+        managedMondayCloseButton?.focus();
+    }
+
+    function closeManagedMondayNotice() {
+        if (!managedMondayModal) return;
+        managedMondayModal.hidden = true;
+        document.body.classList.remove("modal-open");
+        managedMondayPreviousFocus?.focus?.();
+        managedMondayPreviousFocus = null;
+    }
+
+    function applyClientPortalNutritionPlan(state) {
+        clientPortalNutritionPlanState = state || null;
+        const activePlan = state?.active_plan;
+        if (activePlan && typeof activePlan === "object") {
+            currentNutritionPlan = { ...(currentNutritionPlan || {}), ...activePlan };
+            renderDashboard(currentDashboardSnapshot);
+            renderProfileAccess(currentPremiumSnapshot, currentDashboardSnapshot, currentNutritionPlan);
+        } else {
+            renderManagedPlanCard();
+        }
+        renderProgressHub(
+            currentDashboardSnapshot,
+            currentProgressData.weekly,
+            currentProgressData.daily,
+            currentProgressData.measurements?.[0],
+            currentProgressData.event,
+            currentPremiumSnapshot
+        );
+    }
+
+    function managedPlanNeedsRefresh(remotePlan) {
+        if (!remotePlan) return false;
+        const current = currentNutritionPlan || {};
+        return ["version", "calories_target", "protein_g", "fat_g", "carbs_g"].some((key) =>
+            Number(remotePlan[key] ?? 0) !== Number(current[key] ?? 0)
+        );
+    }
+
+    async function refreshManagedPlanIfChanged() {
+        if (!client || !activeUserId || currentUserIsAdmin || profileBootstrapState !== "ready" || managedPlanSyncBusy || document.visibilityState !== "visible") return;
+        managedPlanSyncBusy = true;
+        const userId = activeUserId;
+        try {
+            const statusResult = await client.rpc("get_client_portal_status");
+            if (statusResult.error || userId !== activeUserId) return;
+            const status = statusResult.data || { activated: false };
+            if (status.error) return;
+            const wasActivated = clientPortalStatus?.activated === true;
+            const isActivated = status.activated === true;
+            if (wasActivated !== isActivated) {
+                await refreshAccountData();
+                return;
+            }
+            const weekChanged = status.current_week_start !== clientPortalStatus?.current_week_start;
+            clientPortalStatus = status;
+            if (isActivated) {
+                const planResult = await client.rpc("get_my_client_nutrition_plan");
+                if (planResult.error || userId !== activeUserId) return;
+                if (planResult.data?.error) return;
+                if (managedPlanNeedsRefresh(planResult.data?.active_plan)) {
+                    await refreshAccountData();
+                    return;
+                }
+                clientPortalNutritionPlanState = planResult.data;
+                renderManagedPlanCard();
+                if (weekChanged && currentAppRoute === "client-portal") void loadClientPortalData();
+            } else {
+                renderManagedPlanCard();
+                renderProgressHub(
+                    currentDashboardSnapshot,
+                    currentProgressData.weekly,
+                    currentProgressData.daily,
+                    currentProgressData.measurements?.[0],
+                    currentProgressData.event,
+                    currentPremiumSnapshot
+                );
+            }
+        } catch {
+            // A temporary sync failure leaves the last confirmed plan visible; retry on focus or next interval.
+        } finally {
+            managedPlanSyncBusy = false;
+        }
+    }
+
+    function startManagedPlanSync() {
+        if (managedPlanSyncTimer !== null) window.clearInterval(managedPlanSyncTimer);
+        managedPlanSyncTimer = null;
+        if (!client || !activeUserId || currentUserIsAdmin) return;
+        managedPlanSyncTimer = window.setInterval(() => void refreshManagedPlanIfChanged(), 60_000);
     }
 
     function clientPortalMemberCardHtml(member) {
@@ -5792,10 +6145,10 @@
         updateClientPortalEntry();
         const heading = document.getElementById("client-portal-heading");
         const subheading = document.getElementById("client-portal-subheading");
-        if (heading) heading.textContent = currentUserIsAdmin ? "Podopieczni" : "Panel podopiecznego";
+        if (heading) heading.textContent = currentUserIsAdmin ? languageText("clientsAdmin") : languageText("clientPanelTitle");
         if (subheading) subheading.textContent = currentUserIsAdmin
-            ? clientPortalSelectedMember ? "Historia raportów tygodniowych." : "Lista osób, status raportów i historia tygodniowa."
-            : "Cotygodniowe pomiary i raporty dla Przemali.";
+            ? clientPortalSelectedMember ? languageText("adminReportsSubtitle") : languageText("adminListSubtitle")
+            : languageText("clientPanelIntro");
         if (!clientPortalContent) return;
         clientPortalContent.setAttribute("aria-busy", String(clientPortalLoading));
         if (clientPortalRefreshButton) clientPortalRefreshButton.disabled = clientPortalLoading;
@@ -5806,7 +6159,7 @@
             status.classList.toggle("success", Boolean(clientPortalSuccess && !clientPortalError));
         }
         if (clientPortalLoading) {
-            clientPortalContent.innerHTML = `<div class="client-portal-loading"><span></span><p>Wczytywanie danych z DEV…</p></div>`;
+            clientPortalContent.innerHTML = `<div class="client-portal-loading"><span></span><p>${languageText("clientPanelLoading")}</p></div>`;
             return;
         }
         if (clientPortalError && !clientPortalStatus && !clientPortalMembers.length && !clientPortalSelectedMember) {
@@ -5820,6 +6173,7 @@
                 clientPortalContent.innerHTML = `<div class="client-portal-admin-detail">
                     <button class="client-portal-back-list" type="button" data-client-portal-action="back-to-members">← Wróć do podopiecznych</button>
                     <section class="client-portal-card client-portal-member-profile"><p class="eyebrow">HISTORIA PODOPIECZNEGO</p><h3>${clientPortalEscape(clientPortalSelectedMember.display_name || "Podopieczny")}</h3><p>${clientPortalEscape(clientPortalSelectedMember.email || "")}</p><p>Raporty: ${clientPortalEscape(formatNumber(clientPortalSelectedMember.report_count ?? reports.length))} · Ostatni tydzień: ${clientPortalEscape(formatDate(clientPortalSelectedMember.current_week_start))}</p></section>
+                    ${clientPortalAdminPlanFormHtml()}
                     ${reports.length ? reports.map(clientPortalReportCardHtml).join("") : `<div class="client-portal-notice">Brak wysłanych raportów.</div>`}
                 </div>`;
             } else {
@@ -5840,7 +6194,8 @@
         const submitted = clientPortalStatus.submitted_this_week === true;
         const thisWeekReport = clientPortalMyReports.find((report) => report.week_start === weekStart) || (submitted ? clientPortalMyReports[0] : null);
         const previousReports = clientPortalMyReports.filter((report) => report !== thisWeekReport);
-        clientPortalContent.innerHTML = `<section class="client-portal-week-card"><p class="eyebrow">TEN TYDZIEŃ</p><h3>Raport za tydzień od ${clientPortalEscape(formatDate(weekStart))}</h3><p>${submitted ? "Raport zapisany. Historia pozostaje dostępna na tym koncie." : "Uzupełnij pomiary i samopoczucie, a następnie wyślij raport do panelu Przemali."}</p></section>
+        clientPortalContent.innerHTML = `<section class="client-portal-card individual-coaching-card"><p class="eyebrow">${languageText("individualCoaching")}</p><h3>${languageText("managedPlanHeading")}</h3><p>${languageText("managedPlanCopy")}</p><p>${languageText("managedPlanAuto")}</p></section>
+            <section class="client-portal-week-card"><p class="eyebrow">TEN TYDZIEŃ</p><h3>Raport za tydzień od ${clientPortalEscape(formatDate(weekStart))}</h3><p>${submitted ? "Raport zapisany. Historia pozostaje dostępna na tym koncie." : "Uzupełnij pomiary i samopoczucie, a następnie wyślij raport do panelu Przemali."}</p></section>
             ${submitted
                 ? `<div class="client-portal-notice success">Raport za ten tydzień został już wysłany. Możesz go zobaczyć poniżej; nie można go edytować.</div>${thisWeekReport ? clientPortalReportCardHtml(thisWeekReport) : ""}`
                 : clientPortalReportFormHtml()}
@@ -5870,11 +6225,18 @@
         try {
             if (currentUserIsAdmin) {
                 if (clientPortalSelectedMember) {
-                    const { data, error } = await client.rpc("get_client_portal_admin_history", { p_user_id: clientPortalSelectedMember.user_id });
-                    if (error) throw error;
-                    if (data?.error) throw new Error(data.error);
-                    clientPortalMemberHistory = Array.isArray(data) ? data : [];
+                    const [historyResult, planResult] = await Promise.all([
+                        client.rpc("get_client_portal_admin_history", { p_user_id: clientPortalSelectedMember.user_id }),
+                        client.rpc("get_client_portal_admin_nutrition_plan", { p_user_id: clientPortalSelectedMember.user_id })
+                    ]);
+                    if (historyResult.error) throw historyResult.error;
+                    if (historyResult.data?.error) throw new Error(historyResult.data.error);
+                    if (planResult.error) throw planResult.error;
+                    if (planResult.data?.error) throw new Error(planResult.data.error);
+                    clientPortalMemberHistory = Array.isArray(historyResult.data) ? historyResult.data : [];
+                    clientPortalAdminNutritionPlanState = planResult.data || null;
                 } else {
+                    clientPortalAdminNutritionPlanState = null;
                     const { data, error } = await client.rpc("get_client_portal_admin_dashboard");
                     if (error) throw error;
                     if (data?.error) throw new Error(data.error);
@@ -5886,11 +6248,26 @@
                 if (data?.error) throw new Error(data.error);
                 clientPortalStatus = data || { activated: false };
                 if (clientPortalStatus.activated === true) {
-                    const reportsResult = await client.rpc("get_my_client_weekly_reports");
+                    const [reportsResult, planResult] = await Promise.all([
+                        client.rpc("get_my_client_weekly_reports"),
+                        client.rpc("get_my_client_nutrition_plan")
+                    ]);
                     if (reportsResult.error) throw reportsResult.error;
                     clientPortalMyReports = Array.isArray(reportsResult.data) ? reportsResult.data : [];
+                    if (planResult.error) {
+                        clientPortalNutritionPlanState = null;
+                        clientPortalError = clientPortalErrorMessage(planResult.error);
+                    } else if (planResult.data?.error && planResult.data.activated !== false) {
+                        clientPortalNutritionPlanState = null;
+                        clientPortalError = clientPortalErrorMessage(planResult.data.error);
+                    } else {
+                        applyClientPortalNutritionPlan(planResult.data);
+                    }
+                    showManagedMondayNotice();
                 } else {
+                    clientPortalNutritionPlanState = null;
                     clientPortalMyReports = [];
+                    renderManagedPlanCard();
                 }
             }
         } catch (error) {
@@ -5900,6 +6277,15 @@
         } finally {
             if (sequence === clientPortalLoadSequence && userId === activeUserId) {
                 clientPortalLoading = false;
+                renderManagedPlanCard();
+                renderProgressHub(
+                    currentDashboardSnapshot,
+                    currentProgressData.weekly,
+                    currentProgressData.daily,
+                    currentProgressData.measurements?.[0],
+                    currentProgressData.event,
+                    currentPremiumSnapshot
+                );
                 renderClientPortal();
             }
         }
@@ -5923,7 +6309,7 @@
             if (error) throw error;
             if (data?.ok !== true || data?.activated !== true) throw new Error(data?.error || "invalid_pin");
             clientPortalPin = "";
-            clientPortalSuccess = "Panel został aktywowany i przypisany do Twojego konta.";
+            clientPortalSuccess = languageText("activationSuccess");
             await loadClientPortalData({ preserveMessages: true });
         } catch (error) {
             clientPortalError = clientPortalErrorMessage(error);
@@ -5999,7 +6385,7 @@
             if (error) throw error;
             if (data?.ok !== true) throw new Error(data?.error || "report_save_failed");
             reportSaved = true;
-            clientPortalSuccess = "Raport został zapisany w DEV i jest widoczny w panelu Przemali.";
+            clientPortalSuccess = languageText("reportSavedProduction");
             await loadClientPortalData({ preserveMessages: true });
         } catch (error) {
             clientPortalError = clientPortalErrorMessage(error);
@@ -6011,6 +6397,124 @@
                 if (button) button.textContent = "WYŚLIJ RAPORT DO PRZEMALI";
                 updateClientPortalReportButton();
             }
+        }
+    }
+
+    async function submitClientPortalAdminForm(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        if (!currentUserIsAdmin || clientPortalAdminBusy || !clientPortalSelectedMember || !client) return;
+        const values = new FormData(form);
+        const formType = form.dataset.clientPortalAdminForm;
+        clientPortalAdminBusy = true;
+        clientPortalError = null;
+        renderClientPortal();
+        try {
+            if (formType === "plan") {
+                const calories = Number(values.get("calories_target"));
+                const protein = Number(values.get("protein_g"));
+                const fat = Number(values.get("fat_g"));
+                const carbs = Number(values.get("carbs_g"));
+                if (![calories, protein, fat, carbs].every(Number.isInteger)
+                    || calories < 1000 || calories > 6000
+                    || protein < 20 || protein > 400
+                    || fat < 10 || fat > 400
+                    || carbs < 0 || carbs > 800) {
+                    throw new Error("plan_values_out_of_range");
+                }
+                const result = await client.rpc("admin_apply_client_nutrition_plan", {
+                    p_user_id: clientPortalSelectedMember.user_id,
+                    p_request_id: null,
+                    p_calories_target: calories,
+                    p_protein_g: protein,
+                    p_fat_g: fat,
+                    p_carbs_g: carbs
+                });
+                if (result.error) throw result.error;
+                if (result.data?.ok !== true) throw new Error(result.data?.error || "plan_save_failed");
+                clientPortalSuccess = languageText("planSaved");
+                await loadClientPortalData({ preserveMessages: true });
+            } else if (formType === "edit-report") {
+                const reportId = form.dataset.reportId;
+                const weight = clientPortalParseDecimal(values.get("weight_kg"));
+                const optionalNumber = (name) => clientPortalParseDecimal(values.get(name));
+                const score = (name) => Number(values.get(name));
+                const scores = [score("wellbeing_score"), score("energy_score"), score("strength_score")];
+                if (!reportId || weight === null || weight < 35 || weight > 350
+                    || scores.some((value) => !Number.isInteger(value) || value < 1 || value > 10)) {
+                    throw new Error("report_values_out_of_range");
+                }
+                const result = await client.rpc("admin_update_client_weekly_report", {
+                    p_report_id: reportId,
+                    p_diet_type: String(values.get("diet_type") || "balance"),
+                    p_weight_kg: weight,
+                    p_waist_cm: optionalNumber("waist_cm"),
+                    p_hips_cm: optionalNumber("hips_cm"),
+                    p_chest_cm: optionalNumber("chest_cm"),
+                    p_arm_cm: optionalNumber("arm_cm"),
+                    p_thigh_cm: optionalNumber("thigh_cm"),
+                    p_wellbeing_score: scores[0],
+                    p_energy_score: scores[1],
+                    p_strength_score: scores[2],
+                    p_notes: String(values.get("notes") || "").trim() || null
+                });
+                if (result.error) throw result.error;
+                if (result.data?.ok !== true) throw new Error(result.data?.error || "report_update_failed");
+                clientPortalEditingReportId = null;
+                clientPortalSuccess = languageText("reportUpdated");
+                await loadClientPortalData({ preserveMessages: true });
+            }
+        } catch (error) {
+            clientPortalError = clientPortalErrorMessage(error);
+        } finally {
+            clientPortalAdminBusy = false;
+            renderClientPortal();
+        }
+    }
+
+    async function performClientPortalAdminAction(action, button) {
+        if (!currentUserIsAdmin || clientPortalAdminBusy || !client) return;
+        const reportId = button.dataset.reportId;
+        const memberId = clientPortalSelectedMember?.user_id;
+        if (action === "edit-report") {
+            if (!clientPortalMemberHistory.some((report) => report.id === reportId)) return;
+            clientPortalEditingReportId = clientPortalEditingReportId === reportId ? null : reportId;
+            renderClientPortal();
+            return;
+        }
+        if (action === "cancel-edit-report") {
+            clientPortalEditingReportId = null;
+            renderClientPortal();
+            return;
+        }
+        if (action === "delete-report") {
+            if (!reportId || !window.confirm(languageText("adminReportDeleteConfirm"))) return;
+        } else if (action === "remove-member") {
+            if (!memberId || !window.confirm(languageText("adminMemberDeleteConfirm"))) return;
+        } else return;
+
+        clientPortalAdminBusy = true;
+        clientPortalError = null;
+        try {
+            const result = action === "delete-report"
+                ? await client.rpc("admin_delete_client_weekly_report", { p_report_id: reportId })
+                : await client.rpc("admin_remove_client_portal_member", { p_user_id: memberId });
+            if (result.error) throw result.error;
+            if (result.data?.ok !== true) throw new Error(result.data?.error || "admin_action_failed");
+            if (action === "remove-member") {
+                clientPortalSelectedMember = null;
+                clientPortalAdminNutritionPlanState = null;
+                clientPortalMemberHistory = [];
+                clientPortalSuccess = languageText("memberRemoved");
+            } else {
+                clientPortalSuccess = languageText("reportDeleted");
+            }
+            await loadClientPortalData({ preserveMessages: true });
+        } catch (error) {
+            clientPortalError = clientPortalErrorMessage(error);
+        } finally {
+            clientPortalAdminBusy = false;
+            renderClientPortal();
         }
     }
 
@@ -6107,6 +6611,29 @@
 
         if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
 
+        currentUserIsAdmin = adminStatus === true;
+        if (!currentUserIsAdmin) {
+            try {
+                const portalStatusResult = await client.rpc("get_client_portal_status");
+                if (!portalStatusResult.error && !portalStatusResult.data?.error) {
+                    clientPortalStatus = portalStatusResult.data || { activated: false };
+                    if (clientPortalStatus.activated === true) {
+                        const planStateResult = await client.rpc("get_my_client_nutrition_plan");
+                        if (!planStateResult.error && !planStateResult.data?.error) {
+                            clientPortalNutritionPlanState = planStateResult.data;
+                            if (planStateResult.data?.active_plan) {
+                                planResult.data = { ...(planResult.data || {}), ...planStateResult.data.active_plan };
+                            }
+                        }
+                    }
+                }
+            } catch {
+                clientPortalStatus = null;
+                clientPortalNutritionPlanState = null;
+            }
+        }
+        if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
+
         const bodyMeasurements = bodyResult.error
             ? []
             : Array.isArray(bodyResult.data)
@@ -6128,7 +6655,6 @@
 
         currentNutritionPlan = planResult.error ? null : planResult.data;
         currentPremiumSnapshot = premiumResult.error ? null : premiumResult.data;
-        currentUserIsAdmin = adminStatus === true;
         updateClientPortalEntry();
         premiumSnapshotUnavailable = Boolean(premiumResult.error);
         updateFridgeQuota();
@@ -6224,6 +6750,8 @@
         updateMealGenerationAccess();
         healthToolsContent?.setAttribute("aria-busy", "false");
         if (!stillNeedsProfileSetup) navigateTo(preferredRoute, false);
+        if (clientPortalStatus?.activated === true) showManagedMondayNotice();
+        startManagedPlanSync();
         void loadCommunityData(user);
     }
 
@@ -6905,6 +7433,10 @@
     });
     profileClientPortalLink?.addEventListener("click", () => navigateTo("client-portal"));
     clientPortalRefreshButton?.addEventListener("click", () => void loadClientPortalData());
+    managedMondayCloseButton?.addEventListener("click", closeManagedMondayNotice);
+    managedMondayModal?.addEventListener("click", (event) => {
+        if (event.target === managedMondayModal) closeManagedMondayNotice();
+    });
     clientPortalContent?.addEventListener("input", (event) => {
         const input = event.target;
         if (input.id === "client-portal-pin") {
@@ -6922,15 +7454,21 @@
         updateClientPortalReportButton();
     });
     clientPortalContent?.addEventListener("change", updateClientPortalReportButton);
+    clientPortalContent?.addEventListener("submit", (event) => {
+        if (event.target.matches("[data-client-portal-admin-form]")) void submitClientPortalAdminForm(event);
+    });
     clientPortalContent?.addEventListener("click", (event) => {
         const button = event.target.closest("[data-client-portal-action]");
         if (!button) return;
         const action = button.dataset.clientPortalAction;
         if (action === "refresh") {
             void loadClientPortalData();
+        } else if (["edit-report", "cancel-edit-report", "delete-report", "remove-member"].includes(action)) {
+            void performClientPortalAdminAction(action, button);
         } else if (action === "back-to-members") {
             clientPortalSelectedMember = null;
             clientPortalMemberHistory = [];
+            clientPortalAdminNutritionPlanState = null;
             void loadClientPortalData();
         } else if (action === "open-member") {
             const member = clientPortalMembers.find((item) => item.user_id === button.dataset.userId);
@@ -6977,6 +7515,10 @@
         if (event.target === profileResetModal) closeProfileReset();
     });
     document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !managedMondayModal?.hidden) {
+            closeManagedMondayNotice();
+            return;
+        }
         if (event.key === "Escape" && !mealGramsModal?.hidden) {
             closeMealGrams();
             return;
@@ -6992,6 +7534,10 @@
     window.addEventListener("hashchange", () => {
         if (!appView.hidden) navigateTo(window.location.hash.slice(1), false);
     });
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "visible") void refreshManagedPlanIfChanged();
+    });
+    window.addEventListener("focus", () => void refreshManagedPlanIfChanged());
 
     renderHomeDate();
     setHomeTool(null);
