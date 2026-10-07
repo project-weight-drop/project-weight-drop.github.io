@@ -1124,6 +1124,10 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .client-portal-admin-actions button[data-client-portal-action="delete-report"], .client-portal-admin-actions button[data-client-portal-action="remove-member"] { border-color: rgba(255,112,103,.38); color: #ffaaa0; }
 .client-portal-admin-form { display: grid; gap: 10px; }
 .client-portal-admin-form h3 { margin: 0; }
+.client-portal-admin-feedback { margin: 0; color: #aaa; font-size: 12px; line-height: 1.45; }
+.client-portal-admin-feedback.error { color: #ffaaa0; }
+.client-portal-admin-feedback.success { color: var(--success); }
+.client-portal-admin-feedback[hidden] { display: none; }
 .client-portal-admin-plan-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
 .client-portal-admin-plan-fields .client-portal-field input { min-height: 40px; }
 .client-portal-report-card .client-portal-member-state.sent { text-shadow: 0 0 10px rgba(112,199,134,.34); }

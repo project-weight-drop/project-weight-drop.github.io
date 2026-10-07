@@ -94,6 +94,7 @@
             reportSavedProduction: "Raport został zapisany i jest widoczny w panelu administratora.",
             activationSuccess: "Panel został aktywowany i przypisany do Twojego konta.",
             invalidPlanValues: "Sprawdź wartości planu. Dozwolone zakresy: 1000–6000 kcal, białko 20–400 g, tłuszcz 10–400 g, węglowodany 0–800 g.",
+            ketoCarbLimit: "Dla aktywnego planu KETO limit węglowodanów wynosi 45 g. Zmień wartość albo najpierw ustaw inną dietę.",
             invalidReportValues: "Sprawdź wagę i oceny. Waga musi wynosić 35–350 kg, a każda ocena 1–10.",
             trialActiveHeading: "2 DNI PRO ZA DARMO — TEST JEST AKTYWNY",
             trialInactiveHeading: "OKRES TESTOWY PRO: 2 DNI OD REJESTRACJI",
@@ -202,6 +203,7 @@
             reportSavedProduction: "The report was saved and is visible in the administrator panel.",
             activationSuccess: "The panel is active and linked to your account.",
             invalidPlanValues: "Check the plan values. Allowed ranges: 1,000–6,000 kcal, protein 20–400 g, fat 10–400 g, carbohydrates 0–800 g.",
+            ketoCarbLimit: "The active KETO plan allows up to 45 g of carbohydrates. Change the value or switch the diet first.",
             invalidReportValues: "Check the weight and scores. Weight must be 35–350 kg and each score 1–10.",
             trialActiveHeading: "2 DAYS OF PRO FREE — TRIAL ACTIVE",
             trialInactiveHeading: "PRO TRIAL: 2 DAYS FROM REGISTRATION",
@@ -310,6 +312,7 @@
             reportSavedProduction: "Der Bericht wurde gespeichert und ist im Administratorbereich sichtbar.",
             activationSuccess: "Der Bereich ist aktiviert und deinem Konto zugeordnet.",
             invalidPlanValues: "Prüfe die Planwerte. Zulässige Bereiche: 1.000–6.000 kcal, Eiweiß 20–400 g, Fett 10–400 g, Kohlenhydrate 0–800 g.",
+            ketoCarbLimit: "Beim aktiven KETO-Plan sind höchstens 45 g Kohlenhydrate erlaubt. Ändere den Wert oder stelle zuerst die Ernährungsform um.",
             invalidReportValues: "Prüfe Gewicht und Bewertungen. Das Gewicht muss 35–350 kg und jede Bewertung 1–10 betragen.",
             trialActiveHeading: "2 TAGE PRO KOSTENLOS — TEST AKTIV",
             trialInactiveHeading: "PRO-TEST: 2 TAGE AB REGISTRIERUNG",
@@ -5886,6 +5889,7 @@
         const code = typeof error === "string" ? error : String(error?.message || error?.code || "");
         const normalized = code.toLowerCase();
         if (normalized.includes("plan_values_out_of_range") || normalized.includes("invalid_plan_values")) return languageText("invalidPlanValues");
+        if (normalized.includes("keto_carb_limit") || normalized.includes("nutrition_plans_keto_carb_cap_45")) return languageText("ketoCarbLimit");
         if (normalized.includes("report_values_out_of_range") || normalized.includes("invalid_report_data")) return languageText("invalidReportValues");
         if (normalized.includes("too_many_attempts")) return "Za dużo prób wpisania PIN-u. Spróbuj ponownie za godzinę.";
         if (normalized.includes("invalid_pin")) return "PIN jest nieprawidłowy. Sprawdź go i spróbuj ponownie.";
@@ -5938,6 +5942,8 @@
 
     function clientPortalAdminPlanFormHtml() {
         const plan = clientPortalAdminNutritionPlanState?.active_plan || {};
+        const maxCarbs = String(plan.diet_type || "").toLowerCase() === "keto" ? 45 : 800;
+        const feedback = clientPortalError || clientPortalSuccess || (clientPortalAdminBusy ? languageText("savingPlan") : "");
         const field = (label, name, value, min, max) => `<label class="client-portal-field">${label}<input name="${name}" type="number" min="${min}" max="${max}" step="1" value="${value == null ? "" : clientPortalEscape(value)}" required></label>`;
         return `<section class="client-portal-card client-portal-admin-tools">
             <p class="eyebrow">${languageText("individualCoaching")}</p>
@@ -5948,9 +5954,10 @@
                     ${field(languageText("caloriesLabel"), "calories_target", plan.calories_target, 1000, 6000)}
                     ${field(languageText("proteinLabel"), "protein_g", plan.protein_g, 20, 400)}
                     ${field(languageText("fatLabel"), "fat_g", plan.fat_g, 10, 400)}
-                    ${field(languageText("carbsLabel"), "carbs_g", plan.carbs_g, 0, 800)}
+                    ${field(languageText("carbsLabel"), "carbs_g", plan.carbs_g, 0, maxCarbs)}
                 </div>
-                <button class="tool-primary-button" type="submit" ${clientPortalAdminBusy ? "disabled" : ""}>${clientPortalAdminBusy ? languageText("savingPlan") : languageText("savePlan")}</button>
+                <button class="tool-primary-button" type="button" data-client-portal-action="save-plan" ${clientPortalAdminBusy ? "disabled" : ""}>${clientPortalAdminBusy ? languageText("savingPlan") : languageText("savePlan")}</button>
+                <p class="client-portal-admin-feedback${clientPortalError ? " error" : clientPortalSuccess ? " success" : ""}" role="status" aria-live="polite"${feedback ? "" : " hidden"}>${clientPortalEscape(feedback)}</p>
             </form>
             <button class="client-portal-back-list" type="button" data-client-portal-action="remove-member" ${clientPortalAdminBusy ? "disabled" : ""}>${languageText("adminMemberDelete")}</button>
         </section>`;
@@ -6400,14 +6407,14 @@
         }
     }
 
-    async function submitClientPortalAdminForm(event) {
-        event.preventDefault();
-        const form = event.currentTarget;
+    async function submitClientPortalAdminForm(form) {
+        if (!form) return;
         if (!currentUserIsAdmin || clientPortalAdminBusy || !clientPortalSelectedMember || !client) return;
         const values = new FormData(form);
         const formType = form.dataset.clientPortalAdminForm;
         clientPortalAdminBusy = true;
         clientPortalError = null;
+        clientPortalSuccess = null;
         renderClientPortal();
         try {
             if (formType === "plan") {
@@ -6415,6 +6422,7 @@
                 const protein = Number(values.get("protein_g"));
                 const fat = Number(values.get("fat_g"));
                 const carbs = Number(values.get("carbs_g"));
+                const isKetoPlan = String(clientPortalAdminNutritionPlanState?.active_plan?.diet_type || "").toLowerCase() === "keto";
                 if (![calories, protein, fat, carbs].every(Number.isInteger)
                     || calories < 1000 || calories > 6000
                     || protein < 20 || protein > 400
@@ -6422,6 +6430,7 @@
                     || carbs < 0 || carbs > 800) {
                     throw new Error("plan_values_out_of_range");
                 }
+                if (isKetoPlan && carbs > 45) throw new Error("keto_carb_limit");
                 const result = await client.rpc("admin_apply_client_nutrition_plan", {
                     p_user_id: clientPortalSelectedMember.user_id,
                     p_request_id: null,
@@ -7455,7 +7464,10 @@
     });
     clientPortalContent?.addEventListener("change", updateClientPortalReportButton);
     clientPortalContent?.addEventListener("submit", (event) => {
-        if (event.target.matches("[data-client-portal-admin-form]")) void submitClientPortalAdminForm(event);
+        if (event.target.matches("[data-client-portal-admin-form]")) {
+            event.preventDefault();
+            void submitClientPortalAdminForm(event.target);
+        }
     });
     clientPortalContent?.addEventListener("click", (event) => {
         const button = event.target.closest("[data-client-portal-action]");
@@ -7463,6 +7475,8 @@
         const action = button.dataset.clientPortalAction;
         if (action === "refresh") {
             void loadClientPortalData();
+        } else if (action === "save-plan") {
+            void submitClientPortalAdminForm(button.closest("form[data-client-portal-admin-form='plan']"));
         } else if (["edit-report", "cancel-edit-report", "delete-report", "remove-member"].includes(action)) {
             void performClientPortalAdminAction(action, button);
         } else if (action === "back-to-members") {
