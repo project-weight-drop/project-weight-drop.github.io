@@ -4,6 +4,8 @@
     const REQUIRED_PROJECT_REF = "otffqsoiqbscdvgnrrpb";
     const CURRENT_PRIVACY_POLICY_VERSION = "2026-08-26";
     const COMMUNITY_RULES_VERSION = "2026-09-09";
+    const WEB_ACTIVITY_TOUCH_INTERVAL_MS = 15 * 60 * 1000;
+    const WEB_ACTIVITY_TOUCH_STORAGE_PREFIX = `project-weight-drop-web-activity:${REQUIRED_PROJECT_REF}:`;
     const WEB_APP_VERSION = "web-prod-2026.10.07-individual-coaching";
     // Consent storage accepts app_version values of at most 40 characters.
     const CONSENT_APP_VERSION = WEB_APP_VERSION.slice(0, 40);
@@ -39,6 +41,10 @@
             signUpStatus: "Rejestracja konta Project Weight Drop",
             back: "Wróć",
             logout: "Wyloguj",
+            loggingOut: "Wylogowywanie…",
+            logoutFailed: "Nie udało się wylogować. Spróbuj ponownie.",
+            resetProfileProgress: "Zresetuj profil i postępy",
+            adminActions: "Akcje administratora",
             readOnly: "Odczyt",
             routes: { home: "Home", meals: "Posiłki", fridge: "Lodówka", coach: "AI Coach", progress: "Postępy", profile: "Profil", "client-portal": "Podopieczni" },
             supportChat: "Czat z Przemalą",
@@ -48,7 +54,15 @@
             clientsAdmin: "Podopieczni",
             clientReportsSubtitle: "Tygodniowe pomiary i raporty",
             adminReportsSubtitle: "Raporty i historia tygodniowa",
-            adminListSubtitle: "Lista osób, status raportów i historia tygodniowa.",
+            adminListSubtitle: "Użytkownicy, aktywność i raporty podopiecznych.",
+            adminUsersTitle: "Użytkownicy aplikacji",
+            adminUsersEmpty: "Brak użytkowników do wyświetlenia.",
+            adminUsersUnavailable: "Nie udało się wczytać listy użytkowników.",
+            adminClientsTitle: "Podopieczni z aktywnym panelem",
+            clientPortalNoMembers: "Jeszcze nikt nie aktywował panelu PIN-em.",
+            firstLogin: "Pierwsze logowanie",
+            lastActivity: "Ostatnia aktywność",
+            noData: "Brak danych",
             clientPanelIntro: "Wpisz PIN od Przemali, aby wysyłać cotygodniowe pomiary i raporty.",
             clientPanelLoading: "Wczytywanie danych panelu…",
             dietLabel: "Rodzaj diety",
@@ -148,6 +162,10 @@
             signUpStatus: "Create a Project Weight Drop account",
             back: "Back",
             logout: "Sign out",
+            loggingOut: "Signing out…",
+            logoutFailed: "Could not sign out. Please try again.",
+            resetProfileProgress: "Reset profile and progress",
+            adminActions: "Administrator actions",
             readOnly: "View",
             routes: { home: "Home", meals: "Meals", fridge: "Fridge", coach: "AI Coach", progress: "Progress", profile: "Profile", "client-portal": "Clients" },
             supportChat: "Chat with Przemala",
@@ -157,7 +175,15 @@
             clientsAdmin: "Clients",
             clientReportsSubtitle: "Weekly measurements and reports",
             adminReportsSubtitle: "Reports and weekly history",
-            adminListSubtitle: "People, report status and weekly history.",
+            adminListSubtitle: "Users, activity and client reports.",
+            adminUsersTitle: "App users",
+            adminUsersEmpty: "No users to display.",
+            adminUsersUnavailable: "Could not load the user list.",
+            adminClientsTitle: "Clients with an active panel",
+            clientPortalNoMembers: "No one has activated the PIN panel yet.",
+            firstLogin: "First login",
+            lastActivity: "Last activity",
+            noData: "No data",
             clientPanelIntro: "Enter the PIN provided by Przemala to submit weekly measurements and reports.",
             clientPanelLoading: "Loading panel data…",
             dietLabel: "Diet type",
@@ -257,6 +283,10 @@
             signUpStatus: "Project-Weight-Drop-Konto erstellen",
             back: "Zurück",
             logout: "Abmelden",
+            loggingOut: "Abmeldung läuft…",
+            logoutFailed: "Abmeldung fehlgeschlagen. Bitte versuche es erneut.",
+            resetProfileProgress: "Profil und Fortschritt zurücksetzen",
+            adminActions: "Administratoraktionen",
             readOnly: "Ansicht",
             routes: { home: "Home", meals: "Mahlzeiten", fridge: "Kühlschrank", coach: "AI Coach", progress: "Fortschritt", profile: "Profil", "client-portal": "Kunden" },
             supportChat: "Chat mit Przemala",
@@ -266,7 +296,15 @@
             clientsAdmin: "Klienten",
             clientReportsSubtitle: "Wöchentliche Messungen und Berichte",
             adminReportsSubtitle: "Berichte und Wochenverlauf",
-            adminListSubtitle: "Personen, Berichtsstatus und Wochenverlauf.",
+            adminListSubtitle: "Nutzer, Aktivität und Klientenberichte.",
+            adminUsersTitle: "App-Nutzer",
+            adminUsersEmpty: "Keine Nutzer zum Anzeigen.",
+            adminUsersUnavailable: "Die Nutzerliste konnte nicht geladen werden.",
+            adminClientsTitle: "Klienten mit aktivem Panel",
+            clientPortalNoMembers: "Noch niemand hat das PIN-Panel aktiviert.",
+            firstLogin: "Erster Login",
+            lastActivity: "Letzte Aktivität",
+            noData: "Keine Daten",
             clientPanelIntro: "Gib die von Przemala erhaltene PIN ein, um wöchentliche Messungen und Berichte zu senden.",
             clientPanelLoading: "Paneldaten werden geladen…",
             dietLabel: "Ernährungsform",
@@ -590,6 +628,8 @@
     let clientPortalAdminNutritionPlanState = null;
     let clientPortalMyReports = [];
     let clientPortalMembers = [];
+    let adminAccountUsers = [];
+    let adminAccountUsersError = null;
     let clientPortalSelectedMember = null;
     let clientPortalMemberHistory = [];
     let clientPortalPin = "";
@@ -910,6 +950,45 @@
             : { day: "2-digit", month: "short" }).format(date);
     }
 
+    function formatActivityDate(value) {
+        if (!value) return languageText("noData");
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return languageText("noData");
+        return new Intl.DateTimeFormat(currentLocale(), { dateStyle: "medium", timeStyle: "short" }).format(date);
+    }
+
+    const webActivityTouchAttempts = new Map();
+
+    async function touchInternetActivity(userId = activeUserId) {
+        const targetUserId = String(userId || "");
+        if (!client || !targetUserId || targetUserId !== activeUserId) return;
+
+        const now = Date.now();
+        const storageKey = `${WEB_ACTIVITY_TOUCH_STORAGE_PREFIX}${targetUserId}`;
+        let lastAttempt = webActivityTouchAttempts.get(targetUserId) || 0;
+        try {
+            const persistedAttempt = Number(window.localStorage.getItem(storageKey));
+            if (Number.isFinite(persistedAttempt) && persistedAttempt > 0 && persistedAttempt <= now) {
+                lastAttempt = Math.max(lastAttempt, persistedAttempt);
+            }
+        } catch {
+            // The in-memory throttle still protects this page if browser storage is unavailable.
+        }
+        if (now - lastAttempt < WEB_ACTIVITY_TOUCH_INTERVAL_MS) return;
+
+        webActivityTouchAttempts.set(targetUserId, now);
+        try {
+            window.localStorage.setItem(storageKey, String(now));
+        } catch {
+            // Activity recording must never block login or normal app use.
+        }
+        try {
+            await client.rpc("touch_user_app_activity", { p_source: "internet" });
+        } catch {
+            // Activity recording is best-effort and must not block the app.
+        }
+    }
+
     function setProgress(id, value, max) {
         const element = document.getElementById(id);
         if (!element) return;
@@ -958,6 +1037,8 @@
         clientPortalAdminNutritionPlanState = null;
         clientPortalMyReports = [];
         clientPortalMembers = [];
+        adminAccountUsers = [];
+        adminAccountUsersError = null;
         clientPortalSelectedMember = null;
         clientPortalMemberHistory = [];
         clientPortalPin = "";
@@ -5858,6 +5939,25 @@
         }
     }
 
+    async function loadAdminAccountUsers(expectedUserId = activeUserId) {
+        if (!client || !currentUserIsAdmin || !expectedUserId) return;
+        try {
+            const { data, error } = await client.functions.invoke("admin-account", { body: { action: "list_users" } });
+            if (expectedUserId !== activeUserId || !currentUserIsAdmin) return;
+            if (error || data?.is_admin !== true || !Array.isArray(data?.users)) {
+                adminAccountUsers = [];
+                adminAccountUsersError = languageText("adminUsersUnavailable");
+                return;
+            }
+            adminAccountUsers = data.users;
+            adminAccountUsersError = null;
+        } catch {
+            if (expectedUserId !== activeUserId || !currentUserIsAdmin) return;
+            adminAccountUsers = [];
+            adminAccountUsersError = languageText("adminUsersUnavailable");
+        }
+    }
+
     function updateClientPortalEntry() {
         setText("profile-client-portal-title", currentUserIsAdmin ? languageText("clientsAdmin") : languageText("clientPanelTitle"));
         setText("profile-client-portal-subtitle", currentUserIsAdmin ? languageText("adminReportsSubtitle") : languageText("clientReportsSubtitle"));
@@ -5866,6 +5966,15 @@
         if (tagline) tagline.hidden = currentUserIsAdmin;
         setText("client-portal-heading", currentUserIsAdmin ? languageText("clientsAdmin") : languageText("clientPanelTitle"));
         setText("client-portal-subheading", currentUserIsAdmin ? languageText("adminListSubtitle") : languageText("clientPanelIntro"));
+        const adminActions = document.getElementById("admin-portal-actions");
+        if (adminActions) {
+            adminActions.hidden = !currentUserIsAdmin;
+            adminActions.setAttribute("aria-label", languageText("adminActions"));
+            const resetButton = adminActions.querySelector("[data-open-profile-reset]");
+            const signOutButton = adminActions.querySelector("[data-sign-out] span");
+            if (resetButton) resetButton.textContent = languageText("resetProfileProgress");
+            if (signOutButton) signOutButton.textContent = languageText("logout");
+        }
     }
 
     function clientPortalEscape(value) {
@@ -6088,6 +6197,34 @@
         </button>`;
     }
 
+    function adminUserActivityCardHtml(user) {
+        const displayName = String(user?.display_name || "").trim();
+        const email = String(user?.email || "").trim();
+        const primary = displayName || email || languageText("noData");
+        const secondary = displayName && email && email !== displayName
+            ? `<small>${clientPortalEscape(email)}</small>`
+            : "";
+        return `<article class="admin-user-activity-card">
+            <div class="admin-user-activity-identity"><strong>${clientPortalEscape(primary)}</strong>${secondary}</div>
+            <dl class="admin-user-activity-dates">
+                <div><dt>${languageText("firstLogin")}</dt><dd>${clientPortalEscape(formatActivityDate(user?.first_login_at))}</dd></div>
+                <div><dt>${languageText("lastActivity")}</dt><dd>${clientPortalEscape(formatActivityDate(user?.last_active_at))}</dd></div>
+            </dl>
+        </article>`;
+    }
+
+    function adminUserActivitySectionHtml() {
+        const contents = adminAccountUsersError
+            ? `<p class="client-portal-notice error">${clientPortalEscape(languageText("adminUsersUnavailable"))}</p>`
+            : adminAccountUsers.length
+                ? `<div class="admin-user-activity-list">${adminAccountUsers.map(adminUserActivityCardHtml).join("")}</div>`
+                : `<p class="client-portal-notice">${clientPortalEscape(languageText("adminUsersEmpty"))}</p>`;
+        return `<section class="admin-user-activity-section" aria-label="${languageText("adminUsersTitle")}">
+            <header><h3>${languageText("adminUsersTitle")}</h3></header>
+            ${contents}
+        </section>`;
+    }
+
     function clientPortalPinFormHtml() {
         return `<section class="client-portal-card client-portal-pin-card">
             <p class="eyebrow">DOSTĘP DLA PODOPIECZNYCH</p>
@@ -6169,7 +6306,7 @@
             clientPortalContent.innerHTML = `<div class="client-portal-loading"><span></span><p>${languageText("clientPanelLoading")}</p></div>`;
             return;
         }
-        if (clientPortalError && !clientPortalStatus && !clientPortalMembers.length && !clientPortalSelectedMember) {
+        if (clientPortalError && !currentUserIsAdmin && !clientPortalStatus && !clientPortalMembers.length && !clientPortalSelectedMember) {
             clientPortalContent.innerHTML = `<section class="client-portal-card"><p>${clientPortalEscape(clientPortalError)}</p><button type="button" class="tool-secondary-button" data-client-portal-action="refresh">Spróbuj ponownie</button></section>`;
             return;
         }
@@ -6184,9 +6321,16 @@
                     ${reports.length ? reports.map(clientPortalReportCardHtml).join("") : `<div class="client-portal-notice">Brak wysłanych raportów.</div>`}
                 </div>`;
             } else {
-                clientPortalContent.innerHTML = clientPortalMembers.length
-                    ? `<div class="client-portal-member-list">${clientPortalMembers.map(clientPortalMemberCardHtml).join("")}</div>`
-                    : `<div class="client-portal-notice">Jeszcze nikt nie aktywował panelu PIN-em.</div>`;
+                const clientMembersContent = clientPortalError
+                    ? `<p class="client-portal-notice error">${clientPortalEscape(clientPortalError)}</p>`
+                    : clientPortalMembers.length
+                        ? `<div class="client-portal-member-list">${clientPortalMembers.map(clientPortalMemberCardHtml).join("")}</div>`
+                        : `<div class="client-portal-notice">${languageText("clientPortalNoMembers")}</div>`;
+                clientPortalContent.innerHTML = `${adminUserActivitySectionHtml()}
+                    <section class="admin-client-members-section" aria-label="${languageText("adminClientsTitle")}">
+                        <header><h3>${languageText("adminClientsTitle")}</h3></header>
+                        ${clientMembersContent}
+                    </section>`;
             }
             return;
         }
@@ -6244,7 +6388,11 @@
                     clientPortalAdminNutritionPlanState = planResult.data || null;
                 } else {
                     clientPortalAdminNutritionPlanState = null;
-                    const { data, error } = await client.rpc("get_client_portal_admin_dashboard");
+                    const [dashboardResult] = await Promise.all([
+                        client.rpc("get_client_portal_admin_dashboard"),
+                        loadAdminAccountUsers(userId)
+                    ]);
+                    const { data, error } = dashboardResult;
                     if (error) throw error;
                     if (data?.error) throw new Error(data.error);
                     clientPortalMembers = Array.isArray(data) ? data : [];
@@ -6807,6 +6955,7 @@
         if (!user?.id) return;
         const shouldLoadData = activeUserId !== user.id || appView.hidden;
         activeUserId = user.id;
+        void touchInternetActivity(user.id);
         renderUser(user);
         authView.hidden = true;
         appView.hidden = false;
@@ -6911,16 +7060,16 @@
         signOutButtons.forEach((button) => {
             button.disabled = true;
             const label = button.querySelector("span");
-            if (label) label.textContent = "Wylogowywanie…";
+            if (label) label.textContent = languageText("loggingOut");
         });
         const { error } = await client.auth.signOut({ scope: "local" });
         signOutButtons.forEach((button) => {
             button.disabled = false;
             const label = button.querySelector("span");
-            if (label) label.textContent = "Wyloguj";
+            if (label) label.textContent = languageText("logout");
         });
         if (error) {
-            window.alert("Nie udało się wylogować. Spróbuj ponownie.");
+            window.alert(languageText("logoutFailed"));
             return;
         }
         showSignedOut("Wylogowano. Możesz zalogować się ponownie.", "success");
@@ -7497,6 +7646,9 @@
     });
     backHomeButton?.addEventListener("click", goBackOneRoute);
     openProfileResetButton?.addEventListener("click", openProfileReset);
+    document.querySelectorAll("[data-open-profile-reset]").forEach((button) => {
+        button.addEventListener("click", openProfileReset);
+    });
     profileAccessLink?.addEventListener("click", openProfileCompletionOffer);
     profileCompletionCloseButton?.addEventListener("click", closeProfileCompletionOffer);
     profileCompletionContinueButton?.addEventListener("click", closeProfileCompletionOffer);
@@ -7549,9 +7701,15 @@
         if (!appView.hidden) navigateTo(window.location.hash.slice(1), false);
     });
     document.addEventListener("visibilitychange", () => {
-        if (document.visibilityState === "visible") void refreshManagedPlanIfChanged();
+        if (document.visibilityState === "visible") {
+            if (activeUserId) void touchInternetActivity(activeUserId);
+            void refreshManagedPlanIfChanged();
+        }
     });
-    window.addEventListener("focus", () => void refreshManagedPlanIfChanged());
+    window.addEventListener("focus", () => {
+        if (activeUserId) void touchInternetActivity(activeUserId);
+        void refreshManagedPlanIfChanged();
+    });
 
     renderHomeDate();
     setHomeTool(null);

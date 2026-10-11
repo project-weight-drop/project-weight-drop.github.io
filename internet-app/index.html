@@ -12,11 +12,11 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://otffqsoiqbscdvgnrrpb.supabase.co; connect-src https://otffqsoiqbscdvgnrrpb.supabase.co wss://otffqsoiqbscdvgnrrpb.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261007-profile-width-fix">
+    <link rel="stylesheet" href="./styles.css?v=20261011-user-activity-admin">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261006-prod-cutover" defer></script>
     <script src="./i18n.js?v=20261007-individual-coaching" defer></script>
-    <script src="./app.js?v=20261007-admin-plan-submit-fix" defer></script>
+    <script src="./app.js?v=20261011-user-activity-admin" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -1036,6 +1036,10 @@
                         <svg aria-hidden="true"><use href="#icon-refresh"></use></svg><span>Odśwież</span>
                     </button>
                 </header>
+                <div id="admin-portal-actions" class="admin-portal-actions" role="group" aria-label="Akcje administratora" hidden>
+                    <button class="admin-portal-reset" type="button" data-open-profile-reset><span>Zresetuj profil i postępy</span></button>
+                    <button class="admin-portal-sign-out" type="button" data-sign-out><span>Wyloguj</span></button>
+                </div>
                 <p id="client-portal-status" class="client-portal-status" role="status" aria-live="polite"></p>
                 <div id="client-portal-content" class="client-portal-content" aria-busy="true"></div>
             </section>

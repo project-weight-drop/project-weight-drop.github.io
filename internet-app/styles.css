@@ -1047,6 +1047,11 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .client-portal-refresh { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; flex: 0 0 auto; border: 1px solid rgba(255,106,0,.42); border-radius: 7px; padding: 0 11px; background: #191919; color: var(--orange); font: inherit; font-size: 10px; font-weight: 800; cursor: pointer; }
 .client-portal-refresh svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.9; }
 .client-portal-refresh:disabled { opacity: .55; cursor: wait; }
+.admin-portal-actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 11px; }
+.admin-portal-actions[hidden] { display: none; }
+.admin-portal-actions button { min-width: 0; min-height: 42px; flex: 1 1 170px; border: 1px solid rgba(255,106,0,.48); border-radius: 8px; padding: 8px 13px; background: #111; color: #ff9a55; font: inherit; font-size: 11px; font-weight: 850; line-height: 1.25; overflow-wrap: anywhere; cursor: pointer; }
+.admin-portal-actions .admin-portal-sign-out { flex-grow: 0; border-color: #454545; color: #e5e5e5; }
+.admin-portal-actions button:disabled { opacity: .55; cursor: wait; }
 .client-portal-status { min-height: 0; margin: 0; color: var(--success); font-size: 12px; line-height: 1.5; }
 .client-portal-status:empty { display: none; }
 .client-portal-status.error { color: #ffaaa0; }
@@ -1099,6 +1104,20 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .client-portal-member-state.sent { color: var(--success); }
 .client-portal-member-state.missing { color: var(--orange); }
 .client-portal-member-card > svg { flex: 0 0 17px; width: 17px; height: 17px; fill: none; stroke: var(--orange); stroke-width: 2; }
+.admin-user-activity-section, .admin-client-members-section { min-width: 0; display: grid; gap: 9px; }
+.admin-user-activity-section > header, .admin-client-members-section > header { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.admin-user-activity-section h3, .admin-client-members-section h3 { margin: 0; font-size: 15px; }
+.admin-user-activity-list { display: grid; gap: 7px; max-height: min(60vh, 560px); overflow: auto; overscroll-behavior: contain; padding-right: 2px; }
+.admin-user-activity-card { min-width: 0; display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: #191919; }
+.admin-user-activity-identity { min-width: 0; display: grid; gap: 2px; }
+.admin-user-activity-identity strong, .admin-user-activity-identity small { overflow-wrap: anywhere; }
+.admin-user-activity-identity strong { color: #f4f4f4; font-size: 12px; }
+.admin-user-activity-identity small { color: var(--muted); font-size: 10px; }
+.admin-user-activity-dates { min-width: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.admin-user-activity-dates > div { min-width: 0; display: grid; gap: 3px; }
+.admin-user-activity-dates dt { color: #999; font-size: 9px; }
+.admin-user-activity-dates dd { min-width: 0; margin: 0; color: #e6e6e6; font-size: 10px; line-height: 1.4; overflow-wrap: anywhere; }
+.client-portal-notice.error { border-color: rgba(255,112,103,.4); background: rgba(90,25,25,.18); color: #ffaaa0; }
 .client-portal-back-list { justify-self: start; min-height: 38px; border: 1px solid var(--line); border-radius: 7px; padding: 0 11px; background: #1a1a1a; color: var(--orange); font: inherit; font-size: 11px; font-weight: 800; cursor: pointer; }
 .client-portal-member-profile > p:last-child { margin-bottom: 0; }
 .client-portal-report-card { border-color: rgba(112,199,134,.3); background: linear-gradient(130deg, rgba(36,54,40,.5), #191919 65%); }
@@ -1390,6 +1409,10 @@ body.modal-open { overflow: hidden; }
     .capability-list span { text-align: left; }
     .profile-card { align-items: center; flex-direction: row; }
     .profile-card .profile-admin-badge { margin-left: auto; }
+    .admin-portal-actions { gap: 6px; }
+    .admin-portal-actions button { flex-basis: calc(50% - 3px); padding-inline: 9px; font-size: 10px; }
+    .admin-user-activity-dates { grid-template-columns: 1fr; gap: 5px; }
+    .admin-user-activity-dates > div { grid-template-columns: minmax(100px, .7fr) minmax(0, 1fr); align-items: baseline; gap: 8px; }
     .profile-access-card { flex-wrap: wrap; }
     .profile-access-card > div { flex-basis: calc(100% - 60px); }
     .profile-access-link { margin-left: 56px; }
