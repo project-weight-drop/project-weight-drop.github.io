@@ -1107,6 +1107,15 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .admin-user-activity-section, .admin-client-members-section { min-width: 0; display: grid; gap: 9px; }
 .admin-user-activity-section > header, .admin-client-members-section > header { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
 .admin-user-activity-section h3, .admin-client-members-section h3 { margin: 0; font-size: 15px; }
+.profile-admin-users { margin-top: 12px; padding: 14px; border: 1px solid rgba(255,106,0,.34); border-radius: 10px; background: linear-gradient(145deg, rgba(255,106,0,.06), #171717 45%); }
+.profile-admin-users > header { align-items: center; }
+.profile-admin-users > header > div { min-width: 0; }
+.profile-admin-users > header .eyebrow { margin: 0 0 4px; color: var(--orange); font-size: 9px; font-weight: 900; letter-spacing: .12em; }
+.profile-admin-users > header h3 { font-size: 15px; }
+.profile-admin-users > header p:not(.eyebrow) { margin: 3px 0 0; color: var(--muted); font-size: 10px; line-height: 1.45; }
+.profile-admin-users-content { min-width: 0; display: grid; gap: 8px; }
+.admin-user-directory-feedback { margin: 0; padding: 8px 10px; border: 1px solid rgba(112,199,134,.3); border-radius: 7px; background: rgba(42,86,52,.14); color: #b6e7bf; font-size: 11px; }
+.admin-user-directory-feedback.error { border-color: rgba(255,112,103,.35); background: rgba(90,25,25,.16); color: #ffaaa0; }
 .admin-user-activity-list { display: grid; gap: 7px; max-height: min(60vh, 560px); overflow: auto; overscroll-behavior: contain; padding-right: 2px; }
 .admin-user-activity-card { min-width: 0; display: grid; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: #191919; }
 .admin-user-activity-identity { min-width: 0; display: grid; gap: 2px; }

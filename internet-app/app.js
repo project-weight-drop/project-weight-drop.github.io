@@ -54,8 +54,12 @@
             clientsAdmin: "Podopieczni",
             clientReportsSubtitle: "Miesięczne pomiary i raporty",
             adminReportsSubtitle: "Raporty i historia pomiarów",
-            adminListSubtitle: "Użytkownicy, aktywność i raporty podopiecznych.",
+            adminListSubtitle: "Aktywowane PIN-em panele i raporty podopiecznych.",
             adminUsersTitle: "Użytkownicy aplikacji",
+            adminPanelTitle: "Panel administratora",
+            adminUsersProfileSubtitle: "Wszystkie konta zarejestrowane w aplikacji.",
+            adminUsersLoading: "Wczytywanie kont aplikacji…",
+            adminUsersRefresh: "Odśwież listę",
             adminUsersEmpty: "Brak użytkowników do wyświetlenia.",
             adminUsersUnavailable: "Nie udało się wczytać listy użytkowników.",
             adminClientsTitle: "Podopieczni z aktywnym panelem",
@@ -244,8 +248,12 @@
             clientsAdmin: "Clients",
             clientReportsSubtitle: "Monthly measurements and reports",
             adminReportsSubtitle: "Reports and measurement history",
-            adminListSubtitle: "Users, activity and client reports.",
+            adminListSubtitle: "PIN-activated panels and client reports.",
             adminUsersTitle: "App users",
+            adminPanelTitle: "Administrator panel",
+            adminUsersProfileSubtitle: "All accounts registered in the app.",
+            adminUsersLoading: "Loading app accounts…",
+            adminUsersRefresh: "Refresh list",
             adminUsersEmpty: "No users to display.",
             adminUsersUnavailable: "Could not load the user list.",
             adminClientsTitle: "Clients with an active panel",
@@ -434,8 +442,12 @@
             clientsAdmin: "Klienten",
             clientReportsSubtitle: "Monatliche Messungen und Berichte",
             adminReportsSubtitle: "Berichte und Messverlauf",
-            adminListSubtitle: "Nutzer, Aktivität und Klientenberichte.",
+            adminListSubtitle: "Mit PIN aktivierte Bereiche und Klientenberichte.",
             adminUsersTitle: "App-Nutzer",
+            adminPanelTitle: "Administrationsbereich",
+            adminUsersProfileSubtitle: "Alle in der App registrierten Konten.",
+            adminUsersLoading: "App-Konten werden geladen…",
+            adminUsersRefresh: "Liste aktualisieren",
             adminUsersEmpty: "Keine Nutzer zum Anzeigen.",
             adminUsersUnavailable: "Die Nutzerliste konnte nicht geladen werden.",
             adminClientsTitle: "Klienten mit aktivem Panel",
@@ -677,6 +689,8 @@
     const managedMondayCloseButton = document.getElementById("managed-monday-close");
     const clientPortalContent = document.getElementById("client-portal-content");
     const clientPortalRefreshButton = document.getElementById("client-portal-refresh");
+    const profileAdminUsersContent = document.getElementById("profile-admin-users-content");
+    const profileAdminUsersRefreshButton = document.getElementById("profile-admin-users-refresh");
     const openProfileResetButton = document.getElementById("open-profile-reset");
     const cancelProfileResetButton = document.getElementById("cancel-profile-reset");
     const confirmProfileResetButton = document.getElementById("confirm-profile-reset");
@@ -837,6 +851,8 @@
     let clientPortalMembers = [];
     let adminAccountUsers = [];
     let adminAccountUsersError = null;
+    let adminAccountUsersLoading = false;
+    let adminAccountUserFeedback = "";
     let adminAccountUserQuery = "";
     let adminProBusyUserId = null;
     let clientPortalSelectedMember = null;
@@ -1248,6 +1264,8 @@
         clientPortalMembers = [];
         adminAccountUsers = [];
         adminAccountUsersError = null;
+        adminAccountUsersLoading = false;
+        adminAccountUserFeedback = "";
         adminAccountUserQuery = "";
         adminProBusyUserId = null;
         clientPortalSelectedMember = null;
@@ -1283,6 +1301,7 @@
         currentSafetyProfileComplete = false;
         currentUserIsAdmin = false;
         updateClientPortalEntry();
+        renderAdminUserActivitySection();
         clientPortalContent?.replaceChildren();
         const deleteAccountZone = document.getElementById("profile-delete-account-zone");
         if (deleteAccountZone) deleteAccountZone.hidden = true;
@@ -3013,6 +3032,7 @@
     }
 
     function renderProfile(profile, plan) {
+        renderAdminUserActivitySection();
         if (!profile) {
             profileReadyForWrites = false;
             updateHealthToolsAvailability();
@@ -6152,20 +6172,28 @@
 
     async function loadAdminAccountUsers(expectedUserId = activeUserId) {
         if (!client || !currentUserIsAdmin || !expectedUserId) return;
+        adminAccountUsersLoading = true;
+        adminAccountUsersError = null;
+        renderAdminUserActivitySection();
         try {
             const { data, error } = await client.functions.invoke("admin-account", { body: { action: "list_users" } });
             if (expectedUserId !== activeUserId || !currentUserIsAdmin) return;
             if (error || data?.is_admin !== true || !Array.isArray(data?.users)) {
                 adminAccountUsers = [];
                 adminAccountUsersError = languageText("adminUsersUnavailable");
-                return;
+            } else {
+                adminAccountUsers = data.users;
+                adminAccountUsersError = null;
             }
-            adminAccountUsers = data.users;
-            adminAccountUsersError = null;
         } catch {
             if (expectedUserId !== activeUserId || !currentUserIsAdmin) return;
             adminAccountUsers = [];
             adminAccountUsersError = languageText("adminUsersUnavailable");
+        } finally {
+            if (expectedUserId === activeUserId && currentUserIsAdmin) {
+                adminAccountUsersLoading = false;
+                renderAdminUserActivitySection();
+            }
         }
     }
 
@@ -6518,22 +6546,42 @@
         </article>`;
     }
 
-    function adminUserActivitySectionHtml() {
-        const contents = adminAccountUsersError
+    function renderAdminUserActivitySection() {
+        if (!profileAdminUsersContent) return;
+        const section = document.getElementById("profile-admin-users-section");
+        const heading = document.getElementById("profile-admin-users-heading");
+        const eyebrow = document.getElementById("profile-admin-panel-title");
+        const subtitle = document.getElementById("profile-admin-users-subtitle");
+        const refresh = profileAdminUsersRefreshButton;
+        if (section) section.hidden = !currentUserIsAdmin;
+        if (!currentUserIsAdmin) return;
+        if (heading) heading.textContent = languageText("adminUsersTitle");
+        if (eyebrow) eyebrow.textContent = languageText("adminPanelTitle");
+        if (subtitle) subtitle.textContent = languageText("adminUsersProfileSubtitle");
+        if (refresh) {
+            refresh.disabled = adminAccountUsersLoading;
+            refresh.setAttribute("aria-label", languageText("adminUsersRefresh"));
+            const label = refresh.querySelector("span");
+            if (label) label.textContent = languageText("adminUsersRefresh");
+        }
+        const feedback = adminAccountUserFeedback
+            ? `<p class="admin-user-directory-feedback ${adminAccountUserFeedback.startsWith("!") ? "error" : "success"}" role="status" aria-live="polite">${clientPortalEscape(adminAccountUserFeedback.replace(/^!/, ""))}</p>`
+            : "";
+        const contents = adminAccountUsersLoading
+            ? `<p class="client-portal-notice">${languageText("adminUsersLoading")}</p>`
+            : adminAccountUsersError
             ? `<p class="client-portal-notice error">${clientPortalEscape(languageText("adminUsersUnavailable"))}</p>`
             : adminAccountUsers.length
                 ? `<label class="admin-user-search">${languageText("adminUserSearchLabel")}<input type="search" data-admin-user-search value="${clientPortalEscape(adminAccountUserQuery)}" placeholder="${languageText("adminUserSearchPlaceholder")}" autocomplete="email" spellcheck="false"></label><p class="admin-user-search-empty" data-admin-user-search-empty hidden>${languageText("adminUserSearchNoResults")}</p><div class="admin-user-activity-list">${adminAccountUsers.map(adminUserActivityCardHtml).join("")}</div>`
                 : `<p class="client-portal-notice">${clientPortalEscape(languageText("adminUsersEmpty"))}</p>`;
-        return `<section class="admin-user-activity-section" aria-label="${languageText("adminUsersTitle")}">
-            <header><h3>${languageText("adminUsersTitle")}</h3></header>
-            ${contents}
-        </section>`;
+        profileAdminUsersContent.innerHTML = `${feedback}${contents}`;
+        updateAdminUserSearchVisibility();
     }
 
     function updateAdminUserSearchVisibility() {
-        if (!clientPortalContent) return;
+        if (!profileAdminUsersContent) return;
         const query = String(adminAccountUserQuery || "").trim().toLocaleLowerCase(currentLocale());
-        const cards = [...clientPortalContent.querySelectorAll(".admin-user-activity-card")];
+        const cards = [...profileAdminUsersContent.querySelectorAll(".admin-user-activity-card")];
         let visible = 0;
         cards.forEach((card) => {
             const email = String(card.querySelector("[data-email-search]")?.dataset.emailSearch || "").toLocaleLowerCase(currentLocale());
@@ -6541,7 +6589,7 @@
             card.hidden = !matches;
             if (matches) visible += 1;
         });
-        const empty = clientPortalContent.querySelector("[data-admin-user-search-empty]");
+        const empty = profileAdminUsersContent.querySelector("[data-admin-user-search-empty]");
         if (empty) empty.hidden = !query || visible > 0;
     }
 
@@ -6560,7 +6608,8 @@
         adminProBusyUserId = userId;
         clientPortalError = null;
         clientPortalSuccess = null;
-        renderClientPortal();
+        adminAccountUserFeedback = "";
+        renderAdminUserActivitySection();
         try {
             const { data, error } = await client.functions.invoke("admin-account", {
                 body: { action: "set_pro", user_id: userId, enabled }
@@ -6568,12 +6617,12 @@
             if (error) throw error;
             if (data?.is_admin !== true) throw new Error("admin_required");
             await loadAdminAccountUsers(activeUserId);
-            clientPortalSuccess = languageText(enabled ? "adminProGranted" : "adminProRevoked");
+            adminAccountUserFeedback = languageText(enabled ? "adminProGranted" : "adminProRevoked");
         } catch {
-            clientPortalError = languageText("adminProChangeFailed");
+            adminAccountUserFeedback = `!${languageText("adminProChangeFailed")}`;
         } finally {
             adminProBusyUserId = null;
-            renderClientPortal();
+            renderAdminUserActivitySection();
             updateAdminUserSearchVisibility();
         }
     }
@@ -6679,12 +6728,10 @@
                     : clientPortalMembers.length
                         ? `<div class="client-portal-member-list">${clientPortalMembers.map(clientPortalMemberCardHtml).join("")}</div>`
                         : `<div class="client-portal-notice">${languageText("clientPortalNoMembers")}</div>`;
-                clientPortalContent.innerHTML = `${adminUserActivitySectionHtml()}
-                    <section class="admin-client-members-section" aria-label="${languageText("adminClientsTitle")}">
+                clientPortalContent.innerHTML = `<section class="admin-client-members-section" aria-label="${languageText("adminClientsTitle")}">
                         <header><h3>${languageText("adminClientsTitle")}</h3></header>
                         ${clientMembersContent}
                     </section>`;
-                updateAdminUserSearchVisibility();
             }
             return;
         }
@@ -6743,8 +6790,7 @@
                 } else {
                     clientPortalAdminNutritionPlanState = null;
                     const [dashboardResult] = await Promise.all([
-                        client.rpc("get_client_portal_admin_dashboard"),
-                        loadAdminAccountUsers(userId)
+                        client.rpc("get_client_portal_admin_dashboard")
                     ]);
                     const { data, error } = dashboardResult;
                     if (error) throw error;
@@ -7123,6 +7169,8 @@
         if (sequence !== dataLoadSequence || user.id !== activeUserId) return;
 
         currentUserIsAdmin = adminStatus === true;
+        renderAdminUserActivitySection();
+        if (currentUserIsAdmin) void loadAdminAccountUsers(user.id);
         if (!currentUserIsAdmin) {
             try {
                 const portalStatusResult = await client.rpc("get_client_portal_status");
@@ -7945,17 +7993,23 @@
     });
     profileClientPortalLink?.addEventListener("click", () => navigateTo("client-portal"));
     clientPortalRefreshButton?.addEventListener("click", () => void loadClientPortalData());
+    profileAdminUsersRefreshButton?.addEventListener("click", () => void loadAdminAccountUsers(activeUserId));
+    profileAdminUsersContent?.addEventListener("input", (event) => {
+        const input = event.target;
+        if (!input.matches("[data-admin-user-search]")) return;
+        adminAccountUserQuery = String(input.value || "");
+        updateAdminUserSearchVisibility();
+    });
+    profileAdminUsersContent?.addEventListener("click", (event) => {
+        const proButton = event.target.closest("[data-admin-pro-action]");
+        if (proButton) void changeAdminUserPro(proButton);
+    });
     managedMondayCloseButton?.addEventListener("click", closeManagedMondayNotice);
     managedMondayModal?.addEventListener("click", (event) => {
         if (event.target === managedMondayModal) closeManagedMondayNotice();
     });
     clientPortalContent?.addEventListener("input", (event) => {
         const input = event.target;
-        if (input.matches("[data-admin-user-search]")) {
-            adminAccountUserQuery = String(input.value || "");
-            updateAdminUserSearchVisibility();
-            return;
-        }
         if (input.id === "client-portal-pin") {
             clientPortalPin = input.value.replace(/\D/g, "").slice(0, 6);
             input.value = clientPortalPin;
@@ -7978,11 +8032,6 @@
         }
     });
     clientPortalContent?.addEventListener("click", (event) => {
-        const proButton = event.target.closest("[data-admin-pro-action]");
-        if (proButton) {
-            void changeAdminUserPro(proButton);
-            return;
-        }
         const button = event.target.closest("[data-client-portal-action]");
         if (!button) return;
         const action = button.dataset.clientPortalAction;

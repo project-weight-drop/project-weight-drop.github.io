@@ -12,11 +12,11 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://otffqsoiqbscdvgnrrpb.supabase.co; connect-src https://otffqsoiqbscdvgnrrpb.supabase.co wss://otffqsoiqbscdvgnrrpb.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261012-meals-reports-admin-v1">
+    <link rel="stylesheet" href="./styles.css?v=20261012-admin-users-profile-v2">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261006-prod-cutover" defer></script>
     <script src="./i18n.js?v=20261007-individual-coaching" defer></script>
-    <script src="./app.js?v=20261012-meals-reports-admin-v1" defer></script>
+    <script src="./app.js?v=20261012-admin-users-profile-v2" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -908,6 +908,13 @@
                 <section class="profile-feature-card profile-privacy-card">
                     <div><p class="eyebrow">INFORMACJE I PRYWATNOŚĆ</p><h3>Twoje dane są pod Twoją kontrolą</h3><p>Project Weight Drop wspiera organizację żywienia i codziennych nawyków. Nie diagnozuje ani nie leczy i nie zastępuje konsultacji ze specjalistą.</p></div>
                     <div><a href="/privacy.html?from=internet-app" target="_blank" rel="noopener">Polityka prywatności</a><a href="/delete-account.html?from=internet-app" target="_blank" rel="noopener">Jak usunąć konto i dane</a></div>
+                </section>
+                <section id="profile-admin-users-section" class="admin-user-activity-section profile-admin-users" aria-labelledby="profile-admin-users-heading" hidden>
+                    <header>
+                        <div><p class="eyebrow" id="profile-admin-panel-title">Panel administratora</p><h3 id="profile-admin-users-heading">Użytkownicy aplikacji</h3><p id="profile-admin-users-subtitle">Wszystkie konta zarejestrowane w aplikacji.</p></div>
+                        <button id="profile-admin-users-refresh" class="client-portal-refresh" type="button" aria-label="Odśwież listę użytkowników"><svg aria-hidden="true"><use href="#icon-refresh"></use></svg><span>Odśwież</span></button>
+                    </header>
+                    <div id="profile-admin-users-content" class="profile-admin-users-content" aria-live="polite"></div>
                 </section>
                 <section id="profile-setup-panel" class="profile-setup-panel" aria-labelledby="profile-setup-heading" hidden>
                     <div class="profile-setup-progress-top">
