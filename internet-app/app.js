@@ -1265,7 +1265,7 @@
         adminAccountUsers = [];
         adminAccountUsersError = null;
         adminAccountUsersLoading = false;
-        adminAccountUserFeedback = "";
+        adminAccountUserFeedback = null;
         adminAccountUserQuery = "";
         adminProBusyUserId = null;
         clientPortalSelectedMember = null;
@@ -6564,8 +6564,8 @@
             const label = refresh.querySelector("span");
             if (label) label.textContent = languageText("adminUsersRefresh");
         }
-        const feedback = adminAccountUserFeedback
-            ? `<p class="admin-user-directory-feedback ${adminAccountUserFeedback.startsWith("!") ? "error" : "success"}" role="status" aria-live="polite">${clientPortalEscape(adminAccountUserFeedback.replace(/^!/, ""))}</p>`
+        const feedback = adminAccountUserFeedback?.message
+            ? `<p class="admin-user-directory-feedback ${adminAccountUserFeedback.type === "error" ? "error" : "success"}" role="status" aria-live="polite">${clientPortalEscape(adminAccountUserFeedback.message)}</p>`
             : "";
         const contents = adminAccountUsersLoading
             ? `<p class="client-portal-notice">${languageText("adminUsersLoading")}</p>`
@@ -6608,7 +6608,7 @@
         adminProBusyUserId = userId;
         clientPortalError = null;
         clientPortalSuccess = null;
-        adminAccountUserFeedback = "";
+        adminAccountUserFeedback = null;
         renderAdminUserActivitySection();
         try {
             const { data, error } = await client.functions.invoke("admin-account", {
@@ -6617,9 +6617,9 @@
             if (error) throw error;
             if (data?.is_admin !== true) throw new Error("admin_required");
             await loadAdminAccountUsers(activeUserId);
-            adminAccountUserFeedback = languageText(enabled ? "adminProGranted" : "adminProRevoked");
+            adminAccountUserFeedback = { type: "success", message: languageText(enabled ? "adminProGranted" : "adminProRevoked") };
         } catch {
-            adminAccountUserFeedback = `!${languageText("adminProChangeFailed")}`;
+            adminAccountUserFeedback = { type: "error", message: languageText("adminProChangeFailed") };
         } finally {
             adminProBusyUserId = null;
             renderAdminUserActivitySection();
