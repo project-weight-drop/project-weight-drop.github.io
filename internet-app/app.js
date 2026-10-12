@@ -52,8 +52,8 @@
             individualCoaching: "Prowadzenie indywidualne",
             clientPanelTitle: "Panel podopiecznego",
             clientsAdmin: "Podopieczni",
-            clientReportsSubtitle: "Tygodniowe pomiary i raporty",
-            adminReportsSubtitle: "Raporty i historia tygodniowa",
+            clientReportsSubtitle: "Miesięczne pomiary i raporty",
+            adminReportsSubtitle: "Raporty i historia pomiarów",
             adminListSubtitle: "Użytkownicy, aktywność i raporty podopiecznych.",
             adminUsersTitle: "Użytkownicy aplikacji",
             adminUsersEmpty: "Brak użytkowników do wyświetlenia.",
@@ -63,7 +63,76 @@
             firstLogin: "Pierwsze logowanie",
             lastActivity: "Ostatnia aktywność",
             noData: "Brak danych",
-            clientPanelIntro: "Wpisz PIN od Przemali, aby wysyłać cotygodniowe pomiary i raporty.",
+            noDataShort: "—",
+            tryAgain: "Spróbuj ponownie",
+            backToClients: "Wróć do podopiecznych",
+            clientNameFallback: "Podopieczny",
+            emailMissing: "Brak e-maila",
+            adminUserSearchLabel: "Szukaj konta po adresie e-mail",
+            adminUserSearchPlaceholder: "Wpisz adres e-mail",
+            adminUserSearchNoResults: "Nie znaleziono konta o takim adresie e-mail.",
+            adminProActive: "PRO aktywne",
+            adminProAdminSource: "PRO przyznane przez administratora",
+            adminProGooglePlaySource: "PRO z Google Play",
+            adminProGenericSource: "Aktywny dostęp PRO",
+            adminFree: "FREE",
+            adminGrantPro: "Przyznaj PRO",
+            adminRevokePro: "Odbierz admin. PRO",
+            adminGrantProConfirm: "Czy przyznać PRO temu kontu?",
+            adminRevokeProConfirm: "Czy odebrać temu kontu dostęp PRO przyznany przez administratora?",
+            adminProGranted: "Dostęp PRO przyznany.",
+            adminProRevoked: "Adminowe PRO odebrane. Dostęp z Google Play pozostaje bez zmian.",
+            adminProChangeFailed: "Nie udało się zmienić dostępu PRO. Spróbuj ponownie.",
+            adminProChanging: "Zapisywanie…",
+            adminProStoreManaged: "Ten dostęp PRO jest zarządzany przez Google Play.",
+            reportDate: "Data raportu",
+            reportWeekOf: "Raport z {date}",
+            reportDateWithValue: "Data wysłania: {date}",
+            reportCount: "Raporty",
+            clientReportHistory: "Historia raportów",
+            clientNoReports: "Nie wysłano jeszcze raportu.",
+            reportAlreadySent: "Raport za ten okres jest już zapisany.",
+            comparisonTitle: "Porównanie z poprzednim raportem",
+            comparisonDates: "Daty raportów",
+            comparisonValues: "Poprzedni → obecny",
+            comparisonChange: "Zmiana",
+            noPreviousReport: "Brak wcześniejszego raportu do porównania.",
+            monthlyReportTitle: "Miesięczna aktualizacja danych",
+            monthlyReportDueCopy: "Możesz teraz wysłać kolejny raport dla Przemali.",
+            monthlyReportWaitingCopy: "Kolejny raport będzie dostępny po upływie pełnego miesiąca od aktywacji lub ostatniego raportu.",
+            monthlyReportNextDate: "Następny raport od",
+            reportNotDue: "Termin kolejnego raportu jeszcze nie nadszedł.",
+            reportDataInvalid: "Sprawdź wagę (35–350 kg) i pomiary. Wartości obwodów muszą mieścić się w podanych zakresach.",
+            reportConsentRequired: "Zaznacz zgodę na przekazanie raportu Przemali.",
+            pinAttemptsExceeded: "Za dużo prób wpisania PIN-u. Spróbuj ponownie za godzinę.",
+            pinInvalid: "PIN jest nieprawidłowy. Sprawdź go i spróbuj ponownie.",
+            adminRequired: "Brak uprawnień administratora do raportów podopiecznych.",
+            clientPortalUnavailable: "Funkcja panelu podopiecznego jest chwilowo niedostępna. Odśwież stronę lub spróbuj ponownie później.",
+            clientNetworkError: "Nie udało się połączyć z serwisem. Sprawdź internet i spróbuj ponownie.",
+            clientPortalSaveFailed: "Nie udało się wczytać lub zapisać danych panelu. Spróbuj ponownie.",
+            reportSaveFailed: "Nie udało się zapisać raportu. Spróbuj ponownie.",
+            reportSent: "WYSŁANO",
+            reportMissing: "BRAK",
+            reportUpcoming: "NIE TERAZ",
+            clientPortalAccessEyebrow: "DOSTĘP DLA PODOPIECZNYCH",
+            clientPortalOpenTitle: "Otwórz swój panel",
+            clientPortalPinPrompt: "Wpisz 6-cyfrowy PIN otrzymany od Przemali. Panel zostanie przypisany do Twojego konta.",
+            pinLabel: "PIN",
+            pinNotStored: "PIN nie jest zapisywany w przeglądarce ani w profilu.",
+            checkingPin: "SPRAWDZANIE PIN-U…",
+            openPanel: "OTWÓRZ PANEL",
+            weightExample: "np. 85,5",
+            reportFormQuestion: "Jak minął ostatni miesiąc?",
+            dietFieldLabel: "Dieta",
+            optionalMeasurements: "Pomiary ciała · opcjonalnie",
+            reportRatingPrompt: "Jak się czujesz? Oceń od 1 do 10.",
+            coachNoteOptional: "Notatka dla Przemali · opcjonalnie",
+            reportNotePlaceholder: "Możesz dopisać ważne informacje z ostatniego miesiąca.",
+            reportConsentCopy: "Zgadzam się przekazać Przemali ten raport, w tym dane o wadze, pomiarach i samopoczuciu. Raport zostanie zapisany w aplikacji i będzie widoczny dla administratora programu.",
+            monthlyReportFormHint: "Po wysłaniu raportu kolejna aktualizacja będzie dostępna po pełnym miesiącu. Historia pozostaje na Twoim koncie.",
+            sendReportToCoach: "WYŚLIJ RAPORT DO PRZEMALI",
+            savingReport: "ZAPISYWANIE RAPORTU…",
+            clientPanelIntro: "Wpisz PIN od Przemali, aby otworzyć panel i wysyłać miesięczne pomiary oraz raporty.",
             clientPanelLoading: "Wczytywanie danych panelu…",
             dietLabel: "Rodzaj diety",
             weightLabel: "Waga (kg)",
@@ -84,8 +153,8 @@
             proteinLabel: "Białko",
             fatLabel: "Tłuszcz",
             carbsLabel: "Węglowodany",
-            managedMondayTitle: "Podopieczny jest prowadzony przez Przemysława",
-            managedMondayNoWeekly: "Nie musisz ponownie wypełniać cotygodniowej aktualizacji danych.",
+            managedMondayTitle: "Jesteś podopiecznym Przemysława",
+            managedMondayNoWeekly: "Nie musisz wypełniać cotygodniowego formularza — raport jest dostępny raz na miesiąc.",
             managedMondayHuman: "Kalorie i makro są wyliczane indywidualnie i dopasowywane przez człowieka.",
             managedMondayMonth: "Aktualizacja planu następuje po pełnym miesiącu współpracy. Każda zmiana zapisana przez Przemysława pojawi się w aplikacji automatycznie.",
             close: "Zamknij",
@@ -102,7 +171,7 @@
             adminMemberDelete: "Usuń podopiecznego",
             saveChanges: "ZAPISZ ZMIANY",
             cancel: "Anuluj",
-            adminReportEditTitle: "Popraw raport tygodniowy",
+            adminReportEditTitle: "Popraw raport",
             adminReportDeleteConfirm: "Czy na pewno usunąć ten raport? Tej operacji nie można cofnąć.",
             adminMemberDeleteConfirm: "Czy na pewno usunąć dostęp tego podopiecznego? Historia jego raportów zostanie obsłużona przez system zgodnie z zasadami administratora.",
             reportSavedProduction: "Raport został zapisany i jest widoczny w panelu administratora.",
@@ -173,8 +242,8 @@
             individualCoaching: "Individual coaching",
             clientPanelTitle: "Client panel",
             clientsAdmin: "Clients",
-            clientReportsSubtitle: "Weekly measurements and reports",
-            adminReportsSubtitle: "Reports and weekly history",
+            clientReportsSubtitle: "Monthly measurements and reports",
+            adminReportsSubtitle: "Reports and measurement history",
             adminListSubtitle: "Users, activity and client reports.",
             adminUsersTitle: "App users",
             adminUsersEmpty: "No users to display.",
@@ -184,7 +253,76 @@
             firstLogin: "First login",
             lastActivity: "Last activity",
             noData: "No data",
-            clientPanelIntro: "Enter the PIN provided by Przemala to submit weekly measurements and reports.",
+            noDataShort: "—",
+            tryAgain: "Try again",
+            backToClients: "Back to clients",
+            clientNameFallback: "Client",
+            emailMissing: "No email",
+            adminUserSearchLabel: "Find an account by email",
+            adminUserSearchPlaceholder: "Enter an email address",
+            adminUserSearchNoResults: "No account found with that email address.",
+            adminProActive: "PRO active",
+            adminProAdminSource: "PRO granted by administrator",
+            adminProGooglePlaySource: "PRO from Google Play",
+            adminProGenericSource: "Active PRO access",
+            adminFree: "FREE",
+            adminGrantPro: "Grant PRO",
+            adminRevokePro: "Revoke admin PRO",
+            adminGrantProConfirm: "Grant PRO to this account?",
+            adminRevokeProConfirm: "Revoke the administrator-granted PRO access for this account?",
+            adminProGranted: "PRO access granted.",
+            adminProRevoked: "Admin PRO revoked. Google Play access is unchanged.",
+            adminProChangeFailed: "Could not change PRO access. Please try again.",
+            adminProChanging: "Saving…",
+            adminProStoreManaged: "This PRO access is managed by Google Play.",
+            reportDate: "Report date",
+            reportWeekOf: "Report on {date}",
+            reportDateWithValue: "Sent: {date}",
+            reportCount: "Reports",
+            clientReportHistory: "Report history",
+            clientNoReports: "No report has been submitted yet.",
+            reportAlreadySent: "A report for this period has already been saved.",
+            comparisonTitle: "Compare with the previous report",
+            comparisonDates: "Report dates",
+            comparisonValues: "Previous → current",
+            comparisonChange: "Change",
+            noPreviousReport: "There is no earlier report to compare.",
+            monthlyReportTitle: "Monthly data update",
+            monthlyReportDueCopy: "You can now send your next report to Przemala.",
+            monthlyReportWaitingCopy: "The next report becomes available after a full month from activation or the last report.",
+            monthlyReportNextDate: "Next report from",
+            reportNotDue: "The next report is not due yet.",
+            reportDataInvalid: "Check the weight (35–350 kg) and measurements. Circumferences must be within the displayed ranges.",
+            reportConsentRequired: "Please consent to sharing the report with Przemala.",
+            pinAttemptsExceeded: "Too many PIN attempts. Please try again in an hour.",
+            pinInvalid: "The PIN is incorrect. Check it and try again.",
+            adminRequired: "You do not have administrator access to client reports.",
+            clientPortalUnavailable: "The client panel is temporarily unavailable. Refresh the page or try again later.",
+            clientNetworkError: "Could not connect to the service. Check your internet connection and try again.",
+            clientPortalSaveFailed: "Could not load or save the client panel data. Please try again.",
+            reportSaveFailed: "Could not save the report. Please try again.",
+            reportSent: "SENT",
+            reportMissing: "MISSING",
+            reportUpcoming: "NOT DUE",
+            clientPortalAccessEyebrow: "CLIENT ACCESS",
+            clientPortalOpenTitle: "Open your panel",
+            clientPortalPinPrompt: "Enter the six-digit PIN provided by Przemala. The panel will be linked to your account.",
+            pinLabel: "PIN",
+            pinNotStored: "The PIN is not stored in your browser or profile.",
+            checkingPin: "CHECKING PIN…",
+            openPanel: "OPEN PANEL",
+            weightExample: "e.g. 85.5",
+            reportFormQuestion: "How has the past month been?",
+            dietFieldLabel: "Diet",
+            optionalMeasurements: "Body measurements · optional",
+            reportRatingPrompt: "How do you feel? Rate from 1 to 10.",
+            coachNoteOptional: "Note for Przemala · optional",
+            reportNotePlaceholder: "Add any important information from the past month.",
+            reportConsentCopy: "I agree to share this report with Przemala, including weight, measurements and wellbeing data. The report will be saved in the app and visible to the programme administrator.",
+            monthlyReportFormHint: "After submitting, the next update will be available after a full month. Your history stays on your account.",
+            sendReportToCoach: "SEND REPORT TO PRZEMALA",
+            savingReport: "SAVING REPORT…",
+            clientPanelIntro: "Enter the PIN from Przemala to open your panel and send monthly measurements and reports.",
             clientPanelLoading: "Loading panel data…",
             dietLabel: "Diet type",
             weightLabel: "Weight (kg)",
@@ -205,8 +343,8 @@
             proteinLabel: "Protein",
             fatLabel: "Fat",
             carbsLabel: "Carbohydrates",
-            managedMondayTitle: "You are personally coached by Przemysław",
-            managedMondayNoWeekly: "You do not need to complete the weekly data update again.",
+            managedMondayTitle: "You are coached by Przemysław",
+            managedMondayNoWeekly: "You do not need a weekly form — reports are available once a month.",
             managedMondayHuman: "Your calories and macros are calculated individually and adjusted by a person.",
             managedMondayMonth: "Your plan is updated after a full month of coaching. Any change saved by Przemysław will appear in the app automatically.",
             close: "Close",
@@ -223,7 +361,7 @@
             adminMemberDelete: "Remove client",
             saveChanges: "SAVE CHANGES",
             cancel: "Cancel",
-            adminReportEditTitle: "Edit weekly report",
+            adminReportEditTitle: "Edit report",
             adminReportDeleteConfirm: "Delete this report? This action cannot be undone.",
             adminMemberDeleteConfirm: "Remove this client’s access? The system will handle their report history according to administrator rules.",
             reportSavedProduction: "The report was saved and is visible in the administrator panel.",
@@ -294,8 +432,8 @@
             individualCoaching: "Individuelle Betreuung",
             clientPanelTitle: "Klientenbereich",
             clientsAdmin: "Klienten",
-            clientReportsSubtitle: "Wöchentliche Messungen und Berichte",
-            adminReportsSubtitle: "Berichte und Wochenverlauf",
+            clientReportsSubtitle: "Monatliche Messungen und Berichte",
+            adminReportsSubtitle: "Berichte und Messverlauf",
             adminListSubtitle: "Nutzer, Aktivität und Klientenberichte.",
             adminUsersTitle: "App-Nutzer",
             adminUsersEmpty: "Keine Nutzer zum Anzeigen.",
@@ -305,7 +443,76 @@
             firstLogin: "Erster Login",
             lastActivity: "Letzte Aktivität",
             noData: "Keine Daten",
-            clientPanelIntro: "Gib die von Przemala erhaltene PIN ein, um wöchentliche Messungen und Berichte zu senden.",
+            noDataShort: "—",
+            tryAgain: "Erneut versuchen",
+            backToClients: "Zurück zu den Klienten",
+            clientNameFallback: "Klient",
+            emailMissing: "Keine E-Mail",
+            adminUserSearchLabel: "Konto per E-Mail suchen",
+            adminUserSearchPlaceholder: "E-Mail-Adresse eingeben",
+            adminUserSearchNoResults: "Kein Konto mit dieser E-Mail-Adresse gefunden.",
+            adminProActive: "PRO aktiv",
+            adminProAdminSource: "PRO vom Administrator gewährt",
+            adminProGooglePlaySource: "PRO über Google Play",
+            adminProGenericSource: "PRO-Zugang aktiv",
+            adminFree: "FREE",
+            adminGrantPro: "PRO gewähren",
+            adminRevokePro: "Admin-PRO entziehen",
+            adminGrantProConfirm: "PRO für dieses Konto gewähren?",
+            adminRevokeProConfirm: "Den vom Administrator gewährten PRO-Zugang für dieses Konto entziehen?",
+            adminProGranted: "PRO-Zugang gewährt.",
+            adminProRevoked: "Admin-PRO entzogen. Google-Play-Zugang bleibt unverändert.",
+            adminProChangeFailed: "PRO-Zugang konnte nicht geändert werden. Bitte erneut versuchen.",
+            adminProChanging: "Wird gespeichert…",
+            adminProStoreManaged: "Dieser PRO-Zugang wird über Google Play verwaltet.",
+            reportDate: "Berichtsdatum",
+            reportWeekOf: "Bericht vom {date}",
+            reportDateWithValue: "Gesendet: {date}",
+            reportCount: "Berichte",
+            clientReportHistory: "Berichtsverlauf",
+            clientNoReports: "Es wurde noch kein Bericht gesendet.",
+            reportAlreadySent: "Für diesen Zeitraum wurde bereits ein Bericht gespeichert.",
+            comparisonTitle: "Vergleich mit dem vorherigen Bericht",
+            comparisonDates: "Berichtszeitpunkte",
+            comparisonValues: "Vorherig → aktuell",
+            comparisonChange: "Änderung",
+            noPreviousReport: "Kein früherer Bericht zum Vergleichen vorhanden.",
+            monthlyReportTitle: "Monatliche Datenaktualisierung",
+            monthlyReportDueCopy: "Du kannst jetzt deinen nächsten Bericht an Przemala senden.",
+            monthlyReportWaitingCopy: "Der nächste Bericht ist einen vollen Monat nach der Aktivierung oder dem letzten Bericht verfügbar.",
+            monthlyReportNextDate: "Nächster Bericht ab",
+            reportNotDue: "Der nächste Bericht ist noch nicht fällig.",
+            reportDataInvalid: "Prüfe Gewicht (35–350 kg) und Messwerte. Die Umfänge müssen innerhalb der angezeigten Bereiche liegen.",
+            reportConsentRequired: "Bitte stimme der Weitergabe des Berichts an Przemala zu.",
+            pinAttemptsExceeded: "Zu viele PIN-Versuche. Bitte in einer Stunde erneut versuchen.",
+            pinInvalid: "Die PIN ist falsch. Bitte prüfen und erneut versuchen.",
+            adminRequired: "Du hast keine Administratorberechtigung für Klientenberichte.",
+            clientPortalUnavailable: "Der Klientenbereich ist vorübergehend nicht verfügbar. Bitte Seite aktualisieren oder später erneut versuchen.",
+            clientNetworkError: "Verbindung zum Dienst fehlgeschlagen. Prüfe deine Internetverbindung und versuche es erneut.",
+            clientPortalSaveFailed: "Die Daten des Klientenbereichs konnten nicht geladen oder gespeichert werden. Bitte erneut versuchen.",
+            reportSaveFailed: "Der Bericht konnte nicht gespeichert werden. Bitte erneut versuchen.",
+            reportSent: "GESENDET",
+            reportMissing: "FEHLT",
+            reportUpcoming: "NOCH NICHT",
+            clientPortalAccessEyebrow: "KLIENTENZUGANG",
+            clientPortalOpenTitle: "Bereich öffnen",
+            clientPortalPinPrompt: "Gib die sechsstellige PIN von Przemala ein. Der Bereich wird deinem Konto zugeordnet.",
+            pinLabel: "PIN",
+            pinNotStored: "Die PIN wird weder im Browser noch im Profil gespeichert.",
+            checkingPin: "PIN WIRD GEPRÜFT…",
+            openPanel: "BEREICH ÖFFNEN",
+            weightExample: "z. B. 85,5",
+            reportFormQuestion: "Wie war der letzte Monat?",
+            dietFieldLabel: "Ernährungsform",
+            optionalMeasurements: "Körpermaße · optional",
+            reportRatingPrompt: "Wie fühlst du dich? Bewertung von 1 bis 10.",
+            coachNoteOptional: "Notiz für Przemala · optional",
+            reportNotePlaceholder: "Ergänze wichtige Informationen aus dem letzten Monat.",
+            reportConsentCopy: "Ich bin einverstanden, diesen Bericht mit Przemala zu teilen, einschließlich Gewicht, Messwerten und Wohlbefinden. Der Bericht wird in der App gespeichert und ist für den Programmadministrator sichtbar.",
+            monthlyReportFormHint: "Nach dem Absenden ist die nächste Aktualisierung nach einem vollen Monat verfügbar. Dein Verlauf bleibt im Konto.",
+            sendReportToCoach: "BERICHT AN PRZEMALA SENDEN",
+            savingReport: "BERICHT WIRD GESPEICHERT…",
+            clientPanelIntro: "Gib die von Przemala erhaltene PIN ein, um den Bereich zu öffnen und monatliche Messwerte und Berichte zu senden.",
             clientPanelLoading: "Paneldaten werden geladen…",
             dietLabel: "Ernährungsform",
             weightLabel: "Gewicht (kg)",
@@ -326,8 +533,8 @@
             proteinLabel: "Eiweiß",
             fatLabel: "Fett",
             carbsLabel: "Kohlenhydrate",
-            managedMondayTitle: "Du wirst persönlich von Przemysław betreut",
-            managedMondayNoWeekly: "Du musst die wöchentliche Datenaktualisierung nicht erneut ausfüllen.",
+            managedMondayTitle: "Du wirst von Przemysław betreut",
+            managedMondayNoWeekly: "Du brauchst kein wöchentliches Formular — Berichte sind einmal im Monat möglich.",
             managedMondayHuman: "Kalorien und Makros werden individuell berechnet und von einem Menschen angepasst.",
             managedMondayMonth: "Dein Plan wird nach einem vollen Monat Betreuung aktualisiert. Jede von Przemysław gespeicherte Änderung erscheint automatisch in der App.",
             close: "Schließen",
@@ -344,7 +551,7 @@
             adminMemberDelete: "Klienten entfernen",
             saveChanges: "ÄNDERUNGEN SPEICHERN",
             cancel: "Abbrechen",
-            adminReportEditTitle: "Wochenbericht korrigieren",
+            adminReportEditTitle: "Bericht korrigieren",
             adminReportDeleteConfirm: "Diesen Bericht wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.",
             adminMemberDeleteConfirm: "Zugang dieses Klienten wirklich entfernen? Das System behandelt den Berichtsverlauf gemäß den Administratorregeln.",
             reportSavedProduction: "Der Bericht wurde gespeichert und ist im Administratorbereich sichtbar.",
@@ -630,6 +837,8 @@
     let clientPortalMembers = [];
     let adminAccountUsers = [];
     let adminAccountUsersError = null;
+    let adminAccountUserQuery = "";
+    let adminProBusyUserId = null;
     let clientPortalSelectedMember = null;
     let clientPortalMemberHistory = [];
     let clientPortalPin = "";
@@ -1039,6 +1248,8 @@
         clientPortalMembers = [];
         adminAccountUsers = [];
         adminAccountUsersError = null;
+        adminAccountUserQuery = "";
+        adminProBusyUserId = null;
         clientPortalSelectedMember = null;
         clientPortalMemberHistory = [];
         clientPortalPin = "";
@@ -6000,38 +6211,111 @@
         if (normalized.includes("plan_values_out_of_range") || normalized.includes("invalid_plan_values")) return languageText("invalidPlanValues");
         if (normalized.includes("keto_carb_limit") || normalized.includes("nutrition_plans_keto_carb_cap_45")) return languageText("ketoCarbLimit");
         if (normalized.includes("report_values_out_of_range") || normalized.includes("invalid_report_data")) return languageText("invalidReportValues");
-        if (normalized.includes("too_many_attempts")) return "Za dużo prób wpisania PIN-u. Spróbuj ponownie za godzinę.";
-        if (normalized.includes("invalid_pin")) return "PIN jest nieprawidłowy. Sprawdź go i spróbuj ponownie.";
-        if (normalized.includes("already_submitted")) return "Raport za ten tydzień jest już zapisany.";
-        if (normalized.includes("admin_required")) return "Brak uprawnień administratora do raportów podopiecznych.";
-        if (normalized.includes("consent_required")) return "Zaznacz zgodę na przekazanie raportu Przemali.";
+        if (normalized.includes("too_many_attempts")) return languageText("pinAttemptsExceeded");
+        if (normalized.includes("invalid_pin")) return languageText("pinInvalid");
+        if (normalized.includes("report_not_due")) return languageText("reportNotDue");
+        if (normalized.includes("already_submitted")) return languageText("reportAlreadySent");
+        if (normalized.includes("report_save_failed")) return languageText("reportSaveFailed");
+        if (normalized.includes("admin_required")) return languageText("adminRequired");
+        if (normalized.includes("consent_required")) return languageText("reportConsentRequired");
         if (normalized.includes("pgrst202") || normalized.includes("42883") || normalized.includes("function") && normalized.includes("not found")) {
-            return "Funkcja panelu podopiecznego jest chwilowo niedostępna. Odśwież stronę lub spróbuj ponownie później.";
+            return languageText("clientPortalUnavailable");
         }
         if (normalized.includes("failed to fetch") || normalized.includes("network") || normalized.includes("timeout")) {
-            return "Nie udało się połączyć z serwisem. Sprawdź internet i spróbuj ponownie.";
+            return languageText("clientNetworkError");
         }
-        return "Nie udało się wczytać lub zapisać danych panelu. Spróbuj ponownie.";
+        return languageText("clientPortalSaveFailed");
     }
 
-    function clientPortalReportCardHtml(report) {
-        const measures = [
-            ["Talia", report.waist_cm], ["Biodra", report.hips_cm], ["Klatka", report.chest_cm],
-            ["Ramię", report.arm_cm], ["Udo", report.thigh_cm]
-        ].filter(([, value]) => finiteNumber(value) !== null)
-            .map(([label, value]) => `${label} ${clientPortalEscape(formatWeight(value))} cm`);
+    function clientPortalReportTimestamp(report) {
+        const value = report?.submitted_at || report?.week_start;
+        const timestamp = value ? Date.parse(value) : NaN;
+        return Number.isFinite(timestamp) ? timestamp : null;
+    }
+
+    function clientPortalReportDateLabel(report) {
+        if (report?.submitted_at) return formatActivityDate(report.submitted_at);
+        return report?.week_start ? formatDate(report.week_start) : languageText("noData");
+    }
+
+    function clientPortalReportPrevious(report, reports) {
+        const timestamp = clientPortalReportTimestamp(report);
+        if (timestamp === null || !Array.isArray(reports)) return null;
+        return reports
+            .filter((candidate) => candidate?.id !== report?.id)
+            .map((candidate) => ({ candidate, timestamp: clientPortalReportTimestamp(candidate) }))
+            .filter((entry) => entry.timestamp !== null && entry.timestamp < timestamp)
+            .sort((left, right) => right.timestamp - left.timestamp)[0]?.candidate || null;
+    }
+
+    function clientPortalReportMetricValue(value, isRating = false) {
+        const numeric = finiteNumber(value);
+        if (numeric === null) return languageText("noData");
+        return isRating ? formatNumber(numeric) : formatWeight(numeric);
+    }
+
+    function clientPortalReportComparisonHtml(report, previousReport) {
+        if (!previousReport) {
+            return `<section class="client-portal-report-comparison" aria-label="${languageText("comparisonTitle")}"><h4>${languageText("comparisonTitle")}</h4><p>${languageText("noPreviousReport")}</p></section>`;
+        }
+        const metrics = [
+            { key: "weight_kg", label: languageText("weightLabel"), rating: false, lowerIsPositive: true },
+            { key: "waist_cm", label: languageText("waistLabel"), rating: false, lowerIsPositive: true },
+            { key: "hips_cm", label: languageText("hipsLabel"), rating: false, lowerIsPositive: true },
+            { key: "chest_cm", label: languageText("chestLabel"), rating: false, lowerIsPositive: true },
+            { key: "arm_cm", label: languageText("armLabel"), rating: false, lowerIsPositive: true },
+            { key: "thigh_cm", label: languageText("thighLabel"), rating: false, lowerIsPositive: true },
+            { key: "wellbeing_score", label: languageText("wellbeingLabel"), rating: true, lowerIsPositive: false },
+            { key: "energy_score", label: languageText("energyLabel"), rating: true, lowerIsPositive: false },
+            { key: "strength_score", label: languageText("strengthLabel"), rating: true, lowerIsPositive: false }
+        ];
+        const rows = metrics.map((metric) => {
+            const current = finiteNumber(report?.[metric.key]);
+            const previous = finiteNumber(previousReport?.[metric.key]);
+            const difference = current === null || previous === null ? null : current - previous;
+            const magnitude = difference === null
+                ? languageText("noDataShort")
+                : `${difference > 0 ? "+" : difference < 0 ? "−" : ""}${metric.rating ? formatNumber(Math.abs(difference)) : formatWeight(Math.abs(difference))}`;
+            const positive = difference !== null && difference !== 0
+                && (metric.lowerIsPositive ? difference < 0 : difference > 0);
+            return `<div class="client-portal-comparison-row">
+                <strong>${clientPortalEscape(metric.label)}</strong>
+                <span>${clientPortalEscape(finiteNumber(previousReport?.[metric.key]) === null ? languageText("noDataShort") : clientPortalReportMetricValue(previousReport?.[metric.key], metric.rating))}<i aria-hidden="true"> → </i>${clientPortalEscape(finiteNumber(report?.[metric.key]) === null ? languageText("noDataShort") : clientPortalReportMetricValue(report?.[metric.key], metric.rating))}</span>
+                <b class="${positive ? "positive" : "neutral"}">${clientPortalEscape(magnitude)}</b>
+            </div>`;
+        }).join("");
+        return `<section class="client-portal-report-comparison" aria-label="${languageText("comparisonTitle")}">
+            <h4>${languageText("comparisonTitle")}</h4>
+            <div class="client-portal-comparison-dates"><span>${languageText("comparisonDates")}</span><strong>${clientPortalEscape(clientPortalReportDateLabel(previousReport))} → ${clientPortalEscape(clientPortalReportDateLabel(report))}</strong></div>
+            <div class="client-portal-comparison-columns"><span></span><span>${languageText("comparisonValues")}</span><span>${languageText("comparisonChange")}</span></div>
+            <div class="client-portal-comparison-rows">${rows}</div>
+        </section>`;
+    }
+
+    function clientPortalReportCardHtml(report, reports = []) {
+        const metrics = [
+            [languageText("weightLabel"), report.weight_kg, false],
+            [languageText("waistLabel"), report.waist_cm, false],
+            [languageText("hipsLabel"), report.hips_cm, false],
+            [languageText("chestLabel"), report.chest_cm, false],
+            [languageText("armLabel"), report.arm_cm, false],
+            [languageText("thighLabel"), report.thigh_cm, false],
+            [languageText("wellbeingLabel"), report.wellbeing_score, true],
+            [languageText("energyLabel"), report.energy_score, true],
+            [languageText("strengthLabel"), report.strength_score, true]
+        ];
         const note = String(report.notes || "").trim();
-        const sentAt = report.submitted_at ? formatDate(report.submitted_at, true) : "—";
+        const previousReport = clientPortalReportPrevious(report, reports);
+        const submittedAt = clientPortalReportDateLabel(report);
         const adminActions = currentUserIsAdmin && report.id
             ? `<div class="client-portal-admin-actions"><button type="button" data-client-portal-action="edit-report" data-report-id="${clientPortalEscape(report.id)}">${languageText("adminReportEdit")}</button><button type="button" data-client-portal-action="delete-report" data-report-id="${clientPortalEscape(report.id)}">${languageText("adminReportDelete")}</button></div>${clientPortalEditingReportId === report.id ? clientPortalReportEditFormHtml(report) : ""}`
             : "";
         return `<article class="client-portal-report-card">
-            <header><strong>Tydzień od ${clientPortalEscape(formatDate(report.week_start))}</strong><span>${clientPortalEscape(clientPortalDietLabel(report.diet_type))}</span></header>
-            <p class="client-portal-report-weight">Waga: ${clientPortalEscape(formatWeight(report.weight_kg))} kg</p>
-            ${measures.length ? `<p class="client-portal-report-measures">${measures.join(" · ")}</p>` : ""}
-            <p class="client-portal-report-ratings">Samopoczucie ${clientPortalEscape(report.wellbeing_score)}/10 · Energia ${clientPortalEscape(report.energy_score)}/10 · Siła ${clientPortalEscape(report.strength_score)}/10</p>
+            <header><div><strong>${languageTemplate("reportWeekOf", { date: clientPortalEscape(submittedAt) })}</strong></div><span>${clientPortalEscape(clientPortalDietLabel(report.diet_type))}</span></header>
+            <div class="client-portal-report-measure-grid">${metrics.map(([label, value, rating]) => `<div><span>${clientPortalEscape(label)}</span><strong>${clientPortalEscape(clientPortalReportMetricValue(value, rating))}</strong></div>`).join("")}</div>
+            ${clientPortalReportComparisonHtml(report, previousReport)}
             ${note ? `<p class="client-portal-report-note">${clientPortalEscape(note)}</p>` : ""}
-            <small><span class="client-portal-member-state sent">WYSŁANO</span> · ${clientPortalEscape(sentAt)}</small>
+            <small><span class="client-portal-member-state sent">${languageText("reportSent")}</span> · ${clientPortalEscape(submittedAt)}</small>
             ${adminActions}
         </article>`;
     }
@@ -6144,6 +6428,8 @@
                 return;
             }
             const weekChanged = status.current_week_start !== clientPortalStatus?.current_week_start;
+            const reportScheduleChanged = status.monthly_report_due !== clientPortalStatus?.monthly_report_due
+                || status.next_report_due_at !== clientPortalStatus?.next_report_due_at;
             clientPortalStatus = status;
             if (isActivated) {
                 const planResult = await client.rpc("get_my_client_nutrition_plan");
@@ -6155,7 +6441,7 @@
                 }
                 clientPortalNutritionPlanState = planResult.data;
                 renderManagedPlanCard();
-                if (weekChanged && currentAppRoute === "client-portal") void loadClientPortalData();
+                if ((weekChanged || reportScheduleChanged) && currentAppRoute === "client-portal") void loadClientPortalData();
             } else {
                 renderManagedPlanCard();
                 renderProgressHub(
@@ -6185,14 +6471,17 @@
         const latest = member.latest_report;
         const latestWeight = finiteNumber(latest?.weight_kg);
         const summary = [
-            `Raporty: ${formatNumber(member.report_count ?? 0)}`,
-            latestWeight === null ? null : `Waga: ${formatWeight(latestWeight)} kg`,
-            `Tydzień od ${formatDate(member.current_week_start)}`
+            `${languageText("reportCount")}: ${formatNumber(member.report_count ?? 0)}`,
+            latestWeight === null ? null : `${languageText("weightLabel")}: ${formatWeight(latestWeight)}`,
+            latest?.submitted_at ? `${languageText("reportDate")}: ${formatDate(latest.submitted_at, true)}` : null
         ].filter(Boolean).join(" · ");
-        const sent = member.submitted_this_week === true;
+        const hasReport = Boolean(latest) || finiteNumber(member.report_count) > 0;
+        const due = member.monthly_report_due === true;
+        const status = due ? "missing" : hasReport ? "sent" : "upcoming";
+        const statusLabel = due ? languageText("reportMissing") : hasReport ? languageText("reportSent") : languageText("reportUpcoming");
         return `<button class="client-portal-member-card" type="button" data-client-portal-action="open-member" data-user-id="${clientPortalEscape(member.user_id)}">
-            <span class="client-portal-member-main"><strong>${clientPortalEscape(member.display_name || "Podopieczny")}</strong><small>${clientPortalEscape(member.email || "Brak e-maila")}</small><span>${clientPortalEscape(summary)}</span></span>
-            <span class="client-portal-member-state ${sent ? "sent" : "missing"}">${sent ? "WYSŁANO" : "BRAK"}</span>
+            <span class="client-portal-member-main"><strong>${clientPortalEscape(member.display_name || languageText("clientNameFallback"))}</strong><small>${clientPortalEscape(member.email || languageText("emailMissing"))}</small><span>${clientPortalEscape(summary)}</span></span>
+            <span class="client-portal-member-state ${status}">${statusLabel}</span>
             <svg aria-hidden="true"><use href="#icon-arrow"></use></svg>
         </button>`;
     }
@@ -6204,12 +6493,28 @@
         const secondary = displayName && email && email !== displayName
             ? `<small>${clientPortalEscape(email)}</small>`
             : "";
+        const adminGrant = user?.admin_pro === true;
+        const googlePlayPro = user?.google_play_pro === true;
+        const hasPro = user?.is_pro === true;
+        const sourceLabels = [
+            adminGrant ? languageText("adminProAdminSource") : "",
+            googlePlayPro ? languageText("adminProGooglePlaySource") : "",
+            hasPro && !adminGrant && !googlePlayPro ? languageText("adminProGenericSource") : ""
+        ].filter(Boolean);
+        const action = adminGrant ? "revoke" : !hasPro && !googlePlayPro ? "grant" : "";
+        const actionLabel = adminProBusyUserId === user?.user_id
+            ? languageText("adminProChanging")
+            : action === "revoke" ? languageText("adminRevokePro") : languageText("adminGrantPro");
+        const proControls = `<div class="admin-user-pro-row"><div class="admin-user-pro-status"><span class="admin-pro-badge ${hasPro ? "active" : "free"}">${hasPro ? languageText("adminProActive") : languageText("adminFree")}</span>${sourceLabels.map((label) => `<small>${clientPortalEscape(label)}</small>`).join("")}</div>
+            ${action ? `<button type="button" class="admin-user-pro-action ${action}" data-admin-pro-action="${action}" data-user-id="${clientPortalEscape(user?.user_id)}" ${adminProBusyUserId ? "disabled" : ""}>${clientPortalEscape(actionLabel)}</button>` : googlePlayPro && !adminGrant ? `<small class="admin-user-pro-managed-note">${clientPortalEscape(languageText("adminProStoreManaged"))}</small>` : ""}
+        </div>`;
         return `<article class="admin-user-activity-card">
-            <div class="admin-user-activity-identity"><strong>${clientPortalEscape(primary)}</strong>${secondary}</div>
+            <div class="admin-user-activity-identity" data-email-search="${clientPortalEscape(email.toLocaleLowerCase("en-GB"))}"><strong>${clientPortalEscape(primary)}</strong>${secondary}</div>
             <dl class="admin-user-activity-dates">
                 <div><dt>${languageText("firstLogin")}</dt><dd>${clientPortalEscape(formatActivityDate(user?.first_login_at))}</dd></div>
                 <div><dt>${languageText("lastActivity")}</dt><dd>${clientPortalEscape(formatActivityDate(user?.last_active_at))}</dd></div>
             </dl>
+            ${proControls}
         </article>`;
     }
 
@@ -6217,7 +6522,7 @@
         const contents = adminAccountUsersError
             ? `<p class="client-portal-notice error">${clientPortalEscape(languageText("adminUsersUnavailable"))}</p>`
             : adminAccountUsers.length
-                ? `<div class="admin-user-activity-list">${adminAccountUsers.map(adminUserActivityCardHtml).join("")}</div>`
+                ? `<label class="admin-user-search">${languageText("adminUserSearchLabel")}<input type="search" data-admin-user-search value="${clientPortalEscape(adminAccountUserQuery)}" placeholder="${languageText("adminUserSearchPlaceholder")}" autocomplete="email" spellcheck="false"></label><p class="admin-user-search-empty" data-admin-user-search-empty hidden>${languageText("adminUserSearchNoResults")}</p><div class="admin-user-activity-list">${adminAccountUsers.map(adminUserActivityCardHtml).join("")}</div>`
                 : `<p class="client-portal-notice">${clientPortalEscape(languageText("adminUsersEmpty"))}</p>`;
         return `<section class="admin-user-activity-section" aria-label="${languageText("adminUsersTitle")}">
             <header><h3>${languageText("adminUsersTitle")}</h3></header>
@@ -6225,45 +6530,93 @@
         </section>`;
     }
 
+    function updateAdminUserSearchVisibility() {
+        if (!clientPortalContent) return;
+        const query = String(adminAccountUserQuery || "").trim().toLocaleLowerCase(currentLocale());
+        const cards = [...clientPortalContent.querySelectorAll(".admin-user-activity-card")];
+        let visible = 0;
+        cards.forEach((card) => {
+            const email = String(card.querySelector("[data-email-search]")?.dataset.emailSearch || "").toLocaleLowerCase(currentLocale());
+            const matches = !query || email.includes(query);
+            card.hidden = !matches;
+            if (matches) visible += 1;
+        });
+        const empty = clientPortalContent.querySelector("[data-admin-user-search-empty]");
+        if (empty) empty.hidden = !query || visible > 0;
+    }
+
+    async function changeAdminUserPro(button) {
+        if (!currentUserIsAdmin || adminProBusyUserId || !client) return;
+        const userId = String(button?.dataset.userId || "");
+        const user = adminAccountUsers.find((candidate) => String(candidate?.user_id || "") === userId);
+        const action = button?.dataset.adminProAction;
+        if (!user || !userId || !["grant", "revoke"].includes(action)) return;
+        const enabled = action === "grant";
+        if (enabled && (user.is_pro === true || user.google_play_pro === true || user.admin_pro === true)) return;
+        if (!enabled && user.admin_pro !== true) return;
+        const email = String(user.email || user.display_name || userId);
+        if (!window.confirm(`${languageText(enabled ? "adminGrantProConfirm" : "adminRevokeProConfirm")}\n${email}`)) return;
+
+        adminProBusyUserId = userId;
+        clientPortalError = null;
+        clientPortalSuccess = null;
+        renderClientPortal();
+        try {
+            const { data, error } = await client.functions.invoke("admin-account", {
+                body: { action: "set_pro", user_id: userId, enabled }
+            });
+            if (error) throw error;
+            if (data?.is_admin !== true) throw new Error("admin_required");
+            await loadAdminAccountUsers(activeUserId);
+            clientPortalSuccess = languageText(enabled ? "adminProGranted" : "adminProRevoked");
+        } catch {
+            clientPortalError = languageText("adminProChangeFailed");
+        } finally {
+            adminProBusyUserId = null;
+            renderClientPortal();
+            updateAdminUserSearchVisibility();
+        }
+    }
+
     function clientPortalPinFormHtml() {
         return `<section class="client-portal-card client-portal-pin-card">
-            <p class="eyebrow">DOSTĘP DLA PODOPIECZNYCH</p>
-            <h3>Otwórz swój panel</h3>
-            <p>Wpisz 6-cyfrowy PIN otrzymany od Przemali. Panel jest bezpłatny i zostanie przypisany do Twojego konta.</p>
+            <p class="eyebrow">${languageText("clientPortalAccessEyebrow")}</p>
+            <h3>${languageText("clientPortalOpenTitle")}</h3>
+            <p>${languageText("clientPortalPinPrompt")}</p>
             <form id="client-portal-pin-form" class="client-portal-pin-form" autocomplete="off">
-                <label for="client-portal-pin">PIN</label>
+                <label for="client-portal-pin">${languageText("pinLabel")}</label>
                 <input id="client-portal-pin" name="pin" type="password" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" value="${clientPortalEscape(clientPortalPin)}" required aria-describedby="client-portal-pin-help">
-                <small id="client-portal-pin-help">PIN nie jest zapisywany w przeglądarce ani w profilu.</small>
-                <button class="tool-primary-button" type="submit" ${clientPortalPin.length !== 6 || clientPortalActivating ? "disabled" : ""}>${clientPortalActivating ? "SPRAWDZANIE PIN-U…" : "OTWÓRZ PANEL"}</button>
+                <small id="client-portal-pin-help">${languageText("pinNotStored")}</small>
+                <button class="tool-primary-button" type="submit" ${clientPortalPin.length !== 6 || clientPortalActivating ? "disabled" : ""}>${clientPortalActivating ? languageText("checkingPin") : languageText("openPanel")}</button>
             </form>
         </section>`;
     }
 
     function clientPortalReportFormHtml() {
         return `<section class="client-portal-card">
-            <p class="eyebrow">RAPORT TYGODNIOWY</p>
-            <h3>Jak wyglądał Twój tydzień?</h3>
+            <p class="eyebrow">${languageText("monthlyReportTitle")}</p>
+            <h3>${languageText("reportFormQuestion")}</h3>
             <form id="client-portal-report-form" class="client-portal-report-form">
-                <fieldset class="client-portal-diet-field"><legend>Dieta</legend>
+                <fieldset class="client-portal-diet-field"><legend>${languageText("dietFieldLabel")}</legend>
                     <label><input type="radio" name="diet_type" value="keto"><span>KETO</span></label>
                     <label><input type="radio" name="diet_type" value="low_carb"><span>LOW CARB</span></label>
                     <label><input type="radio" name="diet_type" value="balance" checked><span>BALANCE</span></label>
                 </fieldset>
-                <label class="client-portal-field">Waga (kg) *<input name="weight_kg" type="text" inputmode="decimal" maxlength="7" placeholder="np. 85,5" required></label>
-                <fieldset class="client-portal-measure-fields"><legend>Pomiary ciała · opcjonalnie</legend>
-                    <label class="client-portal-field">Talia (cm)<input name="waist_cm" type="text" inputmode="decimal" maxlength="7"></label>
-                    <label class="client-portal-field">Biodra (cm)<input name="hips_cm" type="text" inputmode="decimal" maxlength="7"></label>
-                    <label class="client-portal-field">Klatka (cm)<input name="chest_cm" type="text" inputmode="decimal" maxlength="7"></label>
-                    <label class="client-portal-field">Ramię (cm)<input name="arm_cm" type="text" inputmode="decimal" maxlength="7"></label>
-                    <label class="client-portal-field">Udo (cm)<input name="thigh_cm" type="text" inputmode="decimal" maxlength="7"></label>
+                <label class="client-portal-field">${languageText("weightLabel")} *<input name="weight_kg" type="text" inputmode="decimal" maxlength="7" placeholder="${languageText("weightExample")}" required></label>
+                <fieldset class="client-portal-measure-fields"><legend>${languageText("optionalMeasurements")}</legend>
+                    <label class="client-portal-field">${languageText("waistLabel")}<input name="waist_cm" type="text" inputmode="decimal" maxlength="7"></label>
+                    <label class="client-portal-field">${languageText("hipsLabel")}<input name="hips_cm" type="text" inputmode="decimal" maxlength="7"></label>
+                    <label class="client-portal-field">${languageText("chestLabel")}<input name="chest_cm" type="text" inputmode="decimal" maxlength="7"></label>
+                    <label class="client-portal-field">${languageText("armLabel")}<input name="arm_cm" type="text" inputmode="decimal" maxlength="7"></label>
+                    <label class="client-portal-field">${languageText("thighLabel")}<input name="thigh_cm" type="text" inputmode="decimal" maxlength="7"></label>
                 </fieldset>
-                <fieldset class="client-portal-rating-fields"><legend>Jak się czujesz? Oceń od 1 do 10.</legend>
-                    ${[["wellbeing_score", "Samopoczucie"], ["energy_score", "Energia"], ["strength_score", "Siła"]].map(([name, label]) => `<label class="client-portal-rating"><span>${label}</span><output id="client-portal-rating-${name}">7</output><input name="${name}" type="range" min="1" max="10" step="1" value="7" data-rating-output="client-portal-rating-${name}"></label>`).join("")}
+                <fieldset class="client-portal-rating-fields"><legend>${languageText("reportRatingPrompt")}</legend>
+                    ${[["wellbeing_score", languageText("wellbeingLabel")], ["energy_score", languageText("energyLabel")], ["strength_score", languageText("strengthLabel")]].map(([name, label]) => `<label class="client-portal-rating"><span>${label}</span><output id="client-portal-rating-${name}">7</output><input name="${name}" type="range" min="1" max="10" step="1" value="7" data-rating-output="client-portal-rating-${name}"></label>`).join("")}
                 </fieldset>
-                <label class="client-portal-field">Notatka dla Przemali · opcjonalnie<textarea name="notes" maxlength="1200" rows="3" placeholder="Możesz dopisać ważne informacje z tego tygodnia."></textarea></label>
-                <label class="client-portal-consent"><input name="data_sharing_consent" type="checkbox" required><span>Zgadzam się przekazać Przemali ten raport, w tym dane o wadze, pomiarach i samopoczuciu. Raport zostanie zapisany w aplikacji i będzie widoczny dla administratora programu.</span></label>
-                <button class="tool-primary-button" type="submit" ${clientPortalSubmitting ? "disabled" : ""}>${clientPortalSubmitting ? "ZAPISYWANIE RAPORTU…" : "WYŚLIJ RAPORT DO PRZEMALI"}</button>
-                <small>Po wysłaniu raportu nie można edytować go w tym tygodniu. Poprzednie tygodnie pozostają w historii.</small>
+                <label class="client-portal-field">${languageText("coachNoteOptional")}<textarea name="notes" maxlength="1200" rows="3" placeholder="${languageText("reportNotePlaceholder")}"></textarea></label>
+                <label class="client-portal-consent"><input name="data_sharing_consent" type="checkbox" required><span>${languageText("reportConsentCopy")}</span></label>
+                <button class="tool-primary-button" type="submit" ${clientPortalSubmitting ? "disabled" : ""}>${clientPortalSubmitting ? languageText("savingReport") : languageText("sendReportToCoach")}</button>
+                <small>${languageText("monthlyReportFormHint")}</small>
             </form>
         </section>`;
     }
@@ -6307,7 +6660,7 @@
             return;
         }
         if (clientPortalError && !currentUserIsAdmin && !clientPortalStatus && !clientPortalMembers.length && !clientPortalSelectedMember) {
-            clientPortalContent.innerHTML = `<section class="client-portal-card"><p>${clientPortalEscape(clientPortalError)}</p><button type="button" class="tool-secondary-button" data-client-portal-action="refresh">Spróbuj ponownie</button></section>`;
+            clientPortalContent.innerHTML = `<section class="client-portal-card"><p>${clientPortalEscape(clientPortalError)}</p><button type="button" class="tool-secondary-button" data-client-portal-action="refresh">${languageText("tryAgain")}</button></section>`;
             return;
         }
 
@@ -6315,10 +6668,10 @@
             if (clientPortalSelectedMember) {
                 const reports = clientPortalMemberHistory;
                 clientPortalContent.innerHTML = `<div class="client-portal-admin-detail">
-                    <button class="client-portal-back-list" type="button" data-client-portal-action="back-to-members">← Wróć do podopiecznych</button>
-                    <section class="client-portal-card client-portal-member-profile"><p class="eyebrow">HISTORIA PODOPIECZNEGO</p><h3>${clientPortalEscape(clientPortalSelectedMember.display_name || "Podopieczny")}</h3><p>${clientPortalEscape(clientPortalSelectedMember.email || "")}</p><p>Raporty: ${clientPortalEscape(formatNumber(clientPortalSelectedMember.report_count ?? reports.length))} · Ostatni tydzień: ${clientPortalEscape(formatDate(clientPortalSelectedMember.current_week_start))}</p></section>
+                    <button class="client-portal-back-list" type="button" data-client-portal-action="back-to-members">← ${languageText("backToClients")}</button>
+                    <section class="client-portal-card client-portal-member-profile"><p class="eyebrow">${languageText("clientReportHistory")}</p><h3>${clientPortalEscape(clientPortalSelectedMember.display_name || languageText("clientNameFallback"))}</h3><p>${clientPortalEscape(clientPortalSelectedMember.email || languageText("emailMissing"))}</p><p>${clientPortalEscape(languageText("reportCount"))}: ${clientPortalEscape(formatNumber(clientPortalSelectedMember.report_count ?? reports.length))} · ${clientPortalEscape(languageText("monthlyReportNextDate"))}: ${clientPortalEscape(formatActivityDate(clientPortalSelectedMember.next_report_due_at))}</p></section>
                     ${clientPortalAdminPlanFormHtml()}
-                    ${reports.length ? reports.map(clientPortalReportCardHtml).join("") : `<div class="client-portal-notice">Brak wysłanych raportów.</div>`}
+                    ${reports.length ? reports.map((report) => clientPortalReportCardHtml(report, reports)).join("") : `<div class="client-portal-notice">${languageText("clientNoReports")}</div>`}
                 </div>`;
             } else {
                 const clientMembersContent = clientPortalError
@@ -6331,6 +6684,7 @@
                         <header><h3>${languageText("adminClientsTitle")}</h3></header>
                         ${clientMembersContent}
                     </section>`;
+                updateAdminUserSearchVisibility();
             }
             return;
         }
@@ -6341,16 +6695,16 @@
             return;
         }
 
-        const weekStart = String(clientPortalStatus.current_week_start || "");
-        const submitted = clientPortalStatus.submitted_this_week === true;
-        const thisWeekReport = clientPortalMyReports.find((report) => report.week_start === weekStart) || (submitted ? clientPortalMyReports[0] : null);
-        const previousReports = clientPortalMyReports.filter((report) => report !== thisWeekReport);
+        const dueNow = clientPortalStatus.monthly_report_due === true;
+        const latestReport = clientPortalMyReports[0] || null;
+        const previousReports = latestReport ? clientPortalMyReports.slice(1) : [];
+        const nextReportDate = clientPortalStatus.next_report_due_at
+            ? formatActivityDate(clientPortalStatus.next_report_due_at)
+            : languageText("noData");
         clientPortalContent.innerHTML = `<section class="client-portal-card individual-coaching-card"><p class="eyebrow">${languageText("individualCoaching")}</p><h3>${languageText("managedPlanHeading")}</h3><p>${languageText("managedPlanCopy")}</p><p>${languageText("managedPlanAuto")}</p></section>
-            <section class="client-portal-week-card"><p class="eyebrow">TEN TYDZIEŃ</p><h3>Raport za tydzień od ${clientPortalEscape(formatDate(weekStart))}</h3><p>${submitted ? "Raport zapisany. Historia pozostaje dostępna na tym koncie." : "Uzupełnij pomiary i samopoczucie, a następnie wyślij raport do panelu Przemali."}</p></section>
-            ${submitted
-                ? `<div class="client-portal-notice success">Raport za ten tydzień został już wysłany. Możesz go zobaczyć poniżej; nie można go edytować.</div>${thisWeekReport ? clientPortalReportCardHtml(thisWeekReport) : ""}`
-                : clientPortalReportFormHtml()}
-            ${previousReports.length ? `<section class="client-portal-history"><h3>Poprzednie raporty</h3>${previousReports.map(clientPortalReportCardHtml).join("")}</section>` : ""}`;
+            <section class="client-portal-week-card client-portal-monthly-report-card"><p class="eyebrow">${languageText("monthlyReportTitle")}</p><h3>${languageText("monthlyReportTitle")}</h3><p>${dueNow ? languageText("monthlyReportDueCopy") : languageText("monthlyReportWaitingCopy")}</p>${!dueNow ? `<strong>${clientPortalEscape(languageText("monthlyReportNextDate"))}: ${clientPortalEscape(nextReportDate)}</strong>` : ""}</section>
+            ${dueNow ? `${latestReport ? clientPortalReportCardHtml(latestReport, clientPortalMyReports) : ""}${clientPortalReportFormHtml()}` : latestReport ? clientPortalReportCardHtml(latestReport, clientPortalMyReports) : `<div class="client-portal-notice">${languageText("clientNoReports")}</div>`}
+            ${previousReports.length ? `<section class="client-portal-history"><h3>${languageText("clientReportHistory")}</h3>${previousReports.map((report) => clientPortalReportCardHtml(report, clientPortalMyReports)).join("")}</section>` : ""}`;
         bindClientPortalForms();
         updateClientPortalReportButton();
     }
@@ -6511,8 +6865,8 @@
         const consent = values.get("data_sharing_consent") === "on";
         if (weight === null || weight < 35 || weight > 350 || !validMeasures || scores.some((score) => !Number.isInteger(score) || score < 1 || score > 10) || !consent) {
             clientPortalError = !consent
-                ? "Zaznacz zgodę na przekazanie raportu Przemali."
-                : "Sprawdź wagę (35–350 kg) i pomiary. Wartości obwodów muszą mieścić się w podanych zakresach.";
+                ? languageText("reportConsentRequired")
+                : languageText("reportDataInvalid");
             setClientPortalFeedback();
             return;
         }
@@ -6520,7 +6874,7 @@
         clientPortalError = null;
         setClientPortalFeedback();
         const button = form.querySelector("button[type='submit']");
-        if (button) { button.disabled = true; button.textContent = "ZAPISYWANIE RAPORTU…"; }
+        if (button) { button.disabled = true; button.textContent = languageText("savingReport"); }
         let reportSaved = false;
         try {
             const { data, error } = await client.rpc("submit_client_weekly_report", {
@@ -6549,7 +6903,7 @@
             if (reportSaved) renderClientPortal();
             else {
                 setClientPortalFeedback();
-                if (button) button.textContent = "WYŚLIJ RAPORT DO PRZEMALI";
+                if (button) button.textContent = languageText("sendReportToCoach");
                 updateClientPortalReportButton();
             }
         }
@@ -7597,6 +7951,11 @@
     });
     clientPortalContent?.addEventListener("input", (event) => {
         const input = event.target;
+        if (input.matches("[data-admin-user-search]")) {
+            adminAccountUserQuery = String(input.value || "");
+            updateAdminUserSearchVisibility();
+            return;
+        }
         if (input.id === "client-portal-pin") {
             clientPortalPin = input.value.replace(/\D/g, "").slice(0, 6);
             input.value = clientPortalPin;
@@ -7619,6 +7978,11 @@
         }
     });
     clientPortalContent?.addEventListener("click", (event) => {
+        const proButton = event.target.closest("[data-admin-pro-action]");
+        if (proButton) {
+            void changeAdminUserPro(proButton);
+            return;
+        }
         const button = event.target.closest("[data-client-portal-action]");
         if (!button) return;
         const action = button.dataset.clientPortalAction;

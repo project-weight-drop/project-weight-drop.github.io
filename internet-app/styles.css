@@ -1718,3 +1718,151 @@ body.modal-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Meals: stronger section hierarchy, readable daily totals, and clearer controls. */
+.meals-screen { gap: 14px; }
+.meals-view-selector { border-color: #5a514a; background: linear-gradient(120deg, #181818, #21170f); box-shadow: 0 8px 26px rgba(0,0,0,.18); }
+.meals-view-selector button { min-height: 46px; transition: color .16s ease, background .16s ease; }
+.meals-view-selector button.active { background: linear-gradient(120deg, rgba(255,106,0,.24), rgba(255,106,0,.08)); box-shadow: inset 0 -2px 0 var(--orange); }
+.meals-view-selector button:focus-visible, .meal-day-tabs button:focus-visible, .meal-plan-log:focus-visible,
+.meal-plan-expand:focus-visible, .meal-plan-link-action:focus-visible, .meal-plan-shopping-toggle:focus-visible,
+.meals-quick-entry button:focus-visible, .meal-type-selector button:focus-visible, .meal-draft-total > button:focus-visible,
+.meal-draft-item button:focus-visible, .food-search-form button:focus-visible, .close-food-day:focus-visible {
+    outline: 2px solid #fff; outline-offset: 2px;
+}
+.meals-daily-nutrition { padding: 16px; border-color: rgba(255,106,0,.42); background: radial-gradient(ellipse at 86% 0, rgba(255,106,0,.11), transparent 45%), linear-gradient(145deg, #1c1c1c, #111); box-shadow: 0 8px 24px rgba(0,0,0,.2); }
+.meals-daily-nutrition h3 { margin-bottom: 8px; font-size: 19px; letter-spacing: -.02em; }
+.meals-daily-calories { margin-bottom: 12px; }
+.meals-daily-calories strong { text-shadow: 0 0 18px rgba(255,106,0,.22); }
+.meals-daily-calorie-track { height: 6px; background: #393939; }
+.meals-daily-macros { gap: 9px; margin-top: 15px; }
+.meals-daily-macros > div { grid-template-columns: minmax(68px, .55fr) minmax(0, 1fr); column-gap: 10px; }
+.meals-daily-macros span { font-size: 11px; }
+.meals-daily-macros b { font-size: 11px; }
+.meals-daily-macros div div { height: 5px; background: #353535; }
+.meal-plan-panel { display: grid; gap: 12px; overflow: visible; padding: 14px; border-color: #3e3833; background: linear-gradient(165deg, rgba(28,28,28,.99), rgba(15,15,15,.99)); box-shadow: 0 10px 28px rgba(0,0,0,.2); }
+.meal-plan-heading { margin: -2px -2px 0; }
+.meal-plan-heading h3 { letter-spacing: -.025em; }
+.meal-plan-access { border-color: rgba(255,106,0,.25); background: linear-gradient(105deg, rgba(255,106,0,.09), #181818 55%); }
+.meal-week-selector { display: grid; gap: 9px; padding: 11px; border: 1px solid #363636; border-radius: 10px; background: #121212; }
+.meal-week-status { color: #d7d7d7; }
+.meal-week-status b { color: var(--orange); }
+.meal-week-status > span { color: #74cf88; }
+.meal-day-tabs { gap: 6px; padding: 1px 1px 3px; }
+.meal-day-tabs button { min-height: 42px; border-color: #484848; background: linear-gradient(145deg, #262626, #1c1c1c); font-size: 11px; transition: border-color .16s ease, background .16s ease, color .16s ease; }
+.meal-day-tabs button:hover { border-color: rgba(255,106,0,.55); }
+.meal-day-tabs button.active { border-color: var(--orange); background: linear-gradient(135deg, #ff7a1a, #e95600); color: #121212; box-shadow: 0 4px 14px rgba(255,106,0,.2); }
+.meal-plan-list { gap: 10px; }
+.meal-plan-day-summary, .meal-plan-shopping-list { border-color: #414141; background: linear-gradient(145deg, #202020, #151515); }
+.meal-plan-day-summary { gap: 11px; padding: 14px; }
+.meal-plan-day-summary h3 { font-size: 18px; }
+.meal-plan-summary-macros { gap: 8px; }
+.meal-plan-macro-pill { min-height: 34px; border-radius: 8px; background: rgba(255,106,0,.06); }
+.meal-plan-macro-pill.fat { background: rgba(255,194,71,.06); }
+.meal-plan-macro-pill.carbs { background: rgba(101,197,107,.06); }
+.meal-plan-card { border-color: #414141; border-radius: 10px; padding: 14px; background: linear-gradient(145deg, #1d1d1d, #141414); }
+.meal-plan-card.expanded { border-color: rgba(255,106,0,.7); box-shadow: 0 0 0 1px rgba(255,106,0,.1), 0 8px 22px rgba(0,0,0,.25); }
+.meal-plan-card-top h4 { font-size: 17px; }
+.meal-plan-log { min-height: 36px; border: 1px solid rgba(255,255,255,.13); background: linear-gradient(120deg, #ff7915, #ed5d00); box-shadow: 0 4px 12px rgba(255,106,0,.15); }
+.meal-plan-meal-title { margin-top: 9px; color: #ff8736; font-size: 13px; }
+.meal-plan-meal-macros { color: #b2b2b2; font-size: 10px; }
+.meal-plan-expand { margin-top: 8px; color: #d3d3d3; }
+.meal-plan-ingredients { gap: 7px; padding: 10px; border: 1px solid #303030; border-radius: 8px; background: #111; }
+.meal-plan-ingredient span { color: #e5e5e5; font-size: 11px; }
+.meal-plan-ingredient strong { color: #c7c7c7; font-size: 10px; }
+.meal-plan-preparation p { color: #c2c2c2; font-size: 11px; }
+.meal-plan-link-action { font-size: 11px; }
+.meal-plan-shopping-toggle { border-color: #555; background: #1a1a1a; transition: border-color .16s ease, background .16s ease; }
+.meal-plan-shopping-toggle:hover { border-color: var(--orange); background: #21170f; }
+.meals-quick-entry, .meals-add-section, .meals-saved-today, .meals-diary-heading { border-color: #3c3834; background: linear-gradient(150deg, #1a1a1a, #121212); }
+.meals-quick-entry, .meals-diary-heading, .meals-add-section { padding: 15px; }
+.meals-quick-entry button { min-height: 76px; border-color: #52473e; background: linear-gradient(145deg, #211b16, #171717); transition: border-color .16s ease, background .16s ease, transform .16s ease; }
+.meals-quick-entry button:not(:disabled):hover { border-color: var(--orange); background: #24170f; transform: translateY(-1px); }
+.meals-quick-entry button:disabled { opacity: .58; }
+.meals-quick-entry svg { width: 22px; height: 22px; stroke-width: 2; }
+.meals-quick-entry span { font-size: 12px; }
+.meal-type-selector button { min-height: 42px; border-color: #464646; background: #1b1b1b; color: #d0d0d0; transition: border-color .16s ease, background .16s ease, color .16s ease; }
+.meal-type-selector button.active { background: linear-gradient(130deg, rgba(255,106,0,.24), rgba(255,106,0,.08)); color: #fff; box-shadow: inset 0 -2px 0 var(--orange); }
+.meals-browser-note { border-color: rgba(255,106,0,.26); background: #1b1713; }
+.meals-browser-note svg { stroke-width: 2; }
+.meals-browser-note small { color: #aaa; }
+.manual-food-search { border-color: #3e3e3e; background: #111; }
+.manual-food-search h4 { color: #f5f5f5; }
+.meal-draft-panel { border-color: rgba(255,106,0,.65); background: linear-gradient(145deg, #1f1a16, #131313); box-shadow: inset 0 0 18px rgba(255,106,0,.04); }
+.meal-draft-total > button { background: linear-gradient(120deg, #ff7915, #ed5d00); box-shadow: 0 4px 12px rgba(255,106,0,.15); }
+.meals-saved-today { padding-top: 15px; }
+.close-food-day { border-color: #555; background: #181818; transition: border-color .16s ease, color .16s ease; }
+.close-food-day:hover { border-color: var(--orange); color: var(--orange); }
+
+/* Compact report comparison, with only clearly favourable changes highlighted. */
+.client-portal-member-state.sent { color: #8ce5a0; text-shadow: 0 0 10px rgba(112,199,134,.27); }
+.client-portal-member-state.missing { color: #ff8980; }
+.client-portal-member-state.upcoming { color: #b8b8b8; }
+.client-portal-report-card { border-color: rgba(111,185,125,.32); background: linear-gradient(145deg, rgba(34,51,37,.48), #191919 62%); }
+.client-portal-report-card header > div { min-width: 0; display: grid; gap: 4px; }
+.client-portal-report-card header strong { line-height: 1.35; }
+.client-portal-report-card header small { color: #a4a4a4; font-size: 10px; }
+.client-portal-report-measure-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 12px; }
+.client-portal-report-measure-grid > div { min-width: 0; display: grid; gap: 4px; padding: 8px; border: 1px solid #343a34; border-radius: 7px; background: rgba(14,17,14,.58); }
+.client-portal-report-measure-grid span { color: #aaa; font-size: 9px; line-height: 1.35; }
+.client-portal-report-measure-grid strong { color: #f3f3f3; font-size: 12px; overflow-wrap: anywhere; }
+.client-portal-report-comparison { margin-top: 10px; padding: 10px; border: 1px solid #363636; border-radius: 8px; background: rgba(12,12,12,.68); }
+.client-portal-report-comparison h4 { margin: 0 0 8px; color: #f1f1f1; font-size: 11px; line-height: 1.35; }
+.client-portal-report-comparison > p { margin: 0; color: #aaa; font-size: 10px; line-height: 1.45; }
+.client-portal-comparison-dates { display: grid; gap: 3px; margin-bottom: 7px; }
+.client-portal-comparison-dates span { color: #999; font-size: 9px; }
+.client-portal-comparison-dates strong { color: #d7d7d7; font-size: 10px; line-height: 1.35; }
+.client-portal-comparison-columns, .client-portal-comparison-row { display: grid; grid-template-columns: minmax(75px, 1fr) minmax(112px, 1.25fr) minmax(49px, .55fr); align-items: center; gap: 5px; }
+.client-portal-comparison-columns { padding: 0 5px 5px; color: #969696; font-size: 8px; line-height: 1.25; }
+.client-portal-comparison-columns span:last-child { text-align: right; }
+.client-portal-comparison-rows { display: grid; }
+.client-portal-comparison-row { min-height: 27px; border-top: 1px solid rgba(255,255,255,.07); padding: 4px 5px; }
+.client-portal-comparison-row strong { color: #c9c9c9; font-size: 9px; font-weight: 650; line-height: 1.25; }
+.client-portal-comparison-row > span { color: #e3e3e3; font-size: 10px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.client-portal-comparison-row i { color: #8e8e8e; font-style: normal; }
+.client-portal-comparison-row b { color: #c4c4c4; font-size: 10px; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+.client-portal-comparison-row b.positive { color: #8ce5a0; }
+.client-portal-comparison-row b.neutral { color: #c4c4c4; }
+.client-portal-monthly-report-card > strong { display: block; margin-top: 10px; color: var(--orange); font-size: 12px; line-height: 1.4; }
+
+/* Admin-only account search and per-account PRO controls. */
+.admin-user-search { display: grid; gap: 6px; color: #d5d5d5; font-size: 10px; font-weight: 800; }
+.admin-user-search input { width: 100%; min-height: 43px; border: 1px solid #49423c; border-radius: 8px; padding: 0 12px; background: #111; color: #f5f5f5; font: inherit; font-size: 13px; font-weight: 500; }
+.admin-user-search input::placeholder { color: #858585; }
+.admin-user-search input:focus { outline: 2px solid var(--orange); outline-offset: 1px; border-color: var(--orange); }
+.admin-user-search-empty { margin: 0; padding: 10px; border: 1px solid #383838; border-radius: 8px; color: #aaa; font-size: 11px; }
+.admin-user-activity-card[hidden] { display: none; }
+.admin-user-pro-row { min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; border-top: 1px solid #303030; padding-top: 8px; }
+.admin-user-pro-status { min-width: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 5px; }
+.admin-pro-badge { min-height: 23px; display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 8px; font-size: 9px; font-weight: 900; letter-spacing: .03em; }
+.admin-pro-badge.active { border: 1px solid rgba(255,106,0,.42); background: rgba(255,106,0,.14); color: #ff9a59; }
+.admin-pro-badge.free { border: 1px solid #454545; background: #202020; color: #bbb; }
+.admin-user-pro-status small { color: #aaa; font-size: 9px; }
+.admin-user-pro-action { flex: 0 0 auto; min-height: 33px; border: 1px solid #555; border-radius: 7px; padding: 0 9px; background: #171717; color: #e8e8e8; cursor: pointer; font: inherit; font-size: 9px; font-weight: 850; }
+.admin-user-pro-action.grant { border-color: rgba(255,106,0,.58); background: linear-gradient(120deg, #ff7915, #ed5d00); color: #151515; }
+.admin-user-pro-action.revoke { border-color: rgba(255,112,103,.5); color: #ffaaa0; }
+.admin-user-pro-action:disabled { cursor: wait; opacity: .55; }
+.admin-user-pro-managed-note { color: #aaa; font-size: 9px; line-height: 1.4; text-align: right; }
+
+@media (max-width: 420px) {
+    .meals-screen { gap: 11px; }
+    .meals-daily-nutrition { padding: 13px 11px; }
+    .meal-plan-panel { padding: 11px; }
+    .meal-day-tabs { gap: 4px; }
+    .meal-day-tabs button { height: 39px; font-size: 10px; }
+    .meal-plan-card { padding: 11px; }
+    .meal-plan-card-top { gap: 6px; }
+    .meal-plan-card-top h4 { font-size: 16px; }
+    .meal-plan-log { max-width: 58%; padding-inline: 7px; font-size: 8px; }
+    .meals-quick-entry, .meals-diary-heading, .meals-add-section { padding: 12px 10px; }
+    .meals-quick-entry > div { gap: 6px; }
+    .meals-quick-entry button { min-height: 68px; }
+    .client-portal-report-measure-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .client-portal-report-comparison { padding: 8px 7px; }
+    .client-portal-comparison-columns, .client-portal-comparison-row { grid-template-columns: minmax(68px, .9fr) minmax(105px, 1.25fr) minmax(45px, .5fr); gap: 4px; }
+    .client-portal-comparison-row strong { font-size: 8px; }
+    .client-portal-comparison-row > span, .client-portal-comparison-row b { font-size: 9px; }
+    .admin-user-pro-row { align-items: flex-start; flex-direction: column; }
+    .admin-user-pro-action { width: 100%; min-height: 38px; }
+    .admin-user-pro-managed-note { text-align: left; }
+}
