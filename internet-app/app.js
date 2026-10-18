@@ -52,7 +52,7 @@
             individualCoaching: "Prowadzenie indywidualne",
             clientPanelTitle: "Panel podopiecznego",
             clientsAdmin: "Podopieczni",
-            clientReportsSubtitle: "Miesięczne pomiary i raporty",
+            clientReportsSubtitle: "Tygodniowe pomiary i raporty",
             adminReportsSubtitle: "Raporty i historia pomiarów",
             adminListSubtitle: "Aktywowane PIN-em panele i raporty podopiecznych.",
             adminUsersTitle: "Użytkownicy aplikacji",
@@ -95,17 +95,17 @@
             reportCount: "Raporty",
             clientReportHistory: "Historia raportów",
             clientNoReports: "Nie wysłano jeszcze raportu.",
-            reportAlreadySent: "Raport za ten okres jest już zapisany.",
+            reportAlreadySent: "Raport za ten tydzień jest już zapisany.",
             comparisonTitle: "Porównanie z poprzednim raportem",
             comparisonDates: "Daty raportów",
             comparisonValues: "Poprzedni → obecny",
             comparisonChange: "Zmiana",
             noPreviousReport: "Brak wcześniejszego raportu do porównania.",
-            monthlyReportTitle: "Miesięczna aktualizacja danych",
-            monthlyReportDueCopy: "Możesz teraz wysłać kolejny raport dla Przemali.",
-            monthlyReportWaitingCopy: "Kolejny raport będzie dostępny po upływie pełnego miesiąca od aktywacji lub ostatniego raportu.",
-            monthlyReportNextDate: "Następny raport od",
-            reportNotDue: "Termin kolejnego raportu jeszcze nie nadszedł.",
+            weeklyReportTitle: "Raport tygodniowy",
+            weeklyReportDueCopy: "Wyślij raport za bieżący tydzień. Formularz jest dostępny do końca tygodnia.",
+            weeklyReportSentCopy: "Raport za ten tydzień został już wysłany. Nowy formularz pojawi się w poniedziałek.",
+            weeklyReportCurrentWeek: "Tydzień od",
+            reportNotDue: "Raport za ten tydzień jest już zapisany.",
             reportDataInvalid: "Sprawdź wagę (35–350 kg) i pomiary. Wartości obwodów muszą mieścić się w podanych zakresach.",
             reportConsentRequired: "Zaznacz zgodę na przekazanie raportu Przemali.",
             pinAttemptsExceeded: "Za dużo prób wpisania PIN-u. Spróbuj ponownie za godzinę.",
@@ -126,17 +126,17 @@
             checkingPin: "SPRAWDZANIE PIN-U…",
             openPanel: "OTWÓRZ PANEL",
             weightExample: "np. 85,5",
-            reportFormQuestion: "Jak minął ostatni miesiąc?",
+            reportFormQuestion: "Jak minął Ci ten tydzień?",
             dietFieldLabel: "Dieta",
             optionalMeasurements: "Pomiary ciała · opcjonalnie",
             reportRatingPrompt: "Jak się czujesz? Oceń od 1 do 10.",
             coachNoteOptional: "Notatka dla Przemali · opcjonalnie",
-            reportNotePlaceholder: "Możesz dopisać ważne informacje z ostatniego miesiąca.",
+            reportNotePlaceholder: "Możesz dopisać ważne informacje z tego tygodnia.",
             reportConsentCopy: "Zgadzam się przekazać Przemali ten raport, w tym dane o wadze, pomiarach i samopoczuciu. Raport zostanie zapisany w aplikacji i będzie widoczny dla administratora programu.",
-            monthlyReportFormHint: "Po wysłaniu raportu kolejna aktualizacja będzie dostępna po pełnym miesiącu. Historia pozostaje na Twoim koncie.",
+            weeklyReportFormHint: "Jeden raport możesz wysłać w każdym tygodniu. Nowy tydzień raportowy zaczyna się w poniedziałek, a historia pozostaje na Twoim koncie.",
             sendReportToCoach: "WYŚLIJ RAPORT DO PRZEMALI",
             savingReport: "ZAPISYWANIE RAPORTU…",
-            clientPanelIntro: "Wpisz PIN od Przemali, aby otworzyć panel i wysyłać miesięczne pomiary oraz raporty.",
+            clientPanelIntro: "Wpisz PIN od Przemali, aby otworzyć panel i wysyłać cotygodniowe pomiary oraz raporty.",
             clientPanelLoading: "Wczytywanie danych panelu…",
             dietLabel: "Rodzaj diety",
             weightLabel: "Waga (kg)",
@@ -246,7 +246,7 @@
             individualCoaching: "Individual coaching",
             clientPanelTitle: "Client panel",
             clientsAdmin: "Clients",
-            clientReportsSubtitle: "Monthly measurements and reports",
+            clientReportsSubtitle: "Weekly measurements and reports",
             adminReportsSubtitle: "Reports and measurement history",
             adminListSubtitle: "PIN-activated panels and client reports.",
             adminUsersTitle: "App users",
@@ -289,17 +289,17 @@
             reportCount: "Reports",
             clientReportHistory: "Report history",
             clientNoReports: "No report has been submitted yet.",
-            reportAlreadySent: "A report for this period has already been saved.",
+            reportAlreadySent: "This week's report has already been saved.",
             comparisonTitle: "Compare with the previous report",
             comparisonDates: "Report dates",
             comparisonValues: "Previous → current",
             comparisonChange: "Change",
             noPreviousReport: "There is no earlier report to compare.",
-            monthlyReportTitle: "Monthly data update",
-            monthlyReportDueCopy: "You can now send your next report to Przemala.",
-            monthlyReportWaitingCopy: "The next report becomes available after a full month from activation or the last report.",
-            monthlyReportNextDate: "Next report from",
-            reportNotDue: "The next report is not due yet.",
+            weeklyReportTitle: "Weekly report",
+            weeklyReportDueCopy: "Send your report for this week. The form stays available until the end of the week.",
+            weeklyReportSentCopy: "This week's report has already been sent. A new form will appear on Monday.",
+            weeklyReportCurrentWeek: "Week starting",
+            reportNotDue: "This week's report has already been saved.",
             reportDataInvalid: "Check the weight (35–350 kg) and measurements. Circumferences must be within the displayed ranges.",
             reportConsentRequired: "Please consent to sharing the report with Przemala.",
             pinAttemptsExceeded: "Too many PIN attempts. Please try again in an hour.",
@@ -320,17 +320,17 @@
             checkingPin: "CHECKING PIN…",
             openPanel: "OPEN PANEL",
             weightExample: "e.g. 85.5",
-            reportFormQuestion: "How has the past month been?",
+            reportFormQuestion: "How has your week been?",
             dietFieldLabel: "Diet",
             optionalMeasurements: "Body measurements · optional",
             reportRatingPrompt: "How do you feel? Rate from 1 to 10.",
             coachNoteOptional: "Note for Przemala · optional",
-            reportNotePlaceholder: "Add any important information from the past month.",
+            reportNotePlaceholder: "Add any important information from this week.",
             reportConsentCopy: "I agree to share this report with Przemala, including weight, measurements and wellbeing data. The report will be saved in the app and visible to the programme administrator.",
-            monthlyReportFormHint: "After submitting, the next update will be available after a full month. Your history stays on your account.",
+            weeklyReportFormHint: "You can send one report each week. A new report week starts on Monday, and your history stays on your account.",
             sendReportToCoach: "SEND REPORT TO PRZEMALA",
             savingReport: "SAVING REPORT…",
-            clientPanelIntro: "Enter the PIN from Przemala to open your panel and send monthly measurements and reports.",
+            clientPanelIntro: "Enter the PIN from Przemala to open your panel and send weekly measurements and reports.",
             clientPanelLoading: "Loading panel data…",
             dietLabel: "Diet type",
             weightLabel: "Weight (kg)",
@@ -440,7 +440,7 @@
             individualCoaching: "Individuelle Betreuung",
             clientPanelTitle: "Klientenbereich",
             clientsAdmin: "Klienten",
-            clientReportsSubtitle: "Monatliche Messungen und Berichte",
+            clientReportsSubtitle: "Wöchentliche Messungen und Berichte",
             adminReportsSubtitle: "Berichte und Messverlauf",
             adminListSubtitle: "Mit PIN aktivierte Bereiche und Klientenberichte.",
             adminUsersTitle: "App-Nutzer",
@@ -483,17 +483,17 @@
             reportCount: "Berichte",
             clientReportHistory: "Berichtsverlauf",
             clientNoReports: "Es wurde noch kein Bericht gesendet.",
-            reportAlreadySent: "Für diesen Zeitraum wurde bereits ein Bericht gespeichert.",
+            reportAlreadySent: "Der Bericht für diese Woche wurde bereits gespeichert.",
             comparisonTitle: "Vergleich mit dem vorherigen Bericht",
             comparisonDates: "Berichtszeitpunkte",
             comparisonValues: "Vorherig → aktuell",
             comparisonChange: "Änderung",
             noPreviousReport: "Kein früherer Bericht zum Vergleichen vorhanden.",
-            monthlyReportTitle: "Monatliche Datenaktualisierung",
-            monthlyReportDueCopy: "Du kannst jetzt deinen nächsten Bericht an Przemala senden.",
-            monthlyReportWaitingCopy: "Der nächste Bericht ist einen vollen Monat nach der Aktivierung oder dem letzten Bericht verfügbar.",
-            monthlyReportNextDate: "Nächster Bericht ab",
-            reportNotDue: "Der nächste Bericht ist noch nicht fällig.",
+            weeklyReportTitle: "Wochenbericht",
+            weeklyReportDueCopy: "Sende deinen Bericht für diese Woche. Das Formular bleibt bis zum Ende der Woche verfügbar.",
+            weeklyReportSentCopy: "Der Bericht für diese Woche wurde bereits gesendet. Ein neues Formular erscheint am Montag.",
+            weeklyReportCurrentWeek: "Woche ab",
+            reportNotDue: "Der Bericht für diese Woche wurde bereits gespeichert.",
             reportDataInvalid: "Prüfe Gewicht (35–350 kg) und Messwerte. Die Umfänge müssen innerhalb der angezeigten Bereiche liegen.",
             reportConsentRequired: "Bitte stimme der Weitergabe des Berichts an Przemala zu.",
             pinAttemptsExceeded: "Zu viele PIN-Versuche. Bitte in einer Stunde erneut versuchen.",
@@ -514,17 +514,17 @@
             checkingPin: "PIN WIRD GEPRÜFT…",
             openPanel: "BEREICH ÖFFNEN",
             weightExample: "z. B. 85,5",
-            reportFormQuestion: "Wie war der letzte Monat?",
+            reportFormQuestion: "Wie war deine Woche?",
             dietFieldLabel: "Ernährungsform",
             optionalMeasurements: "Körpermaße · optional",
             reportRatingPrompt: "Wie fühlst du dich? Bewertung von 1 bis 10.",
             coachNoteOptional: "Notiz für Przemala · optional",
-            reportNotePlaceholder: "Ergänze wichtige Informationen aus dem letzten Monat.",
+            reportNotePlaceholder: "Ergänze wichtige Informationen aus dieser Woche.",
             reportConsentCopy: "Ich bin einverstanden, diesen Bericht mit Przemala zu teilen, einschließlich Gewicht, Messwerten und Wohlbefinden. Der Bericht wird in der App gespeichert und ist für den Programmadministrator sichtbar.",
-            monthlyReportFormHint: "Nach dem Absenden ist die nächste Aktualisierung nach einem vollen Monat verfügbar. Dein Verlauf bleibt im Konto.",
+            weeklyReportFormHint: "Du kannst jede Woche einen Bericht senden. Eine neue Berichtswoche beginnt am Montag. Dein Verlauf bleibt im Konto.",
             sendReportToCoach: "BERICHT AN PRZEMALA SENDEN",
             savingReport: "BERICHT WIRD GESPEICHERT…",
-            clientPanelIntro: "Gib die von Przemala erhaltene PIN ein, um den Bereich zu öffnen und monatliche Messwerte und Berichte zu senden.",
+            clientPanelIntro: "Gib die von Przemala erhaltene PIN ein, um den Bereich zu öffnen und wöchentliche Messwerte und Berichte zu senden.",
             clientPanelLoading: "Paneldaten werden geladen…",
             dietLabel: "Ernährungsform",
             weightLabel: "Gewicht (kg)",
@@ -6456,8 +6456,7 @@
                 return;
             }
             const weekChanged = status.current_week_start !== clientPortalStatus?.current_week_start;
-            const reportScheduleChanged = status.monthly_report_due !== clientPortalStatus?.monthly_report_due
-                || status.next_report_due_at !== clientPortalStatus?.next_report_due_at;
+            const reportScheduleChanged = status.submitted_this_week !== clientPortalStatus?.submitted_this_week;
             clientPortalStatus = status;
             if (isActivated) {
                 const planResult = await client.rpc("get_my_client_nutrition_plan");
@@ -6500,13 +6499,13 @@
         const latestWeight = finiteNumber(latest?.weight_kg);
         const summary = [
             `${languageText("reportCount")}: ${formatNumber(member.report_count ?? 0)}`,
+            `${languageText("weeklyReportCurrentWeek")}: ${formatDate(member.current_week_start)}`,
             latestWeight === null ? null : `${languageText("weightLabel")}: ${formatWeight(latestWeight)}`,
             latest?.submitted_at ? `${languageText("reportDate")}: ${formatDate(latest.submitted_at, true)}` : null
         ].filter(Boolean).join(" · ");
-        const hasReport = Boolean(latest) || finiteNumber(member.report_count) > 0;
-        const due = member.monthly_report_due === true;
-        const status = due ? "missing" : hasReport ? "sent" : "upcoming";
-        const statusLabel = due ? languageText("reportMissing") : hasReport ? languageText("reportSent") : languageText("reportUpcoming");
+        const submittedThisWeek = member.submitted_this_week === true;
+        const status = submittedThisWeek ? "sent" : "missing";
+        const statusLabel = submittedThisWeek ? languageText("reportSent") : languageText("reportMissing");
         return `<button class="client-portal-member-card" type="button" data-client-portal-action="open-member" data-user-id="${clientPortalEscape(member.user_id)}">
             <span class="client-portal-member-main"><strong>${clientPortalEscape(member.display_name || languageText("clientNameFallback"))}</strong><small>${clientPortalEscape(member.email || languageText("emailMissing"))}</small><span>${clientPortalEscape(summary)}</span></span>
             <span class="client-portal-member-state ${status}">${statusLabel}</span>
@@ -6643,7 +6642,7 @@
 
     function clientPortalReportFormHtml() {
         return `<section class="client-portal-card">
-            <p class="eyebrow">${languageText("monthlyReportTitle")}</p>
+            <p class="eyebrow">${languageText("weeklyReportTitle")}</p>
             <h3>${languageText("reportFormQuestion")}</h3>
             <form id="client-portal-report-form" class="client-portal-report-form">
                 <fieldset class="client-portal-diet-field"><legend>${languageText("dietFieldLabel")}</legend>
@@ -6665,7 +6664,7 @@
                 <label class="client-portal-field">${languageText("coachNoteOptional")}<textarea name="notes" maxlength="1200" rows="3" placeholder="${languageText("reportNotePlaceholder")}"></textarea></label>
                 <label class="client-portal-consent"><input name="data_sharing_consent" type="checkbox" required><span>${languageText("reportConsentCopy")}</span></label>
                 <button class="tool-primary-button" type="submit" ${clientPortalSubmitting ? "disabled" : ""}>${clientPortalSubmitting ? languageText("savingReport") : languageText("sendReportToCoach")}</button>
-                <small>${languageText("monthlyReportFormHint")}</small>
+                <small>${languageText("weeklyReportFormHint")}</small>
             </form>
         </section>`;
     }
@@ -6718,7 +6717,7 @@
                 const reports = clientPortalMemberHistory;
                 clientPortalContent.innerHTML = `<div class="client-portal-admin-detail">
                     <button class="client-portal-back-list" type="button" data-client-portal-action="back-to-members">← ${languageText("backToClients")}</button>
-                    <section class="client-portal-card client-portal-member-profile"><p class="eyebrow">${languageText("clientReportHistory")}</p><h3>${clientPortalEscape(clientPortalSelectedMember.display_name || languageText("clientNameFallback"))}</h3><p>${clientPortalEscape(clientPortalSelectedMember.email || languageText("emailMissing"))}</p><p>${clientPortalEscape(languageText("reportCount"))}: ${clientPortalEscape(formatNumber(clientPortalSelectedMember.report_count ?? reports.length))} · ${clientPortalEscape(languageText("monthlyReportNextDate"))}: ${clientPortalEscape(formatActivityDate(clientPortalSelectedMember.next_report_due_at))}</p></section>
+                    <section class="client-portal-card client-portal-member-profile"><p class="eyebrow">${languageText("clientReportHistory")}</p><h3>${clientPortalEscape(clientPortalSelectedMember.display_name || languageText("clientNameFallback"))}</h3><p>${clientPortalEscape(clientPortalSelectedMember.email || languageText("emailMissing"))}</p><p>${clientPortalEscape(languageText("reportCount"))}: ${clientPortalEscape(formatNumber(clientPortalSelectedMember.report_count ?? reports.length))} · ${clientPortalEscape(languageText("weeklyReportCurrentWeek"))}: ${clientPortalEscape(formatDate(clientPortalSelectedMember.current_week_start))}</p></section>
                     ${clientPortalAdminPlanFormHtml()}
                     ${reports.length ? reports.map((report) => clientPortalReportCardHtml(report, reports)).join("") : `<div class="client-portal-notice">${languageText("clientNoReports")}</div>`}
                 </div>`;
@@ -6742,15 +6741,18 @@
             return;
         }
 
-        const dueNow = clientPortalStatus.monthly_report_due === true;
-        const latestReport = clientPortalMyReports[0] || null;
-        const previousReports = latestReport ? clientPortalMyReports.slice(1) : [];
-        const nextReportDate = clientPortalStatus.next_report_due_at
-            ? formatActivityDate(clientPortalStatus.next_report_due_at)
-            : languageText("noData");
+        const submittedThisWeek = clientPortalStatus.submitted_this_week === true;
+        const weekStart = String(clientPortalStatus.current_week_start || "").slice(0, 10);
+        const weekStartLabel = formatDate(weekStart);
+        const currentWeekReport = submittedThisWeek
+            ? clientPortalMyReports.find((report) => String(report.week_start || "").slice(0, 10) === weekStart) || null
+            : null;
+        const previousReports = currentWeekReport
+            ? clientPortalMyReports.filter((report) => report !== currentWeekReport)
+            : clientPortalMyReports;
         clientPortalContent.innerHTML = `<section class="client-portal-card individual-coaching-card"><p class="eyebrow">${languageText("individualCoaching")}</p><h3>${languageText("managedPlanHeading")}</h3><p>${languageText("managedPlanCopy")}</p><p>${languageText("managedPlanAuto")}</p></section>
-            <section class="client-portal-week-card client-portal-monthly-report-card"><p class="eyebrow">${languageText("monthlyReportTitle")}</p><h3>${languageText("monthlyReportTitle")}</h3><p>${dueNow ? languageText("monthlyReportDueCopy") : languageText("monthlyReportWaitingCopy")}</p>${!dueNow ? `<strong>${clientPortalEscape(languageText("monthlyReportNextDate"))}: ${clientPortalEscape(nextReportDate)}</strong>` : ""}</section>
-            ${dueNow ? `${latestReport ? clientPortalReportCardHtml(latestReport, clientPortalMyReports) : ""}${clientPortalReportFormHtml()}` : latestReport ? clientPortalReportCardHtml(latestReport, clientPortalMyReports) : `<div class="client-portal-notice">${languageText("clientNoReports")}</div>`}
+            <section class="client-portal-week-card client-portal-weekly-report-card"><p class="eyebrow">${languageText("weeklyReportTitle")}</p><h3>${clientPortalEscape(languageText("weeklyReportCurrentWeek"))} ${clientPortalEscape(weekStartLabel)}</h3><p>${submittedThisWeek ? languageText("weeklyReportSentCopy") : languageText("weeklyReportDueCopy")}</p></section>
+            ${submittedThisWeek ? `${currentWeekReport ? clientPortalReportCardHtml(currentWeekReport, clientPortalMyReports) : `<div class="client-portal-notice">${languageText("clientNoReports")}</div>`}` : clientPortalReportFormHtml()}
             ${previousReports.length ? `<section class="client-portal-history"><h3>${languageText("clientReportHistory")}</h3>${previousReports.map((report) => clientPortalReportCardHtml(report, clientPortalMyReports)).join("")}</section>` : ""}`;
         bindClientPortalForms();
         updateClientPortalReportButton();

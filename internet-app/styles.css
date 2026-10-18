@@ -1832,7 +1832,7 @@ body.modal-open { overflow: hidden; }
 .client-portal-comparison-row b { color: #c4c4c4; font-size: 10px; font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
 .client-portal-comparison-row b.positive { color: #8ce5a0; }
 .client-portal-comparison-row b.neutral { color: #c4c4c4; }
-.client-portal-monthly-report-card > strong { display: block; margin-top: 10px; color: var(--orange); font-size: 12px; line-height: 1.4; }
+.client-portal-weekly-report-card > strong { display: block; margin-top: 10px; color: var(--orange); font-size: 12px; line-height: 1.4; }
 
 /* Admin-only account search and per-account PRO controls. */
 .admin-user-search { display: grid; gap: 6px; color: #d5d5d5; font-size: 10px; font-weight: 800; }
