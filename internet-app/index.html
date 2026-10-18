@@ -12,11 +12,11 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://otffqsoiqbscdvgnrrpb.supabase.co; connect-src https://otffqsoiqbscdvgnrrpb.supabase.co wss://otffqsoiqbscdvgnrrpb.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261018-report-only-in-tab-v1">
+    <link rel="stylesheet" href="./styles.css?v=20261018-progress-dashboard-match-android-v1">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261006-prod-cutover" defer></script>
     <script src="./i18n.js?v=20261007-individual-coaching" defer></script>
-    <script src="./app.js?v=20261018-report-only-in-tab-v1" defer></script>
+    <script src="./app.js?v=20261018-progress-dashboard-match-android-v1" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -735,29 +735,6 @@
                     <button type="button" class="progress-hub-tile" data-progress-open="event"><span class="progress-hub-icon amber"><svg><use href="#icon-event"></use></svg></span><span><b>Cel z datą</b><small id="progress-hub-event">—</small></span><i>›</i></button>
                     <button id="progress-weekly-update" type="button" class="progress-hub-tile" data-progress-open="weekly-update" hidden><span class="progress-hub-icon orange"><svg><use href="#icon-refresh"></use></svg></span><span><b>Aktualizacja tygodnia</b><small>Sprawdzanie terminu…</small></span><i>›</i></button>
                 </div>
-                <div class="history-grid">
-                    <section class="history-panel" aria-labelledby="weight-history-heading">
-                        <div class="history-heading"><div><p class="eyebrow">WAGA</p><h3 id="weight-history-heading">Ostatnie pomiary</h3></div><span id="weight-history-count">—</span></div>
-                        <div class="history-list" id="weight-history-list"><p class="empty-history">Pobieranie…</p></div>
-                    </section>
-                    <section class="history-panel" aria-labelledby="steps-history-heading">
-                        <div class="history-heading"><div><p class="eyebrow">AKTYWNOŚĆ I WODA</p><h3 id="steps-history-heading">Ostatnie 30 dni</h3></div><span id="steps-history-count">—</span></div>
-                        <div class="history-list" id="steps-history-list"><p class="empty-history">Pobieranie…</p></div>
-                    </section>
-                    <section class="history-panel" aria-labelledby="measurement-history-heading">
-                        <div class="history-heading"><div><p class="eyebrow">POMIARY</p><h3 id="measurement-history-heading">Obwody ciała</h3></div><span id="measurement-history-count">—</span></div>
-                        <div class="history-list" id="measurement-history-list"><p class="empty-history">Pobieranie…</p></div>
-                    </section>
-                </div>
-                <section class="progress-detail-panel progress-macros-panel" id="progress-macros-panel" aria-labelledby="progress-macros-heading">
-                    <div class="history-heading"><div><p class="eyebrow">DZISIAJ</p><h3 id="progress-macros-heading">Kalorie i makro</h3></div><span id="progress-macro-calories">—</span></div>
-                    <div class="progress-macro-rows">
-                        <div><span>Białko</span><b id="progress-macro-protein">—</b></div>
-                        <div><span>Tłuszcz</span><b id="progress-macro-fat">—</b></div>
-                        <div><span>Węgle</span><b id="progress-macro-carbs">—</b></div>
-                    </div>
-                </section>
-                <p class="feature-note">Postęp pokazuje zapisy konta DEV. Samopoczucie w Check In, waga, kroki, woda i obwody zapiszesz tutaj. Automatyczne kroki z Health Connect nadal wymagają Androida.</p>
                 </div>
 
                 <div class="progress-tab-view" data-progress-section-view="challenges" hidden>
