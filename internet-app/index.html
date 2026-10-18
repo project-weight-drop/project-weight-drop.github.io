@@ -12,11 +12,11 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data: blob: https://otffqsoiqbscdvgnrrpb.supabase.co; connect-src https://otffqsoiqbscdvgnrrpb.supabase.co wss://otffqsoiqbscdvgnrrpb.supabase.co">
     <link rel="icon" href="/brand-logo.png" type="image/png">
     <link rel="preload" href="./assets/android-home-background.jpg" as="image">
-    <link rel="stylesheet" href="./styles.css?v=20261018-weekly-client-reports-v1">
+    <link rel="stylesheet" href="./styles.css?v=20261018-report-only-in-tab-v1">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.min.js" defer></script>
     <script src="./config.js?v=20261006-prod-cutover" defer></script>
     <script src="./i18n.js?v=20261007-individual-coaching" defer></script>
-    <script src="./app.js?v=20261018-weekly-client-reports-v1" defer></script>
+    <script src="./app.js?v=20261018-report-only-in-tab-v1" defer></script>
 </head>
 <body>
 <svg class="svg-sprite" aria-hidden="true" focusable="false">
@@ -735,32 +735,6 @@
                     <button type="button" class="progress-hub-tile" data-progress-open="event"><span class="progress-hub-icon amber"><svg><use href="#icon-event"></use></svg></span><span><b>Cel z datą</b><small id="progress-hub-event">—</small></span><i>›</i></button>
                     <button id="progress-weekly-update" type="button" class="progress-hub-tile" data-progress-open="weekly-update" hidden><span class="progress-hub-icon orange"><svg><use href="#icon-refresh"></use></svg></span><span><b>Aktualizacja tygodnia</b><small>Sprawdzanie terminu…</small></span><i>›</i></button>
                 </div>
-                <section class="progress-detail-panel" id="progress-report-panel" aria-labelledby="progress-report-heading">
-                    <div class="history-heading"><div><p class="eyebrow">PODSUMOWANIE</p><h3 id="progress-report-heading">Raport tygodniowy</h3></div><button id="progress-share-report" class="progress-share-button" type="button" aria-label="Udostępnij raport">Udostępnij</button></div>
-                    <p id="progress-message" class="progress-report-message" role="status" aria-live="polite">Pobieranie raportu DEV…</p>
-                    <div class="progress-summary-grid" id="progress-summary" aria-busy="true">
-                        <article><p>Dni z danymi</p><h3 id="progress-data-days">—</h3><span>z ostatnich 7 dni</span></article>
-                        <article><p>Zapisane posiłki</p><h3 id="progress-meals">—</h3><span>łącznie w tygodniu</span></article>
-                        <article><p>Średnie kalorie</p><h3 id="progress-calories">—</h3><span>kcal dziennie</span></article>
-                        <article><p>Średnie kroki</p><h3 id="progress-steps">—</h3><span>z dni z pomiarem</span></article>
-                        <article><p>Średnia woda</p><h3 id="progress-water">—</h3><span>ml dziennie</span></article>
-                        <article><p>Zmiana wagi</p><h3 id="progress-weight-change">—</h3><span>kg w okresie raportu</span></article>
-                    </div>
-                    <div class="progress-report-detail-grid">
-                        <article><small>Waga · dni z pomiarem</small><b id="progress-report-weight">—</b><span id="progress-report-weight-meta">—</span></article>
-                        <article><small>Posiłki i dziennik</small><b id="progress-report-meals">—</b><span id="progress-report-meals-meta">—</span></article>
-                        <article><small>Nawodnienie</small><b id="progress-report-hydration">—</b><span id="progress-report-hydration-meta">—</span></article>
-                        <article><small>Kroki</small><b id="progress-report-steps">—</b><span id="progress-report-steps-meta">—</span></article>
-                        <article><small>Samopoczucie</small><b id="progress-report-wellbeing">—</b><span id="progress-report-wellbeing-meta">—</span></article>
-                    </div>
-                    <div class="progress-adherence-list" aria-label="Średnie makro i realizacja celów">
-                        <div class="progress-adherence-heading"><b>Realizacja celów żywieniowych</b><span>średnia / cel · realizacja</span></div>
-                        <div><b>Kalorie</b><span id="progress-report-calories-adherence">—</span></div>
-                        <div><b>Białko</b><span id="progress-report-protein-adherence">—</span></div>
-                        <div><b>Tłuszcz</b><span id="progress-report-fat-adherence">—</span></div>
-                        <div><b>Węglowodany</b><span id="progress-report-carbs-adherence">—</span></div>
-                    </div>
-                </section>
                 <div class="history-grid">
                     <section class="history-panel" aria-labelledby="weight-history-heading">
                         <div class="history-heading"><div><p class="eyebrow">WAGA</p><h3 id="weight-history-heading">Ostatnie pomiary</h3></div><span id="weight-history-count">—</span></div>
@@ -856,8 +830,34 @@
                 </div>
 
                 <section id="progress-detail-view" class="progress-detail-view" hidden aria-live="polite">
-                    <div class="progress-detail-header"><button id="progress-detail-back" type="button" class="tool-secondary-button">‹ Mój progres</button><div><p class="eyebrow">ZAPISANE DANE DEV</p><h2 id="progress-detail-title">Postęp</h2><p id="progress-detail-summary">—</p></div></div>
+                    <div class="progress-detail-header"><button id="progress-detail-back" type="button" class="tool-secondary-button">‹ Mój progres</button><div><p class="eyebrow">ZAPISANE DANE</p><h2 id="progress-detail-title">Postęp</h2><p id="progress-detail-summary">—</p></div></div>
                     <div id="progress-weekly-update-content" class="weekly-update-content" hidden></div>
+                    <section class="progress-detail-panel" id="progress-report-panel" aria-labelledby="progress-detail-title" hidden>
+                        <div class="history-heading"><p class="eyebrow">PODSUMOWANIE</p><button id="progress-share-report" class="progress-share-button" type="button" aria-label="Udostępnij raport">Udostępnij</button></div>
+                        <p id="progress-message" class="progress-report-message" role="status" aria-live="polite">Pobieranie raportu…</p>
+                        <div class="progress-summary-grid" id="progress-summary" aria-busy="true">
+                            <article><p>Dni z danymi</p><h3 id="progress-data-days">—</h3><span>z ostatnich 7 dni</span></article>
+                            <article><p>Zapisane posiłki</p><h3 id="progress-meals">—</h3><span>łącznie w tygodniu</span></article>
+                            <article><p>Średnie kalorie</p><h3 id="progress-calories">—</h3><span>kcal dziennie</span></article>
+                            <article><p>Średnie kroki</p><h3 id="progress-steps">—</h3><span>z dni z pomiarem</span></article>
+                            <article><p>Średnia woda</p><h3 id="progress-water">—</h3><span>ml dziennie</span></article>
+                            <article><p>Zmiana wagi</p><h3 id="progress-weight-change">—</h3><span>kg w okresie raportu</span></article>
+                        </div>
+                        <div class="progress-report-detail-grid">
+                            <article><small>Waga · dni z pomiarem</small><b id="progress-report-weight">—</b><span id="progress-report-weight-meta">—</span></article>
+                            <article><small>Posiłki i dziennik</small><b id="progress-report-meals">—</b><span id="progress-report-meals-meta">—</span></article>
+                            <article><small>Nawodnienie</small><b id="progress-report-hydration">—</b><span id="progress-report-hydration-meta">—</span></article>
+                            <article><small>Kroki</small><b id="progress-report-steps">—</b><span id="progress-report-steps-meta">—</span></article>
+                            <article><small>Samopoczucie</small><b id="progress-report-wellbeing">—</b><span id="progress-report-wellbeing-meta">—</span></article>
+                        </div>
+                        <div class="progress-adherence-list" aria-label="Średnie makro i realizacja celów">
+                            <div class="progress-adherence-heading"><b>Realizacja celów żywieniowych</b><span>średnia / cel · realizacja</span></div>
+                            <div><b>Kalorie</b><span id="progress-report-calories-adherence">—</span></div>
+                            <div><b>Białko</b><span id="progress-report-protein-adherence">—</span></div>
+                            <div><b>Tłuszcz</b><span id="progress-report-fat-adherence">—</span></div>
+                            <div><b>Węglowodany</b><span id="progress-report-carbs-adherence">—</span></div>
+                        </div>
+                    </section>
                     <div id="progress-detail-current" class="progress-detail-current"></div>
                     <div id="progress-detail-chart" class="progress-detail-chart" aria-label="Historia postępu"></div>
                     <section id="progress-detail-entry-card" class="progress-entry-card" hidden>

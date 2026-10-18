@@ -3917,10 +3917,12 @@
         const current = document.getElementById("progress-detail-current");
         const chart = document.getElementById("progress-detail-chart");
         if (!current || !chart) return;
+        const reportPanel = document.getElementById("progress-report-panel");
+        if (reportPanel) reportPanel.hidden = destination !== "report";
         const weeklyContent = document.getElementById("progress-weekly-update-content");
         if (weeklyContent) weeklyContent.hidden = destination !== "weekly-update";
-        current.hidden = destination === "weekly-update" || destination === "check-in";
-        chart.hidden = destination === "weekly-update";
+        current.hidden = destination === "weekly-update" || destination === "check-in" || destination === "report";
+        chart.hidden = destination === "weekly-update" || destination === "report";
         current.replaceChildren();
         chart.replaceChildren();
         const { profile, daily, weights, measurements, event } = currentProgressData;
