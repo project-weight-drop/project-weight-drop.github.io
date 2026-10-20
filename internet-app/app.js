@@ -169,7 +169,8 @@
             planSaved: "Plan został zapisany. Nowe wartości będą synchronizowane z aplikacją podopiecznego.",
             reportUpdated: "Raport został poprawiony.",
             reportDeleted: "Raport został usunięty.",
-            memberRemoved: "Dostęp podopiecznego został usunięty.",
+            memberRemoved: "Podopieczny został usunięty. Dane prowadzenia skasowano, a konto wróciło do automatycznych ustawień aplikacji.",
+            memberRemovedRegenerate: "Podopieczny został usunięty. Dane prowadzenia skasowano, przywrócono automatyczne kalorie i makro. Nowy jadłospis należy wygenerować ponownie.",
             adminReportEdit: "Edytuj raport",
             adminReportDelete: "Usuń raport",
             adminMemberDelete: "Usuń podopiecznego",
@@ -177,7 +178,8 @@
             cancel: "Anuluj",
             adminReportEditTitle: "Popraw raport",
             adminReportDeleteConfirm: "Czy na pewno usunąć ten raport? Tej operacji nie można cofnąć.",
-            adminMemberDeleteConfirm: "Czy na pewno usunąć dostęp tego podopiecznego? Historia jego raportów zostanie obsłużona przez system zgodnie z zasadami administratora.",
+            adminMemberDeleteConfirm: "Usunąć podopiecznego? Z Supabase zostaną trwale usunięte wyłącznie dane prowadzenia: dostęp PIN, raporty i indywidualny plan. Konto, profil, postępy, posiłki i pozostałe dane zostaną zachowane. Aplikacja przywróci automatyczne kalorie i makro. Tej operacji nie można cofnąć.",
+            automaticPlanRestoreFailed: "Nie można bezpiecznie przywrócić automatycznego planu. Żadne dane nie zostały usunięte.",
             reportSavedProduction: "Raport został zapisany i jest widoczny w panelu administratora.",
             activationSuccess: "Panel został aktywowany i przypisany do Twojego konta.",
             invalidPlanValues: "Sprawdź wartości planu. Dozwolone zakresy: 1000–6000 kcal, białko 20–400 g, tłuszcz 10–400 g, węglowodany 0–800 g.",
@@ -363,7 +365,8 @@
             planSaved: "The plan was saved. New values will sync to the client’s app.",
             reportUpdated: "The report was updated.",
             reportDeleted: "The report was deleted.",
-            memberRemoved: "The client’s access was removed.",
+            memberRemoved: "The client was removed. Coaching data was deleted and the account returned to the app’s automatic settings.",
+            memberRemovedRegenerate: "The client was removed. Coaching data was deleted and automatic calories and macros were restored. A new meal plan must be generated.",
             adminReportEdit: "Edit report",
             adminReportDelete: "Delete report",
             adminMemberDelete: "Remove client",
@@ -371,7 +374,8 @@
             cancel: "Cancel",
             adminReportEditTitle: "Edit report",
             adminReportDeleteConfirm: "Delete this report? This action cannot be undone.",
-            adminMemberDeleteConfirm: "Remove this client’s access? The system will handle their report history according to administrator rules.",
+            adminMemberDeleteConfirm: "Remove this client? Only coaching data will be permanently deleted from Supabase: PIN access, reports and the individual plan. The account, profile, progress, meals and all other app data will remain. Automatic calories and macros will be restored. This cannot be undone.",
+            automaticPlanRestoreFailed: "The automatic plan cannot be restored safely. No data was deleted.",
             reportSavedProduction: "The report was saved and is visible in the administrator panel.",
             activationSuccess: "The panel is active and linked to your account.",
             invalidPlanValues: "Check the plan values. Allowed ranges: 1,000–6,000 kcal, protein 20–400 g, fat 10–400 g, carbohydrates 0–800 g.",
@@ -557,7 +561,8 @@
             planSaved: "Der Plan wurde gespeichert. Neue Werte werden mit der App des Klienten synchronisiert.",
             reportUpdated: "Der Bericht wurde aktualisiert.",
             reportDeleted: "Der Bericht wurde gelöscht.",
-            memberRemoved: "Der Zugang des Klienten wurde entfernt.",
+            memberRemoved: "Der Betreute wurde entfernt. Die Betreuungsdaten wurden gelöscht und das Konto verwendet wieder die automatischen App-Einstellungen.",
+            memberRemovedRegenerate: "Der Betreute wurde entfernt. Die Betreuungsdaten wurden gelöscht und automatische Kalorien und Makros wurden wiederhergestellt. Ein neuer Ernährungsplan muss erstellt werden.",
             adminReportEdit: "Bericht bearbeiten",
             adminReportDelete: "Bericht löschen",
             adminMemberDelete: "Klienten entfernen",
@@ -565,7 +570,8 @@
             cancel: "Abbrechen",
             adminReportEditTitle: "Bericht korrigieren",
             adminReportDeleteConfirm: "Diesen Bericht wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden.",
-            adminMemberDeleteConfirm: "Zugang dieses Klienten wirklich entfernen? Das System behandelt den Berichtsverlauf gemäß den Administratorregeln.",
+            adminMemberDeleteConfirm: "Diesen Betreuten entfernen? Nur die Betreuungsdaten werden dauerhaft aus Supabase gelöscht: PIN-Zugang, Berichte und individueller Plan. Konto, Profil, Fortschritt, Mahlzeiten und alle übrigen App-Daten bleiben erhalten. Automatische Kalorien und Makros werden wiederhergestellt. Dies kann nicht rückgängig gemacht werden.",
+            automaticPlanRestoreFailed: "Der automatische Plan kann nicht sicher wiederhergestellt werden. Es wurden keine Daten gelöscht.",
             reportSavedProduction: "Der Bericht wurde gespeichert und ist im Administratorbereich sichtbar.",
             activationSuccess: "Der Bereich ist aktiviert und deinem Konto zugeordnet.",
             invalidPlanValues: "Prüfe die Planwerte. Zulässige Bereiche: 1.000–6.000 kcal, Eiweiß 20–400 g, Fett 10–400 g, Kohlenhydrate 0–800 g.",
@@ -6246,6 +6252,7 @@
         if (normalized.includes("report_not_due")) return languageText("reportNotDue");
         if (normalized.includes("already_submitted")) return languageText("reportAlreadySent");
         if (normalized.includes("report_save_failed")) return languageText("reportSaveFailed");
+        if (normalized.includes("automatic_plan_not_found")) return languageText("automaticPlanRestoreFailed");
         if (normalized.includes("admin_required")) return languageText("adminRequired");
         if (normalized.includes("consent_required")) return languageText("reportConsentRequired");
         if (normalized.includes("pgrst202") || normalized.includes("42883") || normalized.includes("function") && normalized.includes("not found")) {
@@ -7066,7 +7073,9 @@
                 clientPortalSelectedMember = null;
                 clientPortalAdminNutritionPlanState = null;
                 clientPortalMemberHistory = [];
-                clientPortalSuccess = languageText("memberRemoved");
+                clientPortalSuccess = result.data?.meal_plan_regeneration_required === true
+                    ? languageText("memberRemovedRegenerate")
+                    : languageText("memberRemoved");
             } else {
                 clientPortalSuccess = languageText("reportDeleted");
             }
