@@ -187,9 +187,11 @@
             invalidReportValues: "Sprawdź wagę i oceny. Waga musi wynosić 35–350 kg, a każda ocena 1–10.",
             trialActiveHeading: "2 DNI PRO ZA DARMO — TEST JEST AKTYWNY",
             trialInactiveHeading: "OKRES TESTOWY PRO: 2 DNI OD REJESTRACJI",
+            accessRefreshFailedHeading: "Status dostępu chwilowo niedostępny",
             trialActiveCopy: "Masz teraz aktywny pełny dostęp próbny. Trwa przez pierwsze 2 dni od utworzenia konta — bez karty i bez automatycznej opłaty. Potem możesz korzystać z FREE albo ręcznie aktywować PRO.",
             trialAdminCopy: "Podgląd oferty dla klientów: nowe konto otrzymuje przez pierwsze 2 dni pełny dostęp PRO, bez karty i bez automatycznej opłaty.",
             trialExpiredCopy: "Dostęp próbny jest liczony od utworzenia konta. Jeśli minęły już 2 dni, konto działa w FREE; nic nie pobiera się automatycznie.",
+            accessRefreshFailedCopy: "Nie udało się odświeżyć statusu dostępu PRO. Spróbuj ponownie.",
             profileTrialHeading: "2 dni PRO za darmo — aktywne",
             profileTrialUntil: "Pełny dostęp PRO jest aktywny do {date}. Bez karty i bez automatycznej opłaty.",
             profileTrialFallback: "Pełny dostęp PRO jest aktywny przez pierwsze 2 dni od rejestracji. Bez karty i bez automatycznej opłaty.",
@@ -383,9 +385,11 @@
             invalidReportValues: "Check the weight and scores. Weight must be 35–350 kg and each score 1–10.",
             trialActiveHeading: "2 DAYS OF PRO FREE — TRIAL ACTIVE",
             trialInactiveHeading: "PRO TRIAL: 2 DAYS FROM REGISTRATION",
+            accessRefreshFailedHeading: "Access status temporarily unavailable",
             trialActiveCopy: "Your full PRO trial is active for the first 2 days after account creation — no card and no automatic charge. Afterwards you can use FREE or activate PRO manually.",
             trialAdminCopy: "Customer offer preview: every new account receives full PRO access for the first 2 days, with no card and no automatic charge.",
             trialExpiredCopy: "The trial is counted from account creation. If 2 days have already passed, the account runs on FREE; nothing is charged automatically.",
+            accessRefreshFailedCopy: "Could not refresh your PRO access status. Try again.",
             profileTrialHeading: "2 days of PRO free — active",
             profileTrialUntil: "Full PRO access is active until {date}. No card and no automatic charge.",
             profileTrialFallback: "Full PRO access is active for the first 2 days after registration. No card and no automatic charge.",
@@ -579,9 +583,11 @@
             invalidReportValues: "Prüfe Gewicht und Bewertungen. Das Gewicht muss 35–350 kg und jede Bewertung 1–10 betragen.",
             trialActiveHeading: "2 TAGE PRO KOSTENLOS — TEST AKTIV",
             trialInactiveHeading: "PRO-TEST: 2 TAGE AB REGISTRIERUNG",
+            accessRefreshFailedHeading: "Zugriffsstatus vorübergehend nicht verfügbar",
             trialActiveCopy: "Dein vollständiger PRO-Test ist in den ersten 2 Tagen nach der Kontoerstellung aktiv — ohne Karte und ohne automatische Abbuchung. Danach kannst du FREE nutzen oder PRO manuell aktivieren.",
             trialAdminCopy: "Vorschau des Kundenangebots: Jedes neue Konto erhält in den ersten 2 Tagen vollständigen PRO-Zugang, ohne Karte und ohne automatische Abbuchung.",
             trialExpiredCopy: "Der Testzeitraum beginnt mit der Kontoerstellung. Sind bereits 2 Tage vergangen, läuft das Konto als FREE; es wird nichts automatisch berechnet.",
+            accessRefreshFailedCopy: "Der PRO-Zugriffsstatus konnte nicht aktualisiert werden. Bitte versuche es erneut.",
             profileTrialHeading: "2 Tage PRO kostenlos — aktiv",
             profileTrialUntil: "Der vollständige PRO-Zugang ist bis {date} aktiv. Keine Karte und keine automatische Abbuchung.",
             profileTrialFallback: "Der vollständige PRO-Zugang ist in den ersten 2 Tagen nach der Registrierung aktiv. Keine Karte und keine automatische Abbuchung.",
@@ -890,6 +896,8 @@
     let currentUserIsAdmin = false;
     let currentPremiumSnapshot = null;
     let premiumSnapshotUnavailable = false;
+    let premiumSnapshotRefreshPromise = null;
+    let premiumSnapshotRefreshedAt = 0;
     let currentNutritionPlan = null;
     let mealPlanGenerating = false;
     let mealPlanSwappingId = null;
@@ -1313,6 +1321,8 @@
         if (deleteAccountZone) deleteAccountZone.hidden = true;
         currentPremiumSnapshot = null;
         premiumSnapshotUnavailable = false;
+        premiumSnapshotRefreshPromise = null;
+        premiumSnapshotRefreshedAt = 0;
         updateFridgeQuota();
         currentNutritionPlan = null;
         mealPlanGenerating = false;
@@ -1498,18 +1508,23 @@
         return "Nie udało się pobrać danych DEV. Spróbuj ponownie później.";
     }
 
-    async function edgeFunctionErrorCode(error, data) {
-        if (typeof data?.error === "string") return data.error;
+    async function edgeFunctionErrorPayload(error, data) {
+        if (data && typeof data === "object") return data;
         const response = error?.context;
         if (response && typeof response.clone === "function") {
             try {
                 const payload = await response.clone().json();
-                if (typeof payload?.error === "string") return payload.error;
+                if (payload && typeof payload === "object") return payload;
             } catch {
                 // Odpowiedź bez JSON — pokaż bezpieczny komunikat ogólny.
             }
         }
-        return "unknown_error";
+        return null;
+    }
+
+    async function edgeFunctionErrorCode(error, data) {
+        const payload = await edgeFunctionErrorPayload(error, data);
+        return typeof payload?.error === "string" ? payload.error : "unknown_error";
     }
 
     function setProfileResetStatus(message = "", kind = "error") {
@@ -1643,13 +1658,9 @@
         const numericLimit = finiteNumber(limit);
         const numericRemaining = finiteNumber(remaining);
         if (!hasAccess) return "0 — wymaga aktywnego PRO";
-        if (numericLimit === null && numericRemaining === null && currentPremiumSnapshot?.coach_trial_active === true && hasAccess) {
-            return "Bez limitu w 2-dniowym teście";
-        }
         if (numericLimit === null || numericRemaining === null) return "Nie udało się pobrać limitu";
         if (numericLimit <= 0) return "0 — wymaga aktywnego PRO";
-        const period = currentPremiumSnapshot?.coach_trial_active === true ? "w teście" : "dziś";
-        return `${formatNumber(Math.max(0, numericRemaining))} z ${formatNumber(numericLimit)} ${period}`;
+        return `${formatNumber(Math.max(0, numericRemaining))} z ${formatNumber(numericLimit)} dziś`;
     }
 
     function generationCounterText(remaining, limit, hasAccess) {
@@ -1670,16 +1681,20 @@
         const trialCopy = document.getElementById("profile-completion-trial-copy");
 
         if (trialHeading) {
-            trialHeading.textContent = trialActive || currentUserIsAdmin
-                ? languageText("trialActiveHeading")
-                : languageText("trialInactiveHeading");
+            trialHeading.textContent = premiumSnapshotUnavailable
+                ? languageText("accessRefreshFailedHeading")
+                : trialActive || currentUserIsAdmin
+                    ? languageText("trialActiveHeading")
+                    : languageText("trialInactiveHeading");
         }
         if (trialCopy) {
-            trialCopy.textContent = trialActive
-                ? languageText("trialActiveCopy")
-                : currentUserIsAdmin
-                    ? languageText("trialAdminCopy")
-                    : languageText("trialExpiredCopy");
+            trialCopy.textContent = premiumSnapshotUnavailable
+                ? languageText("accessRefreshFailedCopy")
+                : trialActive
+                    ? languageText("trialActiveCopy")
+                    : currentUserIsAdmin
+                        ? languageText("trialAdminCopy")
+                        : languageText("trialExpiredCopy");
         }
 
         const plan = currentNutritionPlan;
@@ -1705,9 +1720,7 @@
                 ? "Nie udało się pobrać aktualnych limitów. Spróbuj odświeżyć stronę."
                 : premium.is_pro !== true
                     ? "Wersja FREE: generowanie i zmiany planu wymagają aktywnego PRO lub trwającego testu."
-                    : premium.coach_trial_active === true
-                        ? "Pozostały zmiany dnia i zamiany posiłków w Twoim 2-dniowym teście PRO."
-                        : "Pozostałe zmiany dnia i zamiany posiłków w aktywnym PRO — limit odnawia się codziennie.";
+                    : "Pozostałe zmiany dnia i zamiany posiłków w aktywnym PRO — limit odnawia się codziennie.";
         setText("profile-completion-generation-note", generationNote);
 
         if (premiumSnapshotUnavailable || !premium) {
@@ -1877,10 +1890,13 @@
             fridge_premium_required: "Ta funkcja Lodówki wymaga aktywnego dostępu PRO.",
             pro_required: "Ta funkcja wymaga aktywnego dostępu PRO.",
             daily_quota_exhausted: "Dzisiejszy limit generowania został wykorzystany.",
+            pro_fridge_daily_limit_reached: "Dzisiejszy limit generowania posiłków z Lodówki został wykorzystany.",
+            pro_meal_photo_analysis_daily_limit_reached: "Dzisiejszy limit analiz zdjęć posiłków został wykorzystany.",
             fridge_service_unavailable: "Lodówka DEV jest chwilowo niedostępna.",
             generation_quota_unavailable: "Nie udało się sprawdzić limitu generowania.",
             coach_daily_quota_exhausted: "Dzisiejszy limit AI Coacha został wykorzystany.",
             coach_free_quota_exhausted: "Wykorzystano dostępny limit AI Coacha.",
+            coach_pro_required: "AI Coach wymaga aktywnego dostępu PRO.",
             premium_state_unavailable: "Nie udało się sprawdzić dostępu PRO.",
             coach_context_unavailable: "Dane potrzebne Coachowi są chwilowo niedostępne.",
             coach_meal_context_unavailable: "Dziennik posiłków jest chwilowo niedostępny dla Coacha.",
@@ -1900,7 +1916,7 @@
             pro_day_regeneration_daily_limit_reached: "Dzisiejszy limit ponownego generowania dni został wykorzystany.",
             meal_swap_quota_exhausted: "Dzisiejszy limit zamian posiłków został wykorzystany.",
             pro_meal_swap_daily_limit_reached: "Dzisiejszy limit zamian posiłków został wykorzystany.",
-            trial_meal_swap_limit_reached: "Limit zamian posiłków w okresie próbnym został wykorzystany.",
+            trial_meal_swap_limit_reached: "Dzisiejszy limit zamian posiłków został wykorzystany.",
             invalid_meal_id: "Nie udało się rozpoznać wybranego posiłku.",
             meal_not_found: "Wybrany posiłek nie należy już do aktywnego planu.",
             meal_plan_not_found: "Nie znaleziono aktywnego planu posiłków.",
@@ -2518,6 +2534,11 @@
     function updateFridgeQuota() {
         if (!fridgeQuota) return;
         const premium = currentPremiumSnapshot;
+        if (premiumSnapshotUnavailable || !premium) {
+            fridgeQuota.textContent = "";
+            fridgeQuota.hidden = true;
+            return;
+        }
         if (currentUserIsAdmin) {
             fridgeQuota.textContent = "Lodówka dzisiaj: bez limitu";
             fridgeQuota.hidden = false;
@@ -2525,12 +2546,63 @@
         }
         const limit = finiteNumber(premium?.fridge_generation_limit);
         if (limit !== null) {
-            fridgeQuota.textContent = `Lodówka dzisiaj: ${formatNumber(premium?.fridge_generation_remaining ?? 0)}/${formatNumber(limit)}`;
+            fridgeQuota.textContent = `Lodówka dzisiaj: ${formatNumber(premium?.fridge_generation_remaining)}/${formatNumber(limit)}`;
             fridgeQuota.hidden = false;
             return;
         }
         fridgeQuota.textContent = "";
         fridgeQuota.hidden = true;
+    }
+
+    async function refreshPremiumSnapshot({ force = false } = {}) {
+        if (!client || !activeUserId || profileBootstrapState !== "ready") return false;
+        const userId = activeUserId;
+        if (premiumSnapshotRefreshPromise) {
+            const pendingRefresh = premiumSnapshotRefreshPromise;
+            const refreshed = await pendingRefresh;
+            if (!force || userId !== activeUserId) return refreshed;
+            // A quota-consuming request may finish after the pending read started.
+            // Forced refreshes need a new server snapshot after that read completes.
+            if (premiumSnapshotRefreshPromise === pendingRefresh) premiumSnapshotRefreshPromise = null;
+            return refreshPremiumSnapshot({ force: true });
+        }
+        if (!force && Date.now() - premiumSnapshotRefreshedAt < 15_000) return false;
+
+        const accountSequence = dataLoadSequence;
+        const refreshPromise = Promise.resolve().then(async () => {
+            const renderAccessState = () => {
+                updateFridgeQuota();
+                updateMealGenerationAccess();
+                updateCoachContextCard();
+                renderProfileAccess(currentPremiumSnapshot, currentDashboardSnapshot, currentNutritionPlan);
+                if (profileCompletionModal && !profileCompletionModal.hidden) renderProfileCompletionOffer();
+            };
+            try {
+                const { data, error } = await client.rpc("get_premium_snapshot");
+                if (userId !== activeUserId || accountSequence !== dataLoadSequence) return false;
+                if (error || !data || typeof data !== "object") {
+                    premiumSnapshotUnavailable = true;
+                    renderAccessState();
+                    return false;
+                }
+
+                currentPremiumSnapshot = data;
+                premiumSnapshotUnavailable = false;
+                premiumSnapshotRefreshedAt = Date.now();
+                renderAccessState();
+                return true;
+            } catch {
+                if (userId === activeUserId && accountSequence === dataLoadSequence) {
+                    premiumSnapshotUnavailable = true;
+                    renderAccessState();
+                }
+                return false;
+            } finally {
+                if (premiumSnapshotRefreshPromise === refreshPromise) premiumSnapshotRefreshPromise = null;
+            }
+        });
+        premiumSnapshotRefreshPromise = refreshPromise;
+        return refreshPromise;
     }
 
     function setFridgeMode(mode, { focus = true } = {}) {
@@ -2566,13 +2638,23 @@
     }
 
     function coachAccessBadge(premium) {
-        if (!premium) return "PRO";
+        if (premiumSnapshotUnavailable || !premium) return "—";
         if (currentUserIsAdmin) return "ADMIN ∞";
         const remaining = premium.coach_remaining;
         const limit = premium.coach_limit;
-        if (premium.coach_trial_active) return `TEST ${formatNumber(remaining ?? 8)} / ${formatNumber(limit ?? 8)}`;
-        if (premium.is_pro) return `PRO ${formatNumber(remaining ?? 8)} / ${formatNumber(limit ?? 8)}`;
-        return "PRO";
+        if (premium.coach_trial_active) return `TEST ${formatNumber(remaining)} / ${formatNumber(limit)}`;
+        if (premium.is_pro) return `PRO ${formatNumber(remaining)} / ${formatNumber(limit)}`;
+        return "FREE";
+    }
+
+    function coachAccessBlockMessage() {
+        if (premiumSnapshotUnavailable || !currentPremiumSnapshot) {
+            return "Nie udało się sprawdzić dostępu PRO. Odśwież stronę i spróbuj ponownie.";
+        }
+        if (currentPremiumSnapshot.coach_allowed === true) return null;
+        return currentPremiumSnapshot.is_pro === true
+            ? featureErrorMessage("coach_daily_quota_exhausted", "AI Coacha")
+            : "AI Coach wymaga aktywnego dostępu PRO.";
     }
 
     function updateCoachContextCard() {
@@ -2588,12 +2670,15 @@
             : currentPremiumSnapshot?.coach_remaining === null || currentPremiumSnapshot?.coach_remaining === undefined
             ? `Pakiet: ${currentUserIsAdmin ? "ADMIN ∞" : currentPremiumSnapshot?.is_pro ? "PRO" : "FREE"}`
             : `Pozostało odpowiedzi: ${formatNumber(currentPremiumSnapshot.coach_remaining)}`);
-        const allowed = !currentPremiumSnapshot || currentPremiumSnapshot.coach_allowed !== false;
-        document.querySelectorAll("[data-coach-prompt]").forEach((button) => { button.disabled = !allowed; });
+        const allowed = coachAccessBlockMessage() === null;
+        document.querySelectorAll("[data-coach-prompt]").forEach((button) => { button.disabled = !allowed || coachBusy; });
         if (coachInput && document.activeElement !== coachInput) {
-            coachInput.placeholder = allowed ? "Napisz wiadomość…" : "AI Coach wymaga PRO";
+            coachInput.placeholder = allowed ? "Napisz wiadomość…"
+                : premiumSnapshotUnavailable || !currentPremiumSnapshot ? "Limit chwilowo niedostępny"
+                : currentPremiumSnapshot.is_pro === true ? "Dzisiejszy limit AI Coacha został wykorzystany."
+                : "AI Coach wymaga PRO";
         }
-        if (coachSendButton) coachSendButton.disabled = !allowed;
+        if (coachSendButton) coachSendButton.disabled = !allowed || coachBusy;
     }
 
     function renderManagedPlanCard() {
@@ -3096,7 +3181,7 @@
         }
         if (detail) {
             detail.textContent = premiumSnapshotUnavailable
-                ? "Nie udało się sprawdzić dostępu w DEV. Odśwież dane."
+                ? "Nie udało się odświeżyć statusu dostępu PRO. Spróbuj ponownie."
                 : trialActive
                     ? trialExpiry && trialExpiry !== "—"
                         ? languageTemplate("profileTrialUntil", { date: trialExpiry })
@@ -4350,9 +4435,7 @@
                 copy = "Każdy dzień powstaje osobno z tych samych ustawień i zabezpieczeń co w Androidzie.";
                 quota = currentUserIsAdmin
                     ? "ADMIN · BEZ LIMITU"
-                    : premium.coach_trial_active === true
-                        ? `TEST · DNI ${formatNumber(premium.meal_day_regeneration_remaining)}/${formatNumber(premium.meal_day_regeneration_limit)} · POSIŁKI ${formatNumber(premium.meal_swap_remaining)}/${formatNumber(premium.meal_swap_limit)}`
-                        : `DZIŚ · DNI ${formatNumber(premium.meal_day_regeneration_remaining)}/${formatNumber(premium.meal_day_regeneration_limit)} · POSIŁKI ${formatNumber(premium.meal_swap_remaining)}/${formatNumber(premium.meal_swap_limit)}`;
+                    : `DZIŚ · DNI ${formatNumber(premium.meal_day_regeneration_remaining)}/${formatNumber(premium.meal_day_regeneration_limit)} · POSIŁKI ${formatNumber(premium.meal_swap_remaining)}/${formatNumber(premium.meal_swap_limit)}`;
             }
         }
         setText("meal-plan-access-title", title);
@@ -4714,6 +4797,9 @@
             const { data, error } = await client.functions.invoke("swap-meal", { body: { meal_id: mealId } });
             if (error || data?.error) {
                 const code = await edgeFunctionErrorCode(error, data);
+                if (["pro_meal_swap_daily_limit_reached", "trial_meal_swap_limit_reached", "meal_swap_quota_exhausted"].includes(String(code).toLowerCase())) {
+                    await refreshPremiumSnapshot({ force: true });
+                }
                 setToolStatus("meal-plan-action-status", featureErrorMessage(code, "zamiany posiłku"), "error");
                 return;
             }
@@ -4726,11 +4812,7 @@
                 setToolStatus("meal-plan-action-status", "Posiłek został wysłany do zamiany, ale nie udało się potwierdzić nowego planu.", "error");
                 return;
             }
-            const premiumResult = await client.rpc("get_premium_snapshot");
-            if (!premiumResult.error) {
-                currentPremiumSnapshot = premiumResult.data;
-                premiumSnapshotUnavailable = false;
-            }
+            await refreshPremiumSnapshot({ force: true });
             renderMealPlan(updatedPlan, preferredDay);
             setToolStatus("meal-plan-action-status", "Posiłek zamieniono i ponownie sprawdzono cały dzień.", "success");
         } catch {
@@ -4770,6 +4852,9 @@
                 const code = String(baseCode).toUpperCase() === "NO_VALID_DAY" && data?.reason_code
                     ? data.reason_code
                     : baseCode;
+                if (["pro_day_regeneration_daily_limit_reached", "meal_day_regeneration_quota_exhausted", "daily_quota_exhausted"].includes(String(code).toLowerCase())) {
+                    await refreshPremiumSnapshot({ force: true });
+                }
                 setToolStatus("meal-plan-action-status", featureErrorMessage(code, "generatora planu"), "error");
                 return;
             }
@@ -4782,11 +4867,7 @@
                 setToolStatus("meal-plan-action-status", "Dzień został wysłany do generatora, ale nie udało się potwierdzić zapisu. Odśwież stronę.", "error");
                 return;
             }
-            const premiumResult = await client.rpc("get_premium_snapshot");
-            if (!premiumResult.error) {
-                currentPremiumSnapshot = premiumResult.data;
-                premiumSnapshotUnavailable = false;
-            }
+            await refreshPremiumSnapshot({ force: true });
             lockedMealPlanIds.clear();
             mealPlanShoppingOpen = false;
             renderMealPlan(generatedPlan, dayIndex);
@@ -5081,10 +5162,14 @@
         setFridgeBusy(false);
         if (error || data?.error || !data?.proposal) {
             const code = await edgeFunctionErrorCode(error, data);
+            if (String(code).toLowerCase() === "pro_fridge_daily_limit_reached") {
+                await refreshPremiumSnapshot({ force: true });
+            }
             setFridgeStatus(featureErrorMessage(code, "Lodówki"), true);
             return;
         }
         renderFridgeProposal(data.proposal);
+        await refreshPremiumSnapshot({ force: true });
         setFridgeStatus("Propozycja gotowa. Możesz ją dodać do dzisiejszego bilansu DEV.");
     }
 
@@ -5511,8 +5596,9 @@
 
     async function sendCoachMessage(message) {
         if (coachBusy) return;
-        if (currentPremiumSnapshot?.coach_allowed === false) {
-            setText("coach-status", "AI Coach wymaga aktywnego dostępu PRO.");
+        const accessBlockMessage = coachAccessBlockMessage();
+        if (accessBlockMessage) {
+            setText("coach-status", accessBlockMessage);
             return;
         }
         const requestSequence = ++coachRequestSequence;
@@ -5537,7 +5623,18 @@
             });
             if (requestSequence !== coachRequestSequence || chatGeneration !== coachChatGeneration || requestUserId !== activeUserId) return;
             if (error || data?.error || !data?.message) {
-                const code = await edgeFunctionErrorCode(error, data);
+                const errorPayload = await edgeFunctionErrorPayload(error, data);
+                let code = typeof errorPayload?.error === "string" ? errorPayload.error : "unknown_error";
+                const serverTier = errorPayload?.premium_tier ?? (currentPremiumSnapshot?.coach_trial_active === true ? "APP_TRIAL" : null);
+                if (String(code).toLowerCase() === "coach_free_quota_exhausted") {
+                    const tier = String(serverTier || "").toUpperCase();
+                    if (tier === "APP_TRIAL" || tier === "PRO") code = "coach_daily_quota_exhausted";
+                    else if (tier === "FREE") code = "coach_pro_required";
+                }
+                if (["coach_daily_quota_exhausted", "coach_free_quota_exhausted", "coach_pro_required"].includes(String(code).toLowerCase())) {
+                    await refreshPremiumSnapshot({ force: true });
+                }
+                if (requestSequence !== coachRequestSequence || chatGeneration !== coachChatGeneration || requestUserId !== activeUserId) return;
                 setText("coach-status", featureErrorMessage(code, "AI Coacha"));
                 coachInput.focus();
                 return;
@@ -5554,6 +5651,8 @@
             setText("coach-limit", data.coach_remaining === null || data.coach_remaining === undefined
                 ? `Pakiet: ${data.premium_tier || "FREE"}`
                 : `Pozostało odpowiedzi: ${formatNumber(data.coach_remaining)}`);
+            await refreshPremiumSnapshot({ force: true });
+            if (requestSequence !== coachRequestSequence || chatGeneration !== coachChatGeneration || requestUserId !== activeUserId) return;
             if (data.history_saved) {
                 await loadCoachHistory({ id: activeUserId }, { scrollToBottom: true });
             } else {
@@ -5570,8 +5669,8 @@
         } finally {
             if (requestSequence === coachRequestSequence) {
                 coachBusy = false;
-                coachSendButton.disabled = false;
                 coachInput.disabled = false;
+                updateCoachContextCard();
                 if (coachHistoryButton) coachHistoryButton.disabled = false;
                 if (coachResetButton) coachResetButton.disabled = false;
             }
@@ -7227,6 +7326,7 @@
 
         currentNutritionPlan = planResult.error ? null : planResult.data;
         currentPremiumSnapshot = premiumResult.error ? null : premiumResult.data;
+        premiumSnapshotRefreshedAt = premiumResult.error ? 0 : Date.now();
         updateClientPortalEntry();
         premiumSnapshotUnavailable = Boolean(premiumResult.error);
         updateFridgeQuota();
@@ -8129,13 +8229,21 @@
     document.addEventListener("visibilitychange", () => {
         if (document.visibilityState === "visible") {
             if (activeUserId) void touchInternetActivity(activeUserId);
+            void refreshPremiumSnapshot();
             void refreshManagedPlanIfChanged();
         }
     });
     window.addEventListener("focus", () => {
         if (activeUserId) void touchInternetActivity(activeUserId);
+        void refreshPremiumSnapshot();
         void refreshManagedPlanIfChanged();
     });
+    window.addEventListener("pageshow", () => {
+        void refreshPremiumSnapshot();
+    });
+    window.setInterval(() => {
+        if (document.visibilityState === "visible" && !appView.hidden) void refreshPremiumSnapshot();
+    }, 60_000);
 
     renderHomeDate();
     setHomeTool(null);
