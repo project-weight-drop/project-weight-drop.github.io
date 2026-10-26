@@ -409,9 +409,11 @@
             gap: 12px;
             min-height: 44px;
             padding: 12px 22px;
-            border: 1px solid #d77aaf;
+            border: 1px solid #ba641f;
             border-radius: 16px;
-            background: linear-gradient(115deg, #6820a8, #a92964 60%, #af3c0e);
+            background: linear-gradient(115deg, transparent 20%, rgba(255, 226, 190, .09) 34%, transparent 48%),
+                linear-gradient(180deg, #2c2119, #15110e 52%, #24160c);
+            box-shadow: inset 0 1px rgba(255, 222, 184, .2), 0 5px 20px rgba(255, 107, 0, .1);
             color: #fff;
             font-size: .85rem;
             font-weight: 600;
@@ -421,14 +423,14 @@
 
         .instagram-link:hover {
             border-color: var(--accent);
-            background-color: rgba(255, 107, 0, .1);
+            box-shadow: inset 0 1px rgba(255, 222, 184, .28), 0 5px 24px rgba(255, 107, 0, .2);
         }
 
         .instagram-link svg {
             flex: none;
             width: 22px;
             height: 22px;
-            color: #fff;
+            color: #ffb16f;
         }
 
         .instagram-wordmark {
@@ -438,6 +440,16 @@
             font-weight: 400;
             line-height: 1.5;
             letter-spacing: -.025em;
+            color: #ffb16f;
+        }
+
+        @supports ((background-clip: text) or (-webkit-background-clip: text)) {
+            .instagram-wordmark {
+                background: linear-gradient(175deg, #fff5e9 12%, #ffc68d 40%, #ff8a2c 58%, #ffb765 77%, #ffe1b9 95%);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+            }
         }
 
         .instagram-link .instagram-wordmark { font-size: 25px; }
@@ -445,8 +457,8 @@
 
         .instagram-promo {
             padding: 18px 0;
-            background: #0c0b0e;
-            border-bottom: 1px solid rgba(236, 72, 153, .18);
+            background: #0b0b0b;
+            border-bottom: 1px solid rgba(255, 107, 0, .16);
         }
 
         .instagram-featured {
@@ -461,9 +473,9 @@
             padding: 18px 26px;
             border: 1px solid transparent;
             border-radius: 23px;
-            background: linear-gradient(115deg, #17111f, #21111d 65%, #291a12) padding-box,
-                linear-gradient(110deg, #a66bff, #f06caf 58%, #ffb45a) border-box;
-            box-shadow: 0 8px 30px rgba(185, 41, 114, .13);
+            background: linear-gradient(110deg, #1d1a17, #111 46%, #22170e) padding-box,
+                linear-gradient(110deg, #684325, #ff8b30 38%, #ffe0b2 60%, #b85712 87%, #56331b) border-box;
+            box-shadow: inset 0 1px rgba(255, 232, 204, .12), inset 0 -1px rgba(255, 107, 0, .08), 0 8px 30px rgba(255, 107, 0, .12);
             color: #fff;
         }
 
@@ -476,7 +488,16 @@
             width: 420px;
             height: 300px;
             border-radius: 50%;
-            background: radial-gradient(ellipse, rgba(236, 72, 153, .23), transparent 68%);
+            background: radial-gradient(ellipse, rgba(255, 107, 0, .2), transparent 68%);
+            pointer-events: none;
+        }
+
+        .instagram-featured::after {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            inset: 0;
+            background: linear-gradient(115deg, transparent 18%, rgba(255, 240, 222, .06) 29%, transparent 42%, transparent 64%, rgba(255, 206, 148, .035) 73%, transparent 82%);
             pointer-events: none;
         }
 
@@ -485,29 +506,33 @@
             place-items: center;
             width: 68px;
             height: 68px;
-            border: 1px solid rgba(255, 255, 255, .25);
+            border: 1px solid #ffc48b;
             border-radius: 20px;
-            background: radial-gradient(circle at 25% 105%, #ffd86b, #f77737 30%, #df2f81 57%, #8b37c7 82%, #594acb);
-            box-shadow: 0 6px 24px rgba(224, 47, 129, .28), inset 0 1px rgba(255, 255, 255, .24);
+            background: linear-gradient(145deg, rgba(255, 246, 226, .6), transparent 43%),
+                linear-gradient(160deg, #ffad5b, #ff6b00 58%, #c84b00);
+            box-shadow: 0 6px 24px rgba(255, 107, 0, .25), inset 0 1px rgba(255, 246, 226, .65), inset 0 -2px rgba(95, 30, 0, .3);
+            color: #201006;
         }
 
         .instagram-featured-icon svg { width: 40px; height: 40px; }
         .instagram-featured-copy { min-width: 0; }
-        .instagram-featured-caption { display: block; color: #e5cddd; font-size: .82rem; line-height: 1.6; }
+        .instagram-featured-caption { display: block; color: #e0cbb9; font-size: .82rem; line-height: 1.6; }
         .instagram-featured-cta {
             display: inline-flex;
             align-items: center;
             gap: 12px;
             padding: 12px 18px;
-            border: 1px solid rgba(255, 255, 255, .3);
+            border: 1px solid rgba(255, 151, 71, .5);
             border-radius: 999px;
-            background: rgba(255, 255, 255, .08);
+            background: linear-gradient(180deg, rgba(255, 222, 190, .11), rgba(255, 107, 0, .08));
+            box-shadow: inset 0 1px rgba(255, 232, 204, .12);
+            color: #ffe0c2;
             font-size: .8rem;
             font-weight: 700;
         }
 
         .instagram-featured-cta svg { flex: none; width: 20px; height: 20px; }
-        .instagram-featured:hover .instagram-featured-cta { background: rgba(255, 255, 255, .16); }
+        .instagram-featured:hover .instagram-featured-cta { background: rgba(255, 107, 0, .18); }
 
         @media (max-width: 540px) {
             .instagram-promo { padding: 12px 0; }
